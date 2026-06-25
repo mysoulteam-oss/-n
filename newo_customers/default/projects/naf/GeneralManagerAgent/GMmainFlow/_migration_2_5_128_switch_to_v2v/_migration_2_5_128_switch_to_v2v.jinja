@@ -1,0 +1,137 @@
+{# Set default recommended settings for NEWO Voce Connector #}
+
+{% set newo_voice_connector_object = GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector") %}
+{% if newo_voice_connector_object %}
+    {% set newo_voice_connector_settings = newo_voice_connector_object.settings %}
+    {% if newo_voice_connector_settings %}
+
+        {# Google V2V Settings #}
+
+        {% if newo_voice_connector_settings.genai_v2v_tokens_sliding_window %}
+            {{SetConnectorInfo(
+                integrationIdn="newo_voice",
+                connectorIdn="newo_voice_connector",
+                field="genai_v2v_tokens_sliding_window",
+                value="65536"
+            )}}
+        {% endif %}
+
+        {% if newo_voice_connector_settings.genai_v2v_top_p %}
+            {{SetConnectorInfo(
+                integrationIdn="newo_voice",
+                connectorIdn="newo_voice_connector",
+                field="genai_v2v_top_p",
+                value="0.9"
+            )}}
+        {% endif %}
+
+        {% if newo_voice_connector_settings.genai_v2v_temperature %}
+            {{SetConnectorInfo(
+                integrationIdn="newo_voice",
+                connectorIdn="newo_voice_connector",
+                field="genai_v2v_temperature",
+                value="0.9"
+            )}}
+        {% endif %}
+
+        {% if newo_voice_connector_settings.genai_v2v_speech_activity_start_sensitivity %}
+            {{SetConnectorInfo(
+                integrationIdn="newo_voice",
+                connectorIdn="newo_voice_connector",
+                field="genai_v2v_speech_activity_start_sensitivity",
+                value="low"
+            )}}
+        {% endif %}
+
+        {% if newo_voice_connector_settings.genai_v2v_speech_activity_stop_sensitivity %}
+            {{SetConnectorInfo(
+                integrationIdn="newo_voice",
+                connectorIdn="newo_voice_connector",
+                field="genai_v2v_speech_activity_stop_sensitivity",
+                value="high"
+            )}}
+        {% endif %}
+
+        {% if newo_voice_connector_settings.genai_v2v_turn_coverage %}
+            {{SetConnectorInfo(
+                integrationIdn="newo_voice",
+                connectorIdn="newo_voice_connector",
+                field="genai_v2v_turn_coverage",
+                value="only_activity"
+            )}}
+        {% endif %}
+
+        {% if newo_voice_connector_settings.genai_v2v_model %}
+            {{SetConnectorInfo(
+                integrationIdn="newo_voice",
+                connectorIdn="newo_voice_connector",
+                field="genai_v2v_model",
+                value="gemini-live-2.5-flash-preview-native-audio-09-17"
+            )}}
+        {% endif %}
+
+        {% if newo_voice_connector_settings.genai_v2v_proactive_audio %}
+            {{SetConnectorInfo(
+                integrationIdn="newo_voice",
+                connectorIdn="newo_voice_connector",
+                field="genai_v2v_proactive_audio",
+                value="False"
+            )}}
+        {% endif %}
+
+        {# Deepgram Settings #}
+
+        {% if newo_voice_connector_settings.deepgram_stt_endpointing %}
+            {{SetConnectorInfo(
+                integrationIdn="newo_voice",
+                connectorIdn="newo_voice_connector",
+                field="deepgram_stt_endpointing",
+                value="350"
+            )}}
+        {% endif %}
+
+        {% if newo_voice_connector_settings.flush_on_punctuation %}
+            {{SetConnectorInfo(
+                integrationIdn="newo_voice",
+                connectorIdn="newo_voice_connector",
+                field="flush_on_punctuation",
+                value="False"
+            )}}
+        {% endif %}
+
+        {# OpenAI V2V Settings #}
+
+        {% if newo_voice_connector_settings.openai_v2v_model %}
+            {{SetConnectorInfo(
+                integrationIdn="newo_voice",
+                connectorIdn="newo_voice_connector",
+                field="openai_v2v_model",
+                value="gpt-4o-realtime-preview-2025-06-03"
+            )}}
+        {% endif %}
+
+        {% if newo_voice_connector_settings.openai_v2v_temperature %}
+            {{SetConnectorInfo(
+                integrationIdn="newo_voice",
+                connectorIdn="newo_voice_connector",
+                field="openai_v2v_temperature",
+                value="0.8"
+            )}}
+        {% endif %}
+
+        {% if newo_voice_connector_settings.openai_v2v_speed %}
+            {{SetConnectorInfo(
+                integrationIdn="newo_voice",
+                connectorIdn="newo_voice_connector",
+                field="openai_v2v_speed",
+                value="1.15"
+            )}}
+        {% endif %}
+
+    {% endif %}
+{% endif %}
+
+
+{# Switch to V2V #}
+
+{{SetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_mode", value="voice-to-voice")}}

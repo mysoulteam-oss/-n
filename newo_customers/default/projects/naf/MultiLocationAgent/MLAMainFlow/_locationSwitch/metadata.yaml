@@ -1,0 +1,15 @@
+id: f22f6c07-e3c7-4a11-9123-88cf9a9aa2ee
+idn: _locationSwitch
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 3868f988-9cc4-476a-80ed-e6c1108963dd
+    name: location
+    default_value: " "
+  - id: f1236fbf-ddf5-436c-a77d-65700f05247d
+    name: userId
+    default_value: " "
+path: ""

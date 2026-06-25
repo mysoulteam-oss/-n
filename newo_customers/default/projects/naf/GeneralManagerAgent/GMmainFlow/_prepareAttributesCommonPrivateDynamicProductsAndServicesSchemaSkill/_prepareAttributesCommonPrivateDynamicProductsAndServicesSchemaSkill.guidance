@@ -1,0 +1,78 @@
+{{#system~}}
+{
+  "title": "Products and Services",
+  "description": "Products and Services in JSON format",
+  "type": "object",
+  "properties": {
+    "products_and_services_offering": {
+      "type": "array",
+      "description": "**Offering** Products and Services items from <ProductsAndServices> block",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Name of the product/service item",
+            "type": "string"
+          },
+          "category": {
+            "description": "Category of the product/service item",
+            "type": "string"
+          },
+          "description": {
+            "description": "Detailed description of the product/service item. Try to preserve as much information as possible. Apply minimum modifications to the source text if possible. Set to \"null\" (as string) if no description is available.",
+            "type": "string"
+          },
+          "payment_link": {
+            "description": "Payment/checkout link of the product/service item. Set to \"null\" (as string) if no payment link is available.",
+            "type": "string"
+          },
+          "price": {
+            "type": "array",
+            "description": "An array of prices and conditions to apply",
+            "items": {
+              "type": "object",
+              "description": "Price of the product/service item in the specified currency and the condition to apply",
+              "properties": {
+                "price": {
+                  "type": "string",
+                  "default": "null",
+                  "description": "The price (e.g. $5)"
+                },
+                "condition": {
+                  "type": "string",
+                  "default": "regular price",
+                  "description": "A condition / region to apply this price (may not be empty if there is several prices per single product are available, by default `regular price`)"
+                }
+              },
+              "required": ["price", "condition"]
+            }
+          }
+        }
+      }
+    },
+    "products_and_services_not_offering": {
+      "type": "array",
+      "description": "**Not Offering** Products and Services items from <ProductsAndServicesNotOffering> block (list of items explicitly stated as not offered)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Name of the product/service item",
+            "type": "string"
+          },
+          "category": {
+            "description": "Category of the product/service item",
+            "type": "string"
+          },
+          "explanation": {
+            "description": "A brief explanation why the product/service item is not offered if it was explicitly mentioned. Set to \"null\" (as string) if explanation was not provided.",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

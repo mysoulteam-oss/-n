@@ -1,0 +1,9 @@
+id: f23dc198-de73-413c-8642-0632cee4d7e1
+idn: SwitchConversationStartedSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

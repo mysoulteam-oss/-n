@@ -1,0 +1,12 @@
+id: feab28ec-c6e8-460a-b537-74e560c6a918
+idn: prompt_get_explicit_constraints_text
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: b51abce1-bb04-4470-969b-503c97fd60b4
+    name: working_hours
+    default_value: ""
+path: ""

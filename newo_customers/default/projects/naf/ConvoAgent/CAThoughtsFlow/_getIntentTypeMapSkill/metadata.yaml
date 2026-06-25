@@ -1,0 +1,9 @@
+id: dd9b214c-edd0-4afe-9134-8a5fab88f4f2
+idn: _getIntentTypeMapSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

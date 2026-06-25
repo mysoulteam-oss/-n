@@ -1,0 +1,12 @@
+id: 082dab53-8aa8-4378-888e-08093848312a
+idn: _buildUserDataSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: a22aa0b0-303b-41c6-8481-e32caba8394c
+    name: userDetails
+    default_value: " "
+path: ""

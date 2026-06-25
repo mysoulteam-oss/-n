@@ -1,0 +1,15 @@
+id: aee7748e-140e-4a5a-ae7d-db1c08a13d8f
+idn: _schemasSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 89ca91a1-2915-4f48-b995-0d0c88a92195
+    name: promise
+    default_value: "False"
+  - id: 7e24f347-98fe-41dc-8839-30d50dd8e273
+    name: transferPhoneNumber
+    default_value: "False"
+path: ""

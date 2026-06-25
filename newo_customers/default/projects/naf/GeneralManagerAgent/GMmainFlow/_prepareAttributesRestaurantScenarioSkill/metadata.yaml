@@ -1,0 +1,9 @@
+id: 81237102-633c-49aa-b216-6dd22ff65029
+idn: _prepareAttributesRestaurantScenarioSkill
+title: _prepareAttributesRestaurantScenarioSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,9 @@
+id: f9d7cfb4-e4bd-467a-885d-b67941b04888
+idn: v2v_send_context
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

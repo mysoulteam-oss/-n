@@ -1,0 +1,9 @@
+id: e94e4f78-6bf0-4de8-b291-f1ebebf1ca68
+idn: scenario_hospitality_regular_reservation_via_link
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

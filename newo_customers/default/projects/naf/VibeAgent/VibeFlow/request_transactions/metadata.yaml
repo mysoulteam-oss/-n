@@ -1,0 +1,9 @@
+id: 77159a0a-45be-402f-b20a-1add27a4a248
+idn: request_transactions
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

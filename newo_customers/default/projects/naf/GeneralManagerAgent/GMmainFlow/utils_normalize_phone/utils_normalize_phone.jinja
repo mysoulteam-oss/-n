@@ -1,0 +1,50 @@
+{% set input_type_value = input_type | default("string", true) | lower | trim %}
+{% set replacement_value = replacement | default("", true) | string %}
+{% set characters_to_keep_value = characters_to_keep | default("", true) | string %}
+{% set substrings_to_remove = json.loads(substrings_to_remove_json | default("[]", true) | string) %}
+
+{% if input_type_value == "json_array" %}
+    {% set source_json = value | default("", true) | string | trim %}
+    {% if not source_json or source_json == "null" %}
+        {% set source_json = "[]" %}
+    {% endif %}
+    {% set source = json.loads(source_json) %}
+{% else %}
+    {% set source = [value | default("", true) | string] %}
+{% endif %}
+
+{% set result = [] %}
+
+{% for item in source %}
+    {% set normalized = item | default("", true) | string %}
+
+    {% for substring in substrings_to_remove %}
+        {% set normalized = normalized.replace(substring | string, replacement_value) %}
+    {% endfor %}
+
+    {% if characters_to_remove.strip() %}
+        {# explicit character removal (mutually exclusive with characters_to_keep) #}
+        {% for character in characters_to_remove %}
+            {% set normalized = normalized.replace(character, replacement_value) %}
+        {% endfor %}
+    {% elif characters_to_keep_value %}
+        {# keep digits and specific characters #}
+        {% set filtered = "" %}
+        {% for character in normalized %}
+            {% if character.isdigit() or (character in characters_to_keep_value) %}
+                {% set filtered = filtered + character %}
+            {% else %}
+                {% set filtered = filtered + replacement_value %}
+            {% endif %}
+        {% endfor %}
+        {% set normalized = filtered %}
+    {% endif %}
+
+    {{ result.append(normalized) }}
+{% endfor %}
+
+{% if input_type_value == "json_array" %}
+    {{ Return(val=json.dumps(result, ensure_ascii=False, indent=2)) }}
+{% else %}
+    {{ Return(val=result[0] if result else "") }}
+{% endif %}

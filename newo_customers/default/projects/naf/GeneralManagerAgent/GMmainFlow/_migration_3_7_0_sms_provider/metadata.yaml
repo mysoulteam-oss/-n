@@ -1,0 +1,9 @@
+id: 88a70a7a-c3e5-4add-998c-82370d44f300
+idn: _migration_3_7_0_sms_provider
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

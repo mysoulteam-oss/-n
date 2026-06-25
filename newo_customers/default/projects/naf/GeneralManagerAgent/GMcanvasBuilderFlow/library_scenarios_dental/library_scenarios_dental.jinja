@@ -1,0 +1,15 @@
+{% set library_items = [
+    json.loads(scenario_dental_schedule_appointment_link()),
+    json.loads(scenario_dental_schedule_appointment_manually()),
+    json.loads(scenario_dental_schedule_appointment_agent()),
+    json.loads(scenario_dental_relaying_message()),
+    json.loads(scenario_dental_answering_questions()),
+    json.loads(scenario_dental_regular_transfer()),
+    json.loads(scenario_dental_finish_conversation()),
+    json.loads(scenario_common_schedule_appointment_agent()),
+    json.loads(scenario_common_canceling_appointment_agent()),
+] %}
+
+
+
+{{Return(val=json.dumps(library_items, ensure_ascii=False, indent=2))}}

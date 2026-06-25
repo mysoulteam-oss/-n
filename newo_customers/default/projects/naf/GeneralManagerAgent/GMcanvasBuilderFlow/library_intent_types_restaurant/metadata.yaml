@@ -1,0 +1,9 @@
+id: aae63362-37e4-4c62-ad77-67cc251dc86a
+idn: library_intent_types_restaurant
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,18 @@
+{{Set(name="output", value=GetTriggeredAct(fields=["output"]))}}
+
+
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_processing_type") == "use_llm"}}
+    {{_receiveAvailabilityProcessLLMSkill(output=output)}}
+{{/if}}
+
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_processing_type") == "formatted_response"}}
+    {{#if _utilsFeatureFlagIsActiveSkill(featureFlagName="booking_use_new_availability_formatted_response_processor")}}
+        {{_receiveAvailabilityProcessFormattedResponseNewSkill(output=output)}}
+    {{else}}
+        {{_receiveAvailabilityProcessFormattedResponseSkill(output=output)}}
+    {{/if}}
+{{/if}}
+
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_processing_type") == "custom"}}
+    {{_utilsSendSystemLogSkill(message="Processing type is custom, skipping default method")}}
+{{/if}}

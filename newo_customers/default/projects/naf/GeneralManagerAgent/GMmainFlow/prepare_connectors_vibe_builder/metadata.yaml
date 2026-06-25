@@ -1,0 +1,9 @@
+id: f4777442-1b28-47c7-99d5-19b6251eb83b
+idn: prepare_connectors_vibe_builder
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

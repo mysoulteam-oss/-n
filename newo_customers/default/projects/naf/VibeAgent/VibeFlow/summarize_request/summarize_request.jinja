@@ -1,0 +1,48 @@
+{% set prompt %}
+You are generating a short conversation title from the user's first message.
+
+<Task>
+Generate one short title for the conversation.
+</Task>
+
+<Rules>
+- Use 5 words maximum.
+- Capture the main request or topic.
+- Use concise natural language.
+- Avoid filler words like "please", "help", "can you", and similar phrases.
+- Do not add punctuation at the end.
+- If the message is only a greeting like "hello" or "hi", return "General conversation".
+- If the request is unclear, return the best short topic guess.
+- Return only the title text.
+</Rules>
+
+<Examples>
+User: How can I change the password in my account?
+Title: Change account password
+
+User: Can you add a new step to this automation scenario?
+Title: Add automation step
+
+User: hello
+Title: General conversation
+</Examples>
+
+<UserMessage>
+{{GetTriggeredAct().text}}
+</UserMessage>
+{% endset %}
+
+{% system %}
+{{prompt.strip()}}
+{% end %}
+
+{% set title = Gen(temperature=0.1, topP=0, thinkingBudget=85).strip() %}
+
+{{SendCommand(
+   commandIdn="update_chat_title",
+   integrationIdn="newo_chat",
+   connectorIdn="vibe_agent",
+   user_actor_id=GetActor().id|string,
+   title=title
+)}}
+{{UpdateActor(name=title)}}

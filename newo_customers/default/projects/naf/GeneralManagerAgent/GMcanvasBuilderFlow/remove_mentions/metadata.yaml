@@ -1,0 +1,12 @@
+id: 3c851d2c-ca58-468d-8294-a479dd825665
+idn: remove_mentions
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 6d89a93f-9595-4871-9686-f6b3fac66032
+    name: text
+    default_value: ""
+path: ""

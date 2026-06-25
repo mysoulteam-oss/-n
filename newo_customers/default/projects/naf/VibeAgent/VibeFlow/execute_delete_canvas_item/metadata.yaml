@@ -1,0 +1,15 @@
+id: c18553a8-df70-47ec-b8ef-4e15c6af2b74
+idn: execute_delete_canvas_item
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 6d69ba68-d47a-4ff6-ab18-77b5da6b1763
+    name: item_idn
+    default_value: ""
+  - id: fd203d07-67e9-4601-9f5b-6cb2d04d2caa
+    name: type_idn
+    default_value: ""
+path: ""

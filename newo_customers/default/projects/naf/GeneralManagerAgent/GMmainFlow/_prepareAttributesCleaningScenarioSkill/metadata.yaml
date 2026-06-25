@@ -1,0 +1,9 @@
+id: d9f5a769-2bda-43f0-b81d-68c9afac23b6
+idn: _prepareAttributesCleaningScenarioSkill
+title: _prepareAttributesCleaningScenarioSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

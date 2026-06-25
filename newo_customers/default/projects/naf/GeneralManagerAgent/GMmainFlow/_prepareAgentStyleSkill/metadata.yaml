@@ -1,0 +1,9 @@
+id: f0edc166-2b72-4da0-a3c8-f1781ef1b77c
+idn: _prepareAgentStyleSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

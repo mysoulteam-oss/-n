@@ -1,0 +1,9 @@
+id: 65ff3ce9-bad0-434f-80a6-adb37b5e97c5
+idn: _prepareAttributesCateringScenarioSkill
+title: _prepareAttributesCateringScenarioSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

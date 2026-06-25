@@ -1,0 +1,30 @@
+id: efd4f0b1-e6d9-41b4-95f0-b101d1b2b963
+idn: _userMessageFastReplySkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 497dd6fd-643a-4e17-874f-cf33cd9c794e
+    name: inject_thoughts
+    default_value: "True"
+  - id: ea73fedb-6e3b-48b2-93ff-58e007a36490
+    name: integration_idn
+    default_value: ""
+  - id: 7c5a686f-ad45-4dab-9f06-b2e336362825
+    name: external_event
+    default_value: "False"
+  - id: 87312b25-c87e-4544-ab8d-93035b33712d
+    name: call_analyze_conversation
+    default_value: "False"
+  - id: 984c5a20-f1a9-44db-9376-f8b3a8f40aa8
+    name: user_id
+    default_value: ""
+  - id: 15c11307-1006-404c-a163-2bdd51ee6ff4
+    name: set_follow_up_timer
+    default_value: "False"
+  - id: de48d436-8363-4290-bcfe-828c26332d48
+    name: base_instruction
+    default_value: ""
+path: ""

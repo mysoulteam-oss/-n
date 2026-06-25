@@ -1,0 +1,9 @@
+id: 8750cfc8-b54f-437d-8e9e-cab686a6a6af
+idn: prepare_connectors_newo_voice
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,8 @@
+{% set section_name = GetTriggeredAct().arguments.sectionName %}
+
+{% set user_id = GetUser().id | string %}
+{% set current_custom_prompt_section = GetPersonaAttribute(id=user_id, field="custom_prompt_section") %}
+
+{% set cleaned_custom_prompt_section = re.sub('<' ~ section_name ~ '>.*?</' ~ section_name ~ '>\\s*---\\s*', '', current_custom_prompt_section, flags=re.DOTALL) %}
+
+{{SetPersonaAttribute(id=user_id, field="custom_prompt_section", value=cleaned_custom_prompt_section)}}

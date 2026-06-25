@@ -1,0 +1,9 @@
+id: 40b811b0-cb66-4bc7-b295-826116f21359
+idn: library_procedures_hospitality
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

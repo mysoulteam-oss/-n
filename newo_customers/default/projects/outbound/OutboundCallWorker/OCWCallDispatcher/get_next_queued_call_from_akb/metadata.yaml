@@ -1,0 +1,9 @@
+id: b733c275-9b9c-467a-a640-102e0d1cce90
+idn: get_next_queued_call_from_akb
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

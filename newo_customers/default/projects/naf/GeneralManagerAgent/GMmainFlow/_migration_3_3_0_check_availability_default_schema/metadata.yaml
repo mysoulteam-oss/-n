@@ -1,0 +1,9 @@
+id: 6f0baa50-2ade-4082-bcee-5785200e5c9b
+idn: _migration_3_3_0_check_availability_default_schema
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

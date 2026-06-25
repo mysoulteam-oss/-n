@@ -1,0 +1,9 @@
+id: 6e6002d1-cacc-46c3-9328-e65595f7094e
+idn: default_report_content_beauty_json
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

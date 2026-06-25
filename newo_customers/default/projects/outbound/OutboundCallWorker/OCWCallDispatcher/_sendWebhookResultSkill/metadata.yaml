@@ -1,0 +1,18 @@
+id: 8934e1f4-4328-47fa-9def-7e299ca2b8d2
+idn: _sendWebhookResultSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 03f38c20-141f-4dbe-b036-aaf5a2443cc2
+    name: userId
+    default_value: ""
+  - id: 6a8cd1d3-67fb-478f-ba97-23470fc83b94
+    name: payload
+    default_value: ""
+  - id: 5b1fbd96-6316-438a-a79e-7fee26f4fa4b
+    name: taskId
+    default_value: ""
+path: ""

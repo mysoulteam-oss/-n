@@ -1,0 +1,15 @@
+id: 4e420fc9-cd52-4efc-982d-1b3d5348db13
+idn: _utilsGetBookingEmailSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 10b162e0-1fa5-4579-943e-5d67dce53a07
+    name: retry
+    default_value: "False"
+  - id: 2626a026-bc93-43c5-b84d-beb52f5c1182
+    name: phoneNumber
+    default_value: ""
+path: ""

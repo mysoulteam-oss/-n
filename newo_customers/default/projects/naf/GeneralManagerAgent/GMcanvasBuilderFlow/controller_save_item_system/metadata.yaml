@@ -1,0 +1,9 @@
+id: e953ffb6-5043-45f6-b1ab-1560073620fd
+idn: controller_save_item_system
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

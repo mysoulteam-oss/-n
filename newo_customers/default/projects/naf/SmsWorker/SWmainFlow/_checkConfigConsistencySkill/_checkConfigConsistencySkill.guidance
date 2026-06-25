@@ -1,0 +1,19 @@
+{{#if IsEmpty(text=GetValueJSON(obj=config, key="phone_number_rule"))}}
+    {{SendMessage(
+        message=Concat("THOUGHTS:
+", "There is no phone_number_rule in the config. Config: ", config),
+        actorIds=_utilsGetFootnoteSkill(userId=GetUser(field="id"), system="True")
+    )}}
+    {{Return(val="False")}}
+{{/if}}
+
+{{#if IsEmpty(text=GetValueJSON(obj=config, key="sms_text_template"))}}
+    {{SendMessage(
+        message=Concat("THOUGHTS:
+", "There is no sms_text_template in the config. Config: ", config),
+        actorIds=_utilsGetFootnoteSkill(userId=GetUser(field="id"), system="True")
+    )}}
+    {{Return(val="False")}}
+{{/if}}
+
+{{Return(val="True")}}

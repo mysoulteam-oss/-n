@@ -1,0 +1,9 @@
+id: 33708370-bf61-4942-abb4-9964e950f71c
+idn: procedure_common_gather_availability_hospitality
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

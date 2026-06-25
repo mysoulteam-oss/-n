@@ -1,0 +1,9 @@
+id: a46db01c-e2ae-4e7b-aeb4-8bbd6e26c4df
+idn: _prepareAttributesCommonDefaultPrivateDataInjectionSkill
+title: _prepareAttributesCommonDefaultPrivateDataInjectionSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

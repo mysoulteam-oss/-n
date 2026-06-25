@@ -1,0 +1,15 @@
+{# All `customer` common Customer Attributes must be specified here with default values #}
+{# (must be sorted alphabetically) #}
+
+{% set customer_info = GetCustomerInfo() %}
+
+{# ! TODO: Set Customer email #}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="customer_email", value=customer_info.contact_email if customer_info.contact_email else "")}}
+
+{# TODO: Set this value if possible #}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="customer_first_name", value="")}}
+
+{# TODO: Set this value if possible #}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="customer_last_name", value="")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="customer_phone", value=customer_info.contact_phone if customer_info.contact_phone else "")}}

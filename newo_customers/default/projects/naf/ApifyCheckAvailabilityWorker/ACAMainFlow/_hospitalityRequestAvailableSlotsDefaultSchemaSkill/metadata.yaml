@@ -1,0 +1,9 @@
+id: a6ad0a8e-c8d4-4927-af29-f9101913d98d
+idn: _hospitalityRequestAvailableSlotsDefaultSchemaSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

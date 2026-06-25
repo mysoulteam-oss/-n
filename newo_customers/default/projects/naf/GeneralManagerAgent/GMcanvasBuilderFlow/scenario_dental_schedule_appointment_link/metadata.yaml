@@ -1,0 +1,9 @@
+id: b274b95b-c0a3-4971-b36f-49a5708c25c5
+idn: scenario_dental_schedule_appointment_link
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

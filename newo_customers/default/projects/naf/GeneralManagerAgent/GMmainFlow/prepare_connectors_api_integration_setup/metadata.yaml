@@ -1,0 +1,9 @@
+id: d5fef789-685e-4504-879a-e122a8d0512e
+idn: prepare_connectors_api_integration_setup
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

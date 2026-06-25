@@ -1,0 +1,24 @@
+id: de1ac93a-9121-496f-96c1-aa7c7d4e4b94
+idn: _findMissedFieldsSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 7269ecf2-ad73-41b3-9e76-2ec2255411ec
+    name: convoAgentPersonaId
+    default_value: " "
+  - id: 1a211439-c5fd-4b0b-b6ea-235f2ad4405c
+    name: taskObject
+    default_value: " "
+  - id: d9247120-a7e5-4d65-918e-6266556ceef2
+    name: industry
+    default_value: " "
+  - id: 21c1fcc5-f5fb-4211-9765-cb9bdee0da0a
+    name: taskContext
+    default_value: " "
+  - id: 56aec864-ff0b-4e24-8d7b-cd6ae061e04f
+    name: taskIdn
+    default_value: " "
+path: ""

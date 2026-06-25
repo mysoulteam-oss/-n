@@ -1,0 +1,9 @@
+id: f872d4cd-2c53-424b-bdaf-8b4de0ff3089
+idn: _prepareAttributesDentalRepresentativeAgentSkill
+title: _prepareAttributesDentalRepresentativeAgentSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

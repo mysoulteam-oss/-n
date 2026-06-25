@@ -1,0 +1,9 @@
+id: 363fd451-8b3d-4a6e-a860-611a05f8095d
+idn: scenario_dental_answering_questions
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

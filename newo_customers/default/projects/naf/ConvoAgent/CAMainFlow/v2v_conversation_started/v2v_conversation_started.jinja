@@ -1,0 +1,42 @@
+{% set user_id = GetUser().id | string %}
+{% set actor = GetActor() %}
+{% set convo_actor_id = actor.id | string %}
+{{SetPersonaAttribute(id=user_id, field="last_convo_actor_id", value=convo_actor_id)}}
+
+{% if GetPersonaAttribute(id=user_id, field="outbound_session") == "True" %}
+    {% set initial_context %} In this session, you called the user. Your primary goal is {{GetPersonaAttribute(id=user_id, field="outbound_content")}} You have never to avoid your initial goal.
+
+# Voicemail Handling Rule
+- If you reach voicemail machine, answering machine, or automated system (e.g., "leave a message", "not available", "record your message", or a beep sound) - {{GetCustomerAttribute(field="project_representative_agent_voicemail_detection_behavior_instruction")}}
+# Call-screening System Handling Rule
+- If you reach a call-screening system asking for your name or reason, state the reason for a call and wait until real human is connected. When a human greets or asks a question, start from greeting again and then continue with the normal scenario flow. Do not summarize or paraphrase. If call-screening system asks to hold on or wait for a moment, tell: "Okay I will wait.". If call-screening system asks to leave a message, follow Voicemail Handling Rule.
+    {% endset %}
+    {{v2v_add_context(turn=initial_context, last_convo_actor_id=convo_actor_id)}}
+{% endif %}
+
+{{v2v_greet_user(user_id=user_id, last_convo_actor_id=convo_actor_id)}}
+
+{# In case of v2v completely new session is started when the user calls again.
+So we need to provide the model with last relevant thoughts if the user calls again .#}
+{% if GetPersonaAttribute(id=user_id, field="last_call_ended_datetime_utc").strip() and (not GetCustomerAttribute(field="project_attributes_setting_session_ended_reset_persona_attributes") == "True") %}
+    {{v2v_add_context(turn=GetPersonaAttribute(id=user_id, field="convoagent_thoughts"))}}
+{% endif %}
+
+{{CommonConversationStartedSkill(actor=actor)}}
+
+{% set first_customer_call_events_must_be_sent = GetCustomerAttribute(
+    field="project_attributes_private_dynamic_first_customer_call_events_must_be_sent"
+).strip() %}
+{% if first_customer_call_events_must_be_sent == "True" %}
+    {# Keep this marker enabled until the matching phone-call finish callback is sent. #}
+    {{SendSystemEvent(
+        eventIdn="agent_creator_first_customer_call_started",
+        connectorIdn="system",
+        global="True",
+        user_phone_number=actor.externalId | string
+    )}}
+{% endif %}
+
+{{v2v_update_current_prompt()}}
+
+{{SetCustomerAttribute(field="project_attributes_setting_voice_integration_service", value="NEWO Voice Integration")}}

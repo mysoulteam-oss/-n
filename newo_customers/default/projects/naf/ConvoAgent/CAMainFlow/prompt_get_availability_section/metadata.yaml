@@ -1,0 +1,9 @@
+id: a83b3971-8873-493a-8576-50826560f6c6
+idn: prompt_get_availability_section
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

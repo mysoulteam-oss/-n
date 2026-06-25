@@ -1,0 +1,9 @@
+id: 55272c82-408d-4764-8f5d-a30f424d3e15
+idn: _prepareAttributesCommonPrivateDynamicWorkScheduleCompiledTestSkill
+title: _prepareAttributesCommonPrivateDynamicWorkScheduleCompiledTestSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

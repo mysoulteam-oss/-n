@@ -1,0 +1,9 @@
+id: f01f1f54-c1e7-44e3-a8f1-0fc0e5be5153
+idn: _prepareAttributesCommonDefaultBusinessTimeZoneReasoningTestSkill
+title: _prepareAttributesCommonDefaultBusinessTimeZoneReasoningTestSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

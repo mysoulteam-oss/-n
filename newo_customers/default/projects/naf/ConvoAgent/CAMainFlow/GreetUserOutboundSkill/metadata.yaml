@@ -1,0 +1,9 @@
+id: d37b58fe-a09a-462f-8360-3b4ba11c7f38
+idn: GreetUserOutboundSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

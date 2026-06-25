@@ -1,0 +1,12 @@
+id: 3b448b5b-01a2-490e-963e-6fe3e502bb12
+idn: _utilsResetSessionStateSkill
+title: _utilsResetSessionStateSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 3bddd43b-88b5-45a5-9db4-ccff95b45afb
+    name: userId
+    default_value: " "
+path: ""

@@ -1,0 +1,9 @@
+id: 5c4e7905-b28d-4dfe-ae8c-83eb31386126
+idn: scenario_restaurant_answering_questions
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

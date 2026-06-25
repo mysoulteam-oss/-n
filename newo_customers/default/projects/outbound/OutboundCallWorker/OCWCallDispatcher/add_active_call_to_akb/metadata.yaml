@@ -1,0 +1,12 @@
+id: 7de27d31-b200-4e2a-a94e-3c31fdc0064d
+idn: add_active_call_to_akb
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: e95147a5-4976-4af5-a949-2d7da10b9152
+    name: task_id
+    default_value: ""
+path: ""

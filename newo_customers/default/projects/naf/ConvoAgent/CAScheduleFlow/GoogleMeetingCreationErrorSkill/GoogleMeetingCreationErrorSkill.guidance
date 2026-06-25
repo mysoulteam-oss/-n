@@ -1,0 +1,18 @@
+{{Set(name="meeting_log", value="The agent has sent a calendar invite creation request and received a negative confirmation. The calendar invite creation is **not confirmed** and has not taken place!")}}
+{{Set(name="response_error_type", value=GetTriggeredAct(fields=["type"]))}}
+{{Set(name="response_error_message", value=GetTriggeredAct(fields=["errorMessage"]))}}
+{{Set(name="meeting_log_advanced", value=Concat(meeting_log, "
+Response from the calendar system:
+```
+Error type: ", response_error_type, "
+Error message: ", response_error_message, "
+```"))}}
+{{_utilsSendSystemLogSkill(message=meeting_log_advanced)}}
+{{SetPersonaAttribute(id=GetUser(field="id"), field="action_state_meeting_creating", value=meeting_log_advanced)}}
+
+{{SendSystemEvent(
+    eventIdn="urgent_message",
+    connectorIdn="system", baseInstruction="You were unable to create a meeting. Apologize to the user. Suggest to try again.",
+    callManageTaskSkill="True",
+    uninterruptible="True"
+)}}

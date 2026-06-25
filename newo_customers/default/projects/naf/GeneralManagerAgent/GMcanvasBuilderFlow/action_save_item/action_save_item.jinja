@@ -1,0 +1,49 @@
+{% if type_idn == "intent_types" %}
+   {# Title of the intent must be in predefined format #}
+   {{item.update({"title": utils_fix_intent_type_title(title=item.title)})}}
+   {# Some kind of bug on UI when you create new line in body, there are two appear instead #}
+   {{item.update({"body": item.body.replace("\n\n", "\n")})}}
+{% endif %}
+
+{% set current_canvas = json.loads(GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas")) %}
+{% set current_canvas_types = current_canvas["types"] %}
+
+{% set type_index = utils_get_object_index_by_key_value(obj=current_canvas_types, key="idn", value=type_idn).strip() %}
+{% if not item.idn %}
+   {{item.update({"idn": uuid.uuid4() | string})}}
+   {% if type_idn in ("csv_outbound", "csv_outbound_sms") %}
+      {% set task_type = "make_call" if type_idn == "csv_outbound" else "send_sms" %}
+      {{item.update({"title": item.title ~ " (sent)", "body": item.body.strip().replace("\n\n", "\n")})}}
+      {% if item.body.strip() %}
+         {{SendSystemEvent(eventIdn="task_manager_start_calling", connectorIdn="system", calling_table=item.body, task_type=task_type)}}
+      {% endif %}
+   {% endif %}
+   {{current_canvas_types[type_index | int]["items"].append(item)}}
+{% else %}
+   {% set items = current_canvas_types[type_index | int]["items"] %}
+   {% set old_item_index = utils_get_object_index_by_key_value(obj=items, key="idn", value=item.idn).strip() %}
+
+   {% if old_item_index %}
+      {% set old_item = items[old_item_index | int] %}
+      {# TODO: uncomment this after discussion. Now it takes more than 2 seconds to generate description. It affects saving item. #}
+      {# {% if old.body != item.body %}
+         {{item.update({"description": generate_item_description(title=item.title, body=item.body)})}}
+      {% endif %} #}
+      {{old_item.update(item)}}
+   {% else %}
+      {# TODO: uncomment this after discussion. Now it takes more than 2 seconds to generate description. It affects saving item. #}
+      {# {{item.update({"description": generate_item_description(title=item.title, body=item.body)})}} #}
+      {% if type_idn in ("csv_outbound", "csv_outbound_sms") %}
+         {% set task_type = "make_call" if type_idn == "csv_outbound" else "send_sms" %}
+         {{item.update({"title": item.title ~ " (sent)", "body": item.body.strip().replace("\n\n", "\n")})}}
+         {% if item.body.strip() %}
+            {{SendSystemEvent(eventIdn="task_manager_start_calling", connectorIdn="system", calling_table=item.body, task_type=task_type)}}
+         {% endif %}
+      {% endif %}
+      {{current_canvas_types[type_index | int]["items"].append(item)}}
+   {% endif %}
+{% endif %}
+
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas", value=json.dumps(current_canvas, ensure_ascii=False, indent=2))}}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

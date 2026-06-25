@@ -1,0 +1,15 @@
+id: 74f409b4-1570-43ca-b60f-621c88e96b73
+idn: _sendTaskSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: e61184ce-4566-4ecf-bf48-6fcedd87f4f5
+    name: task
+    default_value: " "
+  - id: d927e839-886b-4515-9e0a-8f868f4ab5b9
+    name: taskType
+    default_value: " "
+path: ""

@@ -1,0 +1,22 @@
+{% set convo_agent_persona = GetAgent(idn="ConvoAgent").persona_id %}
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+{% set scenario = GetCustomerAttribute(field="project_attributes_scenario") %}
+{% set intent_type_map_convoagent_non_working_hours = SearchFuzzyAkb(
+        query="ATTRIBUTE_INTENT_TYPE_MAP_CONVOAGENT_NON_WORKING_HOURS",
+        searchFields=["name"],
+        numberTopics=1,
+        filterByPersonaIds=[convo_agent_persona],
+        labels=[industry, scenario, "attribute_template"]
+    )[0].summary %}
+
+{% if "Regular Transfer" not in intent_type_map_convoagent_non_working_hours %}
+    {% set non_working_hour_escalation_phone = GetCustomerAttribute(field="project_business_non_working_hour_escalation_phone") %}
+    {{SetCustomerAttribute(field="project_business_non_working_hour_escalation_phone", value=" ")}}
+
+    {% set current_notes = GetCustomerAttribute(field="project_attributes_free_notes") %}
+
+    {% if non_working_hour_escalation_phone.strip() not in current_notes %}
+        {% set new_notes = current_notes ~ '\nNOTE: cleared `project_business_non_working_hour_escalation_phone` (due to absence of `Regular Transfer` scenario use for non-working hours in ITM): ' ~ non_working_hour_escalation_phone %}
+        {{SetCustomerAttribute(field="project_attributes_free_notes", value=new_notes)}}
+    {% endif %}
+{% endif %}

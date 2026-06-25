@@ -1,0 +1,9 @@
+id: 2bf40afc-e536-416a-b470-edf91bc305e3
+idn: StartCallingSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

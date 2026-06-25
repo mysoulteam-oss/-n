@@ -1,0 +1,18 @@
+id: 8992a7ed-4479-43b4-a5a1-a5b7fd713c5f
+idn: _getValuesFromConversationExtractSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 5f8f051c-22b8-49ff-862a-4b097bc2865c
+    name: schema
+    default_value: " "
+  - id: e8ec6247-baaa-4fab-8582-9d94198eca8d
+    name: transcript
+    default_value: " "
+  - id: a24f167f-86bc-4fb9-ba99-8fb6baae2e88
+    name: userId
+    default_value: " "
+path: ""

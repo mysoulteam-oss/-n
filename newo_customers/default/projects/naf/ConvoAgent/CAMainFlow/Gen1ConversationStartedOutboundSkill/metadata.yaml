@@ -1,0 +1,12 @@
+id: d4a64a1a-75d6-402e-94e7-2f66d99a83e4
+idn: Gen1ConversationStartedOutboundSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 193c04f1-687b-4fef-99d9-9b896ca0d223
+    name: user_id
+    default_value: ""
+path: ""

@@ -1,0 +1,12 @@
+id: d74c8284-bff6-4e2e-8396-e95880e53b65
+idn: get_default_included_intent_type_idns
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: d11383aa-a4aa-4b78-9c70-3e46bbfa6cac
+    name: industry
+    default_value: ""
+path: ""

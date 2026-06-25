@@ -1,0 +1,32 @@
+{% set act = GetTriggeredAct() %}
+{% set latest_interaction = json.loads(act.arguments.latest_interaction) %}
+{% set user_id = GetUser().id | string %}
+{% set current_datetime = GetDateTime(format="datetime", timezone=GetCustomerAttribute(field="project_business_time_zone"), weekday=True) %}
+
+{% set interaction_history = GetPersonaAttribute(id=user_id, field="interaction_history").strip() %}
+{% if not interaction_history %}
+    {% set interaction_history = [] %}
+{% else %}
+    {% if interaction_history.startswith('[') and interaction_history.endswith(']') %}
+        {% set interaction_history = json.loads(interaction_history) %}
+    {% else %}
+        {% set interaction_history = [] %}
+    {% endif %}
+{% endif %}
+
+{{ interaction_history.append(latest_interaction) }}
+
+{% set interaction_history_w_dates = [] %}
+{# ensure compatibility with previously generated memories #}
+{% for interaction in interaction_history %}
+    {% if interaction is string %}
+        {% set _ = interaction_history_w_dates.append({"date_added": current_datetime, "content": interaction})%}
+    {% elif interaction is mapping %}
+        {% set _ = interaction_history_w_dates.append(interaction) %}
+    {% endif %}
+{% endfor %}
+
+{# Keep only the 20 most recent interaction summaries. #}
+{% set interaction_history_to_store = json.dumps(interaction_history_w_dates[-20:], ensure_ascii=False, indent=2) %}
+
+{{SetPersonaAttribute(id=user_id, field="interaction_history", value=interaction_history_to_store)}}

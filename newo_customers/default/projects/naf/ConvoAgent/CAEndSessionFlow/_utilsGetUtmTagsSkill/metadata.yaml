@@ -1,0 +1,12 @@
+id: deeea370-ca64-4f5e-b470-c88bd87bb94c
+idn: _utilsGetUtmTagsSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 1f742a36-86eb-4f48-9012-8d5d3902d6ea
+    name: urlParams
+    default_value: ""
+path: ""

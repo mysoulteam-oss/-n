@@ -1,0 +1,43 @@
+{{!-- Assume that account was initialized before --}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_account_initialized_first_time", value="True")}}
+
+{{! Applying default Attributes if not set }}
+{{_prepareAttributesCommonDefaultCustomerSkill()}}
+{{_prepareAttributesCommonDefaultBusinessSkill()}}
+{{_prepareAttributesCommonDefaultPrivateDataInjectionSkill()}}
+{{_prepareAttributesCommonDefaultPrivateOutboundCallsSkill()}}
+{{_prepareAttributesCommonDefaultProjectAttributesSkill()}}
+{{_prepareAttributesCommonDefaultSettingsSkill()}}
+{{_prepareAttributesCommonDefaultRepresentativeAgentSkill()}}
+{{_prepareAttributesCommonDefaultStaticSkill()}}
+{{_prepareAttributesCommonScenarioSkill()}}
+
+{{! Applying dynamic Attributes (are being overwritten each time) }}
+{{_prepareAttributesCommonPrivateDynamicAgentPersonaSkill()}}
+{{_prepareAttributesCommonPrivateDynamicAgentPhoneCountryCodeSkill()}}
+{{_prepareAttributesCommonPrivateDynamicBookingSchemasSkill()}}
+{{_prepareAttributesCommonPrivateDynamicBusinessSkill()}}
+{{_prepareAttributesCommonPrivateDynamicEmailVariablesSkill()}}
+{{_prepareAttributesCommonPrivateDynamicPhoneVariablesSkill()}}
+{{_prepareAttributesCommonPrivateDynamicPromptCalendar()}}
+{{_prepareAttributesCommonPrivateDynamicRagKnowledgeBaseSkill()}}
+{{_prepareAttributesCommonPrivateDynamicReportsSkill()}}
+{{_prepareAttributesCommonPrivateDynamicTechVariablesSkill()}}
+{{_prepareAttributesCommonPrivateDynamicVariablesSkill()}}
+
+{{! Miscellaneous }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_free_notes", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_info_client_session_logs_table_link", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_info_crm", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_sa_version", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_technical_owners", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_support_log_document_link", value=" ")}}
+
+{{! TODO: set these default values as `{}`, check that everything works }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_workflow_builder_canvas", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_workflow_builder_canvas_library", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_workflow_builder_canvas_library_custom", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_intents_list", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_first_customer_call_events_must_be_sent", value="False")}}

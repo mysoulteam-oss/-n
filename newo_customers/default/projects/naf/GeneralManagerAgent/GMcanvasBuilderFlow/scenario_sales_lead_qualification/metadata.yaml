@@ -1,0 +1,9 @@
+id: 114396dd-7284-40ae-9217-0e6dd733ae45
+idn: scenario_sales_lead_qualification
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,31 @@
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "explanation": {
+      "type": "string",
+      "description": "An explanation of the `Google Maps Reservation URL` processing result."
+    },
+    "input_google_maps_reservation_url_is_valid": {
+      "type": "boolean",
+      "description": "Indicates whether <ProvidedGoogleMapsReservationURL> contains a completely valid `Google Maps Reservation URL`."
+    },
+    "output_refined_transformed_google_maps_reservation_url": {
+      "type": "string",
+      "description": "The final refined `Google Maps Reservation URL` (e.g. `https://www.google.com/maps/reserve/v/dine/c/XXXXXXXXXXX`). Set to \"null\" (as string) if `input_google_maps_reservation_url_is_valid` is `false`."
+    },
+    "output_google_maps_restaurant_id": {
+      "type": "string",
+      "description": "The final `Google Maps Restaurant ID` (e.g. `XXXXXXXXXXX`). Set to \"null\" (as string) if `input_google_maps_reservation_url_is_valid` is `false`."
+    }
+  },
+  "required": [
+    "explanation",
+    "input_google_maps_reservation_url_is_valid",
+    "output_refined_transformed_google_maps_reservation_url",
+    "output_google_maps_restaurant_id"
+  ]
+}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

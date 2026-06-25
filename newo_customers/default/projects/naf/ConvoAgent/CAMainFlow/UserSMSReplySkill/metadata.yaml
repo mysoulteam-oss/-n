@@ -1,0 +1,9 @@
+id: ee3b45d7-e8b4-44b2-8830-85769439b50f
+idn: UserSMSReplySkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

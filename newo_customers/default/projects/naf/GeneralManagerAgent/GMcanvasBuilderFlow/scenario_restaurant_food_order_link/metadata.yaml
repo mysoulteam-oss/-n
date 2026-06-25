@@ -1,0 +1,9 @@
+id: 0b27cf4b-004c-4c3d-bdfc-6f392db2c6e5
+idn: scenario_restaurant_food_order_link
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

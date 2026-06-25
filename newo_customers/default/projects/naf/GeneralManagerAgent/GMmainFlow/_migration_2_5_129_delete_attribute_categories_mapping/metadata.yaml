@@ -1,0 +1,9 @@
+id: 49431b7a-813a-4686-ae08-18255c6d7f03
+idn: _migration_2_5_129_delete_attribute_categories_mapping
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,12 @@
+id: a0cf5bc8-c141-4886-a6f7-0fe2bbb0354e
+idn: _generateGreetingPhraseSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 1ad3cb41-98d8-463a-9848-85104d7fd7fd
+    name: messageReason
+    default_value: ""
+path: ""

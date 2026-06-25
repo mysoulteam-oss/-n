@@ -1,0 +1,9 @@
+id: 750fba74-dd98-4cf5-bacb-181e65dee6e0
+idn: scenario_sales_generate
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

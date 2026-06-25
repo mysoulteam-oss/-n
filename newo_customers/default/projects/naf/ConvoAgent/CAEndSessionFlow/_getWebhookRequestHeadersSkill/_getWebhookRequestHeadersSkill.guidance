@@ -1,0 +1,8 @@
+{{#system~}}
+{
+  "Authorization": "{{GetCustomerAttribute(field='project_attributes_setting_session_ended_webhook_auth_header')}}",
+  "Content-Type": "application/json"
+}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

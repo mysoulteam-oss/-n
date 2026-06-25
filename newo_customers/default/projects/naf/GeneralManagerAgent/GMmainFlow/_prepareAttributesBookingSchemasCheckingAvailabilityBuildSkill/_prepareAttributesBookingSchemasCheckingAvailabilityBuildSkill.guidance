@@ -1,0 +1,91 @@
+{{Set(name="time_format", value=GetCustomerAttribute(field="project_attributes_setting_time_format"))}}
+
+{{#if time_format == "24-hour format (HH:mm)"}}
+    {{Set(name="time_example", value="15:00")}}
+{{else}}
+    {{Set(name="time_example", value="03:00 PM")}}
+{{/if}}
+
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "payload": {{payloadSchema}},
+    "validation": {{validationSchema}},
+    "validationRecap": {
+        "type": "object",
+        "properties": {
+          "valid": {
+            "type": "boolean",
+            "description": "Set this field to `true` if all boolean (true/false) properties of the `validation` object are set to `true`. Otherwise, set to `false`."
+          },
+          "explanation": {
+            "type": "string",
+            "description": "Put here the short explanation why it is not valid in case the field `valid` is set to false. If the field `valid` is set to true, leave this field empty."
+          },
+          "advice": {
+            "type": "string",
+            "description": "Provide advice for the agent, on what should be asked the user to change. Example: `Requested party size is considered as a large group. Proceed with the large group reservation scenario.`, etc. If the field `valid` is set to true, leave this field empty."
+          }
+        },
+        "required": [
+          "valid",
+          "explanation"
+        ]
+    },
+    "additionalValidation": {
+      "type": "object",
+      "properties": {
+        "requestedDayOfWeek": {
+          "type": "string",
+          "description": "Name of the requested day of the week by the user. Example: Monday. Set to `null` (as string) if not available."
+        },
+        "requestedDate": {
+          "type": "string",
+          "description": "Requested date in the following format: YYYY-MM-DD. Set to `null` (as string) if not available."
+        },
+        "requestedTime": {
+          "type": "string",
+          "description": "Requested time in {{time_format}} format. Example: {{time_example}}. Set to `null` (as string) if not available."
+        },
+        "requestedTimeFormatted": {
+          "type": "string",
+          "description": "Requested time (requestedTime) in 24-hour format \"HH:MM\". Example: 15:00. Set to `null` (as string) if not available."
+        },
+        "bookingAdvanceDays": {
+          "type": "number",
+          "description": "Calculate how many days in advance from today (according to <Calendar>) the requested booking dateTime is."
+        },
+        "isWithinBookingWindow": {
+          "type": "boolean",
+          "description": "Set to true if the User's preferred date is within the allowed booking window, which is [[project_attributes_setting_booking_check_availability_max_days_in_advance]] days in advance from today (according to <Calendar>). If the User requests date that is later than [[project_attributes_setting_booking_check_availability_max_days_in_advance]] days in advance set to false. If `requestedDate` is exactly `null`(string), set this field to true."
+        },
+        "requiredFieldsMissing": {
+          "type": "boolean",
+          "description": "If all required fields in the payload object are filled, set this field to false. Set this to true if based on the provided information sections you cannot fill any required field in the payload."
+        },
+        "detailsToReconfirm": {
+          "type": "string",
+          "description": "If any required fields in the payload are missing, provide their names in a human-readable format, separated by commas. For example: User Phone, User Confirmation. Otherwise set to `No missing fields.`"
+        }
+      },
+      "required": [
+        "requestedDayOfWeek",
+        "requestedDate",
+        "requestedTime",
+        "requestedTimeFormatted",
+        "bookingAdvanceDays",
+        "isWithinBookingWindow",
+        "requiredFieldsMissing"
+      ]
+    }
+  },
+  "required": [
+    "payload",
+    "validation",
+    "additionalValidation"
+  ]
+}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

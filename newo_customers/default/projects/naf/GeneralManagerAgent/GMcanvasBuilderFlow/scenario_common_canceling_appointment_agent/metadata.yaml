@@ -1,0 +1,9 @@
+id: 742f1760-c280-4c4f-8dcb-49e1fb557e40
+idn: scenario_common_canceling_appointment_agent
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

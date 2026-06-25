@@ -1,0 +1,9 @@
+id: 68982915-7376-4b1f-b35d-2e36b3662130
+idn: update_session_field_batch
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

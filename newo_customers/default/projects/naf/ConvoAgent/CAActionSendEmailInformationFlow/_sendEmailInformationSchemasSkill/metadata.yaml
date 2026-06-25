@@ -1,0 +1,15 @@
+id: ff381372-292a-4599-836c-831132c61c5b
+idn: _sendEmailInformationSchemasSkill
+title: _sendEmailInformationSchemasSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 99c425f0-f522-45a3-ae1e-7ac3617aa1b6
+    name: sendEmailInformationSchema
+    default_value: "False"
+  - id: 9fa6d374-aef3-4dfa-b9f2-5b70fa71f489
+    name: promiseEmailSchema
+    default_value: "False"
+path: ""

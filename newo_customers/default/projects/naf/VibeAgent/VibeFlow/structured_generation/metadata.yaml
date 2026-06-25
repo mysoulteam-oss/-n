@@ -1,0 +1,18 @@
+id: 740ac436-1529-4b57-b80e-601f9e2e05db
+idn: structured_generation
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_pro
+parameters:
+  - id: bd6bb4f8-dee1-44c1-b2eb-f64994fb8a2a
+    name: thinking_budget
+    default_value: ""
+  - id: 8c2be121-f3da-4c85-b4f7-3a7d1f62281c
+    name: prompt
+    default_value: ""
+  - id: 64750428-f056-47bf-9fbe-70664cc0df33
+    name: schema
+    default_value: ""
+path: ""

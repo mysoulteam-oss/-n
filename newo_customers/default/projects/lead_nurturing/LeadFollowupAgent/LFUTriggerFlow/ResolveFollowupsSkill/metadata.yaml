@@ -1,0 +1,9 @@
+id: 27a0a755-521a-41cf-a950-09021959f62b
+idn: ResolveFollowupsSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

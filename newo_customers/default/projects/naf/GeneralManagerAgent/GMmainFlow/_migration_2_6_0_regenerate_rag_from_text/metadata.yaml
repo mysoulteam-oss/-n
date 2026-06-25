@@ -1,0 +1,9 @@
+id: 32cb1a62-b6c5-4fac-88b3-2b8e9f9d4268
+idn: _migration_2_6_0_regenerate_rag_from_text
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

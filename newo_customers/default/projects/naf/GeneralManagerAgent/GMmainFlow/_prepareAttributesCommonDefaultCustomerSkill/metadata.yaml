@@ -1,0 +1,9 @@
+id: 8fd1fbba-ddb3-4b6c-b546-25d905b4bc2c
+idn: _prepareAttributesCommonDefaultCustomerSkill
+title: _prepareAttributesCommonDefaultCustomerSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

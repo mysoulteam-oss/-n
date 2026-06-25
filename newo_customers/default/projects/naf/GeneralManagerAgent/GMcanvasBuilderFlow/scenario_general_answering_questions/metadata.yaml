@@ -1,0 +1,9 @@
+id: 7a702fc7-1fd9-4932-980b-d527c32710a9
+idn: scenario_general_answering_questions
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

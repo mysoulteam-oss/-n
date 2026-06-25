@@ -1,0 +1,43 @@
+{{#if GetCustomerAttribute(field="project_attributes_setting_phone_dialpad_output_enabled") != "True"}}
+  {{Return()}}
+{{/if}}
+
+{{!-- Only NEWO Voice is supported for dialpad output --}}
+{{#if GetCustomerAttribute(field="project_attributes_setting_voice_integration_service") != "NEWO Voice Integration"}}
+  {{Return()}}
+{{/if}}
+
+{{Set(name="schema", value=_sendDialpadDigitsSchemaSkill())}}
+
+{{#system~}}
+You're a supervisor. Your task is to analyze the conversation between a User and an AI receptionist (ConvoAgent) presented in the <ConversationHistory> to identify whether dialpad output must be produced and if so, what it should be.
+
+---
+
+<ConversationHistory alt="conversation history (older messages above, newer messages below)" role="context">
+{{memory}}
+ConvoAgent: {{agentAnswer}}
+</ConversationHistory>
+
+---
+
+JSON object:
+{{~/system}}
+
+{{Set(name="dialpad_object", value=Gen(jsonSchema=schema, validateSchema=True, temperature=0.2, topP=0, thinkingBudget=85))}}
+
+{{!-- Exit if agent must not send dialpad output --}}
+{{Set(name="agent_must_send_dialpad_output", value=Stringify(GetValueJSON(obj=dialpad_object, key="agent_must_send_dialpad_output")))}}
+{{#if agent_must_send_dialpad_output == "false"}}
+    {{Return()}}
+{{/if}}
+
+{{!-- Send dialpad output --}}
+{{Set(name="dialpad_output", value=Stringify(GetValueJSON(obj=dialpad_object, key="dialpad_output")))}}
+{{SendCommand(
+    commandIdn="dial_digits",
+    integrationIdn="newo_voice",
+    connectorIdn="newo_voice_connector",
+    actorId=actorId,
+    digits=dialpad_output
+)}}

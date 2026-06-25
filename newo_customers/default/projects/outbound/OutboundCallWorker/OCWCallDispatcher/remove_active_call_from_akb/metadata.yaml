@@ -1,0 +1,12 @@
+id: 929ce846-cc39-4da9-8313-69c7a6e8ec5d
+idn: remove_active_call_from_akb
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: fe852b70-0035-45df-9512-6897a3f3497a
+    name: task_id
+    default_value: ""
+path: ""

@@ -1,0 +1,12 @@
+id: bed00233-e68c-4df3-b971-e9f8a2b40ebf
+idn: get_past_interactions
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: b6ee85df-3335-42f9-a77e-f5d527ec5640
+    name: user_id
+    default_value: ""
+path: ""

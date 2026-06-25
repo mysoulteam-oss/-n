@@ -1,0 +1,9 @@
+id: 2eece1d1-e03b-4647-a82a-58821ba0f509
+idn: _postSetupAccountSkill
+title: _postSetupAccountSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

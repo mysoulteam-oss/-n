@@ -1,0 +1,9 @@
+id: 242eb1d2-83a5-4c28-a636-9f5c42409b6d
+idn: _responseGenerationStreamSkill
+title: _responseGenerationStreamSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

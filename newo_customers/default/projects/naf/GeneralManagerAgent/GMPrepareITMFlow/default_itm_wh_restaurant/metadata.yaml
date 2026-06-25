@@ -1,0 +1,9 @@
+id: 23fb655d-51d1-4dd0-90a6-2dba055c66bd
+idn: default_itm_wh_restaurant
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

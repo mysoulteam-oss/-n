@@ -1,0 +1,18 @@
+id: df0fcffd-9fc1-4e87-92fd-f7305da5763d
+idn: _bookSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 2eff4c50-d97a-4d9c-b029-b69b111f17ac
+    name: memory
+    default_value: " "
+  - id: 6acbf9f6-d002-4e19-a084-46e062c87013
+    name: agentAnswer
+    default_value: " "
+  - id: d0ec3510-7490-4e4c-bd6e-80c3f8b27b52
+    name: userId
+    default_value: " "
+path: ""

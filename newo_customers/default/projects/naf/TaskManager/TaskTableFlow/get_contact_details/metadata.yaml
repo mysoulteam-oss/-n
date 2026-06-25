@@ -1,0 +1,15 @@
+id: e355b23f-79f6-49cf-b89b-487730528acc
+idn: get_contact_details
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: e47a32f5-7c72-46b9-8ecf-55358349b872
+    name: row
+    default_value: ""
+  - id: 289f4e89-a378-41ef-8081-961c4366fdd3
+    name: headers
+    default_value: ""
+path: ""

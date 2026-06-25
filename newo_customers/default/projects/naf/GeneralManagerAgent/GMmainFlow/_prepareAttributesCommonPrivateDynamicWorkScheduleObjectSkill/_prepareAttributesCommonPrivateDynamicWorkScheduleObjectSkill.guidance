@@ -1,0 +1,90 @@
+{{!-- TODO: Take `project_attributes_private_dynamic_schedule_working_days_hours_exceptions` into account --}}
+
+{{#if IsEmpty(text=testWorkSchedule)}}
+  {{Set(name="current_work_schedule", value=GetCustomerAttribute(field="project_business_working_hours"))}}
+
+  {{#if IsEmpty(text=current_work_schedule)}}
+    {{SetCustomerAttribute(field="project_attributes_private_dynamic_schedule_working_hours_object", value=" ")}}
+    {{Return()}}
+  {{/if}}
+
+  {{Set(name="previous_work_schedule", value=GetState(name="previous_work_schedule_object"))}}
+
+  {{#if current_work_schedule == previous_work_schedule}}
+    {{!-- TODO: Refactor --}}
+    {{Set(name="current_dynamic_working_hours_object", value=GetCustomerAttribute(field="project_attributes_private_dynamic_schedule_working_hours_object"))}}
+    {{#if not IsEmpty(text=current_dynamic_working_hours_object)}}
+      {{Return()}}
+    {{/if}}
+  {{/if}}
+
+{{else}}
+  {{Set(name="current_work_schedule", value=testWorkSchedule)}}
+
+  {{Set(name="previous_work_schedule", value=" ")}}
+{{/if}}
+
+{{Set(name="default_schedule", value=AsStringJSON(val="Schedule is not provided"))}}
+
+{{Set(name="monday_schema", value=_prepareAttributesCommonPrivateDynamicWorkScheduleObjectSchemaSkill(previousDayOfWeek="Sunday", dayOfWeek="Monday", nextDayOfWeek="Tuesday"))}}
+{{Set(name="monday_working_hours", value=_prepareAttributesCommonPrivateDynamicWorkSchedulePerDayObjectSkill(schema=monday_schema, dayOfWeek="Monday"))}}
+{{Set(name="monday_schedule", value=GetValueJSON(obj=monday_working_hours, key="Monday"))}}
+{{#if IsEmpty(text=monday_schedule)}}
+  {{Set(name="monday_schedule", value=default_schedule)}}
+{{/if}}
+{{Set(name="working_hours_object", value=UpdateValueJSON(obj="{}", key="Monday", value=monday_schedule))}}
+
+{{Set(name="tuesday_schema", value=_prepareAttributesCommonPrivateDynamicWorkScheduleObjectSchemaSkill(previousDayOfWeek="Monday", dayOfWeek="Tuesday", nextDayOfWeek="Wednesday"))}}
+{{Set(name="tuesday_working_hours", value=_prepareAttributesCommonPrivateDynamicWorkSchedulePerDayObjectSkill(schema=tuesday_schema, dayOfWeek="Tuesday"))}}
+{{Set(name="tuesday_schedule", value=GetValueJSON(obj=tuesday_working_hours, key="Tuesday"))}}
+{{#if IsEmpty(text=tuesday_schedule)}}
+  {{Set(name="tuesday_schedule", value=default_schedule)}}
+{{/if}}
+{{Set(name="working_hours_object", value=UpdateValueJSON(obj=working_hours_object, key="Tuesday", value=tuesday_schedule))}}
+
+{{Set(name="wednesday_schema", value=_prepareAttributesCommonPrivateDynamicWorkScheduleObjectSchemaSkill(previousDayOfWeek="Tuesday", dayOfWeek="Wednesday", nextDayOfWeek="Thursday"))}}
+{{Set(name="wednesday_working_hours", value=_prepareAttributesCommonPrivateDynamicWorkSchedulePerDayObjectSkill(schema=wednesday_schema, dayOfWeek="Wednesday"))}}
+{{Set(name="wednesday_schedule", value=GetValueJSON(obj=wednesday_working_hours, key="Wednesday"))}}
+{{#if IsEmpty(text=wednesday_schedule)}}
+  {{Set(name="wednesday_schedule", value=default_schedule)}}
+{{/if}}
+{{Set(name="working_hours_object", value=UpdateValueJSON(obj=working_hours_object, key="Wednesday", value=wednesday_schedule))}}
+
+{{Set(name="thursday_schema", value=_prepareAttributesCommonPrivateDynamicWorkScheduleObjectSchemaSkill(previousDayOfWeek="Wednesday", dayOfWeek="Thursday", nextDayOfWeek="Friday"))}}
+{{Set(name="thursday_working_hours", value=_prepareAttributesCommonPrivateDynamicWorkSchedulePerDayObjectSkill(schema=thursday_schema, dayOfWeek="Thursday"))}}
+{{Set(name="thursday_schedule", value=GetValueJSON(obj=thursday_working_hours, key="Thursday"))}}
+{{#if IsEmpty(text=thursday_schedule)}}
+  {{Set(name="thursday_schedule", value=default_schedule)}}
+{{/if}}
+{{Set(name="working_hours_object", value=UpdateValueJSON(obj=working_hours_object, key="Thursday", value=thursday_schedule))}}
+
+{{Set(name="friday_schema", value=_prepareAttributesCommonPrivateDynamicWorkScheduleObjectSchemaSkill(previousDayOfWeek="Thursday", dayOfWeek="Friday", nextDayOfWeek="Saturday"))}}
+{{Set(name="friday_working_hours", value=_prepareAttributesCommonPrivateDynamicWorkSchedulePerDayObjectSkill(schema=friday_schema, dayOfWeek="Friday"))}}
+{{Set(name="friday_schedule", value=GetValueJSON(obj=friday_working_hours, key="Friday"))}}
+{{#if IsEmpty(text=friday_schedule)}}
+  {{Set(name="friday_schedule", value=default_schedule)}}
+{{/if}}
+{{Set(name="working_hours_object", value=UpdateValueJSON(obj=working_hours_object, key="Friday", value=friday_schedule))}}
+
+{{Set(name="saturday_schema", value=_prepareAttributesCommonPrivateDynamicWorkScheduleObjectSchemaSkill(previousDayOfWeek="Friday", dayOfWeek="Saturday", nextDayOfWeek="Sunday"))}}
+{{Set(name="saturday_working_hours", value=_prepareAttributesCommonPrivateDynamicWorkSchedulePerDayObjectSkill(schema=saturday_schema, dayOfWeek="Saturday"))}}
+{{Set(name="saturday_schedule", value=GetValueJSON(obj=saturday_working_hours, key="Saturday"))}}
+{{#if IsEmpty(text=saturday_schedule)}}
+  {{Set(name="saturday_schedule", value=default_schedule)}}
+{{/if}}
+{{Set(name="working_hours_object", value=UpdateValueJSON(obj=working_hours_object, key="Saturday", value=saturday_schedule))}}
+
+{{Set(name="sunday_schema", value=_prepareAttributesCommonPrivateDynamicWorkScheduleObjectSchemaSkill(previousDayOfWeek="Saturday", dayOfWeek="Sunday", nextDayOfWeek="Monday"))}}
+{{Set(name="sunday_working_hours", value=_prepareAttributesCommonPrivateDynamicWorkSchedulePerDayObjectSkill(schema=sunday_schema, dayOfWeek="Sunday"))}}
+{{Set(name="sunday_schedule", value=GetValueJSON(obj=sunday_working_hours, key="Sunday"))}}
+{{#if IsEmpty(text=sunday_schedule)}}
+  {{Set(name="sunday_schedule", value=default_schedule)}}
+{{/if}}
+{{Set(name="working_hours_object", value=UpdateValueJSON(obj=working_hours_object, key="Sunday", value=sunday_schedule))}}
+
+{{#if IsEmpty(text=testWorkSchedule)}}
+  {{SetCustomerAttribute(field="project_attributes_private_dynamic_schedule_working_hours_object", value=working_hours_object)}}
+  {{SetState(name="previous_work_schedule_object", value=current_work_schedule)}}
+{{else}}
+  {{Return(val=working_hours_object)}}
+{{/if}}

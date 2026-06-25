@@ -1,0 +1,9 @@
+id: f433a92e-9361-4c90-806d-a296f789c9ed
+idn: library_introductions_general
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

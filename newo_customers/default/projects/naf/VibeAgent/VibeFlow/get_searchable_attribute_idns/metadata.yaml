@@ -1,0 +1,9 @@
+id: 6cf8dff2-8111-40d5-9059-13a9ae95d7ba
+idn: get_searchable_attribute_idns
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

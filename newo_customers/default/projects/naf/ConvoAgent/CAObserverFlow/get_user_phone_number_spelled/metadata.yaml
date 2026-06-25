@@ -1,0 +1,12 @@
+id: 8804ed7f-f6be-4e8f-ac22-671bf0efc2c3
+idn: get_user_phone_number_spelled
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 6825e36c-c056-4ce5-9192-203e08fd2f0b
+    name: phone_number
+    default_value: ""
+path: ""

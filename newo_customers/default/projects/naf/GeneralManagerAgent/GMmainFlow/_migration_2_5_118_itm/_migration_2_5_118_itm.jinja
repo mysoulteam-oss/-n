@@ -1,0 +1,86 @@
+{# TODO: `_utilsBuildIntentTypeMapFixHeadingSkill` is missing, migration cannot be applied anymore #}
+
+{#
+
+{% set current_intent_type_map = GetCustomerAttribute(field="project_attributes_itm") %}
+{% set current_intent_type_map = _utilsBuildIntentTypeMapFixHeadingSkill(intentTypeMap=current_intent_type_map) %}
+
+{% set fixed_headers = {
+    "Guest Support": "[T] Guest Support",
+    "Contractor Support": "[T] Contractor Support",
+    "Manager or Human Request": "[T] Manager or Human Request",
+    "Reschedule or Modification": "[T] Reschedule or Modification",
+    "Cancellation": "[T] Cancellation",
+    "Client Support": "[T] Client Support",
+    "Contractor Support": "[T] Contractor Support",
+    "Existing Patient Appointment": "[T] Existing Patient Appointment",
+    "Emergency Call": "[T] Emergency Call",
+    "Patient Support": "[T] Patient Support",
+    "Contractor Support": "[T] Contractor Support",
+    "Other Services Request": "[L] Other Services Request",
+    "Complaints": "[T] Complaints",
+    "Emergency": "[T] Emergency",
+    "Private Dining": "[L] Private Dining",
+} %}
+
+{% for header, fixed_header in fixed_headers.items() %}
+    {% if fixed_header not in current_intent_type_map and header in current_intent_type_map %}
+        {% set current_intent_type_map = current_intent_type_map.replace(header, fixed_header) %}
+    {% endif %}
+{% endfor %}
+
+{{SetCustomerAttribute(field="project_attributes_itm", value=current_intent_type_map)}}
+{{SetState(name="previous_intent_type_map", value=current_intent_type_map)}}
+{{_utilsBuildIntentTypeMapStoreIntentsSkill(intentTypeMap=current_intent_type_map)}}
+
+{% set persona_id = GetAgentPersona().id | string %}
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+{% set scenario = GetCustomerAttribute(field="project_attributes_scenario") %}
+{% set labels = [industry, scenario, "attribute_template"] %}
+
+{% set current_dynamic_intent_type_map_convoagent_non_working_hours = _utilsBuildIntentTypeMapFixHeadingSkill(intentTypeMap=SearchFuzzyAkb(
+    query="ATTRIBUTE_INTENT_TYPE_MAP_CONVOAGENT_NON_WORKING_HOURS",
+    searchFields=["name"],
+    numberTopics=1,
+    filterByPersonaIds=[persona_id],
+    labels=labels
+)[0].summary) %}
+
+{% set current_dynamic_intent_type_map_convoagent_working_hours = _utilsBuildIntentTypeMapFixHeadingSkill(intentTypeMap=SearchFuzzyAkb(
+    query="ATTRIBUTE_INTENT_TYPE_MAP_CONVOAGENT_WORKING_HOURS",
+    searchFields=["name"],
+    numberTopics=1,
+    filterByPersonaIds=[persona_id],
+    labels=labels
+)[0].summary) %}
+
+{% for header, fixed_header in fixed_headers.items() %}
+    {% if fixed_header not in current_dynamic_intent_type_map_convoagent_non_working_hours and header in current_dynamic_intent_type_map_convoagent_non_working_hours %}
+        {% set current_dynamic_intent_type_map_convoagent_non_working_hours = current_dynamic_intent_type_map_convoagent_non_working_hours.replace(header, fixed_header) %}
+    {% endif %}
+{% endfor %}
+
+{% for header, fixed_header in fixed_headers.items() %}
+    {% if fixed_header not in current_dynamic_intent_type_map_convoagent_working_hours and header in current_dynamic_intent_type_map_convoagent_working_hours %}
+        {% set current_dynamic_intent_type_map_convoagent_working_hours = current_dynamic_intent_type_map_convoagent_working_hours.replace(header, fixed_header) %}
+    {% endif %}
+{% endfor %}
+
+{{_utilsAkbTopicCreateNSLSkill(
+    personaId=persona_id,
+    summary=current_dynamic_intent_type_map_convoagent_non_working_hours,
+    facts=json.dumps(["ATTRIBUTE_INTENT_TYPE_MAP_CONVOAGENT_NON_WORKING_HOURS"], ensure_ascii=False, indent=2),
+    name="ATTRIBUTE_INTENT_TYPE_MAP_CONVOAGENT_NON_WORKING_HOURS",
+    overwrite="True",
+    labels=json.dumps(labels, ensure_ascii=False, indent=2)
+)}}
+{{_utilsAkbTopicCreateNSLSkill(
+    personaId=persona_id,
+    summary=current_dynamic_intent_type_map_convoagent_working_hours,
+    facts=json.dumps(["ATTRIBUTE_INTENT_TYPE_MAP_CONVOAGENT_WORKING_HOURS"], ensure_ascii=False, indent=2),
+    name="ATTRIBUTE_INTENT_TYPE_MAP_CONVOAGENT_WORKING_HOURS",
+    overwrite="True",
+    labels=json.dumps(labels, ensure_ascii=False, indent=2)
+)}}
+
+#}

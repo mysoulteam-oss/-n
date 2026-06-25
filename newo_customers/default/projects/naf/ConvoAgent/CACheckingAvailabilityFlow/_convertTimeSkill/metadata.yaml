@@ -1,0 +1,12 @@
+id: b0f6c387-cb4c-4dfc-b8d3-027e039a46e8
+idn: _convertTimeSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: b12edb43-142d-439e-92a2-f015c957aba7
+    name: timeArray
+    default_value: " "
+path: ""

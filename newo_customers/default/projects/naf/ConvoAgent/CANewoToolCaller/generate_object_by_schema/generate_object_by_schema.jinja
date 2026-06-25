@@ -1,0 +1,52 @@
+{% if not schema.strip() %}
+    {{Return(val="{}")}}
+{% endif %}
+{% set parsed_schema = json.loads(schema) %}
+{% set requested_top_level_keys = [] %}
+{% if parsed_schema.type == "object" and parsed_schema.properties %}
+    {% for key in parsed_schema.properties.keys() %}
+        {% set _ = requested_top_level_keys.append(key) %}
+    {% endfor %}
+{% endif %}
+
+{% system %}
+Build exactly one JSON object according to the provided JSON schema.
+
+The schema is the only authority for the output shape:
+- Include only properties explicitly declared in the schema.
+- Do not add inferred, helpful, contextual, or extracted fields that are not declared in the schema.
+- Treat <UserInformation>, <ConversationMeta>, <Calendar>, and <Conversation> only as evidence for filling the declared schema properties.
+- Fill declared fields strictly from explicit evidence in the sections below. Values explicitly stated in <Conversation> take priority over <UserInformation>.
+- Do not guess, invent, or enrich values.
+
+<UserInformation alt="user information" role="context">
+{{GetPersonaAttribute(id=user_id, field="_private_dynamic_user_information")}}
+{{GetPersonaAttribute(id=user_id, field="custom_user_data")}}
+</UserInformation>
+
+{{utils_get_conversation_meta(user_id=user_id)}}
+
+<Calendar>
+{{GetCustomerAttribute(field="project_attributes_private_dynamic_prompt_calendar")}}
+</Calendar>
+
+<Conversation>
+{{memory_without_latest_agent_answer}}
+ConvoAgent: {{latest_agent_answer}}
+</Conversation>
+
+{% end %}
+
+{% set generated_json = Gen(jsonSchema=schema, validateSchema=True, temperature=0.2, topP=0, thinkingBudget=425) %}
+{% if requested_top_level_keys %}
+    {% set generated_object = json.loads(generated_json) %}
+    {% set cleaned_object = {} %}
+    {% for key in requested_top_level_keys %}
+        {% if key in generated_object %}
+            {% set _ = cleaned_object.update([[key, generated_object[key]]]) %}
+        {% endif %}
+    {% endfor %}
+    {{Return(val=cleaned_object | tojson(indent=2))}}
+{% endif %}
+
+{{Return(val=generated_json)}}

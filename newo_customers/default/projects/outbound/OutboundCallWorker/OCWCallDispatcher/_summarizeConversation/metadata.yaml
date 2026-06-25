@@ -1,0 +1,15 @@
+id: 4d0f176e-7250-4557-ba03-fbc9bbbfef42
+idn: _summarizeConversation
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 832c55ff-b06a-4b37-a35a-d6695b2650ac
+    name: conversation
+    default_value: " "
+  - id: 3f078c51-6023-4756-8560-32690e11ba80
+    name: primaryTask
+    default_value: " "
+path: ""

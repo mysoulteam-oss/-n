@@ -1,0 +1,10 @@
+{% set max_active_calls = get_customer_attribute_or_default(field="project_attributes_setting_outbound_max_active_calls", default="50") | int %}
+{% set task_obj = json.loads(task) %}
+{{_updateTaskManagerStatusSkill(taskId=task_obj.id, status="received by worker", comment="Task received. Launching calling.")}}
+{% set active_call_count = get_active_calls_count() | int %}
+{% if active_call_count < max_active_calls %}
+    {{_setupCallSkill(task=task)}}
+{% else %}
+    {{put_task_to_wait_list(task=task)}}
+    {{_updateTaskManagerStatusSkill(taskId=task_obj.id, status="in queue", comment="Maximum number of active calls (" ~ max_active_calls ~ ") reached. Task queued in AKB.")}}
+{% endif %}

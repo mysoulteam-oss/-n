@@ -1,0 +1,12 @@
+id: a09b6064-de92-4a69-8638-af7956569d6f
+idn: UserAPIReplySkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 406f8807-e227-41f9-8a87-61aaa71d0db9
+    name: message
+    default_value: " "
+path: ""

@@ -1,0 +1,9 @@
+id: 815786e8-5a51-4e60-b167-452f1460186a
+idn: _migration_2_5_118_catering
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

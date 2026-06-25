@@ -1,0 +1,15 @@
+id: 853e552d-f5b0-4477-8616-8a9d90cc76cb
+idn: rag_append_convert_to_structured_text
+title: rag_append_convert_to_structured_text
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 8fc01f72-1f5c-40f6-957f-2ceddea6fcd0
+    name: output_structured_attribute_name
+    default_value: ""
+  - id: 00e23c09-fc5e-4fb1-b796-6ed0d3950357
+    name: input_unstructured_text
+    default_value: ""
+path: ""

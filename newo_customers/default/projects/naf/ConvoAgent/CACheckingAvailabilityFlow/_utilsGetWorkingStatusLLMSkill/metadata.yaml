@@ -1,0 +1,15 @@
+id: 31030112-d194-4dfe-8394-f9033bc92cce
+idn: _utilsGetWorkingStatusLLMSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 6010ffc5-afaa-43ac-a497-7f671a921b99
+    name: time
+    default_value: " "
+  - id: 855ec475-7bcb-4f6e-9fb1-3a1c8c8fa456
+    name: dayOfWeek
+    default_value: " "
+path: ""

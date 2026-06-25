@@ -1,0 +1,12 @@
+id: 22254104-ce89-48b6-920a-d0a622d22404
+idn: _validateHttpStatusCode
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: f77927c0-b02e-455d-b14d-bd1633954b2a
+    name: code
+    default_value: ""
+path: ""

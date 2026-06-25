@@ -1,0 +1,9 @@
+id: acde7521-b600-4adf-9bb1-7e582df13975
+idn: _migration_2_5_129_v2v_voices
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

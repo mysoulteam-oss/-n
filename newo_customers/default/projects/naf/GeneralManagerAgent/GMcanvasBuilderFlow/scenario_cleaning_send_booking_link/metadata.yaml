@@ -1,0 +1,9 @@
+id: 2f501fa3-f42e-4e4a-bfdd-c873e2e83049
+idn: scenario_cleaning_send_booking_link
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

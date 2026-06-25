@@ -1,0 +1,8 @@
+{% set user_id = GetUser().id | string %}
+{% set act = GetTriggeredAct() %}
+{% set booking_json = json.loads(get_booking_id(user_id=user_id, memory=act.arguments.memory)) %}
+{% if booking_json.booking_id %}
+    {% set user_bookings = check_user_bookings(user_id=user_id) %}
+    {{ cancel_booking(booking_id=booking_json.booking_id, user_bookings=user_bookings, notes=booking_json.notes) }}
+    {{ clear_booking(booking_id=booking_json.booking_id, bookings=user_bookings, user_id=user_id)}}
+{% endif %}

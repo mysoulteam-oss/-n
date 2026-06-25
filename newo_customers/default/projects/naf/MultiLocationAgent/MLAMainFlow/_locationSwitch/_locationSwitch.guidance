@@ -1,0 +1,1 @@
+{{SetPersonaAttribute(id=userId, field="multi_location_current_location", value=location)}}

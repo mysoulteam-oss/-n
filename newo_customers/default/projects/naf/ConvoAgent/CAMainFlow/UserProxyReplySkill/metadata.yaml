@@ -1,0 +1,9 @@
+id: 5aeb6b41-8ca5-4f90-a461-16b0baa37667
+idn: UserProxyReplySkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

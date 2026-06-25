@@ -1,0 +1,28 @@
+id: f1a98dbb-ba92-41f7-9b33-ba733e10d96a
+idn: CAThinkFlow
+title: CAThinkFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: fceb25dd-db1a-4065-9482-1acf7349fa39
+    description: null
+    idn: check_product_or_service_availability
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: CheckProductOrServiceAvailabilityTool
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 7bab4afb-c0a8-4e59-9e5d-639d1bc5f39d
+    description: null
+    idn: check_zip_code_served_tool
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: CheckAreaServedTool
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

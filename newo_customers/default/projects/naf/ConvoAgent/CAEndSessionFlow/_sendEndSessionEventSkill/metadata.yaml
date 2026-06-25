@@ -1,0 +1,27 @@
+id: 338a3e76-1332-4352-9c80-f584423f5d67
+idn: _sendEndSessionEventSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: aa17bd3a-f223-487a-be9a-0589923925c3
+    name: transcript
+    default_value: " "
+  - id: b6ef5ee9-9fed-4aa8-b350-49850c6cf927
+    name: metrics
+    default_value: " "
+  - id: 7601d342-fa51-4880-bc7e-2cd62799063e
+    name: conversationValues
+    default_value: " "
+  - id: caa932f4-f672-4839-854f-09b1196736da
+    name: semaphore
+    default_value: " "
+  - id: 99809b73-66d6-47be-b323-b37d5f5bad99
+    name: userId
+    default_value: " "
+  - id: d93ac12c-f172-4035-b7cb-00927b7ff6ff
+    name: quality_metrics
+    default_value: "{}"
+path: ""

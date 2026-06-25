@@ -1,0 +1,9 @@
+id: 6ee9a076-c791-4899-a697-3421611fd4d0
+idn: OutboundCallFinishedSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

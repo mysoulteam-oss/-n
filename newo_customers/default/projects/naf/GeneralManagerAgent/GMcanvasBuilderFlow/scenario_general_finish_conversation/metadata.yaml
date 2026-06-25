@@ -1,0 +1,9 @@
+id: 5be0290d-1545-4fd0-8041-04934e0f2069
+idn: scenario_general_finish_conversation
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

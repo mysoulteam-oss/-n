@@ -1,0 +1,15 @@
+id: 45e0164d-9b8a-4053-a809-4028cc0ef211
+idn: double_check_information_schemas
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: c2a541e4-4d52-4c46-a431-e3e27eae5de2
+    name: zip_code_city_schema
+    default_value: ""
+  - id: cd6b1e7a-79e5-4ec5-9d2a-1950584c9a8c
+    name: service_schema
+    default_value: ""
+path: ""

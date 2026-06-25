@@ -1,0 +1,12 @@
+{% set customer_info = GetCustomerInfo() %}
+{% set platform_links = customer_info.platform_links %}
+{% set organization_type = customer_info.organization_type.strip() %}
+{% set idn = customer_info.idn.strip() %}
+
+{% if platform_links and organization_type and idn %}
+    {% set portal_url = "/".join([platform_links.portal.rstrip("/"), organization_type, idn]) %}
+
+    {{ Return(val=portal_url) }}
+{% else %}
+    {{ Return(val="") }}
+{% endif %}

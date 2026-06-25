@@ -1,0 +1,9 @@
+id: 5c84290c-5bcd-4c9e-8814-9601d5789fe8
+idn: default_report_content_home_service
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

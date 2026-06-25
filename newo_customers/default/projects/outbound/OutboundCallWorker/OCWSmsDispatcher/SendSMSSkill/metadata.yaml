@@ -1,0 +1,9 @@
+id: 65c61e69-84e5-4028-a4bf-8bb8761dda4c
+idn: SendSMSSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

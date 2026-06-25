@@ -1,0 +1,9 @@
+id: 256aca2e-b608-46e8-884f-ec86ea1a935c
+idn: TransferCallToolSkill
+title: TransferCallToolSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

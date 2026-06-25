@@ -1,0 +1,29 @@
+{% set title = '## **Reconfirming or Gathering ZIP code** procedure' %}
+
+{% set body %}
+Before proceeding, check the **<PreviousConversationSummary>** section, **<UserInformation>** section, and **<Conversation>** for the ZIP code and channel type. Follow the rules:
+
+- Rule 1: **If the [user's ZIP code] and **Zip code** in **ExistingCustomerInfo** is not set or null, ask the user: "Could you please provide your ZIP code so we can confirm whether we service your area?"
+  - If the user provides a ZIP code in the current turn, treat it as gathered immediately.
+
+- Rule 2: If a ZIP code is already known and `conversation.channel` in <ConversationMeta> is set to **PHONE**: Reconfirm the existing ZIP code: "Your ZIP code is [user's ZIP code]. Is that correct?"
+
+- Rule 3: If a ZIP code is already known and `conversation.channel` in <ConversationMeta> is set to **CHAT**: Do not reconfirm the ZIP code. Do not ask the user to repeat it. Treat the ZIP code as already gathered and proceed directly to the next step.
+{% endset %}
+
+{% set description %}
+When you need a ZIP code, first check whether it is already present in <PreviousConversationSummary>, <UserInformation>, or <Conversation>. Ask for it only if it is still missing. On phone, reconfirm an already known ZIP code once; in chat, never reconfirm or ask the user to repeat a ZIP code that is already available.
+{% endset %}
+
+
+{% set item = {
+    "idn": "procedure_common_gather_zip_code",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

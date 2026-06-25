@@ -1,0 +1,9 @@
+id: 2426415a-b8d4-48b2-ba95-be489abe2b54
+idn: library_procedures_sales
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

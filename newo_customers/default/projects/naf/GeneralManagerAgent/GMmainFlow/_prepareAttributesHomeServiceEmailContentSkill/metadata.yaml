@@ -1,0 +1,9 @@
+id: 477b2661-10a1-4b99-b49e-aad41a7c2957
+idn: _prepareAttributesHomeServiceEmailContentSkill
+title: _prepareAttributesHomeServiceEmailContentSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,18 @@
+id: ff0ab52a-8965-404c-9c6d-02ca74f436cb
+idn: _utilsSendSMSWithActorsCreationSkill
+title: _utilsSendSMSWithActorsCreationSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 2d5f08a1-7bd5-4c45-bdf2-c2b083445edf
+    name: userPhoneNumber
+    default_value: " "
+  - id: 1cdce8ea-4d43-4933-8181-40970264ecbb
+    name: smsText
+    default_value: " "
+  - id: 1c16833f-f5d0-4963-a5e5-79414e7353ce
+    name: userId
+    default_value: " "
+path: ""

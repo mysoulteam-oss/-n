@@ -1,0 +1,9 @@
+id: 55750d4b-7e6a-459b-a97b-40c1e6e01235
+idn: _prepareAttributesGeneralASRVariablesSkill
+title: _prepareAttributesGeneralASRVariablesSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

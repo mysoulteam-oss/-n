@@ -1,0 +1,15 @@
+id: 5a169083-702d-4479-b8b9-76a128169cf8
+idn: utils_customer_attribute_set_if_empty
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 9c14c8cc-2d87-4a84-8080-a5794fc6a2c7
+    name: value
+    default_value: ""
+  - id: f98e2d78-9e01-4ece-8444-cc15edf94673
+    name: field
+    default_value: ""
+path: ""

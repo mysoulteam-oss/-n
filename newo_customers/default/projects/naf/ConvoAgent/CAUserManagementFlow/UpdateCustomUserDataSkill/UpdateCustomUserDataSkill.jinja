@@ -1,0 +1,4 @@
+{% set arguments = GetTriggeredAct().arguments %}
+{% set section_name = arguments.sectionName %}
+{% set section_value = arguments.sectionValue %}
+{{_updateCustomUserDataSkill(sectionName=section_name, sectionValue=section_value)}}

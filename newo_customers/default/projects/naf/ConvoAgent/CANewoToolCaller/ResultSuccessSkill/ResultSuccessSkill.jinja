@@ -1,0 +1,24 @@
+{% set triggered_act = GetTriggeredAct() %}
+{% set from_act_id = triggered_act["commandActId"] %}
+{% set original_act = GetAct(id=from_act_id) %}
+{% set target_action = original_act.arguments["targetAction"] %}
+{% set tools = json.loads(compile_tools_object(conversation_channel=GetState(name="conversation_channel"))) %}
+{% set tool = {} %}
+{% for tool_name, tool_object in tools.tools.items() %}
+    {% if tool_name == target_action %}
+        {% set tool = tool_object %}
+    {% endif %}
+{% endfor %}
+{% if not tool %}
+    {{Return()}}
+{% endif %}
+{% if not triggered_act.arguments.body and tool.after_actions %}
+    {{utils_send_system_log(message="The `" ~ target_action ~ "` action fired successfully. after_actions skipped due to a no response body.")}}
+    {{Return()}}
+{% endif %}
+{{utils_send_system_log(message="The following output of `" ~ target_action ~ "` was received: " ~ triggered_act.arguments.body)}}
+{% if tool.after_actions %}
+    {% for after_action in tool.after_actions %}
+        {{handle_after_action(input=triggered_act.arguments.body, tool_name=target_action, after_action=after_action, user_id=GetUser().id | string)}}
+    {% endfor %}
+{% endif %}

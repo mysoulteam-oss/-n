@@ -1,0 +1,9 @@
+id: 024c4649-4571-40b0-877b-95f77b6f102e
+idn: CheckAvailabilityToolSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

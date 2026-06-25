@@ -1,0 +1,9 @@
+id: 31071995-aaef-4445-b96d-fcd915799ab2
+idn: _prepareAttributesCommonSkill
+title: _prepareAttributesCommonSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

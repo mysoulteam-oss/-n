@@ -1,0 +1,18 @@
+id: ca5345f2-926e-4856-930b-c8b16792c080
+idn: __bookRestaurantDefaultRetrySkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 4bcff64c-cfc9-4557-848a-f294dd46c0e0
+    name: industry
+    default_value: " "
+  - id: 351b28ee-b1b5-47f3-853d-69adfba857df
+    name: userId
+    default_value: " "
+  - id: 0e9b4209-17a6-46f0-a76d-18e3a9575db1
+    name: lastPayloadMeta
+    default_value: " "
+path: ""

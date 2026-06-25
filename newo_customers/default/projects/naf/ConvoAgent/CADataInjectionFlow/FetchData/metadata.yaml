@@ -1,0 +1,9 @@
+id: d61a132e-ae11-4917-8090-f7200d5dd252
+idn: FetchData
+title: FetchData
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,9 @@
+id: d53fffef-80d8-43fb-862d-12659898991a
+idn: controller_delete_library_item_system_batch
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

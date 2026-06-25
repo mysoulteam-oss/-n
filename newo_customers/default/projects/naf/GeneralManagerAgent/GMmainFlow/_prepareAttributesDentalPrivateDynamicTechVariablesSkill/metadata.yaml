@@ -1,0 +1,9 @@
+id: 13045c98-d175-4e29-a068-0c7f0948f3aa
+idn: _prepareAttributesDentalPrivateDynamicTechVariablesSkill
+title: _prepareAttributesDentalPrivateDynamicTechVariablesSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

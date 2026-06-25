@@ -1,0 +1,18 @@
+id: d5e3e9fd-9539-4530-acaa-8583c7655983
+idn: _scheduleGoogleMeetingSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 3d6469da-8651-4450-b606-84319d4587a8
+    name: agentAnswer
+    default_value: " "
+  - id: 84d2b488-a819-4baa-9252-1fe2ab4831db
+    name: userId
+    default_value: " "
+  - id: 17f4bb84-d05a-44b4-a674-e68b19821e6b
+    name: memory
+    default_value: " "
+path: ""

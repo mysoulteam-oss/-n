@@ -1,0 +1,9 @@
+id: 29c44a47-d470-40c2-9148-6413a72059f5
+idn: scenario_cleaning_approximate_estimate
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

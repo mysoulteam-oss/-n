@@ -1,0 +1,15 @@
+id: 85487e2a-79ba-41aa-b3f9-1257fb53a068
+idn: _getExplicitConstraintsAdditionalLimitationsAndRestrictionsSkill
+title: _getExplicitConstraintsAdditionalLimitationsAndRestrictionsSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 8fcb52dd-c23c-4c20-9eba-7d42f843c87b
+    name: conversationChannel
+    default_value: " "
+  - id: 58230bff-a15a-412c-b49b-f6dac112ce2e
+    name: userId
+    default_value: " "
+path: ""

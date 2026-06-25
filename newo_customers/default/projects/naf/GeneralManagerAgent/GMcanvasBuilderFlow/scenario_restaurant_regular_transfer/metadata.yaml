@@ -1,0 +1,9 @@
+id: 6e3f07d2-29b1-49c6-9bc4-f7eeae63a739
+idn: scenario_restaurant_regular_transfer
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,9 @@
+id: 226bf154-7e20-49ce-8438-8e28e536e52a
+idn: library_scenarios_beauty
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

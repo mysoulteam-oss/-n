@@ -1,0 +1,12 @@
+id: 803836f6-db33-454e-864a-7f2ed8e0015a
+idn: session_get_greeting_phrase
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 21d03ef2-1602-4a80-8764-7041f4c6f9c7
+    name: user_id
+    default_value: ""
+path: ""

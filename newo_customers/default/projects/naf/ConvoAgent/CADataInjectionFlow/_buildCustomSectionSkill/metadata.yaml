@@ -1,0 +1,15 @@
+id: 3a3f709b-1f86-4cdd-9f18-2fd51a1507f9
+idn: _buildCustomSectionSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 271362cf-5869-4ace-a5bb-97b0d9c22b34
+    name: sectionValue
+    default_value: " "
+  - id: f536ec13-b505-4f8d-9fab-314e98a0e4f0
+    name: sectionName
+    default_value: " "
+path: ""

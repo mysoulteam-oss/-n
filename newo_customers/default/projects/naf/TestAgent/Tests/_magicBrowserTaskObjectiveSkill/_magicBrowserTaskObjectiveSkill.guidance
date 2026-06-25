@@ -1,0 +1,27 @@
+{{#system~}}
+CURRENT_TIME: {{GetDatetime(format="datetime", timezone=timeZone)}}
+YOUR_LOCAL_TIMEZONE: {{timeZone}}
+
+**INPUT_VALUES:**
+{{_magicBrowserTaskInputObjectSkill()}}
+**END INPUT_VALUES**
+
+**CURRENT_OBJECTIVE:**
+{{SearchFuzzyAkb(
+    query=taskIdn ,
+    searchFields=["name"],
+    fromPerson="Agent",
+    numberTopics = 1,
+    fields = ["summary"],
+    scoreThreshold=0.9,
+    labels=CreateArray("task_instruction", industry, scenario),
+    filterByPersonaIds=personaId
+)}}
+**END CURRENT_OBJECTIVE**
+
+**TASK_CONTEXT:**
+{{GetCustomerAttribute(field=Concat("project_attributes_task_context_", taskIdn))}}
+**END TASK_CONTEXT**
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

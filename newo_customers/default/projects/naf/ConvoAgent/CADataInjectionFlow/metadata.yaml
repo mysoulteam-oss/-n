@@ -1,0 +1,69 @@
+id: c18ca30a-f6a4-412f-ae7e-6da6f8ee91c1
+idn: CADataInjectionFlow
+title: CADataInjectionFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: f187cf74-05ca-4406-ab6f-4fa027a6d5ba
+    description: null
+    idn: build_operating_phrase
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: BuildTodaysScheduleSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: cc923dea-b654-49a2-84e3-ceda5f59636a
+    description: null
+    idn: new_data_to_inject
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: RetrieveDataSkill
+    state_idn: null
+    integration_idn: api
+    connector_idn: webhook
+  - id: adc1e756-a5e2-43f2-94f4-a1fd9d9cdfd2
+    description: null
+    idn: prepare_injecting_data
+    skill_selector: skill_idn
+    interrupt_mode: cancel
+    skill_idn: PrepareInjectingDataSkill
+    state_idn: null
+    integration_idn: null
+    connector_idn: null
+  - id: 33043dcb-82a4-479f-b97f-a5ed960cf408
+    description: null
+    idn: remove_prompt_custom_section
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: RemoveCustomSectionSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 175f46d2-b836-4065-ac51-96f811aec419
+    description: null
+    idn: set_prompt_custom_section
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: InjectCustomSectionSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 2b7659dc-312b-4563-85b0-7644a4fc56f9
+    description: null
+    idn: timer
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: FetchData
+    state_idn: null
+    integration_idn: program_timer
+    connector_idn: data_injection_timer
+state_fields:
+  - id: 4e2d64f1-70ab-43e2-94a4-56ae0453cd5c
+    title: prompt_calendar_created_at
+    idn: prompt_calendar_created_at
+    default_value: none
+    scope: agent

@@ -1,0 +1,65 @@
+{{!-- TODO: Rework getting conversation meta - currently, it lags behind one conversational turn --}}
+
+{{!-- TODO: Unify such blocks in all places - currently, similar code is being duplicated in a lot of places --}}
+
+{{#if IsEmpty(text=userId)}}
+  {{Set(name="userId", value=GetUser(field="id"))}}
+{{/if}}
+
+{{Set(name="time_zone", value=_getTimeZoneSkill(userId=userId))}}
+{{Set(name="current_date", value=GetDatetime(format="date", timezone=time_zone))}}
+{{Set(name="current_time", value=GetDatetime(format="time", timezone=time_zone, weekday=False))}}
+{{Set(name="current_date_week_day", value=GetDatetime(format="date", timezone=time_zone, weekday=True))}}
+{{Set(name="current_week_day", value=Stringify(current_date_week_day.replace(Concat(current_date, ", "), " ")))}}
+
+{{Set(name="am_hours", value=["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"])}}
+{{Set(name="pm_hours", value=["12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "00"])}}
+
+{{Set(name="current_hour_list", value=current_time.split(":"))}}
+{{Set(name="current_time_list_string", value=Stringify(current_hour_list))}}
+{{Set(name="current_time_list_string", value=current_time_list_string.replace("'", '"'))}}
+{{Set(name="current_hour", value=Stringify(GetItemsArrayByIndexesJSON(array=current_time_list_string, indexes=0)))}}
+{{Set(name="current_minute", value=Stringify(GetItemsArrayByIndexesJSON(array=current_time_list_string, indexes=1)))}}
+{{Set(name="current_second", value=Stringify(GetItemsArrayByIndexesJSON(array=current_time_list_string, indexes=2)))}}
+{{Set(name="am_prefix_should_be_set", value=am_hours.count(current_hour))}}
+{{Set(name="pm_prefix_should_be_set", value=pm_hours.count(current_hour))}}
+
+{{!-- Define postfix --}}
+{{Set(name="postfix", value="AM")}}
+{{#if pm_prefix_should_be_set != 0}}
+    {{Set(name="postfix", value="PM")}}
+{{/if}}
+{{#if am_prefix_should_be_set != 0}}
+    {{Set(name="postfix", value="AM")}}
+{{/if}}
+
+{{!-- Convert hours to AM/PM format --}}
+{{Set(name="twelve_current_hour", value=current_hour)}}
+{{#if pm_prefix_should_be_set != 0}}
+  {{#if current_hour == "12" }}
+    {{Set(name="twelve_current_hour", value="12")}}
+  {{else}}
+    {{Set(name="twelve_current_hour", value=Stringify(pm_hours.index(current_hour)))}}
+  {{/if}}
+{{/if}}
+
+{{Set(name="prompt_conversation_channel", value=session_get_conversation_channel(user_id=userId))}}
+{{!-- ! TODO: split conversation channel to two entities: technical channel (webcall, phone, chat) and conversational channel (voice, chat) --}}
+{{#if prompt_conversation_channel == "webcall"}}
+    {{Set(name="prompt_conversation_channel", value="phone")}}
+{{/if}}
+
+{{Set(name="working_hours_status", value=Concat("business.currently_open: ", session_get_working_hours_status(user_id=userId)))}}
+
+{{#system~}}
+conversation.timezone: {{time_zone}}
+conversation.channel: {{prompt_conversation_channel}}
+conversation.source: {{session_get_conversation_source(user_id=userId)}}
+conversation.day_of_week: {{current_week_day}}
+conversation.time: {{current_hour}}:{{current_minute}}:{{current_second}} ({{twelve_current_hour}}:{{current_minute}} {{postfix}})
+conversation.date: {{current_date}}
+
+{{working_hours_status}}
+{{~/system}}
+
+{{SetPersonaAttribute(id=userId, field="conversation_meta", value=GetCurrentPrompt())}}

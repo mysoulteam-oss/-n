@@ -1,0 +1,9 @@
+id: d365cf94-cef0-408e-81f0-46f5ea92aeb2
+idn: _prepareAttributesDentalSkill
+title: _prepareAttributesDentalSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

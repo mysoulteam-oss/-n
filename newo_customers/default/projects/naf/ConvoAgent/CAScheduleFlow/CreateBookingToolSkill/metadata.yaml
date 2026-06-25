@@ -1,0 +1,9 @@
+id: 9d9b3996-db64-445a-a389-388763bfbaf5
+idn: CreateBookingToolSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

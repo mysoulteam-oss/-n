@@ -1,0 +1,6 @@
+id: ac6cdf8e-0a30-4e98-b72b-e026f1db52a5
+idn: TaskManager
+title: TaskManager
+description: >-
+  Creates, schedules, triggers, and updates task records for follow-up,
+  outbound, and other automation workflows.

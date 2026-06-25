@@ -1,0 +1,9 @@
+id: 971dd3ad-0a36-462d-b58a-29c88e018c40
+idn: _migration_2_6_7_call_transfer_phone
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

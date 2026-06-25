@@ -1,0 +1,9 @@
+{{Set(name="industry", value=GetCustomerAttribute(field="project_business_industry"))}}
+
+{{!-- Rename existing scenario names in Hospitality BOI --}}
+{{#if industry == "hospitality_industry"}}
+  {{Set(name="boi", value=GetCustomerAttribute(field="project_attributes_boi"))}}
+  {{Set(name="boi", value=boi.replace("Make a large group reservation via email", "Make a Large Group Reservation via Email"))}}
+  {{Set(name="boi", value=boi.replace("Make a regular reservation via Link", "Make a Regular Reservation via Link"))}}
+  {{SetCustomerAttribute(field="project_attributes_boi", value=boi)}}
+{{/if}}

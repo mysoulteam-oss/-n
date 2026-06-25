@@ -1,0 +1,9 @@
+id: a816178b-4521-42fd-945e-b16bc9d0f9ef
+idn: _sendDialpadDigitsSchemaSkill
+title: _sendDialpadDigitsSchemaSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

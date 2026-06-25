@@ -1,0 +1,9 @@
+id: 5a0c6c2d-b6db-4b7b-9b52-a4a7ef812869
+idn: update_user_memories
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

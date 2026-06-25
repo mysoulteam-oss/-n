@@ -1,0 +1,18 @@
+id: 0da49e46-758e-4141-b34c-46e5edb038cb
+idn: user_message_generate_reply
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 930a94d2-0fa3-4905-92a5-3b3b9a5df1ef
+    name: prompt
+    default_value: ""
+  - id: 850a30fc-65c5-4407-82af-681300db9946
+    name: conversation_channel
+    default_value: ""
+  - id: 5d726a65-dbb4-489a-bc42-ab39809b07cb
+    name: actor_id
+    default_value: ""
+path: ""

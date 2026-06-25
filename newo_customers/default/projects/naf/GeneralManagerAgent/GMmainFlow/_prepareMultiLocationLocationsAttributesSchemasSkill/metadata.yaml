@@ -1,0 +1,9 @@
+id: a763333f-65aa-4cdc-b0f9-c6d4f6268a82
+idn: _prepareMultiLocationLocationsAttributesSchemasSkill
+title: _prepareMultiLocationLocationsAttributesSchemasSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

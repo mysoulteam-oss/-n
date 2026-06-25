@@ -1,0 +1,25 @@
+{% set arguments = GetTriggeredAct().arguments %}
+{% set task_id = arguments.taskId %}
+{% set user_id = GetUser().id | string %}
+{% set phone_number = arguments.phone_number %}
+
+{{SetState(name="task_id", value=task_id)}}
+
+{{SendSystemEvent(eventIdn="switch_outbound_reply_skill", connectorIdn="system")}}
+
+{{SendSystemEvent(
+    eventIdn="sms_worker_send_sms", 
+    connectorIdn="system", 
+    sms_text=arguments.messageText, 
+    phone_number=phone_number
+)}}
+
+{{_updateTaskManagerStatusSkill(taskId=task_id, status="in progress", comment="SMS is sent.")}}
+
+{{_updateCallTableSkill(userId=user_id, taskId=task_id, summary="SMS is sent.")}}
+
+{{SendSystemEvent(
+    eventIdn="extend_session",
+    connectorIdn="system",
+    timeout=((GetCustomerAttribute(field="project_attributes_setting_outbound_sms_session_duration") | int) * 60) | string
+)}}

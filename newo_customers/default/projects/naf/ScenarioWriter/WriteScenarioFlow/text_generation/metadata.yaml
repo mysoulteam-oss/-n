@@ -1,0 +1,12 @@
+id: 1339a7f7-9652-488e-b2d8-e37ef2aa9898
+idn: text_generation
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: f61f937e-238f-498e-8992-da478b7da582
+    name: prompt
+    default_value: ""
+path: ""

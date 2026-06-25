@@ -1,0 +1,15 @@
+id: 3160162b-aa8b-4f67-8b6c-3ba942d602ab
+idn: _utilsCreatePhoneActorsSkill
+title: _utilsCreatePhoneActorsSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 107ba365-6cd2-4bcf-930b-b3a4ca3c7fac
+    name: userId
+    default_value: " "
+  - id: 4c59a720-1b00-44d6-a10e-e468640a0ea1
+    name: phoneNumber
+    default_value: " "
+path: ""

@@ -1,0 +1,14 @@
+{{#if not IsSimilar(val1=GetCustomerAttribute(field="project_attributes_setting_email_send_information_enabled"), val2="True", strategy="symbols")}}
+  {{Return()}}
+{{/if}}
+
+{{Set(name="email_send_information_allowed_content_items", value=GetCustomerAttribute(field="project_attributes_setting_email_send_information_allowed_content_items"))}}
+
+{{#system~}}
+<EmailInformationAllowedToBeSent alt="information that ConvoAgent is allowed to send via email" role="context">
+You can send email messages with the following content:
+{{email_send_information_allowed_content_items}}
+</EmailInformationAllowedToBeSent>
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

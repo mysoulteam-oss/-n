@@ -1,0 +1,18 @@
+id: 6c1bab55-1e2b-4050-a341-9fdfcb0a8b17
+idn: utils_get_footnote_actor_id
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 0517825c-1c08-4da1-b485-65a7d50e90f3
+    name: system
+    default_value: ""
+  - id: c1d420c1-f07b-4149-b8fd-7a2b55eea672
+    name: debug
+    default_value: ""
+  - id: aba2480b-2e9c-4d63-a8d3-abafb7779795
+    name: thoughts
+    default_value: ""
+path: ""

@@ -1,0 +1,12 @@
+id: 82d71569-f496-4167-a25e-23c5166f0340
+idn: _receiveAvailabilityProcessLLMSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: bc3d09fa-0871-4647-9bf6-b4ee4658be53
+    name: output
+    default_value: " "
+path: ""

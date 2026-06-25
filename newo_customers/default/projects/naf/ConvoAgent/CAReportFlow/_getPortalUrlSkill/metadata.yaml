@@ -1,0 +1,9 @@
+id: 9db8e04d-c128-46f7-b1bd-fd8352366718
+idn: _getPortalUrlSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

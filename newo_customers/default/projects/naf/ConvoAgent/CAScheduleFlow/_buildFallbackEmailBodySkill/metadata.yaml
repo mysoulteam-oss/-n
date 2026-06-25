@@ -1,0 +1,15 @@
+id: f918b430-ae99-40b6-b1b3-b883c65ec5bf
+idn: _buildFallbackEmailBodySkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: d1c8964a-5ca4-4607-8e7e-cec5125a3dec
+    name: userId
+    default_value: " "
+  - id: 1657f673-6569-45b8-95bc-7ef62cc9a83b
+    name: payload
+    default_value: " "
+path: ""

@@ -1,0 +1,54 @@
+{{!-- Regenerate prompt calendar --}}
+{{Set(name="calendar_injection_is_enabled", value=GetCustomerAttribute(field="project_attributes_setting_calendar_injection_is_enabled"))}}
+{{#if IsEmpty(text=calendar_injection_is_enabled)}}
+    {{Set(name="calendar_injection_is_enabled", value="True")}}
+{{/if}}
+
+{{#if calendar_injection_is_enabled == "True"}}
+    {{_defineCalendarSkill()}}
+{{/if}}
+
+{{!-- Inject data --}}
+{{Set(name="is_data_injection_enabled", value=GetCustomerAttribute(field="project_attributes_setting_data_injection_is_enabled"))}}
+
+{{#if is_data_injection_enabled == "False"}}
+    {{_stopReceivingDataSkill()}}
+    {{Return()}}
+{{/if}}
+
+{{Set(name="is_data_injection_timer_running", value=GetCustomerAttribute(field="project_attributes_private_data_injection_is_timer_running"))}}
+
+{{#if is_data_injection_timer_running != "True"}}
+    {{FetchData()}}
+{{/if}}
+
+{{Set(name="set_intercom_actor", value="False")}}
+
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_type") == "intercom"}}
+    {{Set(name="set_intercom_actor", value="True")}}
+{{/if}}
+
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_type") == "intercom"}}
+    {{Set(name="set_intercom_actor", value="True")}}
+{{/if}}
+
+{{Set(name="user_id", value=GetUser(field="id"))}}
+
+{{#if set_intercom_actor == "True"}}
+    {{Set(name="external_id", value=GetActor(field="externalId"))}}
+    {{#if IsEmpty(text=GetPersonaAttribute(id=user_id, field="intercom_actor"))}}
+        {{SendCommand(
+            commandIdn="get_or_create_actor",
+            integrationIdn="customer_intercom",
+            connectorIdn="connection",
+            externalId=external_id,
+            customEventIntegrationIdn="customer_intercom",
+            customEventConnectorIdn="connection",
+            userPersonaId=user_id
+        )}}
+    {{/if}}
+    {{#if IsEmpty(text=GetPersonaAttribute(id=user_id, field="intercom_client_actor_id"))}}
+        {{SetPersonaAttribute(id=user_id, field="intercom_client_actor_id", value=CreateActor(integrationIdn="api", connectorIdn="connection", externalId=external_id, personaId=user_id))}}
+    {{/if}}
+
+{{/if}}

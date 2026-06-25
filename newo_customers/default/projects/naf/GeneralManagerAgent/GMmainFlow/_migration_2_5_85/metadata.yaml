@@ -1,0 +1,9 @@
+id: 525f545f-9e05-4273-93ae-96bcd3e96bed
+idn: _migration_2_5_85
+title: _migration_2_5_85
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

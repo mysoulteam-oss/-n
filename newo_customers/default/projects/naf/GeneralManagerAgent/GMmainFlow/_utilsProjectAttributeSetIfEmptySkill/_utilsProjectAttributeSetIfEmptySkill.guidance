@@ -1,0 +1,5 @@
+{{!-- Sets Project Attribute by provided `value` if Project Attribute is empty. Otherwise, does not do anything --}}
+
+{{#if IsEmpty(text=GetProjectAttribute(field=field))}}
+    {{SetProjectAttribute(field=field, value=value)}}
+{{/if}}

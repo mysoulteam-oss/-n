@@ -1,0 +1,9 @@
+id: abe1d91e-3d43-49f0-8339-9c72ecd2e150
+idn: RegisterInitEvents
+title: RegisterInitEvents
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

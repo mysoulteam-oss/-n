@@ -1,0 +1,18 @@
+id: ee6ef058-8dc7-461d-92f1-74e941453b3b
+idn: send_task
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: dca7641a-29d7-48bd-a877-f3f531809619
+    name: task_types
+    default_value: ""
+  - id: b9a43097-a771-4732-9ca8-1b0e796abdb4
+    name: phone_number
+    default_value: ""
+  - id: a4017f42-9a48-4273-a0da-c728e76ca26d
+    name: content
+    default_value: ""
+path: ""

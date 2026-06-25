@@ -1,0 +1,21 @@
+id: f86e7494-e80a-40ef-ad5c-0e22681be787
+idn: rerank_conflict
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 05939c7f-b84e-47c8-abc7-a992e57645b7
+    name: latest_agent_answer
+    default_value: ""
+  - id: 78524b9a-e115-4be5-aaa7-93ac48bf8837
+    name: tools
+    default_value: ""
+  - id: 29d82bed-b0ad-46f8-8b55-aa58bb12a780
+    name: memory_without_latest_agent_answer
+    default_value: ""
+  - id: 21be1b17-0d7f-4e88-bb33-19051e4d7860
+    name: channel
+    default_value: ""
+path: ""

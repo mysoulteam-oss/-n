@@ -1,0 +1,9 @@
+id: 544aab61-ce7f-4132-a024-5f92899ec980
+idn: procedure_general_sending_links
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

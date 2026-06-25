@@ -1,0 +1,17 @@
+{{Set(name="sms_send_information_allowed_content", value=GetCustomerAttribute(field="project_attributes_setting_sms_send_information_allowed_content"))}}
+{{Set(name="user_id", value=GetUser(field="id"))}}
+{{Set(name="sms_send_information_allowed_dynamic_content", value=GetPersonaAttribute(id=user_id, field="sms_send_information_allowed_dynamic_content"))}}
+{{Set(name="selected_booking_url", value=GetPersonaAttribute(id=user_id, field="availability_booking_url_selected"))}}
+{{Set(name="sms_send_information_allowed_content", value=sms_send_information_allowed_content.replace('
+','\n'))}}
+{{#system~}}
+<InformationAllowedToBeSent alt="information that ConvoAgent is allowed to send via SMS" role="context">
+You can send SMS messages with the following content:
+- If the inquiry is about email request from ConvoAgent to the user, send an SMS requesting the user's email address, e.g.: "Please reply with your email address"{{#if not IsEmpty(text=selected_booking_url)}}
+- Booking url for the user to confirm their reservation: "Please, confirm your reservation by filling out the form: {{selected_booking_url}}"{{/if}}
+{{sms_send_information_allowed_content}}
+{{sms_send_information_allowed_dynamic_content}}
+</InformationAllowedToBeSent>
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

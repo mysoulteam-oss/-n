@@ -1,0 +1,9 @@
+id: f5aff2c0-4a70-477a-8be8-780141a88ff9
+idn: ProjectPublishSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

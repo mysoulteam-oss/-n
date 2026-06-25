@@ -1,0 +1,9 @@
+id: b8c4913d-f223-4b68-8da2-003f24750efd
+idn: _prepareAttributesGeneralEmailContentSkill
+title: _prepareAttributesGeneralEmailContentSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

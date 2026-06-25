@@ -1,0 +1,9 @@
+id: ccc4dfea-c72b-47d3-ab84-5639e2fd37f7
+idn: _getEmailBodyHeaderSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

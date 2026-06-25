@@ -1,0 +1,12 @@
+id: ef01b6a2-7d0a-47de-98e9-03ea61910c5b
+idn: prompt_get_section_current_task_analysis
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 598c8b69-a76a-4d3f-9b78-7b2c4c9ffdcc
+    name: v2v_enabled
+    default_value: ""
+path: ""

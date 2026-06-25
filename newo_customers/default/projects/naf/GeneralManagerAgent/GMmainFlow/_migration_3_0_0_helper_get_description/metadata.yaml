@@ -1,0 +1,15 @@
+id: 3acfacdf-fe2c-48c0-865f-293ee4e0bc8f
+idn: _migration_3_0_0_helper_get_description
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: dff95a0d-8ef2-4209-9470-c76690abba08
+    name: title
+    default_value: ""
+  - id: 75c6ea3b-c412-4223-b21f-9ebe07d49146
+    name: body
+    default_value: ""
+path: ""

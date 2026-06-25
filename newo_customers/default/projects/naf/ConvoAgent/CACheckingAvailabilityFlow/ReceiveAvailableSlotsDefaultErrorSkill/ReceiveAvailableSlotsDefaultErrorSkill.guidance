@@ -1,0 +1,38 @@
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_type") == "intercom"}}
+    {{Set(name="target_action", value=GetTriggeredAct(fields=["targetAction"]))}}
+
+    {{#if target_action != "check_availability"}}
+        {{Return()}}
+    {{/if}}
+
+    {{Set(name="output", value=GetTriggeredAct(fields="output"))}}
+
+    {{_utilsSendSystemLogSkill(message=Concat("There was a problem with getting availability: ", output))}}
+{{else}}
+    {{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_type") == "project"}}
+        {{Set(name="output", value=GetTriggeredAct(fields=["output"]))}}
+        {{Set(name="target_action", value=Stringify(GetValueJSON(obj=output, key="targetAction")))}}
+        {{#if target_action != "check_availability"}}
+            {{Return()}}
+        {{/if}}
+        {{Set(name="reason", value=GetValueJSON(obj=output, key="reason"))}}
+        {{_utilsSendSystemLogSkill(message=Concat("There was a problem with getting availability: ", reason))}}
+    {{else}}
+        {{Set(name="command_act_id", value=GetTriggeredAct(fields="commandActId"))}}
+        {{Set(name="target_action", value=GetAct(id=command_act_id, fields=["targetAction"]))}}
+
+        {{#if target_action != "check_availability"}}
+            {{Return()}}
+        {{/if}}
+
+        {{#if GetActor(field="integrationIdn") == "magic_browser"}}
+            {{Set(name="output", value=GetTriggeredAct(fields=["reason"]))}}
+        {{else}}
+            {{Set(name="output", value=GetTriggeredAct(fields=["errorMessage"]))}}
+        {{/if}}
+
+        {{_utilsSendSystemLogSkill(message=Concat("There was a problem with getting availability: ", output))}}
+    {{/if}}
+{{/if}}
+
+{{_notifyUserIssueSkill()}}

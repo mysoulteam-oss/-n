@@ -1,0 +1,9 @@
+id: 63b0458e-2a03-451f-a599-1ac27197f1fa
+idn: TriggerTaskSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

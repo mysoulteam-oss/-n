@@ -1,0 +1,15 @@
+id: 9d0b9f72-63f0-4bdb-a6b4-f3d43a103372
+idn: _enforceOutboundTaskWorkingHoursSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 339a9397-b46a-4e24-b048-a2037c3f0f32
+    name: executionTime
+    default_value: " "
+  - id: 4537d458-102b-4aa8-86c5-b34bc8ca7737
+    name: taskType
+    default_value: " "
+path: ""

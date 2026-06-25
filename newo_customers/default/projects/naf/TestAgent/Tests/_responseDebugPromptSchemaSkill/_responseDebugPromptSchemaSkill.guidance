@@ -1,0 +1,6 @@
+{{! Type LLM Schema for structured generation here (if presented) }}
+{{#system~}}
+{}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

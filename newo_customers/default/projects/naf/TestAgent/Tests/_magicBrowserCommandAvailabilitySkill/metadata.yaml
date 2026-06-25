@@ -1,0 +1,9 @@
+id: 440a9674-bb60-4204-8f1d-efdba5d977a3
+idn: _magicBrowserCommandAvailabilitySkill
+title: _magicBrowserCommandAvailabilitySkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

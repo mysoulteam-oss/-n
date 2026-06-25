@@ -1,0 +1,9 @@
+id: 5952af58-84df-4498-9d62-bad27dee3316
+idn: _prepareAttributesHomeServiceScenarioSkill
+title: _prepareAttributesHomeServiceScenarioSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

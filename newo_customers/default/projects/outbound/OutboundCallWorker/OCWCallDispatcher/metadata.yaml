@@ -1,0 +1,156 @@
+id: b5b55aaf-1324-45b1-b19b-7c0f55188622
+idn: OCWCallDispatcher
+title: OCWCallDispatcher
+description: ""
+default_runner_type: nsl
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: e4f5ffc9-6179-4d0f-9537-07f8d0f7bc2f
+    description: null
+    idn: callback_tool
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: CallbackSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 51c61c4f-01c8-432e-bb8d-462c8af0a6f5
+    description: null
+    idn: call_deadline_exceeded
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: AbortHangedCall
+    state_idn: null
+    integration_idn: program_timer
+    connector_idn: outbound_timer
+  - id: 088eca12-2ad6-45c1-9b79-488887547278
+    description: null
+    idn: conversation_ended
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: HandleConversationEndedSkill
+    state_idn: null
+    integration_idn: newo_voice
+    connector_idn: newo_voice_connector
+  - id: f9e02a29-4fc1-44e0-a4a4-299e8c5c2119
+    description: null
+    idn: conversation_started
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ConversationStarted
+    state_idn: null
+    integration_idn: newo_voice
+    connector_idn: newo_voice_connector
+  - id: 372a0485-e3f1-4ebf-8c00-3e9543170200
+    description: null
+    idn: convoagent_conversation_retrieved
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveConversationSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 730aff58-1785-4a57-8172-3bf612a4a0ea
+    description: null
+    idn: convoagent_voicemail_detected
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: VoiceMailDetectedSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: a6cefa0b-feda-4a2f-8fd8-26170efa3889
+    description: null
+    idn: outbound_call_finished
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: OutboundCallFinishedSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 0b422dab-081b-45d9-a87f-f597dbeb6ae6
+    description: null
+    idn: outbound_make_call_from_person
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: MakeCallSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 01652c9e-1913-484d-a897-b17cadee704d
+    description: null
+    idn: outbound_retry_calling
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: RetryCallSkill
+    state_idn: null
+    integration_idn: program_timer
+    connector_idn: session_timer
+  - id: 29339aac-9edc-44bc-b4c4-ae91618e81ee
+    description: null
+    idn: result_error
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: HandleMakeCallErrorSkill
+    state_idn: null
+    integration_idn: newo_voice
+    connector_idn: newo_voice_connector
+  - id: 216c9d4f-08c2-4e7c-8060-8427729e9d8e
+    description: null
+    idn: server_message_error
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: MakeCallErrorSkill
+    state_idn: null
+    integration_idn: newo_voice
+    connector_idn: newo_voice_connector
+  - id: c0a95bf9-626e-445f-af39-5c43dad50c1f
+    description: null
+    idn: task_manager_dispatch_task
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveTaskSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 573b48fd-b39b-422e-9a8e-24b48d4b1e60
+    description: null
+    idn: task_manager_get_task_success
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: GetTaskResultSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: d845ddea-7846-4cca-91db-b222313830a5
+    description: null
+    idn: user_message
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: test_skill
+    state_idn: null
+    integration_idn: sandbox
+    connector_idn: test_agent_sandbox
+state_fields:
+  - id: 49b0ce45-d392-46d5-a468-fc5f984c37ec
+    title: ""
+    idn: active_calls_number
+    default_value: "0"
+    scope: agent
+  - id: 0641fa4e-d020-40dc-a7e9-f6ebbe184a67
+    title: ""
+    idn: attempts_number
+    default_value: "0"
+    scope: user
+  - id: ecbe308e-fc87-48b4-a4dc-af0c1d4a899a
+    title: ""
+    idn: task_id
+    default_value: ""
+    scope: user
+  - id: 65c5723f-0709-4e85-95cb-363ce2642c6a
+    title: ""
+    idn: voicemail_detected
+    default_value: ""
+    scope: user

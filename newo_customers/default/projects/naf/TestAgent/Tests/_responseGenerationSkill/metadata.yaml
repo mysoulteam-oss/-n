@@ -1,0 +1,9 @@
+id: bc98832c-af0b-4383-8636-2227d16b6e25
+idn: _responseGenerationSkill
+title: _responseGenerationSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

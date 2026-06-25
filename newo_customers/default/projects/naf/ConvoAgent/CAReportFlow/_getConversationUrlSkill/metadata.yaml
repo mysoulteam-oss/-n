@@ -1,0 +1,15 @@
+id: d588ebb4-ad13-4608-8aca-5b2b52b29896
+idn: _getConversationUrlSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 544e5da1-724a-412e-91ac-94c3b58afe78
+    name: portal_url
+    default_value: ""
+  - id: 75aca3f0-64d1-4187-99dc-b6915996bf0e
+    name: include_conversation_records
+    default_value: ""
+path: ""

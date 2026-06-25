@@ -1,0 +1,12 @@
+id: 779cf2bd-6cb6-4e3a-87ed-3b3b6e789649
+idn: _getFooterSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: db88e8d7-b23d-44e7-8347-912ba5a353e3
+    name: tenant
+    default_value: ""
+path: ""

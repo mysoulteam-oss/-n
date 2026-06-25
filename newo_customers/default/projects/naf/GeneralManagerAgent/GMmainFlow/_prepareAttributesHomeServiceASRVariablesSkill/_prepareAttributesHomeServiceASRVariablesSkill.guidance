@@ -1,0 +1,6 @@
+{{!-- TODO: Review values --}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_asr_average_lead_value", value="2500")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_asr_conversion_ratio", value="90")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_asr_recognition", value="40")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_asr_redirection_type_working_hours", value="overflow")}}

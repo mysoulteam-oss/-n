@@ -1,0 +1,9 @@
+id: 28a9a890-30b9-4d0b-9bca-71d49110012a
+idn: _prepareAttributesBeautyTransferCallSkill
+title: _prepareAttributesBeautyTransferCallSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

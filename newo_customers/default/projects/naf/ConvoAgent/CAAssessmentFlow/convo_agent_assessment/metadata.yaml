@@ -1,0 +1,9 @@
+id: 8ebb5a96-3195-4a89-822f-b92c5568205a
+idn: convo_agent_assessment
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

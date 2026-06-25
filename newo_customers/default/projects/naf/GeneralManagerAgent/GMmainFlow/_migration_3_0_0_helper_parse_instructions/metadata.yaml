@@ -1,0 +1,12 @@
+id: 4df5884c-c515-4d88-a724-a777427aaebe
+idn: _migration_3_0_0_helper_parse_instructions
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: be0a6d80-5f30-438c-8984-06b141a9d25e
+    name: instructions
+    default_value: ""
+path: ""

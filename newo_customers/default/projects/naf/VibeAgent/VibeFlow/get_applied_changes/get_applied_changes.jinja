@@ -1,0 +1,20 @@
+{% set user_id = GetUser().id | string %}
+{% set actor_id_normalized = (GetActor().id | string).replace('-', '') %}
+{% set persona_field = "applied_changes_" ~ actor_id_normalized %}
+{% set applied_changes_raw = GetPersonaAttribute(id=user_id, field=persona_field).strip() %}
+{% set applied_changes = {} %}
+
+{% if applied_changes_raw %}
+    {% set applied_changes = json.loads(applied_changes_raw) %}
+{% endif %}
+
+{% if change_id %}
+    {% set change_key = change_id.replace('-', '') %}
+    {% if change_key in applied_changes %}
+        {{Return(val=json.dumps(applied_changes[change_key], ensure_ascii=False, indent=2))}}
+    {% else %}
+        {{Return(val=json.dumps({}, ensure_ascii=False, indent=2))}}
+    {% endif %}
+{% else %}
+    {{Return(val=json.dumps(applied_changes, ensure_ascii=False, indent=2))}}
+{% endif %}

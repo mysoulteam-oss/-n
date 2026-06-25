@@ -1,0 +1,18 @@
+id: f4f008b6-03b6-4a64-bd9a-a0620b011c45
+idn: _sendEmailInformationSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 96fe75af-2ab0-4581-9e2f-99cb91838c0b
+    name: agentAnswer
+    default_value: " "
+  - id: 278d2a76-9a42-415d-bb19-338b0016acec
+    name: memory
+    default_value: " "
+  - id: b09ed757-3a40-4c89-b828-947c3c182989
+    name: userId
+    default_value: " "
+path: ""

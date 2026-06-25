@@ -1,0 +1,12 @@
+id: dcbe80c7-ec94-4f95-a4fb-8fcc7a50f1fd
+idn: _getPersonaIdSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 2b21a2bb-99d7-4048-ae7e-86746ab4e88d
+    name: phone_number
+    default_value: "null"
+path: ""

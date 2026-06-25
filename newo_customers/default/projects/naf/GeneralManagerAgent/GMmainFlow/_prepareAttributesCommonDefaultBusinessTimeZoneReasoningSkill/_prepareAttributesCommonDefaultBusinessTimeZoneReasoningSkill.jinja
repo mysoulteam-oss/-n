@@ -1,0 +1,30 @@
+{% set supported_time_zones = GetCustomerMetadataAttribute(idn="project_business_time_zone").possibleValues %}
+{% if not supported_time_zones %}
+    {# Fallback #}
+    {% set supported_time_zones = json.loads(_prepareAttributesCommonDefaultBusinessTimeZoneSupportedValuesSkill()) %}
+{% endif %}
+
+{% set explicit_equivalents = {
+    "America/Kingston": "America/Panama",
+    "America/Quito": "America/Lima",
+} %}
+
+{% set raw_time_zone = (time_zone or "").strip() %}
+{% if not raw_time_zone %}
+    {{Return(val="")}}
+{% endif %}
+
+{% if raw_time_zone in supported_time_zones %}
+    {{Return(val=raw_time_zone)}}
+{% endif %}
+
+{% set explicit_equivalent = explicit_equivalents.get(raw_time_zone, "") %}
+{% if explicit_equivalent %}
+    {{Return(val=explicit_equivalent)}}
+{% endif %}
+
+{% if raw_time_zone not in zoneinfo.available_timezones() %}
+    {{Return(val="")}}
+{% endif %}
+
+{{Return(val="")}}

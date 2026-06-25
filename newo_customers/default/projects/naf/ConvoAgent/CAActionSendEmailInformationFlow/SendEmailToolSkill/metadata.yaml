@@ -1,0 +1,9 @@
+id: 4602ba8a-74f1-45dd-b238-368528cc7132
+idn: SendEmailToolSkill
+title: SendEmailToolSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

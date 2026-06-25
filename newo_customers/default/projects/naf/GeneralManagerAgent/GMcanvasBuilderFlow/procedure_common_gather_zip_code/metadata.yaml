@@ -1,0 +1,9 @@
+id: ba77c038-4160-4502-897d-1b70c454cc41
+idn: procedure_common_gather_zip_code
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

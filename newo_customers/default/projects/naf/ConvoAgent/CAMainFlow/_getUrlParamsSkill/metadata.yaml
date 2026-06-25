@@ -1,0 +1,12 @@
+id: dcce6fb3-2b0e-4580-a272-660b092c94b7
+idn: _getUrlParamsSkill
+title: _getUrlParamsSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 1b46e52d-9534-464f-9fad-6f92b98a5a0f
+    name: url
+    default_value: " "
+path: ""

@@ -1,0 +1,9 @@
+id: cc5cbc53-6dc5-48e4-9233-1e1032778d9e
+idn: scenario_general_relaying_message
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

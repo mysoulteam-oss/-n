@@ -1,0 +1,9 @@
+id: 600217a9-e631-4859-9598-0ed7fafe4235
+idn: EnableFollowUp
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

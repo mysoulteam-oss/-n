@@ -1,0 +1,171 @@
+{% set act = GetTriggeredAct() %}
+{% set tools = json.loads(compile_tools_object(conversation_channel=act.arguments.conversationChannel)) %}
+
+{% if not tools.tools %}
+    {{Return()}}
+{% endif %}
+{% set all_tools = tools.tools %}
+{% set user_id = GetUser().id | string %}
+{% set memory = act.arguments.memory %}
+{% set memory_without_latest_agent_answer = act.arguments.memoryWithoutLatestAgentAnswer %}
+{% set latest_agent_answer = act.arguments.convoAgentAnswer %}
+{% set channel = act.arguments.conversationChannel %}
+
+{% set tools_without_conversation_history = {} %}
+{% set tools_with_conversation_history = {} %}
+{% set tools_to_call_filtered = [] %}
+{% set conflict_dict = {} %}
+{% set rerank_candidates = {} %}
+{% for tool_name, tool_content in all_tools.items() %}
+    {# Group all conflicting tools by tag #}
+    {% if tool_content.conflictPolicy and tool_content.conflictPolicy.tag %}
+        {% if conflict_dict[tool_content.conflictPolicy.tag] %}
+            {{conflict_dict[tool_content.conflictPolicy.tag].tools.update({tool_name: tool_content})}}
+        {% else %}
+            {{conflict_dict.update({tool_content.conflictPolicy.tag: {"tools": {tool_name: tool_content}}})}}
+        {% endif %}
+    {% endif %}
+    {% if tool_content.useConversationHistory %}
+        {{tools_with_conversation_history.update({tool_name: tool_content})}}
+    {% else %}
+        {{tools_without_conversation_history.update({tool_name: tool_content})}}
+    {% endif %}
+{% endfor %}
+
+{# Prefill rerank candidates #}
+{% for key in conflict_dict.keys() %}
+    {% if conflict_dict[key].tools and conflict_dict[key].tools | length >= 2 %}
+        {{rerank_candidates.update({key: {"tools": {}}})}}
+    {% endif %}
+{% endfor %}
+
+{# TODO: Refactor. Potentially, completely change `Tools` structure by removing top-level key `tools` #}
+{% if tools_without_conversation_history %}
+    {% set tools_without_conversation_history_complete_object = tools %}
+    {{tools_without_conversation_history_complete_object.update({"tools": tools_without_conversation_history})}}
+    {% set tools_to_call_without_conversation_history = get_tools_to_call(
+        user_id=user_id,
+        memory_without_latest_agent_answer=memory_without_latest_agent_answer,
+        latest_agent_answer=latest_agent_answer,
+        tools=json.dumps(tools_without_conversation_history_complete_object, ensure_ascii=False, indent=2),
+        channel=channel,
+        use_conversation_history=False
+    ) %}
+
+    {% set tools_to_call_without_conversation_history = json.loads(tools_to_call_without_conversation_history) %}
+    {% for tool in tools_to_call_without_conversation_history %}
+        {% set tool_object = all_tools[tool] %}
+        {# Check if it does not have conflict policy or have no other candidates on this policy #}
+        {# If the tool does not have a chance to conflict, we run it immediately #}
+        {% if not tool_object.conflictPolicy or not tool_object.conflictPolicy.tag or not conflict_dict[tool_object.conflictPolicy.tag] or conflict_dict[tool_object.conflictPolicy.tag].tools.keys() | length < 2 %}
+            {% set action_type = 'send_event' %}
+            {% if tool_object.action and tool_object.action.type %}
+                {% set action_type = tool_object.action.type %}
+            {% endif %}
+            {{Do(actionName="handle_" ~ action_type ~ "_action",
+                memory=memory,
+                memory_without_latest_agent_answer=memory_without_latest_agent_answer,
+                latest_agent_answer=latest_agent_answer,
+                conversation_channel=act.arguments.conversationChannel,
+                main_instruction=act.arguments.mainInstruction,
+                tool_name=tool,
+                tool_object=tool_object,
+                user_id=user_id
+            )}}
+            {{tools_to_call_filtered.append(tool)}}
+        {% else %}
+            {{rerank_candidates[tool_object.conflictPolicy.tag].tools.update({tool: tool_object})}}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{% if tools_with_conversation_history %}
+    {% set tools_with_conversation_history_complete_object = tools %}
+    {{tools_with_conversation_history_complete_object.update({"tools": tools_with_conversation_history})}}
+    {% set tools_to_call_with_conversation_history = get_tools_to_call(
+        user_id=user_id,
+        memory_without_latest_agent_answer=memory_without_latest_agent_answer,
+        latest_agent_answer=latest_agent_answer,
+        tools=json.dumps(tools_with_conversation_history_complete_object, ensure_ascii=False, indent=2),
+        channel=channel,
+        use_conversation_history=True
+    ) %}
+
+    {% set tools_to_call_with_conversation_history = json.loads(tools_to_call_with_conversation_history) %}
+    {% for tool in tools_to_call_with_conversation_history %}
+        {% set tool_object = all_tools[tool] %}
+        {# Check if it does not have conflict policy or have no other candidates on this policy #}
+        {# If the tool does not have a chance to conflict, we run it immediately #}
+        {% if not tool_object.conflictPolicy or not tool_object.conflictPolicy.tag or not conflict_dict[tool_object.conflictPolicy.tag] or conflict_dict[tool_object.conflictPolicy.tag].tools.keys() | length < 2 %}
+            {% set action_type = 'send_event' %}
+            {% if tool_object.action and tool_object.action.type %}
+                {% set action_type = tool_object.action.type %}
+            {% endif %}
+            {{Do(actionName="handle_" ~ action_type ~ "_action",
+                memory=memory,
+                memory_without_latest_agent_answer=memory_without_latest_agent_answer,
+                latest_agent_answer=latest_agent_answer,
+                conversation_channel=act.arguments.conversationChannel,
+                main_instruction=act.arguments.mainInstruction,
+                tool_name=tool,
+                tool_object=tool_object,
+                user_id=user_id
+            )}}
+            {{tools_to_call_filtered.append(tool)}}
+        {% else %}
+            {{rerank_candidates[tool_object.conflictPolicy.tag].tools.update({tool: tool_object})}}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{# ranking conflicts #}
+{% for tag in rerank_candidates.keys() %}
+    {% if rerank_candidates[tag].tools %}
+        {% if rerank_candidates[tag].tools.keys() | length == 1 %}
+            {% set selected_tool = rerank_candidates[tag].tools.keys() | list | first %}
+        {% else %}
+            {% set selected_tool = rerank_conflict(
+                memory_without_latest_agent_answer=memory_without_latest_agent_answer,
+                latest_agent_answer=latest_agent_answer,
+                tools=json.dumps(conflict_dict[tag], ensure_ascii=False, indent=2),
+                channel=channel,
+            ) %}
+        {% endif %}
+        {% set tool_object = all_tools[selected_tool] %}
+        {% set action_type = 'send_event' %}
+        {% if tool_object.action and tool_object.action.type %}
+            {% set action_type = tool_object.action.type %}
+        {% endif %}
+        {{Do(actionName="handle_" ~ action_type ~ "_action",
+            memory=memory,
+            memory_without_latest_agent_answer=memory_without_latest_agent_answer,
+            latest_agent_answer=latest_agent_answer,
+            conversation_channel=act.arguments.conversationChannel,
+            main_instruction=act.arguments.mainInstruction,
+            tool_name=selected_tool,
+            tool_object=tool_object,
+            user_id=user_id
+        )}}
+        {{tools_to_call_filtered.append(selected_tool)}}
+    {% endif %}
+{% endfor %}
+
+{% if tools_to_call_filtered %}
+    {% set interval = '60' %}
+    {% if channel in ("phone", "webcall") %}
+        {% set interval = GetCustomerAttribute(field="project_attributes_setting_follow_up_timer_voice_interval_agent_speech_ended") %}
+    {% else %}
+        {% set interval = GetCustomerAttribute(field="project_attributes_setting_follow_up_timer_chat_interval_base") %}
+    {% endif %}
+    {{SendSystemEvent(
+        eventIdn="convoagent_update_followup",
+        connectorIdn="system",
+        interval=interval,
+        personaId=user_id,
+        reason="tool call"
+    )}}
+{% endif %}
+
+{% if tools_to_call_filtered %}
+    {{SetState(name="conversation_channel", value=act.arguments.conversationChannel)}}
+{% endif %}

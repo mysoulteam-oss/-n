@@ -1,0 +1,9 @@
+id: f57522da-04a0-4a0a-846b-b9ce97270bd1
+idn: _identifyDisasterSchemaSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

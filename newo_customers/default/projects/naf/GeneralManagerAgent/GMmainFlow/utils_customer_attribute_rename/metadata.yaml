@@ -1,0 +1,15 @@
+id: 66dfc83a-69c7-4913-aeb7-bd50cf19c204
+idn: utils_customer_attribute_rename
+title: utils_customer_attribute_rename
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: b7fbb5a1-ebca-47d7-9458-d67029b94cbf
+    name: new_idn
+    default_value: ""
+  - id: 3fbca436-c13e-4e54-844f-bf3663c3024f
+    name: old_idn
+    default_value: ""
+path: ""

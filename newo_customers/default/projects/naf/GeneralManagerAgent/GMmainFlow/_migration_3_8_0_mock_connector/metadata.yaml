@@ -1,0 +1,9 @@
+id: faf4c700-a961-4630-aca1-698152b0aef4
+idn: _migration_3_8_0_mock_connector
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

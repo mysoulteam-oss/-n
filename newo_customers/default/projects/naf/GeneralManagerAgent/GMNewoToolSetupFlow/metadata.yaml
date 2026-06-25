@@ -1,0 +1,19 @@
+id: 5b37d5d5-96d4-42a3-8e10-083ed2b14257
+idn: GMNewoToolSetupFlow
+title: GMNewoToolSetupFlow
+description: ""
+default_runner_type: nsl
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 4e50ed5b-a3c5-4b2e-b15c-a9e0c299b59a
+    description: null
+    idn: generalmanageragent_update_newo_tools
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: UpdateNewoTool
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

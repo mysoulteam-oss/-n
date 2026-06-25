@@ -1,0 +1,27 @@
+id: 8b4af233-47b8-427d-963a-c559e821797c
+idn: get_tools_to_call
+title: get_tools_to_call
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 30657ef9-17db-4f30-9a00-3f945bfcca16
+    name: user_id
+    default_value: ""
+  - id: d82c4902-516e-41c4-989e-c9fa027579f2
+    name: memory_without_latest_agent_answer
+    default_value: ""
+  - id: 9b614fc9-9705-4936-9068-e85a17752d76
+    name: tools
+    default_value: "[]"
+  - id: 167e61a2-3696-4106-b53c-9dbea685c1bd
+    name: channel
+    default_value: ""
+  - id: f3c992af-82d9-4daa-8267-4e90a1c4b780
+    name: latest_agent_answer
+    default_value: ""
+  - id: 9ffe9d86-b50c-4b75-9c80-0545ad8bad30
+    name: use_conversation_history
+    default_value: ""
+path: ""

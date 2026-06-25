@@ -1,0 +1,9 @@
+id: 2a49232c-ba6b-4ce3-a94a-2254d71e2ce7
+idn: scenario_dental_introduction
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

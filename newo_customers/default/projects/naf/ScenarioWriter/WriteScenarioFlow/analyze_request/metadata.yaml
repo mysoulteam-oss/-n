@@ -1,0 +1,12 @@
+id: 3ffd2f92-d345-4c18-b052-f6afd6534b98
+idn: analyze_request
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 97b614e2-0f91-4ed4-a280-6f46ddd00562
+    name: request
+    default_value: ""
+path: ""

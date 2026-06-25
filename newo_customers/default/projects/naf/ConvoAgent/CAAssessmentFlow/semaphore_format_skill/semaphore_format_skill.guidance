@@ -1,0 +1,70 @@
+{{!-- Bullet list formatting emojis --}}
+{{Set(name="bullet", value="🆗")}}
+{{Set(name="warning", value="⚠️")}}
+{{Set(name="cross", value="❌")}}
+{{Set(name="hand", value="✋")}}
+
+{{Set(name="nl", value="
+")}}
+{{Set(name="hr", value=Concat(nl, "---", nl))}}
+
+{{!-- Basic JSON unpack --}}
+{{Set(name="report", value=utils_unpack_json_string(source=report))}}
+
+
+{{!-- Expected Result formatting --}}
+{{#if expected == "True"}}
+    {{Set(name="report", value=report.replace("[STEP]", bullet))}}
+{{/if}}
+
+
+{{!-- Actual Result formatting --}}
+{{#if actual == "True"}}
+    {{Set(name="report", value=report.replace("[YES]", bullet))}}
+    {{Set(name="report", value=report.replace("[NO]", cross))}}
+
+    {{!-- Append technical issues section --}}
+    {{Set(name="technical_issues", value=Stringify(GetValueJSON(
+        obj=GetValueJSON(obj=analysis, key="analysis"),
+        key="technical_issues"
+    )))}}
+    {{#if technical_issues != "n/a"}}
+        {{Set(name="report", value=Concat(report, hr, warning, "Probably technical issue: ", technical_issues))}}
+    {{/if}}
+
+    {{!-- Append mentioned issues section --}}
+    {{Set(name="mentioned_issues", value=Stringify(GetValueJSON(
+        obj=GetValueJSON(obj=analysis, key="analysis"),
+        key="mentioned_issues"
+    )))}}
+    {{#if mentioned_issues != "n/a"}}
+        {{Set(name="report", value=Concat(report, hr, warning, "Experienced issue: ", mentioned_issues))}}
+    {{/if}}
+
+    {{!-- Append user refusal section --}}
+    {{Set(name="user_refused", value=Stringify(GetValueJSON(
+        obj=GetValueJSON(obj=analysis, key="analysis"),
+        key="user_refused"
+    )))}}
+    {{#if user_refused == "true"}}
+        {{Set(name="report", value=Concat(report, hr, hand, "Probably refused by the user."))}}
+    {{/if}}
+
+    {{!-- Append user fail section --}}
+    {{Set(name="fail_caused_by_user", value=Stringify(GetValueJSON(
+        obj=GetValueJSON(obj=analysis, key="analysis"),
+        key="fail_caused_by_user"
+    )))}}
+    {{#if fail_caused_by_user == "true"}}
+        {{Set(name="report", value=Concat(report, hr, hand, "Probably failed by the user."))}}
+    {{/if}}
+
+    {{!-- Append TO notification section --}}
+    {{Set(name="is_reporting", value=Stringify(GetValueJSON(obj=analysis, key="is_reporting")))}}
+    {{#if is_reporting == "true"}}
+        {{Set(name="report", value=Concat(report, hr, warning, "Must be reported to Technical Owners."))}}
+    {{/if}}
+{{/if}}
+
+
+{{Return(val=Stringify(report))}}

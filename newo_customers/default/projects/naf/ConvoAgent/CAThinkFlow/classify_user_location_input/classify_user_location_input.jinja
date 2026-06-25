@@ -1,0 +1,98 @@
+{#
+ Input parameters:
+ - memory_conversation: The conversation history or current conversation context.
+#}
+
+{% set user_id = GetUser().id | string %}
+{% set user_info = GetPersonaAttribute(id=user_id, field="custom_user_data") %}
+
+{% set served_zip_codes = GetCustomerAttribute(field="project_attributes_products_and_services_served_zip_codes") %}
+{% set served_area = GetCustomerAttribute(field="project_attributes_products_and_services_served_area") %}
+
+{% set served_zip_codes_trimmed = served_zip_codes | trim %}
+
+{% if served_zip_codes_trimmed == '[]' or
+      served_zip_codes_trimmed == '[""]' or
+      served_zip_codes_trimmed == '' %}
+    {{check_service_area_by_location(
+        memory_conversation=memory_conversation,
+        served_area=served_area
+    )}}
+    {{Return()}}
+{% endif %}
+
+{% set schema = double_check_information_schemas(zip_code_city_schema="True") %}
+
+{% system %}
+You are given <Conversation> and <UserInformation>. Your goal is to build a JSON object based on the provided schema.
+Determine whether the user provided a ZIP code and/or a city.
+
+Rules:
+- If the user clearly provided only a ZIP code, set `location_type` to "zip_code".
+- If the user clearly provided only his location place (country, state/region or city), set `location_type` to "user_area".
+- If the user clearly provided both his location place (country, state/region or city) and a ZIP code, set `location_type` to "both".
+- If neither a ZIP code nor a location place is clearly provided, set `location_type` to "none".
+- If a ZIP code is mentioned but it is clearly incorrect, incomplete or very short (for example, only 1–3 characters), set `zip_code_provided` = true and `zip_code_complete` = false.
+- Use the <UserInformation> section as previous context: if a ZIP code or location was already stored there, you may reuse it.
+
+<Conversation>
+{{memory_conversation}}
+</Conversation>
+
+<UserInformation>
+{{user_info}}
+</UserInformation>
+{% end %}
+
+{% set location_info = Gen(
+    jsonSchema=schema,
+    validateSchema=True,
+    temperature=0.2,
+    topP=0,
+    thinkingBudget=425
+) %}
+
+{% set user_location = json.loads(location_info) %}
+
+{% set location_type = user_location.location_type %}
+{% set zip_code_provided = user_location.zip_code_provided %}
+{% set zip_code_complete = user_location.zip_code_complete %}
+{% set zip_code = user_location.zip_code %}
+{% set location_provided = user_location.location_provided %}
+{% set area = user_location.area %}
+
+{% if location_type == "zip_code" or location_type == "both" %}
+    {% if not zip_code_complete %}
+        {{SendSystemEvent(
+            eventIdn='urgent_message',
+            connectorIdn='system',
+            baseInstruction='Apologize to the user and say: "I’m sorry, but it seems like I didn’t catch your full ZIP code. Could you please provide the complete one?"',
+            uninterruptible='True'
+        )}}
+        {{Return()}}
+    {% endif %}
+
+    {{check_service_area_by_zip(
+        zip_code=zip_code,
+        served_zip_codes=served_zip_codes
+    )}}
+    {{Return()}}
+{% endif %}
+
+{% if location_type == 'user_area' %}
+    {{check_service_area_by_location(
+        memory_conversation=memory_conversation,
+        served_area=served_area
+    )}}
+    {{Return()}}
+{% endif %}
+
+{% if location_type == 'none' %}
+    {{SendSystemEvent(
+        eventIdn='urgent_message',
+        connectorIdn='system',
+        baseInstruction='Apologize to the user and say: "I’m sorry, but it seems like I didn’t catch your location. Could you please provide the complete zip code or your city?"',
+        uninterruptible='True'
+    )}}
+    {{Return()}}
+{% endif %}

@@ -1,0 +1,9 @@
+id: f3005e1f-6d23-4d2b-bd75-b48b59182571
+idn: ResultSuccessSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

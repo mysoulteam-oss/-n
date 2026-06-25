@@ -1,0 +1,18 @@
+id: 457ed4d8-550d-4497-ac4e-850a41ab0ca2
+idn: _resolveSchemaDynamicProperties
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: c1e53719-8400-45cb-87fc-b640366c8e79
+    name: industry
+    default_value: " "
+  - id: 3c23f54a-757e-4569-b4dc-9d5696016d8d
+    name: userId
+    default_value: " "
+  - id: defa47b2-c4f8-4783-844e-f64ae4bc7651
+    name: schema
+    default_value: " "
+path: ""

@@ -1,0 +1,9 @@
+id: c32322df-7c8b-48dc-9b81-064bf08efbae
+idn: _prepareAttributesRestaurantTransferCallSkill
+title: _prepareAttributesRestaurantTransferCallSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

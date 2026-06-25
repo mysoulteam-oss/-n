@@ -1,0 +1,9 @@
+id: 0a56b65e-0095-4359-a4fc-7221e90fe18b
+idn: prepare_connectors_sandbox_integration
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

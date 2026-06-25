@@ -1,0 +1,21 @@
+id: 47505b61-6722-4f88-a536-458d8c0a533d
+idn: handle_after_action
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 3d29982f-9dce-47cf-98cc-0533c833e2e9
+    name: after_action
+    default_value: ""
+  - id: fdfa5f81-3fbc-47ca-817f-90d3bfeb0f52
+    name: input
+    default_value: ""
+  - id: e42efb5c-bd26-4782-adff-e5fbc4531427
+    name: user_id
+    default_value: ""
+  - id: 965910e3-703d-4307-9ea5-3c91fd752b5e
+    name: tool_name
+    default_value: ""
+path: ""

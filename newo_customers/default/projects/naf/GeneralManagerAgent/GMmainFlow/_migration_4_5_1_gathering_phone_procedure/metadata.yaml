@@ -1,0 +1,9 @@
+id: 6b272b2f-0ef3-49d1-a5e2-cdbc07c96d50
+idn: _migration_4_5_1_gathering_phone_procedure
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

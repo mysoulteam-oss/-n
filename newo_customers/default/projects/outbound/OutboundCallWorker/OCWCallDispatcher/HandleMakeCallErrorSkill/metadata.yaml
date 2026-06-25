@@ -1,0 +1,9 @@
+id: e9b307f1-6868-48ae-bb4c-ee33e728c87c
+idn: HandleMakeCallErrorSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,15 @@
+id: 5aaa0198-765c-401f-9508-a943ec7708e1
+idn: _createActorsSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 14c28702-12ff-4634-9ef5-e961c23ab6b2
+    name: phoneNumber
+    default_value: " "
+  - id: 532236d1-ea4a-4485-b102-3e9f8936ee16
+    name: newoExternalChatId
+    default_value: " "
+path: ""

@@ -1,0 +1,15 @@
+id: 3ef96d18-a6b2-434b-a9e6-5017e4b3f7b8
+idn: generate_procedures
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 57cbcd90-5220-4d31-90ba-3968a2e8c256
+    name: query
+    default_value: ""
+  - id: f73131ea-309b-46f9-84a6-08417e2ba72c
+    name: source
+    default_value: ""
+path: ""

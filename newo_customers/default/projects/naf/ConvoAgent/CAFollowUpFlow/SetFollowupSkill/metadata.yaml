@@ -1,0 +1,9 @@
+id: 90ca560c-d369-40d2-b21e-044c7e88dd87
+idn: SetFollowupSkill
+title: SetFollowupSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,12 @@
+id: 35b8f79d-9db4-424d-b496-f40935f57786
+idn: _prepareMultiLocationLocationsObjectSchemaSkill
+title: _prepareMultiLocationLocationsObjectSchemaSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 4bbb9676-17f0-46cf-a30b-a741fbad46be
+    name: indexes
+    default_value: ""
+path: ""

@@ -1,0 +1,18 @@
+id: d8bc238f-5e49-48e4-aa8d-5a051a48beab
+idn: cancel_booking
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: eb44ab1f-57e9-4799-8cb6-e7364042892d
+    name: booking_id
+    default_value: ""
+  - id: e1ea2cf4-09b1-444e-b604-f5e792585ac7
+    name: user_bookings
+    default_value: ""
+  - id: ed26f3f1-6633-40c1-97c1-36682a8b70f2
+    name: notes
+    default_value: ""
+path: ""

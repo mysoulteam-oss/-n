@@ -1,0 +1,15 @@
+id: 9e694443-5130-4b7d-8d88-54898084088c
+idn: _utilsRemoveRowSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 85911a04-67d9-4a69-9b9d-8303975c4309
+    name: rows
+    default_value: " "
+  - id: a81f5cb4-291e-45b1-b3b9-2f2fcb313054
+    name: rowToRemove
+    default_value: " "
+path: ""

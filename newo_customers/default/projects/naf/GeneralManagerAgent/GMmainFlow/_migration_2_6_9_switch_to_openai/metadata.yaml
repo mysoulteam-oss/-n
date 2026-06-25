@@ -1,0 +1,9 @@
+id: f742864d-fb1a-4164-84d0-fbf0e34d0d36
+idn: _migration_2_6_9_switch_to_openai
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

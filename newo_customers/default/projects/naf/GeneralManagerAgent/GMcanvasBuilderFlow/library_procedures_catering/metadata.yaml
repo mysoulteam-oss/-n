@@ -1,0 +1,9 @@
+id: e48193d5-03f3-4612-b5b0-833893b9abd6
+idn: library_procedures_catering
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

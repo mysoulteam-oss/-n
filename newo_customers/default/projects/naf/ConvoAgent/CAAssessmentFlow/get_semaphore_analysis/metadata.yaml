@@ -1,0 +1,33 @@
+id: f87b0a42-69e2-4aae-a8e4-ba5e9ea38027
+idn: get_semaphore_analysis
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: d74239db-faee-49d1-b45f-ebc339d3f104
+    name: intents
+    default_value: ""
+  - id: dd3f6fe2-baae-4009-babf-75fdc2c300f7
+    name: logs
+    default_value: ""
+  - id: ebee4af8-c1d1-417f-8af5-683c7914b71f
+    name: main_scenario
+    default_value: ""
+  - id: 8e3d6cfe-64f5-44c7-8b57-e96fae983331
+    name: working_hours_status_bool
+    default_value: ""
+  - id: d07d3d82-79ed-4f22-8406-b6a811af0622
+    name: transcript
+    default_value: ""
+  - id: 004fab90-f4ae-4f33-bb38-699a9747d91c
+    name: session_short_description
+    default_value: ""
+  - id: 4a076fad-ac5b-4bda-989c-53541f753a74
+    name: scenarios
+    default_value: ""
+  - id: 4303b038-b5e5-4af9-be69-112beabecb5a
+    name: conversation_channel
+    default_value: ""
+path: ""

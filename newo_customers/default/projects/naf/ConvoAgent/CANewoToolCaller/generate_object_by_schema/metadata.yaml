@@ -1,0 +1,21 @@
+id: dabe92d4-5002-421e-9d5e-932b727fd4ad
+idn: generate_object_by_schema
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: ca10e674-31b9-408f-8e46-c0b06bdda4ef
+    name: user_id
+    default_value: ""
+  - id: 965fa143-7a04-43e1-ac28-abeee80db8cd
+    name: memory_without_latest_agent_answer
+    default_value: ""
+  - id: cdaac42e-65a1-41fa-93da-16ac252c0027
+    name: latest_agent_answer
+    default_value: ""
+  - id: 6b3ccfe3-3b21-4c5d-9f18-044e5f6521d0
+    name: schema
+    default_value: ""
+path: ""

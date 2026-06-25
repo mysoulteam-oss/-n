@@ -1,0 +1,23 @@
+{% set prefix = "_" %}
+{% set user_id = GetUser().id | string %}
+
+{% if thoughts == "True" %}
+    {% set prefix = "thoughts_" %}
+{% elif system == "True" %}
+    {% set prefix = "system_" %}
+{% elif debug == "True" %}
+    {% set prefix = "debug_" %}
+{% endif %}
+
+{% set footnote_actor_id = GetPersonaAttribute(id=user_id, field=prefix ~ "footnote_actor_id") %}
+
+{% if footnote_actor_id.strip() %}
+    {{Return(val=footnote_actor_id)}}
+{% endif %}
+
+{% set external_id = prefix ~ "footnote_" ~ (GetActor().externalId | string).replace("-", "_") ~ (uuid.uuid4() | string).replace("-", "_") %}
+{% set created_actor_id = CreateActor(integrationIdn="system", connectorIdn=prefix ~ "footnote", externalId=external_id, personaId=user_id) | string %}
+
+{{SetPersonaAttribute(id=user_id, field=prefix ~ "footnote_actor_id", value=created_actor_id)}}
+
+{{Return(val=created_actor_id)}}

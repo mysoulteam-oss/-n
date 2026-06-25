@@ -1,0 +1,9 @@
+id: dcecca5f-5536-4464-8b2f-098be8bdc9f2
+idn: _prepareAttributesHospitalityASRVariablesSkill
+title: _prepareAttributesHospitalityASRVariablesSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

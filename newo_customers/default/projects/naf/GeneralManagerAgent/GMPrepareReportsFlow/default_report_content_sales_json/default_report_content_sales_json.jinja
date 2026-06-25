@@ -1,0 +1,81 @@
+{% set content_json = {
+  "reports": [
+    {
+      "report_type": "[L] Sale to a Client",
+      "fields": [
+        "User name",
+        "User phone",
+        "User email",
+        "Service requested",
+        "Appointment day requested",
+        "Appointment time requested",
+        "How did you hear about us",
+        "40-word summary"
+      ],
+      "subject_template": "SALE TO A CLIENT: [user name] [user phone] - [6-word summary]",
+      "sms_template": "SALE TO A CLIENT: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "[L] Sale to a Partner",
+      "fields": [
+        "User name",
+        "User phone",
+        "User email",
+        "Service or partnership type requested",
+        "Appointment day requested",
+        "Appointment time requested",
+        "How did you hear about us",
+        "40-word summary"
+      ],
+      "subject_template": "SALE TO A PARTNER: [user name] [user phone] - [6-word summary]",
+      "sms_template": "SALE TO A PARTNER: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "[L] Closing via Appointment",
+      "fields": [
+        "User name",
+        "User phone",
+        "User email",
+        "Product or service of interest",
+        "Appointment day requested",
+        "Appointment time requested",
+        "40-word summary"
+      ],
+      "subject_template": "CLOSING VIA APPOINTMENT: [user name] [user phone] - [6-word summary]",
+      "sms_template": "CLOSING VIA APPOINTMENT: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "[L] Closing via Product Link",
+      "fields": [
+        "User name",
+        "User phone",
+        "User email",
+        "Product or service of interest",
+        "Requested information type",
+        "40-word summary"
+      ],
+      "subject_template": "CLOSING VIA PRODUCT LINK: [user name] [user phone] - [6-word summary]",
+      "sms_template": "CLOSING VIA PRODUCT LINK: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "Spam Session",
+      "fields": ["Caller phone number", "40-word summary"],
+      "subject_template": "SPAM SESSION: [caller phone number] - [6-word summary]",
+      "sms_template": "SPAM SESSION: [caller phone number] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "Test Session",
+      "fields": ["User name (if provided)", "User phone", "40-word summary"],
+      "subject_template": "TEST SESSION: [user name or \"Unknown\"] [user phone] - [6-word summary]",
+      "sms_template": "TEST SESSION: [user name or \"Unknown\"] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "Other type of session",
+      "fields": ["User name", "User phone", "40-word summary"],
+      "subject_template": "OTHER: [user name] [user phone] - [6-word summary]",
+      "sms_template": "OTHER: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    }
+  ]
+} %}
+
+{{Return(val=json.dumps(content_json, ensure_ascii=False, indent=2))}}

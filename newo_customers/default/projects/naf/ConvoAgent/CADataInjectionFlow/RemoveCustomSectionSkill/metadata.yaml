@@ -1,0 +1,9 @@
+id: 163d88d6-1bff-433f-9396-abaacedfde6c
+idn: RemoveCustomSectionSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

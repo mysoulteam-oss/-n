@@ -1,0 +1,62 @@
+{% set title = '## **Scenario 2:** "Make a Large Group Reservation via Email"' %}
+
+{% set body %}
+### **Step 2.1:** Tell the User that since they want to make a reservation for a large group, you’ll need to collect a few more details. Ask how many guests are expected.
+
+### **Step 2.2:** Follow **Reconfirming or Gathering User Name** procedure.
+
+### **Step 2.3:** **CRITICAL STEP!!!** Follow **Gathering Preferred Date and Time** procedure.
+
+### **Step 2.4:** **CRITICAL STEP!!!** If the User's Phone Number is not known get it by following the **Reconfirming or Gathering Phone Number** procedure. If the User's phone is known say that you will use [user's phone number] and proceed to the next step.
+
+### **Step 2.5:** **CRITICAL STEP!!!** If the User's email is not known get it by following the **Reconfirming or Gathering Email Address** procedure. If the User's email is known say that you will use [user's email] and proceed to the next step.
+
+### **Step 2.6:**  Ask the user following questions:
+[[project_attributes_hospitality_large_group_reservation_questions]]
+
+### **Step 2.7:** **CRITICAL STEP!!!** Choose your next response depending on `conversation.channel`:
+<Case1 condition="`conversation.channel` is `phone`">
+- **if `business.currently_open` is "true":** You will need to connect the User to the manager. Suggest connecting the User with the manager responsible for large group reservations. If the User agrees, inform the User that if the manager does not answer, you will pass all the information to them, and the manager will contact the User as soon as they are available. Ask the User if they want to be connected with the manager now.
+- **if `business.currently_open` is "false":** Inform the User that you will pass their information to the manager, who will contact them as soon as they are available. Tell them you will send an SMS with all details right away.
+</Case1>
+
+<Case2 condition="`conversation.channel` is `chat`">
+Inform the User that you will pass their information to the manager, who will contact them as soon as possible. Tell them you will send an SMS with all details right away.
+</Case2>
+
+### **Step 2.8:** Follow **Finish Conversation** scenario.
+{% endset %}
+
+{% set description %}
+Collect all required details for a large group reservation—guest count, name, preferred date/time, phone, email, and venue-specific questions. Based on channel and business hours, either connect the user with the manager or forward the details and text them a summary, then close the conversation.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_hospitality_large_group_reservation",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_date_time_hospitality"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_email"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_name"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_phone_number"
+        }
+    ],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

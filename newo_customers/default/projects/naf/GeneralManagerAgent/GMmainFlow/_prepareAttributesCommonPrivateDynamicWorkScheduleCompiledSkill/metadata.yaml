@@ -1,0 +1,12 @@
+id: 59d0c43a-f03e-4b60-ab6e-6045fdb55011
+idn: _prepareAttributesCommonPrivateDynamicWorkScheduleCompiledSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: d6f2d30f-35cd-45ab-ba57-17da40e7a6b6
+    name: testWorkSchedule
+    default_value: " "
+path: ""

@@ -1,0 +1,9 @@
+id: 0b641714-8b0e-467c-9f16-81ca4d0f3c67
+idn: PushAgentTurnSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

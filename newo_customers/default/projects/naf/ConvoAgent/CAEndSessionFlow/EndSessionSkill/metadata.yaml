@@ -1,0 +1,9 @@
+id: 7e7b6f40-5983-4c0b-92e6-bb6ff3ace259
+idn: EndSessionSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

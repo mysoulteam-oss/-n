@@ -1,0 +1,9 @@
+id: 66bab18c-1e7b-4664-8f64-0f43e4c214d7
+idn: session_get_greeting_source_signature
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

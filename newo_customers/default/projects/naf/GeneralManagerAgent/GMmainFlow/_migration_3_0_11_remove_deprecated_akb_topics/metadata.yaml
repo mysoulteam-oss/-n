@@ -1,0 +1,9 @@
+id: 72ad8924-9ceb-44f5-9e76-e7d40d2e884a
+idn: _migration_3_0_11_remove_deprecated_akb_topics
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

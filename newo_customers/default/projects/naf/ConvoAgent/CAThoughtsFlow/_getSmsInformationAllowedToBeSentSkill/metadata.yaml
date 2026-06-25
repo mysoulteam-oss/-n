@@ -1,0 +1,15 @@
+id: 6b42b8ea-5222-4f39-9d28-316fddec2228
+idn: _getSmsInformationAllowedToBeSentSkill
+title: _getSmsInformationAllowedToBeSentSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 08792784-ec03-48a2-9778-58a95f5adf56
+    name: userId
+    default_value: " "
+  - id: be429fee-3859-46ca-b4c3-99e2efd1ccdf
+    name: industry
+    default_value: " "
+path: ""

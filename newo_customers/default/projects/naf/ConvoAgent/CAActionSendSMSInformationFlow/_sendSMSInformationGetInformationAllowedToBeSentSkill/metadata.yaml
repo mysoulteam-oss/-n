@@ -1,0 +1,12 @@
+id: 1a2f77f2-0591-4a6d-a791-05fa27ab96a7
+idn: _sendSMSInformationGetInformationAllowedToBeSentSkill
+title: _sendSMSInformationGetInformationAllowedToBeSentSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 22685e0f-ad88-4a2a-a71a-d63b5a8dffd5
+    name: userId
+    default_value: " "
+path: ""

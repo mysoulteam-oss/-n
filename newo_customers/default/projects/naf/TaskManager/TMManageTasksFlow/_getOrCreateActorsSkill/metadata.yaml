@@ -1,0 +1,12 @@
+id: 9b4493d9-88ed-4f23-9164-c0489e44a907
+idn: _getOrCreateActorsSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 03d9c83a-fc7c-42e5-aae2-4c19fc4e8eb3
+    name: phoneNumber
+    default_value: " "
+path: ""

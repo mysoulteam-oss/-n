@@ -1,0 +1,159 @@
+id: a9e06450-5901-4587-8a00-f02a3a70efe1
+idn: GMcanvasBuilderFlow
+title: GMcanvasBuilderFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: c65fadcf-fe50-40a8-b987-a29b5835636b
+    description: null
+    idn: delete_item
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: controller_delete_item
+    state_idn: null
+    integration_idn: newo_chat
+    connector_idn: workflow_builder
+  - id: 74143e7c-fc82-47cd-8a17-251510f1a1a7
+    description: null
+    idn: gm_build_instructions
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: prepare_instructions_from_canvas
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 354b46b4-7eab-4044-92bd-b7922c72e3af
+    description: null
+    idn: gm_canvas_add_item
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: controller_save_item_system
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: e7aaa242-9d54-467e-a0ae-43c02cf0035b
+    description: null
+    idn: gm_canvas_add_item_batch
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: controller_save_item_system_batch
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 703ce0c9-9bd9-4df7-9513-7f9f8d264d25
+    description: null
+    idn: gm_canvas_add_library_item
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: controller_save_library_item_system
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: d23320f5-f27e-474f-891d-2e93636fdd21
+    description: null
+    idn: gm_canvas_add_library_item_batch
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: controller_save_library_item_system_batch
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 66a10f0d-130f-49a6-ba8e-8d6449495465
+    description: null
+    idn: gm_canvas_delete_item
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: controller_delete_item_system
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 94b10bdf-68a8-4972-bfb1-c143a5bb64f2
+    description: null
+    idn: gm_canvas_delete_item_batch
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: controller_delete_item_system_batch
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 5a052d48-bfb5-4484-850c-7420eba7020d
+    description: null
+    idn: gm_canvas_delete_library_item
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: controller_delete_library_item_system
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: b31417c4-cf73-4d31-9303-3b1b1cfa20e5
+    description: null
+    idn: gm_canvas_delete_library_item_batch
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: controller_delete_library_item_system_batch
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 49b427cf-8f8a-4618-bdea-ba1f783bd4fb
+    description: null
+    idn: gm_compile_convoagent_recompile
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: CompileConvoagentRecompileSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 29a80fca-d13a-4ede-8641-4eb925e3175d
+    description: null
+    idn: gm_prepare_instructions
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: prepare_instructions
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 7187ca6e-aadb-4879-99d3-be0bdada1a90
+    description: null
+    idn: init_canvas
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: controller_init_canvas
+    state_idn: null
+    integration_idn: newo_chat
+    connector_idn: workflow_builder
+  - id: 8542651c-c73b-4dc2-90ac-5394cd570620
+    description: null
+    idn: init_library
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: controller_init_library
+    state_idn: null
+    integration_idn: newo_chat
+    connector_idn: workflow_builder
+  - id: dd1910ee-0168-46c0-a219-d8c5823ada2a
+    description: null
+    idn: save_canvas
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: controller_save_canvas
+    state_idn: null
+    integration_idn: newo_chat
+    connector_idn: workflow_builder
+  - id: f0d868f5-46bc-4a66-88b7-a0b92b87a775
+    description: null
+    idn: save_item
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: controller_save_item
+    state_idn: null
+    integration_idn: newo_chat
+    connector_idn: workflow_builder
+state_fields:
+  - id: a413c1b3-c560-4786-a66b-011ac1cbe940
+    title: ""
+    idn: sales_generated_scenarios
+    default_value: ""
+    scope: agent

@@ -1,0 +1,15 @@
+id: 7a7bc61d-34d7-475c-80f3-2ff7927bdcce
+idn: get_tools_to_call_schema
+title: get_tools_to_call_schema
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 3e5a8168-b8e8-4a36-9986-bb7c0a4c27ac
+    name: keys
+    default_value: "[]"
+  - id: ed8e1b03-640a-4274-881f-543b80d7fce7
+    name: ranking
+    default_value: "False"
+path: ""

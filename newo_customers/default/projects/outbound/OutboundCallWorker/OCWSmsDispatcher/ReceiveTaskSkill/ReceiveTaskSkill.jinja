@@ -1,0 +1,9 @@
+{% if GetTriggeredAct().arguments.taskType != "send_sms" %}
+    {{Return()}}
+{% endif %}
+
+{% set task = GetTriggeredAct().arguments.task %}
+
+{{_updateTaskManagerStatusSkill(taskId=json.loads(task).id, status="received by worker", comment="Task received. Sending an SMS.")}}
+
+{{_setupSkill(task=task)}}

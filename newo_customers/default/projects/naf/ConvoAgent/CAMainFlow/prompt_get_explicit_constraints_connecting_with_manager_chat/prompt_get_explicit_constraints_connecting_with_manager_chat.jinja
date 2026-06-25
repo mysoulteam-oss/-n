@@ -1,0 +1,19 @@
+{# TODO: Probably, do not mention escalation phones since it might be sensitive / private information #}
+
+{% if GetCustomerAttribute(field="project_attributes_setting_define_conversation_is_during_working_hours_enabled") == "True" %}
+    {% if working_hours %}
+        {% set limitations %}- The user may ask you how they can reach the manager. Provide them with {{GetCustomerAttribute(field="project_business_working_hour_escalation_phone")}} to reach out the manager.{% endset %}
+    {% else %}
+        {% set non_working_hours_escalation_phone = GetCustomerAttribute(field="project_business_non_working_hour_escalation_phone") %}
+        {% if non_working_hours_escalation_phone.strip() %}
+            {% set limitations %}- The user may ask you how they can reach the manager. Provide them with {{non_working_hours_escalation_phone}} to reach out the manager.{% endset %}
+        {% else %}
+            {% set limitations %}- The user may ask you how they can reach the manager. Provide them with {{GetCustomerAttribute(field="project_business_working_hour_escalation_phone")}} and inform them that they can call during working hours.{% endset %}
+        {% endif %}
+    {% endif %}
+{% else %}
+    {% set limitations %}- The user may ask you how they can reach the manager. Provide them with {{GetCustomerAttribute(field="project_business_working_hour_escalation_phone")}} and inform them that they can call during working hours.{% endset %}
+{% endif %}
+
+
+{{Return(val=limitations)}}

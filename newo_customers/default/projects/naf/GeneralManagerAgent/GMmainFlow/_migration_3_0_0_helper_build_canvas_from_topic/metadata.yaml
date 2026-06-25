@@ -1,0 +1,9 @@
+id: 6d3394f9-9d4d-42c4-9349-b6b30e454bdd
+idn: _migration_3_0_0_helper_build_canvas_from_topic
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

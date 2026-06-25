@@ -1,0 +1,18 @@
+id: 506831e9-aca4-4a9f-829a-5d8db96fc91a
+idn: utils_get_object_index_by_key_value
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 226a9da6-0018-478f-a135-e95f5f647e1d
+    name: value
+    default_value: ""
+  - id: 393b64d1-7c75-48ee-b4ae-9d518202de53
+    name: key
+    default_value: ""
+  - id: 1227b54e-2c7a-45b0-a633-1598de582ec8
+    name: obj
+    default_value: ""
+path: ""

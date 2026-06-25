@@ -1,0 +1,12 @@
+id: 9fc6fcf3-6fc2-40bb-940c-a8b4f764c906
+idn: _defineTasksSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 2a75a995-51c3-4620-a15d-0ba26f73de8a
+    name: inputTasks
+    default_value: " "
+path: ""

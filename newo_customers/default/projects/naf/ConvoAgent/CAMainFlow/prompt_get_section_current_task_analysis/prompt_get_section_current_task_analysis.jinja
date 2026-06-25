@@ -1,0 +1,14 @@
+{# For openai we inject task analysis #}
+{% if v2v_enabled and (v2v_get_current_provider() == "genai")%}
+    {{Return(val="")}}
+{% endif %}
+
+{% set availability_section %}
+<CurrentTaskAnalysis alt="analysis of the current task, which may be slightly outdated" role="instructions">
+<||convo_agent_thoughts_placeholder||>
+</CurrentTaskAnalysis>
+
+---
+{% endset %}
+
+{{Return(val=availability_section)}}

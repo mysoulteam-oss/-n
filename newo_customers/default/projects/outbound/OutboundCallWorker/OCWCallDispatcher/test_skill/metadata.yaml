@@ -1,0 +1,9 @@
+id: ad32fd01-8b3e-4972-af93-885c37601eb4
+idn: test_skill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

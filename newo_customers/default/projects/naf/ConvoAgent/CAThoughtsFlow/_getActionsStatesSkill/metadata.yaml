@@ -1,0 +1,12 @@
+id: d7450958-3050-40f0-a223-6191f82e347b
+idn: _getActionsStatesSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: ce17b1ab-ae2d-483e-be03-f63f73bcfa20
+    name: userId
+    default_value: " "
+path: ""

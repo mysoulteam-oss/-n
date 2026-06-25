@@ -1,0 +1,9 @@
+id: 7a2ca501-b1c6-4767-bec4-8119ce145192
+idn: scenario_general_appointment_via_calendar
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

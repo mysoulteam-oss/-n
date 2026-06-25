@@ -1,0 +1,15 @@
+id: 32faeaec-6a0d-4c91-bacd-8858c2433336
+idn: _getValuesFromConversationSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_pro
+parameters:
+  - id: 20c0a22d-cd59-43e7-854f-542da96ee182
+    name: schema
+    default_value: ""
+  - id: cc83b7ef-c01e-4ab8-bbdd-e0902bf88240
+    name: conversation
+    default_value: ""
+path: ""

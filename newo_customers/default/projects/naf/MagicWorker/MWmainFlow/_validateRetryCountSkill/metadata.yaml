@@ -1,0 +1,9 @@
+id: 45dac15d-841e-45d3-8641-536a36366560
+idn: _validateRetryCountSkill
+title: _validateRetryCountSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

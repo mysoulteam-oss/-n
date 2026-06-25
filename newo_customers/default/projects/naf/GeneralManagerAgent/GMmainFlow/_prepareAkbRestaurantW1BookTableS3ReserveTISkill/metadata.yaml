@@ -1,0 +1,9 @@
+id: 2a84790f-72a2-4428-91ca-f48be5746119
+idn: _prepareAkbRestaurantW1BookTableS3ReserveTISkill
+title: _prepareAkbRestaurantW1BookTableS3ReserveTISkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

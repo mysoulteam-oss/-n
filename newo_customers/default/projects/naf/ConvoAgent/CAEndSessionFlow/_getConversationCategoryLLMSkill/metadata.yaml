@@ -1,0 +1,15 @@
+id: 06550d92-ddc6-4acc-aabe-ed9d2a7c6ef0
+idn: _getConversationCategoryLLMSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 8202d7a9-8f62-42e7-8a9c-c7c93ccbadb8
+    name: sessionName
+    default_value: " "
+  - id: ebc1a7fd-7e71-4474-9853-05c1409a2d9d
+    name: revenueModels
+    default_value: " "
+path: ""

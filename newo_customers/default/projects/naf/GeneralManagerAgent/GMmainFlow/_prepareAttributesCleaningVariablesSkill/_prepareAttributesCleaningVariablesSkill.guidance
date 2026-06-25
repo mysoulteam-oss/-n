@@ -1,0 +1,11 @@
+{{Set(name="is_first_init_done", value=GetCustomerAttribute(field="project_attributes_private_account_initialized_first_time"))}}
+{{!-- All `cleaning` Customer Attributes must be specified here with default values --}}
+{{!-- (must be sorted alphabetically) --}}
+
+{{!-- Set of `cleaning` attributes from Agent Creator and BOQ defaults --}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_cleaning_appointment_url", ac_field="agent_creator_cleaning_appointment_url")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_cleaning_estimate_url", ac_field="agent_creator_cleaning_estimate_url")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_cleaning_frequency", ac_field="agent_creator_cleaning_frequency")}}

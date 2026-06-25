@@ -1,0 +1,9 @@
+id: c99ca06a-7987-48ef-b9dd-0435dd076c67
+idn: default_itm_nwh_general
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

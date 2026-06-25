@@ -1,0 +1,65 @@
+{# TODO: Refactor all skills related to `Send Report` feature #}
+{{prepare_report_criteria()}}
+
+{{prepare_report_merge_additional_criteria()}}
+
+{{utils_compile_customer_attribute(template_attribute_name="project_attributes_setting_session_ended_report_criteria_complete_template", compiled_attribute_name="project_attributes_setting_session_ended_report_criteria_compiled")}}
+
+{% set current_send_report_content = GetCustomerAttribute(field="project_attributes_setting_session_ended_report_content") %}
+
+{% if current_send_report_content.strip() %}
+    {{prepare_report_content()}}
+    {{prepare_report_content_json()}}
+{% else %}
+
+    {% set industry = GetCustomerAttribute(field="project_business_industry") %}
+
+    {% if industry == "catering_industry" %}
+
+        {{utils_set_attribute_json(attribute_idn="project_attributes_private_dynamic_session_ended_report_content_json", value_json=default_report_content_catering_json())}}
+        {{utils_set_attribute_string(attribute_idn="project_attributes_setting_session_ended_report_content", value=default_report_content_catering())}}
+
+    {% elif industry == "cleaning_industry" %}
+
+        {{utils_set_attribute_json(attribute_idn="project_attributes_private_dynamic_session_ended_report_content_json", value_json=default_report_content_cleaning_json())}}
+        {{utils_set_attribute_string(attribute_idn="project_attributes_setting_session_ended_report_content", value=default_report_content_cleaning())}}
+
+    {% elif industry == "dental_industry" %}
+
+        {{utils_set_attribute_json(attribute_idn="project_attributes_private_dynamic_session_ended_report_content_json", value_json=default_report_content_dental_json())}}
+        {{utils_set_attribute_string(attribute_idn="project_attributes_setting_session_ended_report_content", value=default_report_content_dental())}}
+
+    {% elif industry == "home_service_industry" %}
+
+        {{utils_set_attribute_json(attribute_idn="project_attributes_private_dynamic_session_ended_report_content_json", value_json=default_report_content_home_service_json())}}
+        {{utils_set_attribute_string(attribute_idn="project_attributes_setting_session_ended_report_content", value=default_report_content_home_service())}}
+
+    {% elif industry == "hospitality_industry" %}
+
+        {{utils_set_attribute_json(attribute_idn="project_attributes_private_dynamic_session_ended_report_content_json", value_json=default_report_content_hospitality_json())}}
+        {{utils_set_attribute_string(attribute_idn="project_attributes_setting_session_ended_report_content", value=default_report_content_hospitality())}}
+
+    {% elif industry == "restaurant_industry" %}
+
+        {{utils_set_attribute_json(attribute_idn="project_attributes_private_dynamic_session_ended_report_content_json", value_json=default_report_content_restaurant_json())}}
+        {{utils_set_attribute_string(attribute_idn="project_attributes_setting_session_ended_report_content", value=default_report_content_restaurant())}}
+
+    {% elif industry == "sales_industry" %}
+
+        {{utils_set_attribute_json(attribute_idn="project_attributes_private_dynamic_session_ended_report_content_json", value_json=default_report_content_sales_json())}}
+        {{utils_set_attribute_string(attribute_idn="project_attributes_setting_session_ended_report_content", value=default_report_content_sales())}}
+
+    {% elif industry == "beauty_industry" %}
+
+        {{utils_set_attribute_json(attribute_idn="project_attributes_private_dynamic_session_ended_report_content_json", value_json=default_report_content_beauty_json())}}
+        {{utils_set_attribute_string(attribute_idn="project_attributes_setting_session_ended_report_content", value=default_report_content_beauty())}}
+
+    {% elif industry == "general_industry" %}
+        {{utils_set_attribute_json(attribute_idn="project_attributes_private_dynamic_session_ended_report_content_json", value_json=default_report_content_general_json())}}
+        {{utils_set_attribute_string(attribute_idn="project_attributes_setting_session_ended_report_content", value=default_report_content_general())}}
+    {% endif %}
+
+    {{prepare_report_content()}}
+    {{prepare_report_content_json()}}
+
+{% endif %}

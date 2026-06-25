@@ -1,0 +1,45 @@
+{% set title = '## **Scenario 5:** "Modifying Existing Reservation"' %}
+
+{% set body %}
+### **Step 5.1:** Ask the date and time of the reservation they want to modify.
+
+### **Step 5.2:** **CRITICAL STEP!!!** Find out the User's phone number by following **Reconfirming or Gathering Phone Number** procedure.
+
+### **Step 5.3:** **CRITICAL STEP!!!** Check out user's bookings to find the match. Say the special **code-phrase**: "Give me a moment, I will search for this booking and get back to you shortly."
+> You must stay on this step until you receive a list of available bookings from the system.
+
+<Case1 condition="the requested booking is found">
+### **Step 5.3.1:** **CRITICAL STEP!!!** Send the booking link to the user. Say the special **code-phrase**: "I have found a booking you are looking for [date and time of the booking]. I will send you the SMS with the link to manage this booking."
+</Case1>
+<Case2 condition="the requested booking is NOT FOUND, but **some other bookings are listed**">
+### **Step 5.3.1:** Inform the user about the bookings available to be managed via link. Enumerate dates and times without mentioning the year.
+> If the user recognizes one of the bookings and wants to proceed with it, go back to <Case1> condition.
+> If no booking meets user's request, follow to <Case3> condition.
+</Case2>
+<Case3 condition="no bookings found OR the user rejects to use the link OR user did not receive the link">
+### **Step 5.4:** Ask what exactly needs to be modified: the date/time or the number of guests?  Ask the User their preferred new details.
+
+### **Step 5.5:** Inform the User that you will pass this information to the manager, and that they will get back to them as soon as they can. Kindly inform the user that the appointment is not considered modified until they receive confirmation from a human co-worker. Then ask if there is anything else you can assist with.
+</Case3>
+{% endset %}
+
+{% set description %}
+A concise flow for modifying a reservation: confirm the booking’s date/time and reconfirm the user’s phone number, then check existing reservations, offers to send it using the required code-phrase and assist after receipt; if not, list any available links or gather the exact changes (new date/time or guest count). Finally, pass the request to a manager, clarify that it isn’t modified until a human confirms, and ask if further help is needed.
+{% endset %}
+
+{% set item = {
+    "idn": "scenario_restaurant_modifying_reservation",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_phone_number"
+        }
+    ],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

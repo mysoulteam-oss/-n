@@ -1,0 +1,9 @@
+id: 6233f8e9-236f-41d5-be0c-510e7a925f1f
+idn: SMSBackSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,9 @@
+id: b3998c7c-fd8e-4fb7-90e1-1cb196cf736a
+idn: prompt_get_output_format_text
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

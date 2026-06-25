@@ -1,0 +1,45 @@
+{{_utilsSendSystemLogSkill(message="The following slots availability result has been received: " ~ output)}}
+
+{% set user_id = GetUser().id | string %}
+
+{{SetPersonaAttribute(id=user_id, field="booking_slots_availability_checking_status", value="False")}}
+
+{% set output = json.loads(output) %}
+
+{% set availability = output.availability %}
+
+{{SetPersonaAttribute(id=user_id, field="availability", value=json.dumps(availability, ensure_ascii=False, indent=2))}}
+
+{% if not availability %}
+    {{SetPersonaAttribute(id=user_id, field="booking_slots_availability_checking_status_details", value="The agent has received a response from the booking system with available slots. The response is displayed in block `# Slots availability response`. However, the booking is still not confirmed by the booking system and has not taken place!")}}
+    {{SetPersonaAttribute(id=user_id, field="booking_slots_availability_result", value="There are no available slots.")}}
+
+    {% set connection_with_the_manager_phrase = "" %}
+    {% if GetCustomerAttribute(field="project_attributes_setting_transfer_call_enabled") == "True" %}
+        {% if GetCustomerAttribute(field="project_attributes_setting_connect_with_the_manager_in_case_of_unhandled_issues") == "True" %}
+            {% if GetCustomerAttribute(field="project_attributes_setting_define_conversation_is_during_working_hours_enabled") == "True" %}
+                {% if GetPersonaAttribute(id=user_id, field="working_hours_status") == "false" %}
+                    {% set connection_with_the_manager_phrase = " If this is already the second attempt to check availability, advise the user to call during business hours and inform them that a manager will be able to assist them when they call." %}
+                {% else %}
+                    {% set connection_with_the_manager_phrase = " If it's already second attempt to get availability, suggest the user to be connected with the manager who may be able to find something for them." %}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+    {% set agent_instruction = "Tell the user that you have checked and unfortunately, there are no any available slots as per their request. Ask if they would like you to check a different time or another day." ~ connection_with_the_manager_phrase%}
+{% else %}
+    {% set slots_availability_instruction = _receiveAvailableSlotsCheckAvailabilityNewSkill(availability=availability) %}
+
+    {% set agent_instruction = "You have just received available slots: " ~ slots_availability_instruction ~ " Always provide the time in a " ~ GetCustomerAttribute(field="project_attributes_setting_time_format") ~ ". Avoid mentioning year in the date." %}
+
+    {{_receiveAvailableSlotsBuildAvailabilityContextNewDefaultSkill(availability=availability)}}
+
+    {% set pre_thoughts = "THOUGHTS: I've just received available slots: " ~ slots_availability_instruction ~ " If the user changes their request or asks for something else, I would have to check for the slots again, because this information is filtered by the initial request." %}
+
+    {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction=agent_instruction, uninterruptible="True")}}
+
+    {% if GetCustomerAttribute(field="project_business_industry") == "restaurant_industry" %}
+        {{_restaurantReceiveAvailableSlotsUpdateSeatingOptionsSkill(inputJson=json.dumps(availability, ensure_ascii=False, indent=2), userId=user_id)}}
+    {% endif %}
+{% endif %}

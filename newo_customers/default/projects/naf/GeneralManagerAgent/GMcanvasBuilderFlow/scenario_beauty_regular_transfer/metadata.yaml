@@ -1,0 +1,9 @@
+id: 408c1637-3708-4e62-a682-aa32338f6610
+idn: scenario_beauty_regular_transfer
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,12 @@
+id: 8b4c298c-1343-4aeb-9386-324f0008abf7
+idn: prompt_get_output_format
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 9616561b-b2f9-4a79-8c9b-5d09eb514822
+    name: conversation_channel
+    default_value: ""
+path: ""

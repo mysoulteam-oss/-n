@@ -1,0 +1,15 @@
+id: aab62e70-9a2c-4377-9fb5-7f3b02a25b84
+idn: create_checkpoint
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: eed2415f-55ae-4151-9bd8-ab3c96adc4c0
+    name: checkpoint_sequence
+    default_value: ""
+  - id: 7daba70d-53ba-4295-bb68-afee8c565fa4
+    name: checkpoint_id
+    default_value: ""
+path: ""

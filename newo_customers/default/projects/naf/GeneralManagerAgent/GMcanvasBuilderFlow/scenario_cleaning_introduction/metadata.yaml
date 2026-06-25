@@ -1,0 +1,9 @@
+id: db7d5629-eefa-42cf-8716-bde2ae927612
+idn: scenario_cleaning_introduction
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

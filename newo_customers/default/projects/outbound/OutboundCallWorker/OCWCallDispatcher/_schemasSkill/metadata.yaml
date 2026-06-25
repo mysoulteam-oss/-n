@@ -1,0 +1,15 @@
+id: 8bc4a343-72e8-4883-9e01-f8227ad65b1e
+idn: _schemasSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: a8f86dc8-4941-4094-b206-ce15419502e5
+    name: extractPhone
+    default_value: " "
+  - id: 1864f551-5bd4-46fa-8529-fbea91c7f948
+    name: setupCall
+    default_value: " "
+path: ""

@@ -1,0 +1,12 @@
+id: 1b41b48e-0173-44fe-9acb-e829413c421d
+idn: _utilsPrepareRecordingUrls
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: b6c1575d-31a6-4b3e-a697-aa6d516c4e1f
+    name: recordingUrls
+    default_value: " "
+path: ""

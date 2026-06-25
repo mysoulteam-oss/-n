@@ -1,0 +1,9 @@
+id: 5c34287a-1951-4150-86a2-205c5d07e274
+idn: scenario_general_regular_transfer
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

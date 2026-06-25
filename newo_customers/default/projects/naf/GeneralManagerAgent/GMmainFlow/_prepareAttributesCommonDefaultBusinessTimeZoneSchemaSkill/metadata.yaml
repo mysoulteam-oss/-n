@@ -1,0 +1,9 @@
+id: a91abd30-4972-4f8a-867f-6cae3736ec1d
+idn: _prepareAttributesCommonDefaultBusinessTimeZoneSchemaSkill
+title: _prepareAttributesCommonDefaultBusinessTimeZoneSchemaSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

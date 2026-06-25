@@ -1,0 +1,53 @@
+{{#if GetValueJSON(obj=bookingDetails, key="required_fields_missing") == "true"}}
+    {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction=Concat("Apologize the user for the inconvenience and tell that you noticed that some details are missing and you need to reconfirm them before proceeding the booking. Ask the user to provide these details: ", Stringify(GetValueJSON(obj=bookingDetails, key="details_to_reconfirm"))), uninterruptible="True")}}
+    {{Return()}}
+{{/if}}
+
+{{#if GetPersonaAttribute(id=userId, field="table_booked") == "True"}}
+    {{Set(name="previous_user_bookings", value=GetPersonaAttribute(id=userId, field="mb_user_bookings"))}}
+    {{#if not IsEmpty(text=previous_user_bookings)}}
+        {{Set(name="reservation_date", value=Concat(Stringify(GetValueJSON(obj=bookingDetails, key="reservation_date")), " ", Stringify(GetValueJSON(obj=bookingDetails, key="reservation_time"))))}}
+        {{Set(name="reservation_date_index", value=GetIndexesOfItemsArrayJSON(array=previous_user_bookings,filterPath=Concat("$[?(@=='", reservation_date, "')]")))}}
+        {{#if not IsEmpty(text=reservation_date_index)}}
+            {{Set(name="footnote_actor_id", value=_utilsGetFootnoteSkill(userId=userId, system="True"))}}
+            {{SendMessage(
+                message=Concat("System log: Request to book a table for ", reservation_date, " is already sent. Skipping."),
+                actorIds=footnote_actor_id
+            )}}
+            {{Return()}}
+        {{/if}}
+    {{/if}}
+{{/if}}
+
+
+{{Set(name="user_phone", value=Stringify(GetValueJSON(obj=bookingDetails, key="user_phone")))}}
+{{Set(name="user_phone", value=user_phone.replace("+", " ", 1))}}
+{{Set(name="user_phone", value=Stringify(user_phone))}}
+{{Set(name="booking_details", value=UpdateValueJSON(obj=bookingDetails, key="user_email", value=AsStringJSON(val=_utilsGetBookingEmailSkill(retry="False", phoneNumber=Concat("+", user_phone)))))}}
+{{Set(name="user_phone", value=Concat("+", user_phone))}}
+{{Set(name="booking_details", value=UpdateValueJSON(obj=booking_details, key="user_phone", value=AsStringJSON(val=user_phone)))}}
+{{_utilsPublishTaskSkill(userId=userId, taskObject=booking_details)}}
+
+{{SetPersonaAttribute(id=userId, field="table_booked", value="True")}}
+{{Set(
+    name="user_bookings",
+    value=AppendItemsArrayJSON(array=GetPersonaAttribute(id=userId, field="user_bookings"), items=AsStringJSON(val=Concat(Stringify(GetValueJSON(obj=booking_details, key="reservation_date")), " ", Stringify(GetValueJSON(obj=booking_details, key="reservation_time")))))
+)}}
+{{SetPersonaAttribute(id=userId, field="mb_user_bookings", value=user_bookings)}}
+
+{{Set(name="booking_log", value="The agent has sent a booking request to the booking system, but has not yet received a confirmation. The booking is still not confirmed by the booking system!")}}
+
+{{#if not _utilsFeatureFlagIsActiveSkill(featureFlagName="booking_use_new_restaurant_create_booking_approach")}}
+    {{!-- In case new approach is enabled, we use this skill to book a table with the old approach as fallback and we don't need to send urgent message --}}
+    {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction="Inform the user that their booking has been successfully submitted and they will receive an SMS confirmation shortly. Continue your reply with: 'We are eagerly awaiting your visit on [reservation date and time].'. If the initial request was for **Modify Reservation**, ConvoAgent says: 'Now please provide the **date**, **time**, and **number of guests** of your current reservation so that I can proceed with the cancellation'. And proceed according to <ConvoAgentScenariosAndProcedures>.", uninterruptible="True")}}
+    {{Set(name="booking_log_advanced", value=Concat(booking_log, "
+Booking request was sent with the following payload:
+", booking_details))}}
+{{else}}
+    {{Set(name="booking_log_advanced", value=Concat(booking_log, "
+Fallback booking request was sent with the following payload:
+", booking_details))}}
+{{/if}}
+
+{{_utilsSendSystemLogSkill(message=booking_log_advanced)}}
+{{SetPersonaAttribute(id=userId, field="action_state_booking_submitting", value=booking_log)}}

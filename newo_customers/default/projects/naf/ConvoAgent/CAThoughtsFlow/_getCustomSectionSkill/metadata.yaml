@@ -1,0 +1,12 @@
+id: 8ab1a2c7-32c2-477f-9578-7ce4380a3a66
+idn: _getCustomSectionSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 0351b3f7-fcc5-4f74-8fd6-522d2ffc7c75
+    name: userId
+    default_value: " "
+path: ""

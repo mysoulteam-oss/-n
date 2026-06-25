@@ -1,0 +1,47 @@
+id: 1f0797a7-5c6f-4347-9e27-ccd87f713a07
+idn: SWmainFlow
+title: SWmainFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: ca9fac03-9a47-4a6e-a2b7-9365596a3dad
+    description: null
+    idn: sms_worker_send_sms
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: SendSMSSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: d23e9207-63df-4455-9397-c456951c399c
+    description: null
+    idn: sms_worker_send_sms_mock
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: SendSMSSkillMock
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 65fa10d6-4f00-40bf-abfe-c09fb00962f0
+    description: null
+    idn: worker_message
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ProcessWorkerMessageSkill
+    state_idn: null
+    integration_idn: null
+    connector_idn: null
+state_fields:
+  - id: 89585e38-3719-4a23-b7a9-5df3aab4ce53
+    title: ""
+    idn: task_context
+    default_value: ""
+    scope: user
+  - id: c69d76ee-f5d1-4db8-b000-dfeaaea3827a
+    title: ""
+    idn: task_idn
+    default_value: ""
+    scope: user

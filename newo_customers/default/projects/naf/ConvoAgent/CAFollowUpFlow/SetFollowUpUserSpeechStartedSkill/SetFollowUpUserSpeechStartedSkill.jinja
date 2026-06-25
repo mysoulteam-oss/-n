@@ -1,0 +1,21 @@
+{% set current_state = GetState(name="chat_lifecycle_state") %}
+{% if current_state == "Agent" %}
+    {{SetState(name="user_interrupt", value="Start")}}
+    {# {{_utilsSendDebugLogSkill(
+        message="User spoke during agent speech, ignoring followup update & recording 'Start' `user_interrupt` state"
+    )}} #}
+    {{Return()}}
+{% endif %}
+{% set interval = GetCustomerAttribute(field="project_attributes_setting_follow_up_timer_voice_interval_user_speech_started") %}
+{% set user_id = GetUser().id | string %}
+
+{{SetState(name="chat_lifecycle_state", value="User")}}
+{{SetState(name="followup_counter", value="0")}}
+
+{{SendSystemEvent(
+    eventIdn="convoagent_update_followup",
+    connectorIdn="system",
+    interval=interval,
+    personaId=user_id,
+    reason="user_speech_started"
+)}}

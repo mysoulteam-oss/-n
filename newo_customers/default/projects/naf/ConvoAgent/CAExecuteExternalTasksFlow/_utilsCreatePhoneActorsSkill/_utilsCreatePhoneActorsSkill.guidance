@@ -1,0 +1,26 @@
+{{! ! TODO: Handle case where existing Actors are located in another Persona }}
+{{! ? TODO: Merge Personas? }}
+
+{{! Create Actor for `Twilio Messenger` }}
+{{Set(name="existing_twilio_messenger_actors", value=GetActors(integrationIdn="twilio_messenger", connectorIdn="sms_connector", externalId=phoneNumber))}}
+{{#if IsEmpty(text=existing_twilio_messenger_actors)}}
+  {{CreateActor(integrationIdn="twilio_messenger", connectorIdn="sms_connector", externalId=phoneNumber, personaId=userId)}}
+{{/if}}
+
+{{! Create Actor for `VAPI` }}
+{{Set(name="existing_vapi_actors", value=GetActors(integrationIdn="vapi", connectorIdn="vapi_caller", externalId=phoneNumber))}}
+{{#if IsEmpty(text=existing_vapi_actors)}}
+  {{CreateActor(integrationIdn="vapi", connectorIdn="vapi_caller", externalId=phoneNumber, personaId=userId)}}
+{{/if}}
+
+{{! Create Actor for `NEWO Voice` }}
+{{Set(name="existing_newo_voice_actors", value=GetActors(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", externalId=phoneNumber))}}
+{{#if IsEmpty(text=existing_newo_voice_actors)}}
+  {{CreateActor(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", externalId=phoneNumber, personaId=userId)}}
+{{/if}}
+
+{{! Create Actor for `NEWO SMS` }}
+{{Set(name="existing_newo_sms_actors", value=GetActors(integrationIdn="newo_sms", connectorIdn="newo_sms_connector", externalId=phoneNumber))}}
+{{#if IsEmpty(text=existing_newo_sms_actors)}}
+  {{CreateActor(integrationIdn="newo_sms", connectorIdn="newo_sms_connector", externalId=phoneNumber, personaId=userId)}}
+{{/if}}

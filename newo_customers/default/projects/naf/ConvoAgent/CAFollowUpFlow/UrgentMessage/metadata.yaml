@@ -1,0 +1,9 @@
+id: 38ecfa99-da24-4b58-b9b7-de0d50ebab87
+idn: UrgentMessage
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

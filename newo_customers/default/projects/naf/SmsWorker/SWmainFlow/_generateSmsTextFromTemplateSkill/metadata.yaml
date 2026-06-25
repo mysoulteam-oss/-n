@@ -1,0 +1,15 @@
+id: df7a4fca-f89c-48a0-9b88-8cc0bb0561d9
+idn: _generateSmsTextFromTemplateSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: f0cf969c-273e-4a94-b4bc-601948407779
+    name: smsTextTemplate
+    default_value: " "
+  - id: 238c1d59-533f-4a12-bd75-a0de28051807
+    name: taskContext
+    default_value: " "
+path: ""

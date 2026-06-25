@@ -1,0 +1,12 @@
+id: 4aedc53a-87c6-4ef1-9123-5bd082ced525
+idn: rag_append_reset
+title: rag_append_reset
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: baeae017-c7b6-4e33-89ed-f6e3cafef20f
+    name: label
+    default_value: ""
+path: ""

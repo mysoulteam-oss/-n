@@ -1,0 +1,9 @@
+id: 9b0898d6-eb1e-47e6-8745-b8ffbb0a65b0
+idn: _prepareAttributesCleaningSMSContentSkill
+title: _prepareAttributesCleaningSMSContentSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

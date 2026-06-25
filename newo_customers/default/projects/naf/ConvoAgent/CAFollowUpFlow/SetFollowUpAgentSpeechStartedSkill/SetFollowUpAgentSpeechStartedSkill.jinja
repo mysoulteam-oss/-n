@@ -1,0 +1,12 @@
+{% set interval = GetCustomerAttribute(field="project_attributes_setting_follow_up_timer_voice_interval_agent_speech_started") %}
+{% set user_id = GetUser().id | string %}
+
+{{SetState(name="chat_lifecycle_state", value="Agent")}}
+
+{{SendSystemEvent(
+    eventIdn="convoagent_update_followup",
+    connectorIdn="system",
+    interval=interval,
+    personaId=user_id,
+    reason="agent_speech_started"
+)}}

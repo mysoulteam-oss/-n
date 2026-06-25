@@ -1,0 +1,7 @@
+{{#if GetCustomerAttribute(field="project_attributes_setting_working_hours_structured_format_enabled") == "True"}}
+  {{_prepareAttributesCommonPrivateDynamicWorkScheduleCompiledTestSkill()}}
+{{else}}
+  {{_prepareAttributesCommonPrivateDynamicWorkScheduleObjectTestSkill()}}
+{{/if}}
+
+{{_prepareAttributesCommonDefaultBusinessTimeZoneReasoningTestSkill()}}

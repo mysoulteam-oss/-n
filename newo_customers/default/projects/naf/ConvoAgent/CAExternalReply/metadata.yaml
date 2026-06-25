@@ -1,0 +1,19 @@
+id: 2395b3cb-8cb0-48f7-a2e6-e5c7ac8d01f5
+idn: CAExternalReply
+title: CAExternalReply
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 4d48163c-29a2-4282-81d8-d526c0c354f2
+    description: null
+    idn: send_external_reply
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ExternalReplySkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

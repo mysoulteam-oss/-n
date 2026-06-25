@@ -1,0 +1,9 @@
+id: 797a4409-af17-4b5b-a923-34c8c4964b89
+idn: prepare_rag_context_schema
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

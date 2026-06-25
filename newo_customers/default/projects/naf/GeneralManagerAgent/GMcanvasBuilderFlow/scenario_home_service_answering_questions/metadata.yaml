@@ -1,0 +1,9 @@
+id: 4ecfa4f4-cefa-415f-b16d-c2829af177ce
+idn: scenario_home_service_answering_questions
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

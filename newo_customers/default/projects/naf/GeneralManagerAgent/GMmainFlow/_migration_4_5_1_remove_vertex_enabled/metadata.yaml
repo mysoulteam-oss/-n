@@ -1,0 +1,9 @@
+id: 762ccad9-be35-4339-a32e-099bb7e0d450
+idn: _migration_4_5_1_remove_vertex_enabled
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,4 @@
+{% set user_id = GetUser().id | string %}
+{% if GetPersonaAttribute(id=user_id, field="outbound_call") == "True" %}
+    {{SetState(name="voicemail_detected", value="True")}}
+{% endif %}

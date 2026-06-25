@@ -1,0 +1,9 @@
+id: 68142b63-2348-4e7e-9a4c-0d232ff746cc
+idn: CreateMessageActSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

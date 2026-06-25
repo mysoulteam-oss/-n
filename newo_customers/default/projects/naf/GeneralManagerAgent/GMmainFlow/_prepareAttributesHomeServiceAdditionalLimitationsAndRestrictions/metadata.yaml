@@ -1,0 +1,9 @@
+id: 83f70f25-2988-4119-9368-2ef2f1433e6e
+idn: _prepareAttributesHomeServiceAdditionalLimitationsAndRestrictions
+title: _prepareAttributesHomeServiceAdditionalLimitationsAndRestrictions
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

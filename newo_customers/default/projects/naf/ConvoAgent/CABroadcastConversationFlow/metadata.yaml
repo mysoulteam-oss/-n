@@ -1,0 +1,28 @@
+id: 045cb960-c66c-431d-bcb6-ba5edb3a3d9a
+idn: CABroadcastConversationFlow
+title: CABroadcastConversationFlow
+description: ""
+default_runner_type: nsl
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 7b4550b5-03cb-4832-930a-604de8398cbd
+    description: null
+    idn: analyze_conversation
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: BroadcastAnalyzeConversation
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 3e48e20e-f330-450e-b2d0-c849062545dc
+    description: null
+    idn: convoagent_get_conversation
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: GetConversation
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

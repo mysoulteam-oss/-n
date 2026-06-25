@@ -1,0 +1,9 @@
+id: 25103e2d-ce66-4989-9bb3-4fdb74140917
+idn: structured_generation_deterministic_test
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,9 @@
+id: afb25a0b-c876-411d-82c7-0c405451de1e
+idn: default_report_content_restaurant
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

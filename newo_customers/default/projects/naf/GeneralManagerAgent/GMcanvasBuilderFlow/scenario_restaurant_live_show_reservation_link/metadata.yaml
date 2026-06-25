@@ -1,0 +1,9 @@
+id: 735d2fdb-f2e3-49f1-93d3-8e04dc82e552
+idn: scenario_restaurant_live_show_reservation_link
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,9 @@
+id: d06a9cf2-cba0-455d-a512-4d04eb6aea93
+idn: ReasonSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

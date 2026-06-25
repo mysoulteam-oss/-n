@@ -1,0 +1,12 @@
+{{! Type LLM Prompt for non-structured streaming generation here }}
+{{#system~}}
+
+{{~/system}}
+
+{{#if IsEmpty(text=GetCurrentPrompt())}}
+    {{Return()}}
+{{/if}}
+
+{{#assistant~}}
+{{GenStream(temperature=0.2, topP=0.5, skipFilter=True, thinkingBudget=170)}}
+{{~/assistant}}

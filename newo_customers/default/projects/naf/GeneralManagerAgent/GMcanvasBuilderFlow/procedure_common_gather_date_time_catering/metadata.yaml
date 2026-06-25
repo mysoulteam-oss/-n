@@ -1,0 +1,9 @@
+id: 2ac97531-eafa-4e60-9d05-37e0c5026bd3
+idn: procedure_common_gather_date_time_catering
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

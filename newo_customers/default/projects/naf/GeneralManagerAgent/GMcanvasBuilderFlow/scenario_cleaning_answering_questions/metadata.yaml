@@ -1,0 +1,9 @@
+id: 7c8f3f01-3633-4688-8027-206f4ffdd5a5
+idn: scenario_cleaning_answering_questions
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

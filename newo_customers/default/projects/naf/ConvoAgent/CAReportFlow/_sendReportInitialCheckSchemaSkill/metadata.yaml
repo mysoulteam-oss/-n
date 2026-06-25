@@ -1,0 +1,9 @@
+id: f7dae88b-1acb-4622-b421-81263c8d495e
+idn: _sendReportInitialCheckSchemaSkill
+title: _sendReportInitialCheckSchemaSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

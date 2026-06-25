@@ -1,0 +1,62 @@
+{% set schema = {
+  "type": "object",
+  "properties": {
+    "reports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "report_type": {
+            "type": "string",
+            "description": "Report name, optionally starting with a marker like [L] or [T], followed by words.",
+            "enum": json.loads(GetCustomerAttribute(field="project_attributes_private_dynamic_intents_list"))
+          },
+          "fields": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "List of fields to be included in the report."
+          },
+          "subject_template": {
+            "type": "string",
+            "description": "Template for the subject line with placeholders (use square brackets) as is."
+          },
+          "sms_template": {
+            "type": "string",
+            "description": "Template for the SMS message with placeholders (use square brackets) as is."
+          }
+        },
+        "required": ["report_type", "fields", "subject_template", "sms_template"]
+      }
+    }
+  },
+  "required": ["reports"]
+} %}
+
+{% set prompt %}
+<Instruction>
+Your goal is to turn ReportTypesDescription into json provided format.
+</Instruction>
+
+<ReportTypesDescription>
+{{reportContent}}
+</ReportTypesDescription>
+
+1. Assemble Each Report Type's JSON Object and insert it in the initialized object:
+  - For each report type key, create an object containing:
+    - "report_type": Report Type name.
+      - Under ## Report Type extract the name of the Report Type.
+      - Report Type may be enclosed in asterisks.
+      - Report Type name optionally starting with a marker like [L] or [T], followed by words.
+    - "fields": the list of fields.
+      - Extract Fields for Each Report Type:
+      - Under ### Fields to be included in the report: extract the list of fields.
+      - Fields may be enclosed in quotes, bullets, or listed line by line.
+      - Collect these into a list for each report type.
+    - "subject_template": the generalized subject template with placeholders.
+      - Under ### Subject line format:, find the example.
+      - Ensure that placeholder names match exactly with the field names extracted earlier (adjust for consistent naming).
+    - "sms_template": the generalized SMS template with placeholders.
+      - Under ### SMS example:, perform the same replacement as above.
+{% endset %}
+
+{{Return(val=_structured_generation(schema=schema, prompt=prompt | trim))}}

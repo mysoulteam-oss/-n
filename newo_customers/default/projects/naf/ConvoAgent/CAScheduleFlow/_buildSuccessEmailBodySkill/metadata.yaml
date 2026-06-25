@@ -1,0 +1,15 @@
+id: 74be0cb6-d3b3-4238-bb4a-6439b6d46481
+idn: _buildSuccessEmailBodySkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: a50c7684-d8b6-424b-9835-c2f39d350c2b
+    name: userId
+    default_value: " "
+  - id: 73f897f4-0059-4e18-8051-dd32187303e4
+    name: payload
+    default_value: " "
+path: ""

@@ -1,0 +1,18 @@
+id: 79e0087a-94c5-40d9-b6c6-1933986e4dab
+idn: _storeUserBookingSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 1e2e6147-2e2b-4917-9998-7b0ddb66f3d9
+    name: payloadMeta
+    default_value: " "
+  - id: ca3eb565-ca66-4093-9e7f-fa5d99789ef0
+    name: userId
+    default_value: " "
+  - id: ca79ad81-ed0d-456f-a187-56b20a5f837f
+    name: bookingResult
+    default_value: " "
+path: ""

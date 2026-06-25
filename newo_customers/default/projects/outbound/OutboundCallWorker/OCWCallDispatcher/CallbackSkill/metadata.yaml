@@ -1,0 +1,9 @@
+id: 97345803-74e3-40b7-81d8-cc544a18f449
+idn: CallbackSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

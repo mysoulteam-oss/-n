@@ -1,0 +1,9 @@
+id: ab7093e9-0d03-406c-9e11-4eb0e1568cdd
+idn: RealUserMessageSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

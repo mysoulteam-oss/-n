@@ -1,0 +1,12 @@
+id: 9a4425b3-60f4-43f2-9bba-73abdc4f0fe4
+idn: _getEmailInformationAllowedToBeSentSkill
+title: _getEmailInformationAllowedToBeSentSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: d29ae9fb-4651-405e-b625-df4855b32218
+    name: industry
+    default_value: " "
+path: ""

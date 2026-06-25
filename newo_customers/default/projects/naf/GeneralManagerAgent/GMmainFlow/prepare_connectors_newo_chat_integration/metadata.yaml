@@ -1,0 +1,9 @@
+id: 0232bd14-ea23-40b4-aa26-86ee65cbd454
+idn: prepare_connectors_newo_chat_integration
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

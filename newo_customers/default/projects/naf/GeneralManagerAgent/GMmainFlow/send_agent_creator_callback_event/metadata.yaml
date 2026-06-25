@@ -1,0 +1,15 @@
+id: 127e6de6-8fcd-4790-ad19-93300e678a74
+idn: send_agent_creator_callback_event
+title: send_agent_creator_callback_event
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: a31d94c6-913e-446f-ab6c-b4f863b4dfd2
+    name: force_agent_creator_callback
+    default_value: ""
+  - id: 7cd1bc2f-7f97-4567-a114-1c34d5098e14
+    name: skip_init
+    default_value: "False"
+path: ""

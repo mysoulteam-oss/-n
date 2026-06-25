@@ -1,0 +1,9 @@
+id: bdb8d2eb-5aba-471d-82c2-e1577c0a05d4
+idn: _migration_3_8_0_providing_prices_ec
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

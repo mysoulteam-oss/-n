@@ -1,0 +1,9 @@
+id: 4fd862f5-a4ea-44f4-b989-197ecea6e3d5
+idn: SendEmailSkillMock
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

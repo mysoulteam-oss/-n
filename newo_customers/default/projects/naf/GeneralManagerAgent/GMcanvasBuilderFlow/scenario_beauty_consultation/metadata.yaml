@@ -1,0 +1,9 @@
+id: 57838c98-0f51-44dd-a395-7d1d15a6d56f
+idn: scenario_beauty_consultation
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

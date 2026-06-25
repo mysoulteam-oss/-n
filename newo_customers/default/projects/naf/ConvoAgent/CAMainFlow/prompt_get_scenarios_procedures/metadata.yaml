@@ -1,0 +1,30 @@
+id: d6eb5c92-7391-4800-8ebc-25aba8dbd3e8
+idn: prompt_get_scenarios_procedures
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 05394d2e-b437-44de-9d5c-fd0ad69ecfdd
+    name: industry
+    default_value: " "
+  - id: a7f8154e-7bb4-4ce8-96a1-b945f8081846
+    name: isOutboundCall
+    default_value: " "
+  - id: 579ed982-3634-4bf9-8dd0-8f81ac22fc3c
+    name: scenario
+    default_value: " "
+  - id: 718de769-90de-4b69-8402-870738f69f25
+    name: taskIdn
+    default_value: " "
+  - id: 70a44983-fdab-4e02-ba93-488a3aa623c0
+    name: userId
+    default_value: " "
+  - id: 42697fee-c0b3-452f-98ba-b9e165cd7f5a
+    name: user_id
+    default_value: ""
+  - id: 326b1745-731f-4839-a9e3-1be93a4b1260
+    name: convoAgentPersonaId
+    default_value: " "
+path: ""

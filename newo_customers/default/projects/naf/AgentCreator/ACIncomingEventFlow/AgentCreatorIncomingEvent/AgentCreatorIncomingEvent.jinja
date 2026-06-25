@@ -1,0 +1,11 @@
+{% set triggered_act = GetTriggeredAct() %}
+
+{# TODO: Add "target action" property into event #}
+
+{% set agent_creator_attributes = triggered_act.arguments.attributes %}
+
+{% set agent_creator_attributes = json.loads(agent_creator_attributes) %}
+
+{% if agent_creator_attributes %}
+    {{agent_creator_reinitialize(agent_creator_attributes=agent_creator_attributes)}}
+{% endif %}

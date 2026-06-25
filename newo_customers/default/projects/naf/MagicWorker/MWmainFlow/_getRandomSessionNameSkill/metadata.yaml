@@ -1,0 +1,9 @@
+id: 4ba93443-527d-47d8-a302-53e3d654645e
+idn: _getRandomSessionNameSkill
+title: _getRandomSessionNameSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

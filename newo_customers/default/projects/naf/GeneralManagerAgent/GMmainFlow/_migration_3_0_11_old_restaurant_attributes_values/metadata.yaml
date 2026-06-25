@@ -1,0 +1,9 @@
+id: 339f1abd-e0d5-4fc1-b38e-909613635ef0
+idn: _migration_3_0_11_old_restaurant_attributes_values
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

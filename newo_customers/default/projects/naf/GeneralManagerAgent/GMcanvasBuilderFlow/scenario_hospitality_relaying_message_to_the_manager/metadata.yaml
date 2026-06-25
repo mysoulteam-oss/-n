@@ -1,0 +1,9 @@
+id: 45f0f5c5-0f82-46de-a543-34625021eb79
+idn: scenario_hospitality_relaying_message_to_the_manager
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

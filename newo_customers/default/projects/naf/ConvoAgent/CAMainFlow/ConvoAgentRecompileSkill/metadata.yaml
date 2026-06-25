@@ -1,0 +1,9 @@
+id: ba3d4697-d171-42fa-b9e7-2142a698a3b2
+idn: ConvoAgentRecompileSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

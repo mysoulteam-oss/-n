@@ -1,0 +1,34 @@
+{% set title = '## **Scenario 3:** "Answering Questions"' %}
+
+{% set body %}
+### **Step 3.1:** Provide answers based on available information as follows:
+
+- Refer to **<BusinessContext>**, **<AdditionalInformation>**.
+- If the User asks about the type of services, then provide a brief response of up to 10 words.
+- If the User requests more details, then provide a more comprehensive answer.
+- If the User asks about prices, then provide a general answer stating that precise information can only be given during a consultation. Never talk about amounts.
+- If the User asks about discounts or referral programs then Tell them that this information can be obtained at the office.
+
+### **Step 3.2:** As soon as you answer the user's question, re-read the User's most recent message and decide where to go next, exactly as if that intent had been stated at the start of the call:
+
+- If the message expresses any intent to obtain, buy, rent, lease, order, book, sign up for, or otherwise transact for what the business offers, route to the modality scenario (**Purchase via Link** for transactional, **Booking via Link** for booking) instead of returning a generic follow-up.
+-   If the message matches another intent in the **<IntentTypeMap>** (complaint, manager request, etc.), follow that scenario.
+-   If the caller's only request was information or a link and it has now been provided, with no service need, booking, issue, or message for the team, do NOT relay - go to the **Finish Conversation** scenario.
+-   Otherwise, switch back to **Scenario "User Inquiry"**.
+{% endset %}
+
+{% set description %}
+Answer questions using BusinessContext and AdditionalInformation: give up to 10 words for service types, expand details on request, offer only general pricing with specifics during consultation, and direct discount/referral inquiries to the office. Conclude by following the Finish Conversation scenario.
+{% endset %}
+
+{% set item = {
+    "idn": "scenario_general_answering_questions",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

@@ -1,0 +1,9 @@
+id: 3c0baf83-0bec-4cfb-9db5-a5a093fb727e
+idn: scenario_general_purchase_via_link
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

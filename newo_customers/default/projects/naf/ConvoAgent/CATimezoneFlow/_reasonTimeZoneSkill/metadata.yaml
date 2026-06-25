@@ -1,0 +1,15 @@
+id: 3d50ae7b-8ce7-4bdc-aef6-636713940672
+idn: _reasonTimeZoneSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 34adb7b8-6d97-4128-abed-f9692ba65d83
+    name: memory
+    default_value: " "
+  - id: f75d1ae9-e1e4-45bf-9956-a92a5c67873a
+    name: timeZone
+    default_value: " "
+path: ""

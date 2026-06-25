@@ -1,0 +1,9 @@
+id: 60a0b45c-425d-4c90-b267-1cfcc2ec928d
+idn: SwitchReplyOutboundSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

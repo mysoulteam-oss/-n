@@ -1,0 +1,9 @@
+id: f4245e22-517b-4d33-8d2a-41805d6f4a1a
+idn: _migration_3_0_6_calendar_integration
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

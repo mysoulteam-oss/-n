@@ -1,0 +1,141 @@
+{% set arguments = GetTriggeredAct().arguments %}
+
+{% set phone_number = arguments.phoneNumber %}
+{% set call_recording = arguments.callRecording %}
+{% set end_call_reason = arguments.endCallReason %}
+{% set summary = arguments.summary %}
+{% set status = "in_progress" if not end_call_reason else "completed" %}
+
+{{SendCommand(
+    commandIdn="update_outbound_record",
+    integrationIdn="api",
+    connectorIdn="webhook",
+    action="update_outbound_record",
+    cellPhone=phone_number,
+    callRecording=call_recording,
+    endCallReason=end_call_reason,
+    summary=summary,
+    callDateTime=GetDateTime(format="datetime", timezone=GetCustomerAttribute(field="project_business_time_zone"))
+)}}
+
+{% if GetState(name="launched") == "True" %}
+    {{_getContactDetailsSkill()}}
+{% endif %}
+
+{% set ns_attributes = namespace(found=False) %}
+
+{% for i in range(300) %}
+    {% if not ns_attributes.found %}
+        {% set attribute_name = "project_attributes_outbound_call_table_csv_result_batch_" ~ loop.index | string %}
+
+        {% set result_csv = GetCustomerAttribute(field=attribute_name) %}
+
+        {% if not result_csv or not result_csv.strip() %}
+            {# First time: create header + first row #}
+            {% set row = phone_number ~ ","
+                ~ end_call_reason ~ ","
+                ~ status ~ ","
+                ~ '"' ~ summary ~ '"' ~ ","
+                ~ call_recording
+            %}
+            {% set result_csv = "Cell Phone,End Call Reason,Status,Summary,Call Recording / Transcript\n" ~ row %}
+            {{ SetCustomerAttribute(field=attribute_name, value=result_csv) }}
+            {{ SetCustomerMetadataAttribute(idn=attribute_name, field="title", value="CSV Result batch " ~ loop.index )}}
+            {% set ns_attributes.found = True %}
+        {% else %}
+            {% set text = result_csv|default('')|replace('\r\n', '\n')|replace('\r', '\n') %}
+
+            {# ---------- split into logical CSV records (respect quoted newlines) ---------- #}
+            {% set rec_ns = namespace(records=[], current='') %}
+
+            {% for line in text.split('\n') %}
+                {% if rec_ns.current %}
+                    {% set rec_ns.current = rec_ns.current ~ '\n' ~ line %}
+                {% else %}
+                    {% set rec_ns.current = line %}
+                {% endif %}
+
+            {# even number of quotes -> end of logical record #}
+                {% if rec_ns.current.count('"') % 2 == 0 %}
+                    {% if rec_ns.current|trim != '' %}
+                    {% set rec_ns.records = rec_ns.records + [rec_ns.current] %}
+                    {% endif %}
+                    {% set rec_ns.current = '' %}
+                {% endif %}
+            {% endfor %}
+
+            {% if rec_ns.current|trim != '' %}
+                {% set rec_ns.records = rec_ns.records + [rec_ns.current] %}
+            {% endif %}
+
+            {% set records = rec_ns.records %}
+
+            {# ---------- detect header ---------- #}
+            {% set expected_header = 'Cell Phone,End Call Reason,Status,Summary,Call Recording / Transcript' %}
+            {% set has_header = records and records[0].strip().startswith('Cell Phone,') %}
+
+            {% if has_header %}
+                {% set data_records = records[1:] %}
+            {% else %}
+                {% set data_records = records %}
+            {% endif %}
+
+            {# ---------- build the replacement row (CSV-escaped, no macros) ---------- #}
+            {% set fields = [phone_number, end_call_reason, status, summary, call_recording] %}
+            {% set new_ns = namespace(line='') %}
+
+            {% for f in fields %}
+                {# convert to string and escape inner quotes #}
+                {% if f is none %}
+                    {% set s = '' %}
+                {% else %}
+                    {% set s = f|string %}
+                {% endif %}
+
+                {% set s_esc = s.replace('"', '""') %}
+
+                {# wrap in quotes if contains comma, quote (already doubled), or newline #}
+                {% if (',' in s_esc) or ('"' in s_esc) or ('\n' in s_esc) or ('\r' in s_esc) %}
+                    {% set s_final = '"' ~ s_esc ~ '"' %}
+                {% else %}
+                    {% set s_final = s_esc %}
+                {% endif %}
+
+                {% if new_ns.line %}
+                    {% set new_ns.line = new_ns.line ~ ',' ~ s_final %}
+                {% else %}
+                    {% set new_ns.line = s_final %}
+                {% endif %}
+            {% endfor %}
+
+            {% set new_row = new_ns.line %}
+
+            {# ---------- build output records (replace or append phone_number row) ---------- #}
+            {% set data_records_ns = namespace(out=[expected_header], found=false) %}
+            {% set phone = phone_number|string %}
+            {# Check if phone in current result csv #}
+            {% if (phone ~ "," in text) %}
+                {% for rec in data_records %}
+                    {# match rows starting with phone_number or "phone_number" #}
+                    {% if rec.startswith(phone ~ ',') or rec.startswith('"' ~ phone ~ '"') %}
+                        {% if not data_records_ns.found %}
+                            {# first match: write our new row instead #}
+                            {% set data_records_ns.out = data_records_ns.out + [new_row] %}
+                            {% set data_records_ns.found = true %}
+                        {% endif %}
+                        {# skip old row #}
+                    {% else %}
+                        {% set data_records_ns.out = data_records_ns.out + [rec] %}
+                    {% endif %}
+                {% endfor %}
+                {{ SetCustomerAttribute(field=attribute_name, value="\n".join(data_records_ns.out)) }}
+                {% set ns_attributes.found = True %}
+            {# If phone number is not in current result csv and there are less then 100 records, we add #}
+            {% elif (data_records | length) < 50 %}
+                {% set data_records_ns.out = data_records_ns.out + data_records + [new_row] %}
+                {{ SetCustomerAttribute(field=attribute_name, value="\n".join(data_records_ns.out)) }}
+                {% set ns_attributes.found = True %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endfor %}

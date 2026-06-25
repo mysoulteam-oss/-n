@@ -1,0 +1,12 @@
+id: 3ceca7a3-2676-4b64-a4e8-5e770a87c80b
+idn: utils_customer_attribute_exists
+title: utils_customer_attribute_exists
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: d264d639-a9d6-4025-a837-8dc85b13e42e
+    name: idn
+    default_value: ""
+path: ""

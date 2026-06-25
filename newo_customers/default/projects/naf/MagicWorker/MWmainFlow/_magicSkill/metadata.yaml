@@ -1,0 +1,18 @@
+id: dd4d4096-9528-4bc9-a286-d98d0df757ca
+idn: _magicSkill
+title: _magicSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: cb338622-adbb-4230-a648-761bfeffa7b0
+    name: retry
+    default_value: " "
+  - id: dcf0c668-595e-449e-9ab0-98cf68583b3b
+    name: task_idn
+    default_value: " "
+  - id: 4e9036a2-3c61-4151-b7c0-aa75912b3a07
+    name: task_context
+    default_value: " "
+path: ""

@@ -1,0 +1,12 @@
+id: fab53c99-9511-4606-befd-c422ddb727e5
+idn: _summarizeConversationSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: e22544aa-a960-4a60-86a1-d898bb46e094
+    name: transcript
+    default_value: " "
+path: ""

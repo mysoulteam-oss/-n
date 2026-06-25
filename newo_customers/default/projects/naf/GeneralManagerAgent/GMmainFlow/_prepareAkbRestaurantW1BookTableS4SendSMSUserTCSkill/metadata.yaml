@@ -1,0 +1,9 @@
+id: adb8a1d6-bace-406f-bd4f-845a788f1536
+idn: _prepareAkbRestaurantW1BookTableS4SendSMSUserTCSkill
+title: _prepareAkbRestaurantW1BookTableS4SendSMSUserTCSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,18 @@
+id: e9d60568-5410-4d4c-bfce-bb17f3931fc1
+idn: _collectMetricsSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: f4cc0d42-4599-401c-bfe7-586645dcfebf
+    name: transcript
+    default_value: ""
+  - id: 3aeddb6e-dd72-45df-8ae7-e77bbd85d24f
+    name: semaphore
+    default_value: " "
+  - id: 48f23ed9-5aa4-436d-814a-716702c264ec
+    name: userId
+    default_value: " "
+path: ""

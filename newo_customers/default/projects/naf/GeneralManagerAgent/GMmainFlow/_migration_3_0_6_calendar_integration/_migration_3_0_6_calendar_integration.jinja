@@ -1,0 +1,19 @@
+{% set calcom_api_token = GetCustomerAttribute(field="calcom_api_token") %}
+{% set old_calendar_enabled = GetCustomerAttribute(field="project_attributes_setting_meeting_creation_enabled") %}
+
+{% set integration_value = "" %}
+{% if calcom_api_token.strip() %}
+    {% set integration_value = "calcom_integration" %}
+{% elif old_calendar_enabled.strip() %}
+    {% if old_calendar_enabled == "True" %}
+        {% set integration_value = "google_integration" %}
+    {% else %}
+        {% set integration_value = "disabled" %}
+    {% endif %}
+{% endif %}
+
+{% if integration_value.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_setting_calendar_event_integration", value=integration_value)}}
+{% endif %}
+
+{{DeleteCustomerAttribute(field="project_attributes_setting_meeting_creation_enabled")}}

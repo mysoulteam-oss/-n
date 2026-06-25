@@ -1,0 +1,19 @@
+{{Set(name="language", value=GetValueJSON(obj=userDetails, key="language"))}}
+{{#if language == "null"}}
+    {{Set(name="language_instruction", value=GetCustomerAttribute(field="project_business_language_primary"))}}
+{{else}}
+    {{Set(name="language_instruction", value=Concat(language, ". All your replies should be in ", language, "unless asked to change to ", GetCustomerAttribute(field="project_business_language_primary"), "."))}}
+{{/if}}
+{{Set(name="additional_details", value=Stringify(GetValueJSON(obj=userDetails, key="additional_details")))}}
+{{#if additional_details == "null"}}
+    {{Set(name="additional_details", value = " ")}}
+{{/if}}
+
+{{#system~}}
+user.name: {{GetValueJSON(obj=userDetails, key="name")}}
+user.language: {{language_instruction}}
+user.email: {{GetValueJSON(obj=userDetails, key="email")}}
+{{additional_details}}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

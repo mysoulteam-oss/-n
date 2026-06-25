@@ -1,0 +1,12 @@
+id: 32180e75-6c8b-4647-b064-1dd25312ba5c
+idn: put_task_to_wait_list
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: fbe6bcf4-3191-4b16-a621-1226442e441a
+    name: task
+    default_value: ""
+path: ""

@@ -1,0 +1,9 @@
+id: ff86ebbb-2019-4505-95e4-b65c7d012539
+idn: SendManageBookingURLTool
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

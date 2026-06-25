@@ -1,0 +1,9 @@
+id: 931a9c80-6f96-4d5e-8d33-8353344ac172
+idn: ReceiveBookingResultSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,9 @@
+id: e8724b17-7a72-44d1-bcbe-920e9ea5f07f
+idn: CheckProductOrServiceAvailabilityTool
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

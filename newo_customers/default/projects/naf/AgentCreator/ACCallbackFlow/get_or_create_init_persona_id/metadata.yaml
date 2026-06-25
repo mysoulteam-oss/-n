@@ -1,0 +1,9 @@
+id: ce582f77-8496-4c39-bfbe-bc5c23e5d1f0
+idn: get_or_create_init_persona_id
+title: get_or_create_init_persona_id
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,12 @@
+id: dd9da984-a768-47af-b50d-10df77044256
+idn: CommonConversationStartedSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: d1304d26-db57-454c-b2b9-46ac3a81f479
+    name: actor
+    default_value: ""
+path: ""

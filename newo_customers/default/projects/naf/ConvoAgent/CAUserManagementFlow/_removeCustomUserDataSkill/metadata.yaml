@@ -1,0 +1,12 @@
+id: 22a546c8-7442-4c3a-af9e-8d18151e5003
+idn: _removeCustomUserDataSkill
+title: _removeCustomUserDataSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: df6ce192-f797-465e-a9b7-8df54c6ca836
+    name: sectionName
+    default_value: ""
+path: ""

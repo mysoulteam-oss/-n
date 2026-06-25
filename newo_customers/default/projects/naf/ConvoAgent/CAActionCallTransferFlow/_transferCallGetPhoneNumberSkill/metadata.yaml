@@ -1,0 +1,15 @@
+id: cb6a6b7f-cb56-42fb-8523-7b3f3d0098ed
+idn: _transferCallGetPhoneNumberSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 881d934d-1df1-4fee-91f6-f730da86be9b
+    name: userId
+    default_value: " "
+  - id: 6d813c8e-2fa9-424e-9b22-f805bc04943b
+    name: memory
+    default_value: " "
+path: ""

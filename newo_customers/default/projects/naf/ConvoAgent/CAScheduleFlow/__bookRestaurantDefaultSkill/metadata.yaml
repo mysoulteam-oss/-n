@@ -1,0 +1,15 @@
+id: 45a9ab90-d9ea-48bf-918e-76a89bcef7e4
+idn: __bookRestaurantDefaultSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 3edcee24-7254-4fec-b505-e55793f5824e
+    name: userId
+    default_value: " "
+  - id: 899250c8-4057-4f35-9b6f-62bfccca9a21
+    name: payload
+    default_value: " "
+path: ""

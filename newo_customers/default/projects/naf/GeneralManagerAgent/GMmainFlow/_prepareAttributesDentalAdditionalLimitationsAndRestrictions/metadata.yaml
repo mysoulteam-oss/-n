@@ -1,0 +1,9 @@
+id: 9ff7d105-41f3-4116-8d71-bd23309c875e
+idn: _prepareAttributesDentalAdditionalLimitationsAndRestrictions
+title: _prepareAttributesDentalAdditionalLimitationsAndRestrictions
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

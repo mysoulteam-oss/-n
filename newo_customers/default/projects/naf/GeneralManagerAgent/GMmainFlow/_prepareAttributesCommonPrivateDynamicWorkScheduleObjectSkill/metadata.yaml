@@ -1,0 +1,12 @@
+id: 56324833-795c-4a75-a20d-aa8849f6ddd9
+idn: _prepareAttributesCommonPrivateDynamicWorkScheduleObjectSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 3781db1a-ab1d-41ef-a837-a5c2e1d94766
+    name: testWorkSchedule
+    default_value: " "
+path: ""

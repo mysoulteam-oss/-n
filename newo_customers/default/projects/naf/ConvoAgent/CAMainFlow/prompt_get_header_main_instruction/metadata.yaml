@@ -1,0 +1,18 @@
+id: 0a26523f-9ff3-4196-b2c7-75cc06c421f4
+idn: prompt_get_header_main_instruction
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 32d42997-ea76-4b04-898b-19cbd9c7c6bb
+    name: outbound
+    default_value: ""
+  - id: 7b5ed3af-8331-4b40-9d74-60144d8c530c
+    name: user_id
+    default_value: ""
+  - id: a289b655-fec2-467a-9149-7a56427ece5c
+    name: v2v_enabled
+    default_value: ""
+path: ""

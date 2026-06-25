@@ -1,0 +1,240 @@
+{% set tenant = GetCustomerInfo().tenant | string %}
+
+{% if canvas_type == "introduction" %}
+    {% set description %}
+The Introduction scenario is the starting point for all conversations between the user and the AI Employee. It is always designated as Scenario 0.
+
+Primary objective:
+The AI Employee will greet the user and identify the reason for their inquiry. It will also gather the minimum information needed to determine the next step by:
+* Identifying the intent type (e.g., Regular Table Booking, General Information Request, Guest Support)
+* Collecting critical parameters (e.g., reason for contact, desired date/time, specific service requests)
+
+The AI Employee remains in this scenario until all required information is collected and confirmed. Once complete, the system transitions to the appropriate scenario based on the identified intent (per the Intent Type Map).
+
+Formatting rules:
+
+1. Title
+Always use: ## Scenario 0: “Introduction”
+
+2.1 Body (Numbering)
+Always use the format: ### **Step 0.X:** [instruction], where X is the step number.
+Example: ### **Step 0.1:**, ### **Step 0.2:**, ### **Step 0.3:**
+
+❗❗ IMPORTANT
+Number steps sequentially, and they must match the scenario number (i.e., Scenario 0 → Steps 0.1, 0.2, 0.3, etc.).
+
+2.2 Body (Instructions)
+Each step describes one conversational action, such as:
+* Asking a question
+* Confirming information
+* Transitioning to another scenario{% if not tenant or tenant == "newo" %}
+
+For more info follow: https://help.newo.ai/en/articles/13786234-introduction-scenario-formatting{% endif %}
+    {% endset %}
+
+{% elif canvas_type == "intent_types" %}
+    {% set description %}
+Intent Types define the categories of user intentions that the AI Employee can recognize and respond to. Each intent type represents a possible goal or purpose of the user's interaction, such as requesting a service, submitting feedback, updating personal information, or seeking support.
+
+Primary objective
+
+An intent type typically maps to one or more scenarios, guiding the conversation flow based on what the user wants to accomplish. These definitions form the foundation of the AI Employee's decision-making process, allowing it to route the conversation to the appropriate conversational flow dynamically.
+
+Formatting rules:
+1. Title
+Always use: ## [L/T if applicable] **<Intent Name>**
+Examples:
+
+## **General Inquiry**
+
+## **[L] Appointment Request**
+
+## **[T] Cancellation**
+
+Intent classification markers – optional:
+[L] - Lead Intent: Used when the conversation represents a potential lead, opportunity, or conversion (e.g., a request, reservation, or inquiry that could result in a sale or engagement).
+[T] - To Do Intent: Used when the conversation outcome requires manual follow-up or internal action by a manager or team member after the session (e.g., callbacks, confirmations, or approvals).
+
+2. Body
+
+Each intent must describe a single, clearly defined user goal or request. If the Intent description matches the user's intent in the conversation, tell the ConvoAgent to perform a specific action. The action can be time-based, for example, during working hours, do this, or during non-working hours, do that. The format is as follows:
+[Intent description]
+[AI Employee/general actions, e.g., "Start Scenario 5" or "Respond with 'We are closed.'"]
+
+Attribute references and context injection
+
+Intents can reference Attributes using the format: [[attribute Idn]]
+Example: [[project_representative_agent_name]]{% if not tenant or tenant == "newo" %}
+
+For more info follow: https://help.newo.ai/en/articles/13786241-intent-type-formatting{% endif %}
+    {% endset %}
+{% elif canvas_type == "scenarios" %}
+    {% set description %}
+Scenarios define the structured conversational flows that occur once the user's intent has been identified. Each scenario outlines the agent's expected sequence of actions, decision points, and information requirements.
+
+Primary objective:
+Provide step-by-step conversational guidance for specific intents or user actions, ranging from simple FAQ responses to complex multi-step processes such as registration, booking, or data validation. Each scenario must clearly indicate when it starts, what information must be collected or confirmed, and when it should end or transition to another scenario.
+
+Formatting rules
+1. Title
+Always use: ## **Scenario <number>:** “<Scenario Title>”
+Example: ## **Scenario 3:** “Data Update Request”
+
+2.1 Body (Numbering)
+Always use the format: ### **Step X.Y:** [instruction], where X is the scenario number and Y is a sequential step number.
+Example: ### **Step 3.1:**, ### **Step 3.2:**, ### **Step 3.3:**
+
+2.2 Body (Instructions)
+Each step describes one logical conversational action, such as:
+* Asking a question.
+* Confirming information.
+* Executing a procedure.
+* Transitioning to another scenario.
+
+Attribute references and context injection
+Scenarios can reference Attributes using the format: [[attribute Idn]]
+Example: [[project_attributes_restaurant_large_group_reservation_minimum_party_size]]
+
+Context from the conversation or additional instructions can be injected into a scenario using the format [context/instruction].
+Example: “Ask the user, your address is [user address] and you will be available on [availability date], is that correct?”
+
+Scenarios may reference other scenarios or procedures.
+Example: “If the preferred date or time is not known, get it by following the **Gathering Preferred Date and Time** procedure.”{% if not tenant or tenant == "newo" %}
+
+For more info follow: https://help.newo.ai/en/articles/13786236-scenario-formatting{% endif %}
+    {% endset %}
+
+{% elif canvas_type == "procedures" %}
+    {% set description %}
+Procedures are reusable conversational subroutines that represent standardized logic blocks performing common actions across multiple scenarios. They are designed to avoid duplicating logic and ensure consistent handling of repeated behaviors, such as confirming names, collecting phone numbers, or verifying contact information.
+
+Primary objective:
+* Maintain conversation quality and consistency by:
+* Standardizing repeated conversational actions across scenarios
+* Eliminating duplicate logic across the system
+* Ensuring uniform handling of common behaviors (e.g., name confirmation, phone collection, contact verification)
+* Adapting based on information already available in Customer Attributes
+
+Procedures must remain generic and scenario-independent, functioning reliably regardless of which scenario invokes them.
+
+Formatting rules:
+1. Title
+Always use: ## **<Procedure Name>** procedure
+
+Example: ## **Reconfirming or Gathering User Name** procedure
+
+2. Body (Instructions)
+Each procedure body must clearly define:
+* When the procedure should be invoked
+* What conditions should be checked before execution
+* What the AI Employee should say or do in each case
+* Conditional logic with example phrasing to maintain conversation quality
+
+Attribute references and context injection
+Procedures can reference Attributes using the format: [[attribute Idn]]
+Example: [[project_attributes_restaurant_large_group_reservation_minimum_party_size]]
+
+Context from the conversation or additional instructions can be injected into a procedure using the format [context/instruction].
+Example: “Ask the user, your address is [user address], and you will be available on [availability date], is that correct?”{% if not tenant or tenant == "newo" %}
+
+For more info follow: https://help.newo.ai/en/articles/13786232-procedure-formatting{% endif %}
+    {% endset %}
+
+{% elif canvas_type == "csv_outbound" %}
+    {% set description %}
+Outbound Call CSV Batches
+
+Create an outbound batch:
+1. **Enter a Title** for the batch (e.g., `Leads Batch 1`).
+2. **Paste your structured CSV data** into the **Body** field.
+3. Click **Save**.
+
+✅ Once saved, the **AI Employee** analyzes the data and queues the calls.
+You can create multiple batches by adding new items to the **Outbound Call CSV files** column.
+
+CSV format requirements
+Your data in the **Body** field must be formatted as **standard CSV**.
+
+Required rules:
+
+- **Header row:** Include a header row to define column names (e.g., `Phone Number`, `Reason to Call`).
+  This helps the agent accurately identify the data.
+- **Phone numbers:** Ensure phone numbers are in a valid **international format** (include the country code like `+1...`).
+  Invalid formats may prevent the call from being placed.
+
+❗❗ IMPORTANT
+- **Avoid duplicate phone numbers** in the CSV.
+  Duplicates can cause issues with calling logic and result tracking.
+
+Example CSV data
+
+Phone Number,Reason to Call
++1234567890,Follow up regarding the recent laptop purchase. Ask if they are satisfied with the service.
++1987654321,Check in regarding their account. Inform them the account has been upgraded to premium status.
+
+
+Retrieve call results
+Once the agent processes the calls, the results are written to a **project attribute**.
+
+1. Navigate to the **Attributes** page.
+2. Search for: `project_attributes_outbound_call_table_csv_result`
+3. Copy the content from the attribute value.
+4. Save the content as a `.csv` file (e.g., `results.csv`) and open it in spreadsheet software for analysis.
+
+🗒️ Note
+
+If your list contains many entries (typically **more than 50**), the system will automatically generate multiple result attributes (e.g., `..._batch_1`, `..._batch_2`) to store the data.{% if not tenant or tenant == "newo" %}
+
+For more info follow: https://help.newo.ai/en/articles/13786164-outbound-calling-via-csv-list{% endif %}
+    {% endset %}
+{% elif canvas_type == "csv_outbound_sms" %}
+    {% set description %}
+Outbound SMS CSV Batches
+
+Create an outbound batch:
+
+1. **Enter a Title** for the batch (e.g., `Leads Batch 1`).
+2. **Paste your structured CSV data** into the **Body** field.
+3. Click **Save**.
+
+✅ Once saved, the **AI Employee** analyzes the data and queues the SMS messages.
+You can create multiple batches by adding new items to the **Outbound SMS CSV files** column.
+
+CSV format requirements
+
+Your data in the **Body** field must be formatted as **standard CSV**.
+
+Required rules
+
+- **Header row:** Include a header row to define column names (e.g., `Phone Number`, `Reason`).
+  This helps the agent accurately identify the data.
+- **Phone numbers:** Ensure phone numbers are in a valid **international format** (include the country code like `+1...`).
+  Invalid formats may prevent the SMS from being sent.
+
+❗❗ IMPORTANT
+- **Avoid duplicate phone numbers** in the CSV.
+  Duplicates can cause issues with calling logic and result tracking.
+
+Example CSV data:
+Phone Number,Reason
++1234567890,Follow up regarding the recent laptop purchase. Ask if they are satisfied with the service.
++1987654321,Check in regarding their account. Inform them the account has been upgraded to premium status.
+
+Retrieve SMS results
+Once the agent processes the SMS batch (and any associated calls, if applicable), the results are written to a shared **project attribute** used for both outbound calls and SMS.
+1. Navigate to the **Attributes** page.
+2. Search for: `project_attributes_outbound_call_table_csv_result` (this attribute stores the results for both outbound calls and SMS batches).
+3. Copy the content from the attribute value.
+4. Save the content as a `.csv` file (e.g., `results.csv`) and open it in spreadsheet software for analysis.
+
+🗒️ Note
+
+If your list contains many entries (typically **more than 50**), the system will automatically generate multiple result attributes (e.g., `..._batch_1`, `..._batch_2`) to store the data.{% if not tenant or tenant == "newo" %}
+
+For more info follow: https://help.newo.ai/en/articles/13786164-outbound-calling-via-csv-list{% endif %}
+    {% endset %}
+{% else %}
+    {% set description = "" %}
+{% endif %}
+
+{{Return(val=description.strip())}}

@@ -1,0 +1,18 @@
+id: 1e3dfa75-18e5-47e6-a089-1603f7c95c58
+idn: _utilsStringReplaceSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 835028b5-73ed-4dcd-b2a5-beadbcce12eb
+    name: newValue
+    default_value: " "
+  - id: f191f625-d0b1-44eb-a9bf-9b0880d24998
+    name: stringToReplace
+    default_value: " "
+  - id: fbf845bb-87a7-4f6f-805b-5186b1698373
+    name: oldValue
+    default_value: " "
+path: ""

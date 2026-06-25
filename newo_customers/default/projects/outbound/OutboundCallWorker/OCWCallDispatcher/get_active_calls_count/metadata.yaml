@@ -1,0 +1,9 @@
+id: dde45a8a-9df7-4f68-9e04-967e0b6b3f92
+idn: get_active_calls_count
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

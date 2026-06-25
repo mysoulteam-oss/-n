@@ -1,0 +1,9 @@
+id: bbede39c-d58c-44d9-92fc-0e95c85cfc19
+idn: _migration_3_10_1_openai_v2v_new_default_model
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,27 @@
+id: a1c6b10a-8dc8-47d6-a793-316afe197777
+idn: _schemasSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: e1097ce2-bd3c-4b91-8384-fed3b033bfcf
+    name: checkAvailabilitySchema
+    default_value: "False"
+  - id: a61875e3-0573-48b2-ae99-1ba6143d1922
+    name: promisedSchema
+    default_value: "False"
+  - id: ad5ae959-7bee-4239-9884-12e75c09e62e
+    name: requestMethod
+    default_value: POST
+  - id: c7e5abcf-62c3-40e8-a899-a8636e800b3a
+    name: userId
+    default_value: " "
+  - id: a802b8b4-9cb4-408e-9ee1-9fa1196b2b93
+    name: workingHoursSchema
+    default_value: "False"
+  - id: 511fcc8a-3808-46c4-a879-6adb826f7c1e
+    name: availabilitySchema
+    default_value: "False"
+path: ""

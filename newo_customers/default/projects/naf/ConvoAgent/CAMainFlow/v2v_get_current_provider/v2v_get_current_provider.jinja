@@ -1,0 +1,20 @@
+{% set user_id = user_id or GetUser().id | string %}
+{% set provider = GetPersonaAttribute(id=user_id, field="v2v_current_provider") %}
+{% set conversation_channel = session_get_conversation_channel(user_id=user_id) %}
+
+{% if not provider.strip() %}
+    {% set connector_info = GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector" if conversation_channel == "phone" else "newo_voice_connector_web")%}
+    {% if connector_info.settings.is_v2v_fallback_enabled == "True" %}
+        {% set provider = connector_info.settings.fallback_v2v_mode %}
+    {% else %}
+        {% set provider = connector_info.settings.v2v_mode %}
+    {% endif %}
+
+    {% if not provider %}
+        {% set provider = GetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider") %}
+    {% endif %}
+
+    {{SetPersonaAttribute(id=user_id, field="v2v_current_provider", value=provider)}}
+{% endif %}
+
+{{Return(val=provider)}}

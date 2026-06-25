@@ -1,0 +1,9 @@
+id: f4e7a398-5e88-40c2-aa8f-fde05fe5f893
+idn: SetFollowUpAgentSpeechEndedSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,9 @@
+id: 46005d79-fa91-47e6-8b14-1b9c32e7c6ff
+idn: vibe_knowledge_base_result
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

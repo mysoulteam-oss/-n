@@ -1,0 +1,9 @@
+id: ce2ab309-baa4-4641-8ac6-fa773ed5c575
+idn: default_report_content_dental_json
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

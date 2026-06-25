@@ -1,0 +1,12 @@
+id: 540861e0-5c1d-4037-9f9a-5273f49c8745
+idn: validate_newo_tool
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: eb98454f-1f1e-46a8-8d7b-932135c93564
+    name: tools
+    default_value: ""
+path: ""

@@ -1,0 +1,28 @@
+id: 33fdd924-bbc8-4e4b-9958-807353e5e38a
+idn: Metadata
+title: Metadata
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 4d9d1b96-6f89-4b31-af02-c280e2ad2725
+    description: null
+    idn: get_project_metadata
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: GetProjectMetadata
+    state_idn: null
+    integration_idn: null
+    connector_idn: null
+  - id: 4e3982e8-4e65-467b-a938-6b2774a53e07
+    description: null
+    idn: set_sa_version
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: SetVersionSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

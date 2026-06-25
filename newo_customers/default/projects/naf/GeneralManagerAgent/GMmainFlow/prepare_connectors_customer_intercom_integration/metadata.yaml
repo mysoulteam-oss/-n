@@ -1,0 +1,9 @@
+id: 999f74e7-2f3d-458d-abcc-888c3025f047
+idn: prepare_connectors_customer_intercom_integration
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

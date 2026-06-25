@@ -1,0 +1,9 @@
+id: aaaee731-5bd4-4747-bc36-4903d5e6d0a6
+idn: procedure_cleaning_gather_frequency
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

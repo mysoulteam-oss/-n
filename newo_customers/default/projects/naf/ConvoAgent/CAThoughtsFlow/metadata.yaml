@@ -1,0 +1,61 @@
+id: a69a9d9c-dba4-483e-8063-7ac26b4b6da4
+idn: CAThoughtsFlow
+title: CAThoughtsFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 372527cc-fa15-4ece-8549-9f68e20283cd
+    description: null
+    idn: broadcast_analyze_conversation
+    skill_selector: skill_idn
+    interrupt_mode: interrupt
+    skill_idn: AnalyzeConversationSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 9f8eb9cd-1dfc-4bc5-b6ef-688f3b5f1539
+    description: null
+    idn: convoagent_activate_waiting_mode
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: WaitingModeActivateSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 7718cd72-03cb-444a-938f-df5fb42433ef
+    description: null
+    idn: urgent_message
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: WaitingModeDisableSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 9b61ad5e-e5b6-4ffa-aa00-d8c8b359e19b
+    description: null
+    idn: waiting_mode_fallback
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: WaitingModeDisableSkill
+    state_idn: null
+    integration_idn: program_timer
+    connector_idn: waiting_mode_fallback
+state_fields:
+  - id: c71257cd-8650-49c9-a3ea-0ab1031ab16a
+    title: ""
+    idn: last_no_task_prompt
+    default_value: ""
+    scope: user
+  - id: 4e04d392-659a-4e1a-b65a-cfbd0eed3b30
+    title: ""
+    idn: last_task_prompt
+    default_value: ""
+    scope: user
+  - id: e761a9f1-871d-462d-a7b9-7c7d4b50d10c
+    title: ""
+    idn: waiting_mode
+    default_value: ""
+    scope: user

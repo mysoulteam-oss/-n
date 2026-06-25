@@ -1,0 +1,42 @@
+{% set revenue_models = json.loads(_calculatePotentialRevenueModelSchemasSkill()) %}
+
+{% set category = _getConversationCategoryLLMSkill(revenueModels=revenue_models, sessionName=sessionName) %}
+
+{% set revenue_model = revenue_models[category] %}
+
+{% set fixed_potential_revenue = revenue_model["fixed_potential_revenue"] %}
+
+{% if fixed_potential_revenue %}
+    {{Return(val=fixed_potential_revenue)}}
+{% endif %}
+
+{% set conversation_values = _getValuesFromConversationExtractSkill(schema=json.dumps(revenue_model["revenue_parameters_schema"], ensure_ascii=False, indent=2), userId=userId, transcript=transcript) %}
+{% set formatted_conversation_values = _utilsUnpackJSONSkill(jsonObject=conversation_values) %}
+
+{% set constants = revenue_model["constants"] %}
+{% set formatted_constants = _utilsUnpackJSONSkill(jsonObject=constants) %}
+{% set constants_list = formatted_conversation_values ~ "
+
+" ~ formatted_constants %}
+
+{% set potential_revenue_formula = revenue_model["potential_revenue_formula"] %}
+
+{% set potential_revenue = _calcSkill(task=potential_revenue_formula, constants=constants_list).strip() %}
+
+{% if re.fullmatch("^\\d+(\\.\\d+)?$", potential_revenue) %}
+    {% set potential_revenue = potential_revenue | int %}
+{% else %}
+    {% set potential_revenue = GetCustomerAttribute(field="project_attributes_setting_asr_average_lead_value") | int %}
+{% endif %}
+
+{% set zero_default = revenue_model.get("zero_default") %}
+{% set min_value = revenue_model.get("min_value") %}
+
+{% if zero_default and potential_revenue == 0 %}
+    {% set potential_revenue = zero_default | int %}
+{% elif min_value %}
+    {% set min_value = min_value | int %}
+    {% set potential_revenue = min_value if min_value > potential_revenue else potential_revenue %}
+{% endif %}
+
+{{Return(val=potential_revenue)}}

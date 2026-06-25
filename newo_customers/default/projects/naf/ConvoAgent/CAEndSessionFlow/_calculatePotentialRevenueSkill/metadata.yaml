@@ -1,0 +1,18 @@
+id: b20891e8-3dcc-4243-b462-09f6d66aa01f
+idn: _calculatePotentialRevenueSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: cd3fd4fc-f274-4423-8280-0ae9dc15ae40
+    name: userId
+    default_value: " "
+  - id: 0f7c08c9-9d82-45ef-b884-6dcafdeb7893
+    name: sessionName
+    default_value: " "
+  - id: 2b91a4bc-eafb-4feb-bed5-3d0449a705eb
+    name: transcript
+    default_value: " "
+path: ""

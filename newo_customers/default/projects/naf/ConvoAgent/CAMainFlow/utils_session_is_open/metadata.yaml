@@ -1,0 +1,9 @@
+id: 457dc1bf-673c-470d-9e8f-1b766a88e4ec
+idn: utils_session_is_open
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

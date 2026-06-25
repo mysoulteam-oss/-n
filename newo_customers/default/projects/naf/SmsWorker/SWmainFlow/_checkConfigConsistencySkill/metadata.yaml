@@ -1,0 +1,12 @@
+id: 1cd3c709-2b90-45eb-970d-49539a4a3cf0
+idn: _checkConfigConsistencySkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 052fb309-ea30-450d-8c3b-29add7ace72e
+    name: config
+    default_value: " "
+path: ""

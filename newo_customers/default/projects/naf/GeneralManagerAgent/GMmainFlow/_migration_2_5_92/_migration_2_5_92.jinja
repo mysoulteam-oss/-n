@@ -1,0 +1,26 @@
+{# Set new default booking cancellation values #}
+
+{{SetCustomerAttribute(field="project_attributes_setting_booking_cancellation_type", value="default")}}
+
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+
+{% if industry == "restaurant_industry" %}
+  {{SetCustomerAttribute(field="project_attributes_setting_booking_cancellation_enabled", value="True")}}
+{% else %}
+  {{SetCustomerAttribute(field="project_attributes_setting_booking_cancellation_enabled", value="False")}}
+{% endif %}
+
+{# Update ITM for restaurant industry #}
+
+{% if industry == "restaurant_industry" %}
+  {% set itm = GetCustomerAttribute(field="project_attributes_itm") %}
+  {% if itm.strip() %}
+    {% set itm = itm.replace(
+      "ConvoAgent should very politely explain that, as an AI Assistant, they are not able to independently cancel a booking.
+During Working Hours: ConvoAgent should say that they will transfer the call to a human co-worker and start the scenario: **\"Regular Transfer\"**.
+During Non-Working Hours: ConvoAgent should ask the details of the booking (name, time, date and phone number) the guest wants to cancel. Then, ConvoAgent should start the scenario: **\"Relaying Message to the Manager\"**.",
+      "ConvoAgent must start the date and time of the reservation and start the scenario: **\"Canceling Existing Reservation\"**."
+    ) %}
+    {{SetCustomerAttribute(field="project_attributes_itm", value=itm)}}
+  {% endif %}
+{% endif %}

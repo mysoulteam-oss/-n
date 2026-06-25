@@ -1,0 +1,2 @@
+{% set system_footnote_actor_id = utils_get_footnote_actor_id(debug="True") %}
+{{SendMessage(message="Debug log: " ~ message, actorIds=[system_footnote_actor_id])}}

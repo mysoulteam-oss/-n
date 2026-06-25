@@ -1,0 +1,12 @@
+id: d592872b-78b0-45d3-a10a-8c1a5b699b50
+idn: _defineTasksSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: c956a8b4-a974-4d23-94a5-14d3f63a40d3
+    name: inputTasks
+    default_value: " "
+path: ""

@@ -1,0 +1,9 @@
+id: 8124c7f2-48fc-4276-80db-89aa28dc1644
+idn: _updateConnectorSettingsNewoVoiceSkill
+title: _updateConnectorSettingsNewoVoiceSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,35 @@
+{{Set(name="user_id", value=GetUser(field="id"))}}
+
+{{Set(name="define_during_working_hours_enabled", value=GetCustomerAttribute(field="project_attributes_setting_define_conversation_is_during_working_hours_enabled"))}}
+{{Set(name="transfer_call_enabled", value=GetCustomerAttribute(field="project_attributes_setting_transfer_call_enabled"))}}
+
+{{#if define_during_working_hours_enabled == "True"}}
+    {{#if transfer_call_enabled == "True"}}
+        {{#if GetPersonaAttribute(id=user_id, field="working_hours_status") == "true"}}
+            {{SendSystemEvent(
+                eventIdn="urgent_message",
+                connectorIdn="system",
+                baseInstruction="Apologize to the user and say: 'I’m sorry, but it seems there are technical issues with the system. I can try to connect you with our manager who can help, would you like me to do that?'",
+                uninterruptible="True"
+            )}}
+            {{Return()}}
+        {{/if}}
+    {{/if}}
+{{/if}}
+
+{{Set(name="session_ended_report_enabled", value=GetCustomerAttribute(field="project_attributes_setting_session_ended_report_enabled"))}}
+{{#if session_ended_report_enabled == "True"}}
+    {{SendSystemEvent(
+        eventIdn="urgent_message",
+        connectorIdn="system",
+        baseInstruction="Apologize to the user and say: 'I’m sorry, but it seems there are technical issues with the system. Please leave a message, and I will relay everything to the manager. What would you like me to include?'",
+        uninterruptible="True"
+    )}}
+{{else}}
+    {{SendSystemEvent(
+        eventIdn="urgent_message",
+        connectorIdn="system",
+        baseInstruction="Apologize to the user and say: 'I’m sorry, but it seems there are technical issues with the system. Please call again later.'",
+        uninterruptible="True"
+    )}}
+{{/if}}

@@ -1,0 +1,41 @@
+{{Set(name="working_hours_object", value=GetCustomerAttribute(field="project_attributes_private_dynamic_schedule_working_hours_object"))}}
+
+{{!-- Fallback in case of missing `working_hours_object` --}}
+{{#if IsEmpty(text=working_hours_object)}}
+    {{Return(val=_utilsGetWorkingStatusLLMSkill(dayOfWeek=dayOfWeek, time=time))}}
+{{/if}}
+
+{{Set(name="day_object", value=GetValueJSON(obj=working_hours_object, key=dayOfWeek))}}
+{{#if GetValueJSON(obj=day_object, key="working_day") == "false"}}
+    {{Set(name="working_hours_status", value="non_working_day")}}
+{{else}}
+    {{Set(name="hour_list", value=time.split(":"))}}
+    {{Set(name="hour_list", value=Stringify(hour_list))}}
+    {{Set(name="hour_list", value=hour_list.replace("'", '"'))}}
+
+    {{Set(name="hour", value=Stringify(GetItemsArrayByIndexesJSON(array=hour_list, indexes=0)))}}
+    {{Set(name="minutes", value=GetItemsArrayByIndexesJSON(array=hour_list, indexes=1))}}
+
+    {{Set(name="empty_string", value=" ")}}
+    {{Set(name="minutes_join", value=empty_string.join(minutes))}}
+    {{Set(name="minutes_list", value=minutes_join.split())}}
+    {{Set(name="minutes_list", value=Stringify(minutes_list))}}
+    {{Set(name="minutes_list", value=minutes_list.replace("'", '"'))}}
+    {{Set(name="minutes_list", value=minutes_list.replace('[""", ', "["))}}
+    {{Set(name="minutes_list", value=minutes_list.replace(', """]', "]"))}}
+
+    {{Set(name="minute", value=Stringify(GetItemsArrayByIndexesJSON(array=minutes_list, indexes=0)))}}
+
+    {{Set(name="hour_minute", value=Concat(hour, minute))}}
+
+    {{Set(name="working_hours", value=GetValueJSON(obj=day_object, key="working_hours"))}}
+
+    {{Set(name="business_working_hour", value=working_hours.__contains__(hour_minute))}}
+    {{Set(name="exists", value=Stringify(business_working_hour))}}
+
+    {{#if exists == "True"}}
+        {{Set(name="working_hours_status", value="working_hours")}}
+    {{else}}
+        {{Set(name="working_hours_status", value="non_working_hours")}}
+    {{/if}}
+{{/if}}

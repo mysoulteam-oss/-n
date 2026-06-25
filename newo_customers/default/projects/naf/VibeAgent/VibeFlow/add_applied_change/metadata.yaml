@@ -1,0 +1,15 @@
+id: 7a8b4203-d011-4ce8-a940-4c82c5b2182e
+idn: add_applied_change
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 73a897f1-f736-496a-b4f5-a4fad9505977
+    name: change_id
+    default_value: ""
+  - id: be56b81c-4e3a-404f-af0f-0deb610aaf75
+    name: change
+    default_value: ""
+path: ""

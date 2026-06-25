@@ -1,0 +1,9 @@
+id: f1db9b90-1903-45b8-89e4-9ebf3d4f731d
+idn: default_itm_nwh_cleaning
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

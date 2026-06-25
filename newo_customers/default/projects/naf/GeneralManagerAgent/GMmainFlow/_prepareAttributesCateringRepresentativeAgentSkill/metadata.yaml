@@ -1,0 +1,9 @@
+id: f20bb942-039b-4f4f-88bf-137960fb254f
+idn: _prepareAttributesCateringRepresentativeAgentSkill
+title: _prepareAttributesCateringRepresentativeAgentSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

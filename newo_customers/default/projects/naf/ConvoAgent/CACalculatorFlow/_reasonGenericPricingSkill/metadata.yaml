@@ -1,0 +1,12 @@
+id: 39b92e5b-c090-46ee-87b2-3bf1a6f6adad
+idn: _reasonGenericPricingSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 7cd167a2-953f-4dcf-a90d-d349df8357a2
+    name: memory
+    default_value: " "
+path: ""

@@ -1,0 +1,9 @@
+id: 5fce6672-3d8b-451d-bbb0-7e74e1cf30e6
+idn: prepare_connectors_program_timer_integration_post_setup
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

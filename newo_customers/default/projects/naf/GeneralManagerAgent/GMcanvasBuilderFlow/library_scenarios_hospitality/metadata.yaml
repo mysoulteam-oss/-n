@@ -1,0 +1,9 @@
+id: 81ea4025-0e68-4f7a-88c9-2b18252bee9a
+idn: library_scenarios_hospitality
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

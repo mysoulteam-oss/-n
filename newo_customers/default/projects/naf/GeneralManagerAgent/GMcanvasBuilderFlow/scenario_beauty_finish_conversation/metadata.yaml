@@ -1,0 +1,9 @@
+id: ea61e846-4911-4ec0-b352-cc4c74bda444
+idn: scenario_beauty_finish_conversation
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

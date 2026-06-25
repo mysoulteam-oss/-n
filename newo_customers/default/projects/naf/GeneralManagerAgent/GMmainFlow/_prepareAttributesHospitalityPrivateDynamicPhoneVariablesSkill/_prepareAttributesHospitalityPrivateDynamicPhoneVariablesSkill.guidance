@@ -1,0 +1,5 @@
+{{#system~}}
+working_hour_escalation_phone: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_working_hour_escalation_phone")}}
+non_working_hour_escalation_phone: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_non_working_hour_escalation_phone")}}
+{{~/system}}
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_phone_variables", value=GetCurrentPrompt())}}

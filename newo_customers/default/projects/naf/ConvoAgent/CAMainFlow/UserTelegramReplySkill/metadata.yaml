@@ -1,0 +1,9 @@
+id: 00e2ac98-89ea-4c9d-afce-83df0e135116
+idn: UserTelegramReplySkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

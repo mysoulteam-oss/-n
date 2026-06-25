@@ -1,0 +1,7 @@
+{{Set(name="user_id", value=GetUser(field="id"))}}
+
+{{SetPersonaAttribute(id=user_id, field="outbound_session", value="True")}}
+{{SetPersonaAttribute(id=user_id, field="outbound_session_global", value="True")}}
+
+{{_startNewSessionSkill(user_id=user_id)}}
+{{prompt_compile_base(user_id=user_id)}}

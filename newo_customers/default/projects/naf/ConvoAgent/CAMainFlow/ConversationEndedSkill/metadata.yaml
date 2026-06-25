@@ -1,0 +1,9 @@
+id: c03f4a83-be49-4cd3-a064-e458991d0afb
+idn: ConversationEndedSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

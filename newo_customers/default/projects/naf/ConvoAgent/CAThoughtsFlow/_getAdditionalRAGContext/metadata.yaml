@@ -1,0 +1,12 @@
+id: 2f07c60a-28f4-4252-af3f-3f2cf0305d47
+idn: _getAdditionalRAGContext
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 355c3858-7cc7-4846-a911-93025f8b666e
+    name: userId
+    default_value: " "
+path: ""

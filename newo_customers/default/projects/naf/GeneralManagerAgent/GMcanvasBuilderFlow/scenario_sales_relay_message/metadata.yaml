@@ -1,0 +1,9 @@
+id: 6ebea93e-f50e-4ce6-bad5-68dae3bcd022
+idn: scenario_sales_relay_message
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

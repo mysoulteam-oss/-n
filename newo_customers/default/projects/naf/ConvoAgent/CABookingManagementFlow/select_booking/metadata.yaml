@@ -1,0 +1,18 @@
+id: 0c33e551-e589-4e88-8e63-dcc4f1dee822
+idn: select_booking
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 5a6b5105-abcf-4cc6-975f-bac47f43dfea
+    name: user_id
+    default_value: ""
+  - id: adfb9093-f89e-4070-8bb4-dece9cdf23e5
+    name: schema
+    default_value: ""
+  - id: dcbbe06b-16b5-49f5-b3cb-10ad848dc096
+    name: memory
+    default_value: ""
+path: ""

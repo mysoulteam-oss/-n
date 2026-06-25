@@ -1,0 +1,31 @@
+{% set current_specials=GetCustomerAttribute(field="project_attributes_current_specials") %}
+{% set pricing_context=GetCustomerAttribute(field="project_attributes_setting_calculation_context") %}
+{% set rules=GetCustomerAttribute(field="project_attributes_setting_calculation_rules") %}
+
+{% system %}
+Your goal is to properly calculate the requested services cost based on the provided pricing (in <Pricing> section), special offers (in <Offers> section) and user conversation (in <Conversation> section). Respond according to **Output Format**.
+
+---
+
+<Offers>
+{{current_specials}}
+</Offers>
+
+<Pricing>
+{{pricing_context}}
+</Pricing>
+
+<Conversation>
+{{memory}}
+</Conversation>
+
+---
+
+# **Output Format**
+{{rules}}
+
+{% end %}
+
+{% set calculation_result = Gen(temperature=0.2, topP=0, skipFilter=True, thinkingBudget=1000) %}
+
+{{Return(val=calculation_result)}}

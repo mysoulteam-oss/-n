@@ -1,0 +1,12 @@
+id: 23f3eccb-cbd9-46cf-a44d-eba0d3de0a76
+idn: utils_build_intent_type_map_store_intents
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 8b486c18-7bfd-4ef0-bb6a-9c931917b316
+    name: intent_type_map
+    default_value: ""
+path: ""

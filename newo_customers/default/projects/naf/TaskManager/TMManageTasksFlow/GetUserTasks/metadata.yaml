@@ -1,0 +1,9 @@
+id: 40fe3811-e475-44c0-8e3e-c433ec6f5994
+idn: GetUserTasks
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

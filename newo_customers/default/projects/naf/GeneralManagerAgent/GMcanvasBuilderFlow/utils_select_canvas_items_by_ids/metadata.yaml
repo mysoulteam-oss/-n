@@ -1,0 +1,15 @@
+id: 41fd4f59-6de8-4781-9453-94442c4b8a8f
+idn: utils_select_canvas_items_by_ids
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 4307a283-fb75-4163-8702-8391f9186831
+    name: items
+    default_value: ""
+  - id: f1713f43-0017-43fe-b199-68ad1950fa2e
+    name: selected_idns
+    default_value: ""
+path: ""

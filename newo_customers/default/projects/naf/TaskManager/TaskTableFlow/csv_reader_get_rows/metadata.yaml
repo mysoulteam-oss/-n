@@ -1,0 +1,12 @@
+id: 115fa185-5341-4649-9622-434e4b9b785a
+idn: csv_reader_get_rows
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 0b40c57f-5bce-4300-b53a-1a52c67b7491
+    name: task_type
+    default_value: ""
+path: ""

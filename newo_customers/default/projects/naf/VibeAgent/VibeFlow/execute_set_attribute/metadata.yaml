@@ -1,0 +1,15 @@
+id: 0fb309f6-63e8-4ce6-a9de-f50332532a32
+idn: execute_set_attribute
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: dd695aa9-b801-4e4c-a165-3b2e35aeafcc
+    name: idn
+    default_value: ""
+  - id: 3dc59b30-b56b-434e-ae87-6e0be3c166b7
+    name: val
+    default_value: ""
+path: ""

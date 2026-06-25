@@ -1,0 +1,52 @@
+{{Set(name="data", value=GetTriggeredAct(fields=["data"]))}} {{!success}}
+{{Set(name="type", value=GetTriggeredAct(fields=["type"]))}} {{!error}}
+{{Set(name="errorMessage", value=GetTriggeredAct(fields=["errorMessage"]))}} {{!error}}
+{{Set(name="user_id", value=GetUser(field="id"))}}
+{{Set(name="footnote_actor_id", value=_utilsGetFootnoteSkill(userId=user_id, system="True"))}}
+{{Set(name="prev_request", value=GetPersonaAttribute(id=user_id, field="last_requested_datetime"))}}
+
+
+{{#if not IsEmpty(text=type)}} {{!error}}
+    {{SendMessage(message=Concat("System log: Available slots error: ", errorMessage), actorIds=footnote_actor_id)}}
+    {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction="Say that you just experienced a problem with a booking system. Say, that to check availability, you will need to connect the user to the co-worker.", uninterruptible="True")}}
+    {{Return()}}
+{{/if}}
+
+{{Set(name="arrivalDate", value=GetValueJSON(obj=prev_request, key="arrivalDate"))}}
+{{Set(name="departureDate", value=GetValueJSON(obj=prev_request, key="departureDate"))}}
+{{#if IsSimilar(val1="[]", val2=data, strategy="hamming", threshold=0.7)}}
+
+  {{Set(name="connection_with_the_manager_phrase", value=" ")}}
+
+  {{#if GetCustomerAttribute(field="project_attributes_setting_transfer_call_enabled") == "True"}}
+    {{#if GetCustomerAttribute(field="project_attributes_setting_connect_with_the_manager_in_case_of_unhandled_issues") == "True"}}
+      {{#if GetCustomerAttribute(field="project_attributes_setting_define_conversation_is_during_working_hours_enabled") == "True"}}
+          {{#if GetPersonaAttribute(id=user_id, field="working_hours_status") == "false"}}
+              {{Set(name="connection_with_the_manager_phrase", value=" If this is already the second attempt to check availability, advise the user to call during business hours and inform them that a manager will be able to assist them when they call.")}}
+          {{else}}
+              {{Set(name="connection_with_the_manager_phrase", value=" If it's already second attempt to get availability, suggest the user to be connected with the manager who may be able to find something for them.")}}
+          {{/if}}
+      {{/if}}
+    {{/if}}
+  {{/if}}
+
+  {{Set(name="agent_instruction", value=Concat("Tell the user that you have checked and unfortunately, there are no any available slots from ", arrivalDate, " to ", departureDate, ". Ask if they would like you to check a different time or another day.", connection_with_the_manager_phrase))}}
+
+{{else}}
+
+  {{Set(name="agent_instruction", value=Concat("You have just received available slots for user requested date and time (", arrivalDate, " to ", departureDate,  "). Available slots are listed in this object:
+  ```", data, "
+  ```. Always provide the time in a ", GetCustomerAttribute(field="project_attributes_setting_time_format"), ". Do not mention year in the date."))}}
+
+{{/if}}
+
+{{SetPersonaAttribute(id=user_id, field="booking_slots_availability_checking_status", value="False")}}
+{{SetPersonaAttribute(id=user_id, field="booking_slots_availability_checking_status_details", value="The agent has received a response from the booking system with available slots. The response is displayed in block `# Slots availability response`. However, the booking is still not confirmed by the booking system and has not taken place!")}}
+{{SetPersonaAttribute(id=user_id, field="booking_slots_availability_result", value=Concat("From: ", arrivalDate, "To: ", departureDate, "
+", data))}}
+
+{{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction=agent_instruction, uninterruptible="True")}}
+
+{{#if IsSimilar(val1="[]", val2=data, strategy="hamming", threshold=0.7)}}
+  {{Return()}}
+{{/if}}

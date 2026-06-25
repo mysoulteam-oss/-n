@@ -1,0 +1,9 @@
+id: 054f94a7-0fad-4525-a96c-e4200e9d0b5c
+idn: library_intent_types_sales
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

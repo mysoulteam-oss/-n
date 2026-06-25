@@ -1,0 +1,41 @@
+{{Set(name="is_first_init_done", value=GetCustomerAttribute(field="project_attributes_private_account_initialized_first_time"))}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_business_type", ac_field="agent_creator_business_info_industry_description")}}
+
+{{Set(name="industry", value=GetCustomerAttribute(field="project_business_industry") )}}
+
+{{#if industry == "catering_industry"}}
+    {{_utilsCustomerAttributeSetIfEmptySkill(field="project_business_type", value="Catering services")}}
+{{/if}}
+
+{{#if industry == "cleaning_industry"}}
+    {{_utilsCustomerAttributeSetIfEmptySkill(field="project_business_type", value="Cleaning services")}}
+{{/if}}
+
+{{#if industry == "dental_industry"}}
+    {{_utilsCustomerAttributeSetIfEmptySkill(field="project_business_type", value="Dental services / Orthodontics services")}}
+{{/if}}
+
+{{#if industry == "home_service_industry"}}
+    {{_utilsCustomerAttributeSetIfEmptySkill(field="project_business_type", value="Home services")}}
+{{/if}}
+
+{{#if industry == "hospitality_industry"}}
+    {{_utilsCustomerAttributeSetIfEmptySkill(field="project_business_type", value="Hospitality services")}}
+{{/if}}
+
+{{#if industry == "restaurant_industry"}}
+    {{_utilsCustomerAttributeSetIfEmptySkill(field="project_business_type", value="Restaurant services")}}
+{{/if}}
+
+{{#if industry == "sales_industry"}}
+    {{_utilsCustomerAttributeSetIfEmptySkill(field="project_business_type", value="Sales services")}}
+{{/if}}
+
+{{#if industry == "beauty_industry"}}
+    {{_utilsCustomerAttributeSetIfEmptySkill(field="project_business_type", value="Beauty services")}}
+{{/if}}
+
+{{#if industry == "general_industry"}}
+    {{_utilsCustomerAttributeSetIfEmptySkill(field="project_business_type", value="General services")}}
+{{/if}}

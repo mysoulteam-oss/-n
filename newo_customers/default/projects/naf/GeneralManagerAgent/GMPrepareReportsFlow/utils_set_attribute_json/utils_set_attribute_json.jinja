@@ -1,0 +1,7 @@
+{# This skill adds indents to the JSON and sets it into an attribute. #}
+
+{% if value_json is string %}
+    {% set value_json = json.loads(value_json) %}
+{% endif %}
+
+{{SetCustomerAttribute(field=attribute_idn, value=json.dumps(value_json, ensure_ascii=False, indent=2))}}

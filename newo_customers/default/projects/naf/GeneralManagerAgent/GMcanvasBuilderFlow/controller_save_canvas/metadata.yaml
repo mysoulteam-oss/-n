@@ -1,0 +1,9 @@
+id: 4c5573e1-f8e3-4093-bfde-4e0553002d20
+idn: controller_save_canvas
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

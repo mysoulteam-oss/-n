@@ -1,0 +1,15 @@
+id: 857bca07-076e-4e3d-8ec5-afbef48a6001
+idn: collect_quality_metrics_agent_behavior
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 94dde21a-5f61-426b-a449-dd6c0b6798a8
+    name: transcript
+    default_value: ""
+  - id: 316cbf80-0872-4699-8a44-63f3b9edeb7f
+    name: session_short_description
+    default_value: ""
+path: ""

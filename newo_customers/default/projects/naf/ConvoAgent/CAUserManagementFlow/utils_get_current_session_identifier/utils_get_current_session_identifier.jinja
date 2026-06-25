@@ -1,0 +1,7 @@
+{% set session_identifier = GetPersonaAttribute(id=user_id, field="current_session_identifier") %}
+{% if not session_identifier.strip() %}
+    {% set session_identifier = "session_" ~ (GetSessionInfo().id | string).replace("-", "_") %}
+    {{SetPersonaAttribute(id=user_id, field="current_session_identifier", value=session_identifier)}}
+{% endif %}
+
+{{Return(val=session_identifier)}}

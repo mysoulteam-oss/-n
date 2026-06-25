@@ -1,0 +1,13 @@
+{% set arguments = GetTriggeredAct().arguments %}
+
+{% set item = json.loads(arguments.item) %}
+{% set type_idn = arguments.type_idn %}
+
+{{action_add_library_item(item=item, type_idn=type_idn)}}
+
+{# Updating library on canvas #}
+{{prepare_library()}}
+{# Updating canvas items #}
+{{prepare_instructions_update_from_library()}}
+{# Building instructions #}
+{{prepare_instructions_from_canvas()}}

@@ -1,0 +1,9 @@
+id: b50da3f6-4178-431e-8435-2e566f969ca6
+idn: scenario_dental_finish_conversation
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

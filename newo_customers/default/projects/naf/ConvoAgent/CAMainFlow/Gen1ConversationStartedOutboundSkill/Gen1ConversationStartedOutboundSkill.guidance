@@ -1,0 +1,19 @@
+{{StartNotInterruptibleBlock()}}
+
+{{Set(name="actor_id", value=GetActor(field="id"))}}
+{{SetPersonaAttribute(id=user_id, field="last_convo_actor_id", value=actor_id)}}
+
+{{!-- Define integration IDN --}}
+{{Set(name="integration_idn", value=session_get_current_integration_idn(user_id=user_id, set_persona_attribute="True"))}}
+
+{{CommonConversationStartedSkill()}}
+
+{{Set(name="fast_prompt", value=prompt_fast_compile(user_id=user_id, integration_idn=integration_idn))}}
+{{SetState(name="fast_prompt", value=fast_prompt)}}
+{{SetState(name="fast_prompt_override_version", value=GetPersonaAttribute(id=user_id, field="convoagent_recompile_override_version"))}}
+
+{{SetPersonaAttribute(id=user_id, field="call_happened", value="True")}}
+
+{{SetCustomerAttribute(field="project_attributes_setting_voice_integration_service", value="NEWO Voice Integration")}}
+
+{{StopNotInterruptibleBlock()}}

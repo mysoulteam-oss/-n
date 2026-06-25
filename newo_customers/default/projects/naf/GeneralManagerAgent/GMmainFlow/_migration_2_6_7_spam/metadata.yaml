@@ -1,0 +1,9 @@
+id: db4df8e3-d0c6-4f6f-ad5a-c6af0e13c829
+idn: _migration_2_6_7_spam
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

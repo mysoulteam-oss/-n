@@ -1,0 +1,9 @@
+id: c86bca8a-4644-4f8d-b695-a71532df95e7
+idn: _prepareAttributesCommonPrivateDynamicPhoneVariablesSkill
+title: _prepareAttributesCommonPrivateDynamicPhoneVariablesSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

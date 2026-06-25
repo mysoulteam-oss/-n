@@ -1,0 +1,9 @@
+id: ecd0b35e-54e6-49d8-9a6e-ad248dc133cd
+idn: library_intent_types_common_cancellation_agent
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

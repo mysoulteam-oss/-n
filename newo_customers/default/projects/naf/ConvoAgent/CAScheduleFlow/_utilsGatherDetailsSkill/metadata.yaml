@@ -1,0 +1,24 @@
+id: ee448530-1552-4da7-8737-a67b1cc24856
+idn: _utilsGatherDetailsSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 7c90945b-4b5d-42ad-8204-43d7eaca13fd
+    name: schema
+    default_value: " "
+  - id: c18f05a2-e51f-4e1a-83ec-2011558d5b28
+    name: userId
+    default_value: " "
+  - id: 806acb88-cfba-4a0a-b592-3a51a28def87
+    name: memory
+    default_value: " "
+  - id: dce14f2a-2f26-4f5c-922b-d55f4eefb2a0
+    name: industry
+    default_value: " "
+  - id: cdd1a21b-a679-41be-be49-282735e01906
+    name: agentAnswer
+    default_value: " "
+path: ""

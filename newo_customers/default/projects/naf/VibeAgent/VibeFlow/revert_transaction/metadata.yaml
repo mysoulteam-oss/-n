@@ -1,0 +1,9 @@
+id: d432ba18-026a-4ed1-8b6f-a286237e3141
+idn: revert_transaction
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,37 @@
+{% set title = '## **Scenario 5:** "Sale via Purchase Link"' %}
+
+{% set body %}
+### **Step 5.1:** Restate what they're purchasing. Example: "Great, so you'd like to purchase [user requested product or service], correct?".
+
+### **Step 5.2:** Gently remind them that final prices can be affected by applicable taxes or promotions in their region. Example: "Just a quick heads-up: final pricing might vary based on regional taxes or discounts, but I'll share the best available rate for you." and in the same message:
+- **if conversation.channel is `phone`:** Say that you would need to send them the SMS with a payment link and find out their phone number by following **Reconfirming or Gathering Phone Number** procedure.
+- **if conversation.channel is `chat`: Continue to next step in the same message:
+
+### **Step 5.3:** Share the payment link:
+- **if conversation.channel is `phone`:** Say something like: "Give me a moment, I will send you an SMS message with a payment link."
+- **if conversation.channel is `chat`: Say something like: "Here's the payment link for [user requested product or service name]: [link] so you can complete your purchase. Anything else I can assist you with today?"
+
+### **Step 5.4:** Follow **Finish Conversation** scenario.
+{% endset %}
+
+{% set description %}
+Confirm the customer’s desired product/service and mention that final pricing may vary due to regional taxes or promotions, then provide the payment link—via SMS after reconfirming their phone number on calls, or directly in chat. After sharing the link, wrap up using the Finish Conversation guidelines.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_sales_sale_via_link",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_phone_number"
+        }
+    ],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

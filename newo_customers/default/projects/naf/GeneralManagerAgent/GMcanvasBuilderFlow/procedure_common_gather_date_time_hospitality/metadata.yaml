@@ -1,0 +1,9 @@
+id: 2c02985e-d7b4-462c-9833-a5fe6ac5147d
+idn: procedure_common_gather_date_time_hospitality
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

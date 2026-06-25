@@ -1,0 +1,15 @@
+id: d3d4a87b-0a79-43e5-bd0b-727afd320acf
+idn: _utilsAppendRowSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 343198ad-7b9b-41b6-8c3b-457795483e84
+    name: newRow
+    default_value: " "
+  - id: 294ebb2f-c43c-4422-ade4-b80817745539
+    name: rows
+    default_value: " "
+path: ""

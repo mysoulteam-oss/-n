@@ -1,0 +1,18 @@
+id: 4fdac6f4-e72d-4e3e-b000-9102ed00cacc
+idn: _getManyChatReplyRequestBodySkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: a2e4d259-9092-4e2e-8b9d-e78dab14ca3c
+    name: externalId
+    default_value: " "
+  - id: 3b56ebe1-a437-4695-9e69-3ec48000e6e1
+    name: channel
+    default_value: " "
+  - id: 8a0fcf87-10e2-431e-9844-a84222d32646
+    name: message
+    default_value: " "
+path: ""

@@ -1,0 +1,16 @@
+{% if GetCustomerAttribute(field="project_attributes_setting_email_send_information_enabled") != "True" %}
+  {{Return(val="")}}
+{% endif %}
+
+{% set email_send_information_allowed_content_items = GetCustomerAttribute(field="project_attributes_setting_email_send_information_allowed_content_items") %}
+
+{% set allowed_email_content %}
+<EmailInformationAllowedToBeSent alt="information that ConvoAgent is allowed to send via email" role="context">
+You can send email messages. When you tell the user you are going to send one, explicitly mention the word "email" in that reply. The following content can be sent:
+{{email_send_information_allowed_content_items}}
+</EmailInformationAllowedToBeSent>
+
+---
+{% endset %}
+
+{{Return(val=allowed_email_content)}}

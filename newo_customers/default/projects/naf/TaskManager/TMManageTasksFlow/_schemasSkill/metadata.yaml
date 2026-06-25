@@ -1,0 +1,15 @@
+id: fb4834e9-99c6-4238-9c0b-a70984f5281f
+idn: _schemasSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 558a2106-4093-45c9-8bc3-c2fe15ab1479
+    name: defineTasks
+    default_value: " "
+  - id: 75cb99ba-3066-40e4-937b-104b0c6cd01c
+    name: externalIds
+    default_value: " "
+path: ""

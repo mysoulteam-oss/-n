@@ -1,0 +1,12 @@
+id: 9d72c103-155d-4aac-abfe-24f3a07ddeb4
+idn: _locationSelectSchemaSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: c76063f9-6445-4af7-b41a-6c1a61092129
+    name: indexes
+    default_value: "[\"default\"]"
+path: ""

@@ -1,0 +1,27 @@
+id: 4e2a4e97-a148-455b-b438-db36fbd819af
+idn: _identifyDisasterSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 98f577d2-b1ff-4ac5-a6cb-9a09e3f6a05a
+    name: semaphore
+    default_value: " "
+  - id: de2f72db-9158-4671-9905-d7bcc75752c5
+    name: workingHours
+    default_value: " "
+  - id: 52e1aba0-1b8f-403b-9e44-6a4e617c8eec
+    name: summary
+    default_value: " "
+  - id: 84c1e531-b0d7-45b7-9bf1-87bc6d32e5bb
+    name: reportDisaster
+    default_value: " "
+  - id: 670570a0-2625-4591-aa65-9b523393baf5
+    name: userId
+    default_value: " "
+  - id: 6e952749-ddc0-40c6-805a-d908e099347a
+    name: transcript
+    default_value: " "
+path: ""

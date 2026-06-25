@@ -1,0 +1,180 @@
+{% set source_item = {} %}
+{% if source and source.strip() %}
+    {% set source_item = json.loads(source) %}
+{% endif %}
+{% set mode = "update" if source_item else "create" %}
+{% set tenant = GetCustomerInfo().tenant | string %}
+{% set builder_branding = "NEWO AI Employee workflow builder" if not tenant or tenant == "newo" else "AI Employee workflow builder" %}
+
+{% set canvas_raw = GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas").strip() %}
+{% set canvas = json.loads(canvas_raw) if canvas_raw else {"types": []} %}
+{% set canvas_library_raw = GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas_library").strip() %}
+{% set canvas_library = json.loads(canvas_library_raw) if canvas_library_raw else [] %}
+
+{% set scenario_reference_catalog = [] %}
+{% set valid_scenario_idns = [] %}
+{% for type in canvas.types %}
+    {% if type.idn == "scenarios" %}
+        {% for item in type["items"] %}
+            {% set reference_name = item.title | string %}
+            {% set reference_match = re.search('"([^"]+)"', reference_name) %}
+            {% if reference_match %}
+                {% set reference_name = reference_match.group(1).strip() %}
+            {% endif %}
+            {% if item.idn and item.idn not in valid_scenario_idns %}
+                {{valid_scenario_idns.append(item.idn)}}
+                {{scenario_reference_catalog.append({
+                    "idn": item.idn,
+                    "title": item.title,
+                    "reference_name": reference_name,
+                    "source": "canvas"
+                })}}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+{% for type in canvas_library %}
+    {% if type.idn == "scenarios" %}
+        {% for item in type["items"] %}
+            {% set reference_name = item.title | string %}
+            {% set reference_match = re.search('"([^"]+)"', reference_name) %}
+            {% if reference_match %}
+                {% set reference_name = reference_match.group(1).strip() %}
+            {% endif %}
+            {% if item.idn and item.idn not in valid_scenario_idns %}
+                {{valid_scenario_idns.append(item.idn)}}
+                {{scenario_reference_catalog.append({
+                    "idn": item.idn,
+                    "title": item.title,
+                    "reference_name": reference_name,
+                    "source": "library"
+                })}}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+
+{% set prompt %}
+You are generating one `intent_types` canvas item for {{builder_branding}}.
+
+<TaskMode>{{mode}}</TaskMode>
+<UserRequest>
+{{query}}
+</UserRequest>
+{% if source_item %}
+<CurrentItem role="source_of_truth_for_update">
+{{json.dumps(source_item, ensure_ascii=False, indent=2)}}
+</CurrentItem>
+{% endif %}
+<ScenarioReferenceCatalog>
+{{json.dumps(scenario_reference_catalog, ensure_ascii=False, indent=2)}}
+</ScenarioReferenceCatalog>
+
+Language rules:
+1. Write title, body, and description in English by default.
+2. Use another language only if <UserRequest> explicitly asks for it.
+3. Do not switch language only because <UserRequest> itself is written in another language.
+
+Formatting and content requirements:
+1. Output exactly one intent type.
+2. Title must use strict format: `## **<Intent Name>**`
+3. Optional markers are allowed and must stay inside title text when needed:
+   - `[L]` Lead Intent
+   - `[T]` To Do Intent
+4. Body must clearly define:
+   - when this intent applies,
+   - what ConvoAgent should do next.
+5. Body can include conditional behavior, for example by working/non-working hours.
+6. When routing to a scenario, use the GM-style phrasing and exact scenario display name from <ScenarioReferenceCatalog>:
+   - `ConvoAgent starts the scenario: **"<Scenario Name>"**.`
+   - `ConvoAgent must ... and start the scenario: **"<Scenario Name>"**.`
+   - `During Working Hours: ConvoAgent starts the scenario: **"<Scenario Name>"** and then proceeds with **"<Scenario Name>"**.`
+7. Reuse exact scenario names from <ScenarioReferenceCatalog>. Do not paraphrase, partially rename, or invent a near-duplicate title if an existing scenario already fits.
+8. Every scenario referenced in body text must be present in `mentions` with the exact scenario `item_idn` from <ScenarioReferenceCatalog>.
+9. Do not include scenarios in `mentions` if the body does not reference them.
+10. You may reference attributes using `[[attribute_idn]]`.
+11. Do not output code fences, notes, or extra fields.
+
+Update-mode rules:
+- Keep the same core intent unless <UserRequest> asks to reframe it.
+- Apply only requested modifications and preserve useful existing details from <CurrentItem>.
+- Preserve valid existing scenario references unless the routing is intentionally changed.
+
+Description requirements:
+- 1-2 concise sentences that explain when this intent is triggered and what outcome it routes to.
+{% endset %}
+
+{% set schema = {
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Intent type title in strict format."
+    },
+    "body": {
+      "type": "string",
+      "description": "Intent type logic and action/routing instruction."
+    },
+    "description": {
+      "type": "string",
+      "description": "Short business-friendly summary."
+    },
+    "mentions": {
+      "type": "array",
+      "description": "Scenario references used by the intent type body.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["scenarios"]
+          },
+          "item_idn": {
+            "type": "string"
+          }
+        },
+        "required": ["type", "item_idn"]
+      }
+    }
+  },
+  "required": ["title", "body", "description", "mentions"]
+} %}
+
+{% set generated_item = json.loads(structured_generation(prompt=prompt, schema=schema, thinking_budget=1020)) %}
+
+{% set raw_title = re.sub("[\\u201c\\u201d]", '"', generated_item.title.strip()) %}
+{% set body = re.sub("[\\u201c\\u201d]", '"', generated_item.body.strip()) %}
+{% set body = re.sub("\\n{3,}", "\n\n", body).strip() %}
+{% set description = generated_item.description.strip() %}
+
+{% set clean_title = re.sub("^##\\s*", "", raw_title).strip() %}
+{% if clean_title.startswith("**") and clean_title.endswith("**") %}
+    {% set clean_title = clean_title[2:-2].strip() %}
+{% endif %}
+{% set clean_title = clean_title.strip('"').strip() %}
+{% set title = "## **" ~ clean_title ~ "**" %}
+
+{% set mentions = [] %}
+{% set mention_keys = [] %}
+{% set candidate_mentions = generated_item.mentions if generated_item.mentions is defined else [] %}
+{% for mention in candidate_mentions %}
+    {% set mention_type = mention.get("type", "") %}
+    {% set mention_item_idn = mention.get("item_idn", "").strip() %}
+    {% set mention_key = mention_type ~ "::" ~ mention_item_idn %}
+    {% if mention_type == "scenarios" and mention_item_idn in valid_scenario_idns and mention_key not in mention_keys %}
+        {{mention_keys.append(mention_key)}}
+        {{mentions.append({
+            "type": "scenarios",
+            "item_idn": mention_item_idn
+        })}}
+    {% endif %}
+{% endfor %}
+
+{% set item = {
+    "title": title.strip(),
+    "body": body.strip(),
+    "description": description.strip(),
+    "mentions": mentions
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

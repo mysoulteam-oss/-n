@@ -1,0 +1,9 @@
+id: 5cd4b393-3de7-47d9-8b83-6abe90e7d22d
+idn: _notifyUserIssueSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

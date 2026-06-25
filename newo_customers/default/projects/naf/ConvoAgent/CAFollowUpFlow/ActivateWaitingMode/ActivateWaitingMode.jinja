@@ -1,0 +1,13 @@
+{{DisableFollowUp()}}
+
+{% set waiting_mode_timeout_seconds = GetCustomerAttribute(field="project_attributes_setting_waiting_mode_timeout").strip() or "60" %}
+
+{{SendCommand(
+    commandIdn="set_timer",
+    integrationIdn="program_timer",
+    connectorIdn="waiting_mode_fallback",
+    timerName="waiting_mode_fallback",
+    eventIdn="waiting_mode_fallback",
+    interval=waiting_mode_timeout_seconds | string,
+    personaId=GetUser().id | string
+)}}

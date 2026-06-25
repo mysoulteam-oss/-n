@@ -1,0 +1,2 @@
+{{!-- Disable `tools` for NEWO Voice --}}
+{{SetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_functions_enabled", value="False")}}

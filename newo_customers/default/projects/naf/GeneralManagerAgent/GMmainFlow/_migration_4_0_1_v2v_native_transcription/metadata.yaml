@@ -1,0 +1,9 @@
+id: 2f02cb56-2884-47d6-b7b8-ae3ab44baf49
+idn: _migration_4_0_1_v2v_native_transcription
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

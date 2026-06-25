@@ -1,0 +1,18 @@
+id: 91b6c761-d16c-40be-afb4-ff9be0722710
+idn: _getPhoneNumberSkill
+title: _getPhoneNumberSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 4a5a0d25-6bfe-4b10-982c-02b5912a71c1
+    name: taskContext
+    default_value: " "
+  - id: 631ffc5c-4d5f-40b8-bfc5-a92870fed5cf
+    name: rule
+    default_value: " "
+  - id: 27eeb017-62a0-417f-b589-b8162fadf569
+    name: isRetriable
+    default_value: "True"
+path: ""

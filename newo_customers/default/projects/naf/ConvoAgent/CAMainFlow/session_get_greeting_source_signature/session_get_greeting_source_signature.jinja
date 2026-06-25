@@ -1,0 +1,4 @@
+{% set recent = GetCustomerAttribute(field="project_representative_agent_voice_greeting_phrase_recent_returning").strip() %}
+{% set later = GetCustomerAttribute(field="project_representative_agent_voice_greeting_phrase_later_returning").strip() %}
+{% set base = GetCustomerAttribute(field="project_representative_agent_voice_greeting_phrase").strip() %}
+{{ Return(val=recent ~ "|" ~ later ~ "|" ~ base) }}

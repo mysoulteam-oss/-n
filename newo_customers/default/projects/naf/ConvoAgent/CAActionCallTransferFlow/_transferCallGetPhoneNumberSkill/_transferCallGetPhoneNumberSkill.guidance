@@ -1,0 +1,61 @@
+{{#if GetCustomerAttribute(field="project_attributes_setting_transfer_call_enabled") != "True"}}
+    {{Return(val='{"transfer_call_phone_number": "null", "clarification_instruction": "Agent can not make a transfer call (transfer call is disabled)"}')}}
+{{/if}}
+
+{{Set(name="business_open", value=_getWorkingHoursStatusSkill(userId=userId))}}
+
+{{Set(name="transfer_call_phone_numbers", value=GetCustomerAttribute(field="project_attributes_setting_transfer_call_phone_numbers"))}}
+{{#if IsEmpty(text=transfer_call_phone_numbers)}}
+    {{#if business_open == "true"}}
+        {{Set(name="transfer_call_phone_number", value=GetCustomerAttribute(field="project_business_working_hour_escalation_phone"))}}
+        {{#if IsEmpty(text=transfer_call_phone_number)}}
+            {{Return(val='{"transfer_call_phone_number": "null", "clarification_instruction": "Agent can not make a transfer call (transfer call phone number is not specified)"}')}}
+        {{/if}}
+    {{else}}
+        {{Set(name="transfer_call_phone_number", value=GetCustomerAttribute(field="project_business_non_working_hour_escalation_phone"))}}
+        {{#if IsEmpty(text=transfer_call_phone_number)}}
+            {{Return(val='{"transfer_call_phone_number": "null", "clarification_instruction": "Agent can not make a transfer call outside of working hours"}')}}
+        {{/if}}
+    {{/if}}
+    {{Return(val=Concat('{"transfer_call_phone_number": "', transfer_call_phone_number, '"}'))}}
+{{/if}}
+
+{{Set(name="schema", value=_schemasSkill(transferPhoneNumber="True"))}}
+
+{{#system~}}
+You have a conversation history specified in <ConversationHistory>.
+Your task is to select a single most relevant phone number to which the call should be transferred based on rules specified in <TransferCallPhoneNumbersCriteria>.
+If the user's intent is unclear from the conversation, you must formulate a clarifying question for the user based on the available options in <TransferCallPhoneNumbersCriteria>.
+If you can not determine a phone number, use <TransferCallPhoneNumbersFallback> in addition to the <TransferCallPhoneNumbersCriteria>.
+
+<ConversationHistory alt="conversation history">
+{{memory}}
+</ConversationHistory>
+
+<WorkingHoursStatusJSON alt="business is currently open">
+business.currently_open: {{business_open}}
+</WorkingHoursStatusJSON>
+
+<TransferCallPhoneNumbersCriteria alt="transfer call phone numbers criteria">
+{{transfer_call_phone_numbers}}
+</TransferCallPhoneNumbersCriteria>
+
+<TransferCallPhoneNumbersFallback alt="transfer call phone numbers fallback">
+{{GetCustomerAttribute(field="project_attributes_private_dynamic_phone_variables")}}
+</TransferCallPhoneNumbersFallback>
+
+{{~/system}}{{#assistant~}}{{Set(name="transfer_call_phone_number_and_clarification_instruction", value=Gen(jsonSchema=schema, validateSchema=True, temperature=0.2, topP=0, skipFilter=True, thinkingBudget=425), expose="True")}}{{~/assistant}}
+
+{{!-- Return result if business currently open --}}
+{{#if business_open == "true"}}
+    {{Return(val=transfer_call_phone_number_and_clarification_instruction)}}
+{{/if}}
+
+{{!-- Ensure business can handle the call right now --}}
+{{Set(name="can_handle_nwh", value=Stringify(GetValueJSON(obj=transfer_call_phone_number_and_clarification_instruction, key="works_outside_of_working_hours")))}}
+{{#if can_handle_nwh == "true"}}
+    {{Return(val=transfer_call_phone_number_and_clarification_instruction)}}
+{{/if}}
+
+{{!-- Tell that chosen number can't handle the call right now --}}
+{{Return(val='{"transfer_call_phone_number": "null", "clarification_instruction": "Agent can not make a transfer call outside of working hours"}')}}

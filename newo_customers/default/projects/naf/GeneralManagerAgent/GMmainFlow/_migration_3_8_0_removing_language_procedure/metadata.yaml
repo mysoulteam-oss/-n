@@ -1,0 +1,9 @@
+id: 2d9da68b-3aca-472c-8efe-0f986545f1ba
+idn: _migration_3_8_0_removing_language_procedure
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

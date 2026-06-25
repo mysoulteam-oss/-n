@@ -1,0 +1,5 @@
+{{#system~}}
+- Change/reschedule catering order;
+- Confirm that their catering order is secured;
+{{~/system}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_additional_limitations_and_restrictions", value=GetCurrentPrompt())}}

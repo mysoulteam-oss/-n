@@ -1,0 +1,9 @@
+id: 86f8baf7-4048-4929-a97c-ecde13b91785
+idn: ControllerWaitingModeSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,11 @@
+{# Find object by value of the specified key #}
+
+{% set json_object = obj %}
+
+{% for item in json_object %}
+    {% if item[key] == value %}
+        {{ Return(val=loop.index0) }}
+    {% endif %}
+{% endfor %}
+
+{{Return(val="")}}

@@ -1,0 +1,18 @@
+id: 0b0194ed-ec9e-4196-b8ab-5bff7a2c0c34
+idn: prompt_get_explicit_constraints_voice_call_transferring
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: fbc9fc77-939d-408e-b1ab-932767bf8047
+    name: session
+    default_value: ""
+  - id: a0174e7d-1d85-43fa-886d-8e9dcb27620b
+    name: conversation_channel
+    default_value: ""
+  - id: a2f356da-f30b-4172-a503-621299e83413
+    name: working_hours
+    default_value: ""
+path: ""

@@ -1,0 +1,9 @@
+id: 2f7b68a7-feb1-4ce5-a151-85bcbc6b03b6
+idn: prepare_connectors_apify_integration
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

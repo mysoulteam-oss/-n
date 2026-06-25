@@ -1,0 +1,15 @@
+id: 26485e63-74d4-411a-81e2-05ddf507bd89
+idn: _generateCallbackGreetingPhraseSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 38b90172-dfae-4c6b-b121-ac251e01159b
+    name: user_id
+    default_value: " "
+  - id: 35acfa8f-37c5-4cd1-af44-9fa26a09c3f0
+    name: memory
+    default_value: " "
+path: ""

@@ -1,0 +1,10 @@
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+
+{% if industry != "restaurant_industry" %}
+    {{Return()}}
+{% endif %}
+{% set old_text = 'Set to \\"Restaurant\\" if not provided.' %}
+{% set new_text = 'Set to one of the seating options.' %}
+{% set current_schema = GetCustomerAttribute(field="project_attributes_setting_booking_payload_schema_template") %}
+{% set fixed_schema = current_schema.replace(old_text, new_text) %}
+{{SetCustomerAttribute(field="project_attributes_setting_booking_payload_schema_template", value=fixed_schema)}}

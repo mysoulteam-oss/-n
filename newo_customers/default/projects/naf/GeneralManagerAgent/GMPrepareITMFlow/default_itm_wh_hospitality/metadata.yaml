@@ -1,0 +1,9 @@
+id: ddb25320-471a-4eae-851f-97c2e9a91378
+idn: default_itm_wh_hospitality
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

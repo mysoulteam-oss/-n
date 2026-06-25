@@ -1,0 +1,9 @@
+id: 4b4ce8c6-aaca-4a1a-a2e0-cd5c54e154a8
+idn: library_scenarios_general
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

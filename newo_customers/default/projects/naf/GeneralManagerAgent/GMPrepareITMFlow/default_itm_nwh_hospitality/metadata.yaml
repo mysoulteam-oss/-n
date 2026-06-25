@@ -1,0 +1,9 @@
+id: e9ab516f-7113-43fc-aec7-ead65bdd224d
+idn: default_itm_nwh_hospitality
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

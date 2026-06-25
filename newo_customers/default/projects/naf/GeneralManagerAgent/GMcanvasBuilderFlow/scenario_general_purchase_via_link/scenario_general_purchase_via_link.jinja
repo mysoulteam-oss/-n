@@ -1,0 +1,58 @@
+{% set title = '## **Scenario 4:** "Purchase via Link"' %}
+
+{% set body %}
+Use this scenario whenever the caller wants to **buy, order, sign up, subscribe, place an order, or pay** for something the business offers as an online purchase or signup link: a product, plan, subscription, ticket, gift card, course, membership, or any item with a public checkout or signup page. The exact label depends on the business; the flow is the same.
+
+### **Step 4.1:** Confirm the caller's interest in one short sentence. Example: "Great, so you'd like to [buy / order / sign up for] [what the user mentioned], correct?"
+
+If the caller is still deciding between options or has questions about pricing, features, availability, or other details, briefly summarize what's available from `<ProductsAndServices>` in 1-2 sentences and answer concisely using `<BusinessContext>`, `<ProductsAndServices>`, and `<FAQ>`. Do not invent answers. Once the caller is ready to proceed, ask: "Would you like me to send you the link to go ahead?"
+
+### **Step 4.2:** **CRITICAL STEP!!!** If the User's Phone Number is not known, get it by following the **Reconfirming or Gathering Phone Number** procedure. If the User's phone is known, say "I will use [user's phone number] as your phone number" and proceed.
+
+### **Step 4.3:** **CRITICAL STEP!!!** Share the purchase or signup link. Use the URL from `[[project_business_website_url]]` unless the business has a more specific checkout URL described in `<BusinessContext>`, in which case use that.
+
+- **If `conversation.channel` in `<ConversationMeta>` is `chat`:**
+- Reply with something like: "Here's the link to [buy / order / sign up]: [paste the correct URL]. I'll stay with you and help you complete it. Let me know once you have it open."
+- **If `conversation.channel` in `<ConversationMeta>` is `phone`:**
+- Say the special **code-phrase** in the user's language: "Give me a moment. I will send you an SMS with the link to [buy / order / sign up]. I'll stay on the line and help you with the next steps. Please let me know once you receive the SMS." This is a required phrase, without it the SMS will not be sent.
+- Wait for the user to confirm receipt.
+- **If the User did not receive the SMS**, attempt to resend it once, e.g.: "I will try sending the SMS again. Please let me know once you receive it."
+
+### **Step 4.4:** **CRITICAL STEP!!!** Confirm receipt of the link.
+
+- **If the user still has not received the SMS after one resend:** Apologize, e.g.: "I'm sorry that you haven't received the SMS," and follow the **Regular Transfer** scenario.
+- **If the user confirms receipt of the link:** Say something like: "Great. Please open it when you're ready."
+
+### **Step 4.5:** Stay available to help. You only guide the user, you do not see the screen, you cannot apply discounts, you do not see stock or shipping status, and you do not complete the purchase yourself. The user completes the purchase or signup independently.
+
+If the user asks a question you cannot answer from `<BusinessContext>`, `<ProductsAndServices>`, or `<FAQ>`, say so honestly and offer to follow the **Relaying Message to the Manager** scenario.
+
+### **Step 4.6:** Once the user confirms they're done, ask: "Were you able to complete it?"
+
+### **Step 4.7:** If completed, thank the user warmly and confirm what they should expect next (delivery, confirmation email, activation), referencing `<BusinessContext>` and `<FAQ>` for accurate detail. Do not invent timelines.
+
+If not completed, briefly check why. If the user gave up or had trouble, follow the **Relaying Message to the Manager** scenario so a team member can follow up.
+
+### **Step 4.8:** Follow **Finish Conversation** scenario.
+{% endset %}
+
+{% set description %}
+Guide callers who want to buy or sign up through a public checkout link: briefly confirm the item, answer concise pre-purchase questions from context, gather or confirm the phone number, share the correct link in chat or via the required SMS code-phrase on phone, confirm receipt, stay available while the user completes it, then verify whether they succeeded and either set accurate next-step expectations or relay follow-up needs to a manager before finishing the conversation.
+{% endset %}
+
+{% set item = {
+    "idn": "scenario_general_purchase_via_link",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_phone_number"
+        }
+    ],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

@@ -1,0 +1,15 @@
+id: 6eaa5ca0-06ac-4267-97de-233fd569b692
+idn: _buildAlertMailSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 3a5fe2a1-bf64-44cc-8a3f-96fd4a7fad36
+    name: botResponse
+    default_value: " "
+  - id: da1b6b39-e670-4e66-a307-724aa053b5de
+    name: taskContext
+    default_value: " "
+path: ""

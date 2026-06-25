@@ -1,0 +1,9 @@
+id: baf60a32-e13c-4222-8ff7-7f03f43e6f69
+idn: scenario_hospitality_large_group_reservation
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

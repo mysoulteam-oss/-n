@@ -1,0 +1,11 @@
+{# Setup remaining API Webhooks after Agent Creator callback is sent #}
+{{prepare_connectors_api_integration_post_setup()}}
+
+{# Setup timer Connectors that are not needed before Agent Creator callback #}
+{{prepare_connectors_program_timer_integration_post_setup()}}
+
+{# Setup `Sandbox Integration` Connectors #}
+{{prepare_connectors_sandbox_integration()}}
+
+{# Setup set of Connectors for Vibe Builder #}
+{{prepare_connectors_vibe_builder()}}

@@ -1,0 +1,9 @@
+id: 8871946d-4fab-4de3-9c7d-166ff99d36ab
+idn: scenario_dental_schedule_appointment_agent
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

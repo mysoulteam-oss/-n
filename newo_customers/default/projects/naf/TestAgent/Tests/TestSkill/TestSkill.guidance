@@ -1,0 +1,164 @@
+{{Set(name="user_message", value=GetTriggeredAct(fields=["text"]))}}
+
+{{!-- `End Session` will be triggered on sending "es" message --}}
+{{#if IsSimilar(val1=user_message, val2="es", threshold=0.85)}}
+    {{SendMessage(message=Concat("`End Session` was triggered."))}}
+    {{_endSessionSkill()}}
+    {{Return()}}
+{{/if}}
+
+{{!-- `Magic Browser Command Availability` will be triggered on sending "mbca" message --}}
+{{#if IsSimilar(val1=user_message, val2="mbca", threshold=0.85)}}
+    {{SendMessage(message=Concat("`Magic Browser Command Availability` was triggered."))}}
+    {{_magicBrowserCommandAvailabilitySkill()}}
+    {{Return()}}
+{{/if}}
+
+{{!-- `Magic Browser Command Booking` will be triggered on sending "mbcb" message --}}
+{{#if IsSimilar(val1=user_message, val2="mbcb", threshold=0.85)}}
+    {{SendMessage(message=Concat("`Magic Browser Command Booking` was triggered."))}}
+    {{_magicBrowserCommandBookingSkill()}}
+    {{Return()}}
+{{/if}}
+
+{{!-- `Magic Browser Task` will be triggered on sending "mbt" message --}}
+{{#if IsSimilar(val1=user_message, val2="mbt", threshold=0.85)}}
+    {{SendMessage(message=Concat("`Magic Browser Task` was triggered."))}}
+    {{_magicBrowserTaskSkill()}}
+    {{Return()}}
+{{/if}}
+
+{{!-- `Prompt Refactoring` will be triggered on sending "pr" message --}}
+{{#if IsSimilar(val1=user_message, val2="pr", threshold=0.85)}}
+    {{SendMessage(message=Concat("`Prompt Refactoring` was triggered."))}}
+    {{_promptRefactoringSkill()}}
+    {{Return()}}
+{{/if}}
+
+{{!-- `Response Debug` will be triggered on sending "rd" message --}}
+{{#if IsSimilar(val1=user_message, val2="rd", threshold=0.85)}}
+    {{SendMessage(message=Concat("`Response Debug` was triggered."))}}
+    {{_responseDebugSkill()}}
+    {{Return()}}
+{{/if}}
+
+{{!-- `Response Generation` will be triggered on sending "rg" message --}}
+{{#if IsSimilar(val1=user_message, val2="rg", threshold=0.85)}}
+    {{SendMessage(message=Concat("`Response Generation` was triggered."))}}
+    {{_responseGenerationSkill()}}
+    {{Return()}}
+{{/if}}
+
+{{!-- `Response Generation Stream` will be triggered on sending "rgs" message --}}
+{{#if IsSimilar(val1=user_message, val2="rgs", threshold=0.85)}}
+    {{SendMessage(message=Concat("`Response Generation Stream` was triggered."))}}
+    {{_responseGenerationStreamSkill()}}
+    {{Return()}}
+{{/if}}
+
+{{!-- `Response Structured Generation` will be triggered on sending "rs" message --}}
+{{#if IsSimilar(val1=user_message, val2="rs", threshold=0.85)}}
+    {{SendMessage(message=Concat("`Response Structured Generation` was triggered."))}}
+    {{_responseStructuredGenerationSkill()}}
+    {{Return()}}
+{{/if}}
+
+{{!-- `Response Deterministic Structured Generation Test` will be triggered on sending "rds" message --}}
+{{#if IsSimilar(val1=user_message, val2="rds", threshold=0.85)}}
+    {{SendMessage(message=Concat("`Response Deterministic Structured Generation Test` was triggered."))}}
+    {{structured_generation_deterministic_test()}}
+    {{Return()}}
+{{/if}}
+
+{{!-- `Playground Guidance` will be triggered on sending "pgg" message --}}
+{{#if IsSimilar(val1=user_message, val2="pgg", threshold=0.85)}}
+    {{SendMessage(message=Concat("`Playground Guidance` was triggered."))}}
+    {{_playgroundGuidanceSkill()}}
+    {{Return()}}
+{{/if}}
+
+{{!-- `Playground NSL` will be triggered on sending "pgn" message --}}
+{{#if IsSimilar(val1=user_message, val2="pgn", threshold=0.85)}}
+    {{SendMessage(message=Concat("`Playground NSL` was triggered."))}}
+    {{_playgroundNSLSkill()}}
+    {{Return()}}
+{{/if}}
+
+{{!-- `Run Tests` will be triggered on sending "rt" message --}}
+{{#if IsSimilar(val1=user_message, val2="rt", threshold=0.85)}}
+    {{SendMessage(message=Concat("`Run Tests` was triggered."))}}
+    {{SendSystemEvent(
+        eventIdn="run_tests",
+        connectorIdn="system",
+        global="True"
+    )}}
+    {{Return()}}
+{{/if}}
+
+{{!-- `Upgrade Project` will be triggered on sending "up" message --}}
+{{#if IsSimilar(val1=user_message, val2="up", threshold=0.85)}}
+    {{SendMessage(message=Concat("`Upgrade Project` was triggered."))}}
+    {{!-- Type versions here - e.g. `3.4.0` and `4.2.0` --}}
+    {{Set(name="previous_version", value="")}}
+    {{Set(name="current_version", value="")}}
+    {{SendSystemEvent(
+        eventIdn="project_publish_finish",
+        connectorIdn="project",
+        global="True",
+        triggered_by="auto_update",
+        project_previous_version=previous_version,
+        registry_item_idn="naf",
+        registry_item_version=current_version
+    )}}
+    {{Return()}}
+{{/if}}
+
+{{!-- `Agent Creator Event` will be triggered on sending "ace" message --}}
+{{!-- ! Warning: Customer Attributes, Twilio Connector and NEWO Voice Connector will be deleted. Do not test in PROD accounts! --}}
+{{!--
+{{#if IsSimilar(val1=user_message, val2="ace", threshold=0.85)}}
+    {{SendMessage(message=Concat("`Agent Creator Event` was triggered."))}}
+{{#system~}}
+[
+  {
+    "idn": "agent_creator_business_info_industry",
+    "value": "sales_industry",
+    "is_hidden": "true",
+    "group": "0. Agent Creator"
+  },
+  {
+    "idn": "agent_creator_voice_channel_phone",
+    "value": "{'area_code': '650', 'country_code': 'US', 'fallback_area_code': '408'}",
+    "is_hidden": "true",
+    "group": "0. Agent Creator"
+  }
+]
+{{~/system}}
+    {{SendSystemEvent(
+        eventIdn="agent_creator_event",
+        connectorIdn="system",
+        global="True",
+        attributes=GetCurrentPrompt()
+    )}}
+    {{Return()}}
+{{/if}}
+--}}
+
+{{!-- `Demo Init Process` will be triggered on sending "dip" message --}}
+{{!-- For consistent launch, Attributes and Connectors must be deleted manually first --}}
+{{!-- ! Warning: Customer Attributes, Twilio Connector and NEWO Voice Connector will be overwritten / deleted. Do not test in PROD accounts! --}}
+{{!--
+{{#if IsSimilar(val1=user_message, val2="dip", threshold=0.85)}}
+    {{SendMessage(message=Concat("`Demo Init Process` was triggered."))}}
+    {{SetCustomerAttribute(field="agent_creator_voice_channel_phone", value="{'area_code': '650', 'country_code': 'US', 'fallback_area_code': '408'}")}}
+    {{SetCustomerAttribute(field="agent_creator_setting_should_be_initialized", value="False")}}
+    {{SendSystemEvent(
+        eventIdn="project_publish_finish",
+        connectorIdn="project",
+        global="True",
+        triggered_by="auto_update",
+        registry_item_idn="naf"
+    )}}
+    {{Return()}}
+{{/if}}
+--}}

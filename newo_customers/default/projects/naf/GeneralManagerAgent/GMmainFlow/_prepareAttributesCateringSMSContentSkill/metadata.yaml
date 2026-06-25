@@ -1,0 +1,9 @@
+id: bb1acf62-5c3f-47bc-ad1b-a3acb3b03f79
+idn: _prepareAttributesCateringSMSContentSkill
+title: _prepareAttributesCateringSMSContentSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

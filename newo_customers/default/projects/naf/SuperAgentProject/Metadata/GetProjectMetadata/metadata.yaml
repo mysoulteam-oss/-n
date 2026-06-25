@@ -1,0 +1,9 @@
+id: 67f7834f-ff62-44a4-86c7-f204efc34aca
+idn: GetProjectMetadata
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

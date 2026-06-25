@@ -1,0 +1,12 @@
+id: bbd53ce1-6e4d-4d3d-91ac-81493c9cb46c
+idn: _utilsGetOrSetLastConvoActorId
+title: _utilsGetOrSetLastConvoActorId
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: a6e21fd0-e77c-4af9-a865-22dbb36d4082
+    name: userId
+    default_value: " "
+path: ""

@@ -1,0 +1,9 @@
+id: 0bab4eb9-680d-4410-8558-3d0726ba1abc
+idn: scenario_catering_introduction
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

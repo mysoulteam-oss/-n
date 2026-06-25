@@ -1,0 +1,9 @@
+id: db0f9d0b-efbf-4d8b-98a6-b41fd04ecf19
+idn: _prepareAkbCommonMenuRagSchemaSkill
+title: _prepareAkbCommonMenuRagSchemaSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

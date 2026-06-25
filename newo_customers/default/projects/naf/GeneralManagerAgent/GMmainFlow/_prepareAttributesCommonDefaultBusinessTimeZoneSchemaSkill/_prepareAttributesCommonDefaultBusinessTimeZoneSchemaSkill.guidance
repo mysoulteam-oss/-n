@@ -1,0 +1,27 @@
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "explanation": {
+      "type": "string",
+      "description": "An explanation of the time zone data processing result."
+    },
+    "input_time_zone_is_valid": {
+      "type": "boolean",
+      "description": "Indicates whether <ProvidedTimeZoneData> contains a completely valid `tzdata` item (if it contains spaces or other characters that are not allowed in `tzdata` - it is not valid)."
+    },
+    "output_time_zone": {
+      "type": "string",
+      "description": "The final `tzdata` item (e.g. `America/Los_Angeles`).",
+      "enum": {{_prepareAttributesCommonDefaultBusinessTimeZoneSupportedValuesSkill()}}
+    }
+  },
+  "required": [
+    "explanation",
+    "input_time_zone_is_valid",
+    "output_time_zone"
+  ]
+}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

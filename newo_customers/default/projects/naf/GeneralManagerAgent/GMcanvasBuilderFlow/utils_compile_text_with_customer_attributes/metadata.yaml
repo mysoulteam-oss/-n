@@ -1,0 +1,15 @@
+id: ad5c2676-070e-4383-a0d8-b76ae3547491
+idn: utils_compile_text_with_customer_attributes
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: c0eb89bc-bb5a-49f6-8d92-6268d1cbd874
+    name: exclude_attributes
+    default_value: ""
+  - id: efcd2a66-9251-48b0-a8e3-11db1a80ea2b
+    name: text
+    default_value: ""
+path: ""

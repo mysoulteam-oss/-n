@@ -1,0 +1,9 @@
+id: c04304be-5f2c-4077-bfdb-4671fb305c49
+idn: scenario_catering_finish_conversation
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

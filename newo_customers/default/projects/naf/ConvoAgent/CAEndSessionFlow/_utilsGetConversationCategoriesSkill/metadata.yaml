@@ -1,0 +1,9 @@
+id: e908bef6-8d75-4f41-8140-beabac50ac58
+idn: _utilsGetConversationCategoriesSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

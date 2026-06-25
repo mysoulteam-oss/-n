@@ -1,0 +1,15 @@
+{# `agent_creator_business_info_industry` must not be empty, `project_business_industry` is used as a fallback for existing old accounts #}
+{% set agent_creator_business_info_industry = GetCustomerAttribute(field="agent_creator_business_info_industry") %}
+{% set business_industry = agent_creator_business_info_industry if agent_creator_business_info_industry.strip() else GetCustomerAttribute(field="project_business_industry") %}
+
+{% if business_industry == "hospitality_industry" %}
+    {{utils_connector_create_if_not_exists(
+        integrationIdn = "apify",
+        connectorIdn = "hospitality_availability",
+        title = "hospitality_availability",
+        settings = {
+            "actor_idn": "newoai~hospitality-scraper"
+        },
+        start = True
+    )}}
+{% endif %}

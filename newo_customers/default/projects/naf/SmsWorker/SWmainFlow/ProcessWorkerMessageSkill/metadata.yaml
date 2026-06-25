@@ -1,0 +1,9 @@
+id: aa3e87be-d808-4ce4-984c-6692b7b58cbe
+idn: ProcessWorkerMessageSkill
+title: ProcessWorkerMessageSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

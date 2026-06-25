@@ -1,0 +1,9 @@
+id: 1f1ff9e0-a813-470b-a236-783372fdc30c
+idn: _magicBrowserTaskInputObjectSkill
+title: _magicBrowserTaskInputObjectSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

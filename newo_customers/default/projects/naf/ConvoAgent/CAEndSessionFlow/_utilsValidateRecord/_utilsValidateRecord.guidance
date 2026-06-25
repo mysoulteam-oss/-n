@@ -1,0 +1,34 @@
+{{!-- Always valid if it's not a lead category --}}
+{{#if not IsSimilar(val1=requestCategory, val2="New lead", strategy="hamming", threshold=0.7)}}
+    {{Return(val="True")}}
+{{/if}}
+
+{{!-- Validate lead has provided a contact data --}}
+{{Set(name="user_phone", value=Stringify(GetValueJSON(obj=commonValues, key="user_phone")))}}
+{{Set(name="user_email", value=Stringify(GetValueJSON(obj=commonValues, key="user_email")))}}
+{{Set(name="empty_phone", value="true")}}
+{{Set(name="empty_email", value="true")}}
+
+{{!-- Check phone number is empty --}}
+{{#if not IsEmpty(text=user_phone)}}
+    {{#if not IsSimilar(val1=user_phone, val2="Not Provided", strategy="hamming", threshold=0.7)}}
+        {{Set(name="empty_phone", value="false")}}
+    {{/if}}
+{{/if}}
+
+{{!-- Check email address is empty --}}
+{{#if not IsEmpty(text=user_email)}}
+    {{#if not IsSimilar(val1=user_email, val2="Not Provided", strategy="hamming", threshold=0.7)}}
+        {{Set(name="empty_email", value="false")}}
+    {{/if}}
+{{/if}}
+
+{{!-- If not contact data were provided than lead is invalid --}}
+{{#if empty_email == "true"}}
+    {{#if empty_phone == "true"}}
+        {{Return(val="False")}}
+    {{/if}}
+{{/if}}
+
+{{!-- Otherwise it's valid --}}
+{{Return(val="True")}}

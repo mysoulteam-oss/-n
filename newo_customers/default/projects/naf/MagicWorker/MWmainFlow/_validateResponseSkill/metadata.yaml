@@ -1,0 +1,12 @@
+id: a413bcc8-ac9e-4f18-ad0d-55273e681018
+idn: _validateResponseSkill
+title: _validateResponseSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: c3d797b0-846c-4cbb-8226-d2232b4659de
+    name: response
+    default_value: " "
+path: ""

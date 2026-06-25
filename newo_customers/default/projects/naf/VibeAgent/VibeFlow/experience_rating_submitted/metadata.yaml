@@ -1,0 +1,9 @@
+id: 4196ca61-065e-4d6c-a7d9-23d47ddabff3
+idn: experience_rating_submitted
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

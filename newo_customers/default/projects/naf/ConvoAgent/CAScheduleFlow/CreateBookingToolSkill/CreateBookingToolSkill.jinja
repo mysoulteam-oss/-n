@@ -1,0 +1,13 @@
+{% set user_id = GetUser().id | string %}
+
+{{SendSystemEvent(
+    eventIdn="convoagent_activate_waiting_mode",
+    connectorIdn="system"
+)}}
+
+{% if not _validateBookingAttributesSkill().strip() %}
+    {{_notifyUserIssueSkill()}}
+    {{Return()}}
+{% endif %}
+{% set act = GetTriggeredAct() %}
+{{_bookSkill(memory=act.arguments.memory_without_latest_agent_answer, agentAnswer=act.arguments.latest_agent_answer, userId=user_id)}}

@@ -1,0 +1,145 @@
+{% set content_json = {
+  "reports": [
+    {
+      "report_type": "[L] Approximate AI Estimate",
+      "fields": [
+        "User name",
+        "User phone",
+        "User email",
+        "Service requested",
+        "Property area and number of bedrooms and bathrooms",
+        "40-word summary"
+      ],
+      "subject_template": "APPROXIMATE AI ESTIMATE: [user name] [user phone] - [6-word summary]",
+      "sms_template": "APPROXIMATE AI ESTIMATE: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "[L] In-person Estimate",
+      "fields": [
+        "User name",
+        "User phone",
+        "User email",
+        "Service requested",
+        "Property area and number of bedrooms and bathrooms",
+        "Appointment day requested",
+        "Appointment time requested",
+        "How did you hear about us",
+        "40-word summary"
+      ],
+      "subject_template": "IN-PERSON ESTIMATE: [user name] [user phone] - [6-word summary]",
+      "sms_template": "IN-PERSON ESTIMATE: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "[L] Remote-Virtual Estimate",
+      "fields": [
+        "User name",
+        "User phone",
+        "User email",
+        "Service requested",
+        "Property area and number of bedrooms and bathrooms",
+        "Appointment day requested",
+        "Appointment time requested",
+        "How did you hear about us",
+        "40-word summary"
+      ],
+      "subject_template": "REMOTE-VIRTUAL ESTIMATE: [user name] [user phone] - [6-word summary]",
+      "sms_template": "REMOTE-VIRTUAL ESTIMATE: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "[L] Schedule Cleaning",
+      "fields": [
+        "User name",
+        "User phone",
+        "User email",
+        "Service requested",
+        "Property area and number of bedrooms and bathrooms",
+        "Appointment day requested",
+        "Appointment time requested",
+        "How did you hear about us",
+        "40-word summary"
+      ],
+      "subject_template": "SCHEDULE CLEANING: [user name] [user phone] - [6-word summary]",
+      "sms_template": "SCHEDULE CLEANING: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "[T] Reschedule or Modification",
+      "fields": [
+        "User name",
+        "User phone",
+        "Original appointment date",
+        "Original appointment time",
+        "Requested changes",
+        "40-word summary"
+      ],
+      "subject_template": "RESCHEDULE OR MODIFICATION: [user name] [user phone] - [6-word summary]",
+      "sms_template": "RESCHEDULE OR MODIFICATION: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "[T] Cancellation",
+      "fields": [
+        "User name",
+        "User phone",
+        "Original appointment date",
+        "Original appointment time",
+        "40-word summary"
+      ],
+      "subject_template": "CANCELLATION: [user name] [user phone] - [6-word summary]",
+      "sms_template": "CANCELLATION: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "[T] Confirmation of Appointment",
+      "fields": ["User name", "User phone", "40-word summary"],
+      "subject_template": "[T] CONFIRMATION OF APPOINTMENT: [user name] [user phone] [6-word additional summary]",
+      "sms_template": "[T] CONFIRMATION OF APPOINTMENT: [user name] [user phone] [20-word additional summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "[T] Client Support",
+      "fields": ["User name", "User phone", "40-word summary"],
+      "subject_template": "CLIENT SUPPORT: [user name] [user phone] - [6-word summary]",
+      "sms_template": "CLIENT SUPPORT: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "[T] Contractor Support",
+      "fields": [
+        "Contractor name",
+        "Contractor phone",
+        "Contractor company (if provided)",
+        "Message to manager"
+      ],
+      "subject_template": "CONTRACTOR SUPPORT: [contractor name] [contractor phone] - [6-word summary]",
+      "sms_template": "CONTRACTOR SUPPORT: [contractor name] [contractor phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "[T] Manager or Human Request",
+      "fields": ["User name", "User phone", "User message to manager"],
+      "subject_template": "MANAGER OR HUMAN REQUEST: [user name] [user phone] - [6-word summary]",
+      "sms_template": "MANAGER OR HUMAN REQUEST: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "General Information Request",
+      "fields": ["User name", "User phone", "Question asked", "40-word summary"],
+      "subject_template": "GENERAL INFORMATION REQUEST: [user name] [user phone] - [6-word summary]",
+      "sms_template": "GENERAL INFORMATION REQUEST: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "Spam Session",
+      "fields": ["Caller phone number", "40-word summary"],
+      "subject_template": "SPAM SESSION: [caller phone number] - [6-word summary]",
+      "sms_template": "SPAM SESSION: [caller phone number] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "Test Session",
+      "fields": ["User name (if provided)", "User phone", "40-word summary"],
+      "subject_template": "TEST SESSION: [user name or \"Unknown\"] [user phone] - [6-word summary]",
+      "sms_template": "TEST SESSION: [user name or \"Unknown\"] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    },
+    {
+      "report_type": "Other type of session",
+      "fields": ["User name", "User phone", "40-word summary"],
+      "subject_template": "OTHER: [user name] [user phone] - [6-word summary]",
+      "sms_template": "OTHER: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]"
+    }
+  ]
+} %}
+
+{{Return(val=json.dumps(content_json, ensure_ascii=False, indent=2))}}

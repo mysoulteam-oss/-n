@@ -1,0 +1,15 @@
+id: c2a52f8a-2495-4b5c-be8c-1a0b32bd1532
+idn: structured_generation
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 9a7a9685-aca9-474d-ae2a-29b268bdac2d
+    name: prompt
+    default_value: ""
+  - id: 3c8a27f2-4405-4635-8932-2e685b5d35e2
+    name: schema
+    default_value: ""
+path: ""

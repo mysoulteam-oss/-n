@@ -1,0 +1,9 @@
+id: 13e44856-9af7-459d-965f-e9403b93b114
+idn: SendFallbackEmailReportSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

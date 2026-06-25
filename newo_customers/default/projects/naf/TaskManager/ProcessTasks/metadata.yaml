@@ -1,0 +1,19 @@
+id: 98eb39e3-a8e0-4d1d-b636-9a1e250fffd3
+idn: ProcessTasks
+title: ProcessTasks
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: b8b120e8-1065-4ea8-bba3-b4a785af0b5b
+    description: null
+    idn: start_tasks_batch
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: start_tasks_batch
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

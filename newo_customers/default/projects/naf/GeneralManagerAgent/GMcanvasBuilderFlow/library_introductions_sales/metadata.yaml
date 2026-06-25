@@ -1,0 +1,9 @@
+id: 1de5bb20-d22b-406b-801c-027cc913e6b8
+idn: library_introductions_sales
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

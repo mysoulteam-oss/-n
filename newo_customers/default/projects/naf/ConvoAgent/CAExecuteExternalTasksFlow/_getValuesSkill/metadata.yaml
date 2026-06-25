@@ -1,0 +1,15 @@
+id: a5bf3bb2-e0ad-4154-a00b-1e1686c6b8df
+idn: _getValuesSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: fcab8c82-8bac-41ed-8b94-ecac09399840
+    name: inputTasks
+    default_value: " "
+  - id: b3a81849-2d39-4c7a-8377-3b74a5a75ec0
+    name: schema
+    default_value: " "
+path: ""

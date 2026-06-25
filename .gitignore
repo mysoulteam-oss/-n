@@ -1,0 +1,10 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Newo CLI local state: JWT tokens, id-maps, hashes, backups
+.newo/
+
+# Node
+node_modules/

@@ -1,0 +1,9 @@
+id: 435e9499-ee29-49b2-95d2-de27032fffb9
+idn: prompt_get_memories
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

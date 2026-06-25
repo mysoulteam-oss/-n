@@ -1,0 +1,18 @@
+id: 795e8c0e-ea46-42d7-943d-15c60c0aab54
+idn: _sendDialpadDigitsSkill
+title: _sendDialpadDigitsSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: ebce4900-6c09-4f90-9de6-c67ac6e64b36
+    name: memory
+    default_value: " "
+  - id: 2ba76b14-4625-4193-a668-740d502eb4e6
+    name: agentAnswer
+    default_value: " "
+  - id: 89e3cc0a-fc51-4ced-a883-1ab49a356fbf
+    name: actorId
+    default_value: " "
+path: ""

@@ -1,0 +1,12 @@
+id: 255d657f-ee51-4a77-93ac-e95d02d636c0
+idn: _getAdditionalBusinessContext
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: c95f7f15-5a61-4f15-ace7-9a86f40e10ed
+    name: userId
+    default_value: " "
+path: ""

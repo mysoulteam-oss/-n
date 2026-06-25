@@ -1,0 +1,12 @@
+id: 434feb14-4829-439a-8d1d-a3ed1df8935e
+idn: _responseStructuredGenerationSkill
+title: _responseStructuredGenerationSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 5f67161d-03e8-482a-ac15-24ab8a3c0c5d
+    name: interactive
+    default_value: "True"
+path: ""

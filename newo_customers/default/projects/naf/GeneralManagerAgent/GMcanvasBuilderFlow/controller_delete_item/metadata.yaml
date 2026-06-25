@@ -1,0 +1,9 @@
+id: 3308b72f-2852-4dd6-9c6c-5ba86d2ada38
+idn: controller_delete_item
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

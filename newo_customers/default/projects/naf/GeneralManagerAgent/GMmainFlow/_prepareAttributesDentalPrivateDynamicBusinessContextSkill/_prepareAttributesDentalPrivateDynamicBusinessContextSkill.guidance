@@ -1,0 +1,38 @@
+{{#system~}}
+# **Base information**
+- **Business type:** {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_type")}}
+- **Business name:** {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_name")}}
+
+# **Business description**
+{{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_story")}}
+
+# **Business contact information**
+- **Country:** {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_country")}}
+- **Business address:** {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_address")}}
+- **Business phone number:** {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_public_phone")}}
+- **Website URL:** {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_website_url")}}
+- **Appointment URL:** {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_dental_appointment_url")}}
+
+# **Products and Services**
+{{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_private_dynamic_products_and_services")}}
+
+# **Service coverage**
+- **Served area:** {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_products_and_services_served_area")}}
+{{#if GetCustomerAttribute(field="project_attributes_setting_products_and_services_background_check_location_enabled") == "False"}}- **Served zip codes:** {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_products_and_services_served_zip_codes")}}{{/if}}
+
+# **Supported insurances**
+{{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_dental_insurances")}}
+
+# **Supported payment methods**
+{{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_payment_methods")}}
+
+# **Current specials, promotions, discounts, happy hour deals**
+{{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_current_specials")}}
+
+# **Terms and Conditions & House Rules**
+{{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_terms_and_conditions")}}
+
+# **Frequently asked questions (FAQ)**
+{{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_faq")}}
+{{~/system}}
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_business_context", value=GetCurrentPrompt())}}

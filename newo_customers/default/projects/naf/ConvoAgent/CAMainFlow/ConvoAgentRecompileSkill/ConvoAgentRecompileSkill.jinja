@@ -1,0 +1,25 @@
+{% set arguments = GetTriggeredAct().arguments %}
+{% set user_id = GetUser().id | string %}
+{% set introduction = arguments.get("introduction", "") %}
+{% set intent_types = arguments.get("intent_types", "") %}
+{% set scenarios = arguments.get("scenarios", "") %}
+{% set procedures = arguments.get("procedures", "") %}
+
+{% if not introduction.strip() and not intent_types.strip() and not scenarios.strip() and not procedures.strip() %}
+    {{SetPersonaAttribute(id=user_id, field="convoagent_recompile_override_configuration", value="")}}
+    {{SetPersonaAttribute(id=user_id, field="convoagent_recompile_override_ami_compiled", value="")}}
+    {{SetPersonaAttribute(id=user_id, field="convoagent_recompile_override_itm_working_hours_compiled", value="")}}
+    {{SetPersonaAttribute(id=user_id, field="convoagent_recompile_override_itm_non_working_hours_compiled", value="")}}
+    {{SetPersonaAttribute(id=user_id, field="convoagent_recompile_override_version", value=uuid.uuid4() | string)}}
+    {{ConvoAgentRecompileRefreshSkill()}}
+    {{Return()}}
+{% endif %}
+
+{{SendSystemEvent(
+    eventIdn="gm_compile_convoagent_recompile",
+    connectorIdn="system",
+    introduction=introduction,
+    intent_types=intent_types,
+    scenarios=scenarios,
+    procedures=procedures
+)}}

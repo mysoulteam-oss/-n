@@ -1,0 +1,9 @@
+id: d9b70241-71c6-434e-a688-934abcdd69f3
+idn: _calcSchemaSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

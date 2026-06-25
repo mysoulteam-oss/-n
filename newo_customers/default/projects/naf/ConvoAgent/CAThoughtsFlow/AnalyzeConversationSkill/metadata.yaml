@@ -1,0 +1,9 @@
+id: b7444574-b77f-4533-b2ca-c918026eb7a2
+idn: AnalyzeConversationSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

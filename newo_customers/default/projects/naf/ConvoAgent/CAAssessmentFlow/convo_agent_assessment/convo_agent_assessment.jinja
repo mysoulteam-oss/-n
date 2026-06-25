@@ -1,0 +1,53 @@
+{% set arguments = GetTriggeredAct().arguments %}
+{% set transcript = arguments.transcript %}
+
+{% if not transcript.strip() or (not GetUser().name ~ ":" in transcript) %}
+    {{utils_send_system_log(message="Memory is empty or doesn't contain user's turns, skipping analyzing.")}}
+    {{SendSystemEvent(
+        eventIdn="end_session",
+        connectorIdn="system",
+        transcript=transcript,
+        quality_metrics="{}"
+    )}}
+    {{Return()}}
+{% endif %}
+
+{% set pre_analysis = json.loads(arguments.preAnalysis) %}
+
+{% set user_id = GetUser().id | string %}
+
+{# Perform semaphore analysis #}
+{% set semaphore = perform_deep_analysis(
+    user_id=user_id,
+    transcript=transcript,
+    main_scenario=pre_analysis.scenario_name,
+    session_short_description=pre_analysis.user_inquiry_analysis,
+    intent_name=pre_analysis.general_intent_name,
+    report_is_sent=arguments.reportIsSent,
+    scenarios=pre_analysis.relevant_scenarios,
+    intents=pre_analysis.relevant_intents
+) %}
+
+{# Collect quality metrics #}
+{% set quality_metrics = collect_quality_metrics(
+    transcript=transcript,
+    main_scenario=pre_analysis.scenario_name,
+    session_short_description=pre_analysis.user_inquiry_analysis,
+    scenarios=pre_analysis.relevant_scenarios,
+    intents=pre_analysis.relevant_intents
+) %}
+
+{{SendSystemEvent(
+    eventIdn="session_updated",
+    connectorIdn="system",
+    session_id=GetSessionInfo().id | string,
+    quality_metrics=quality_metrics
+)}}
+
+{{SendSystemEvent(
+    eventIdn="end_session",
+    connectorIdn="system",
+    transcript=transcript,
+    semaphore=semaphore,
+    quality_metrics=quality_metrics
+)}}

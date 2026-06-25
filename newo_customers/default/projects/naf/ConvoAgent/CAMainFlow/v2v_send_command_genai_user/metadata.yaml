@@ -1,0 +1,18 @@
+id: c8f5f92c-3a7e-49f0-bb34-a0e313c5c32a
+idn: v2v_send_command_genai_user
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 387bb32a-e624-4872-b11c-88eaa6706ad2
+    name: command
+    default_value: ""
+  - id: 41a101b5-d5a5-4636-878c-fe48818b25f5
+    name: last_convo_actor_id
+    default_value: ""
+  - id: e5b09f6c-38c6-490b-a09f-5b3088fb1f28
+    name: user_id
+    default_value: ""
+path: ""

@@ -1,0 +1,15 @@
+id: caef4f7f-0a7c-4330-9d27-36b78042fd20
+idn: __bookRestaurantSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 53109a24-b6c0-4f62-a33c-670c6b498eff
+    name: userId
+    default_value: " "
+  - id: 2fa82a66-52b8-463d-a75f-1216d285513f
+    name: bookingDetails
+    default_value: " "
+path: ""

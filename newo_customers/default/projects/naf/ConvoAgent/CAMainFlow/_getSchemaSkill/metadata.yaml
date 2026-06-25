@@ -1,0 +1,12 @@
+id: 6de1e1a0-d58a-4e89-9dc7-f135bd52802d
+idn: _getSchemaSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: db8763ec-f796-41a6-b139-688fef17bac8
+    name: schemaName
+    default_value: " "
+path: ""

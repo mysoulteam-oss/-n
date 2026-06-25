@@ -1,0 +1,9 @@
+id: e0df9c6b-b1af-46ce-aaa3-418947a4e54e
+idn: _prepareAttributesCommonDefaultPrivateOutboundCallsSkill
+title: _prepareAttributesCommonDefaultPrivateOutboundCallsSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

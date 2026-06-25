@@ -1,0 +1,78 @@
+{% set general_manager_agent_persona_id = GetAgent().persona_id  %}
+{% set convo_agent_persona_id = GetAgent(idn="ConvoAgent").persona_id %}
+
+{% set akb_topics_ids = [] %}
+
+{# Delete `AGENT_MAIN_INSTRUCTION` #}
+{% set akb_topics = SearchFuzzyAkb(
+    query="AGENT_MAIN_INSTRUCTION",
+    searchFields=["name"],
+    numberTopics=100,
+    scoreThreshold=1.0,
+    filterByPersonaIds=[general_manager_agent_persona_id, convo_agent_persona_id]
+)%}
+{% for topic in akb_topics %}
+    {{akb_topics_ids.append(topic.topicId | string)}}
+{% endfor %}
+
+{# Delete `ATTRIBUTE_INTENT_TYPE_MAP_CONVOAGENT_NON_WORKING_HOURS` #}
+{% set akb_topics = SearchFuzzyAkb(
+    query="ATTRIBUTE_INTENT_TYPE_MAP_CONVOAGENT_NON_WORKING_HOURS",
+    searchFields=["name"],
+    numberTopics=100,
+    scoreThreshold=1.0,
+    filterByPersonaIds=[general_manager_agent_persona_id, convo_agent_persona_id]
+)%}
+{% for topic in akb_topics %}
+    {{akb_topics_ids.append(topic.topicId | string)}}
+{% endfor %}
+
+{# Delete `ATTRIBUTE_INTENT_TYPE_MAP_CONVOAGENT_WORKING_HOURS` #}
+{% set akb_topics = SearchFuzzyAkb(
+    query="ATTRIBUTE_INTENT_TYPE_MAP_CONVOAGENT_WORKING_HOURS",
+    searchFields=["name"],
+    numberTopics=100,
+    scoreThreshold=1.0,
+    filterByPersonaIds=[general_manager_agent_persona_id, convo_agent_persona_id]
+)%}
+{% for topic in akb_topics %}
+    {{akb_topics_ids.append(topic.topicId | string)}}
+{% endfor %}
+
+{# Delete `ATTRIBUTE_SETTING_BOOKING_CHECK_AVAILABILITY_SCHEMA` #}
+{% set akb_topics = SearchFuzzyAkb(
+    query="ATTRIBUTE_SETTING_BOOKING_CHECK_AVAILABILITY_SCHEMA",
+    searchFields=["name"],
+    numberTopics=100,
+    scoreThreshold=1.0,
+    filterByPersonaIds=[general_manager_agent_persona_id, convo_agent_persona_id]
+)%}
+{% for topic in akb_topics %}
+    {{akb_topics_ids.append(topic.topicId | string)}}
+{% endfor %}
+
+{# Delete `ATTRIBUTE_SETTING_BOOKING_SCHEMA` #}
+{% set akb_topics = SearchFuzzyAkb(
+    query="ATTRIBUTE_SETTING_BOOKING_SCHEMA",
+    searchFields=["name"],
+    numberTopics=100,
+    scoreThreshold=1.0,
+    filterByPersonaIds=[general_manager_agent_persona_id, convo_agent_persona_id]
+)%}
+{% for topic in akb_topics %}
+    {{akb_topics_ids.append(topic.topicId | string)}}
+{% endfor %}
+
+{# Delete `ATTRIBUTE_SETTING_SESSION_ENDED_REPORT_CRITERIA` #}
+{% set akb_topics = SearchFuzzyAkb(
+    query="ATTRIBUTE_SETTING_SESSION_ENDED_REPORT_CRITERIA",
+    searchFields=["name"],
+    numberTopics=100,
+    scoreThreshold=1.0,
+    filterByPersonaIds=[general_manager_agent_persona_id, convo_agent_persona_id]
+)%}
+{% for topic in akb_topics %}
+    {{akb_topics_ids.append(topic.topicId | string)}}
+{% endfor %}
+
+{{DeleteAkb(ids=akb_topics_ids)}}

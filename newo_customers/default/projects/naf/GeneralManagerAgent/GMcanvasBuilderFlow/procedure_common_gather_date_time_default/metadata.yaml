@@ -1,0 +1,9 @@
+id: 9b50e749-a182-4f08-9940-ee9e74cd1e03
+idn: procedure_common_gather_date_time_default
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

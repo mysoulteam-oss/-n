@@ -1,0 +1,9 @@
+id: ce4e96ad-6e1d-4847-8dac-1fb94bd5e5e8
+idn: utils_get_platform_client_website_url
+title: utils_get_platform_client_website_url
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

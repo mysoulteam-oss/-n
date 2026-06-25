@@ -1,0 +1,9 @@
+id: b12e6268-4d71-41d1-8bbe-25a7b81a4052
+idn: Gen1ConversationStartedInboundSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

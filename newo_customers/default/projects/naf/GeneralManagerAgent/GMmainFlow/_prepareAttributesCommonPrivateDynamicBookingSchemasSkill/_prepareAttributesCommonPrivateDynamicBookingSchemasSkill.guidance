@@ -1,0 +1,2 @@
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_booking_check_availability_schema_template", value=" ")}}
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_booking_schema_template", value=" ")}}

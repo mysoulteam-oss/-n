@@ -1,0 +1,9 @@
+id: 43dcdfaa-ed63-41e5-bb6b-fc511f285a5f
+idn: rag_append_from_websites
+title: rag_append_from_websites
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,18 @@
+id: efb8734c-a49d-4282-be56-f84404529b5e
+idn: utils_persona_attribute_get_with_defaults
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 9ca2aec6-efd3-476f-ae23-8bd2e46ffe46
+    name: defaultValue
+    default_value: "null"
+  - id: 01508c61-f155-4273-864c-741739ab13f8
+    name: user_id
+    default_value: ""
+  - id: c0ed5d9b-3730-42ea-a34a-b79eefe70a9b
+    name: field
+    default_value: ""
+path: ""

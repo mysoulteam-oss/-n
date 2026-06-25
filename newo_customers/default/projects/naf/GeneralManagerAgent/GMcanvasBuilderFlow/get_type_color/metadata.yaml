@@ -1,0 +1,12 @@
+id: 172f20c6-2c27-4951-80ea-cdbed23d439c
+idn: get_type_color
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 8a2e84ee-ee35-41f9-9e79-33e1fc286b20
+    name: canvas_type
+    default_value: ""
+path: ""

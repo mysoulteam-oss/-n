@@ -1,0 +1,17 @@
+{{#if GetCustomerAttribute(field="project_attributes_setting_external_reply_type") == "custom"}}
+    {{Return()}}
+{{/if}}
+
+{{Set(name="user_id", value=GetUser(field="id"))}}
+
+{{Set(name="message", value=GetTriggeredAct(fields=["message"]))}}
+{{Set(name="last_convo_actor_id", value=GetTriggeredAct(fields=["lastConvoActorId"]))}}
+{{Set(name="external_id", value=GetActor(field="externalId", id=last_convo_actor_id))}}
+{{Set(name="source", value=GetPersonaAttribute(id=user_id, field="external_source"))}}
+
+{{#if source == "manychat"}}
+    {{_sendManyChatReplySkill(externalId=external_id, message=message, userId=user_id)}}
+    {{Return()}}
+{{/if}}
+
+{{_utilsSendSystemLogSkill(message="External source is unknown. Skip sending.")}}

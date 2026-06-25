@@ -1,0 +1,9 @@
+id: aa9318b4-530c-420c-a8ac-55fdad749e5b
+idn: _prepareAttributesBeautyRepresentativeAgentSkill
+title: _prepareAttributesBeautyRepresentativeAgentSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

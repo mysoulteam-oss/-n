@@ -1,0 +1,14 @@
+{% set newo_voice_connector = GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector") %}
+{% if not newo_voice_connector %}
+    {{Return()}}
+{% endif %}
+
+{% set shared_phone_numbers_from_connector = newo_voice_connector.settings.shared_phone_numbers.split(",") %}
+
+{% set common_phone_numbers = json.loads(GetCustomerAttribute(field="project_attributes_setting_common_phone_numbers") | default([], true)) %}
+
+{% set missing_numbers = shared_phone_numbers_from_connector | reject("equalto", "") | reject("in", common_phone_numbers) | list %}
+
+{% if missing_numbers | length > 0 %}
+    {{SetCustomerAttribute(field="project_attributes_setting_common_phone_numbers", value=json.dumps(missing_numbers + common_phone_numbers, ensure_ascii=False, indent=2))}}
+{% endif %}

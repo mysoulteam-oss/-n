@@ -1,0 +1,9 @@
+id: bfd1aee5-50f8-456e-8a56-27b6537add8e
+idn: _prepareAttributesCommonPrivateDynamicPromptCalendar
+title: _prepareAttributesCommonPrivateDynamicPromptCalendar
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,9 @@
+id: eef4c98f-51eb-43dc-b05a-e438dec17145
+idn: GetConversation
+title: GetConversation
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

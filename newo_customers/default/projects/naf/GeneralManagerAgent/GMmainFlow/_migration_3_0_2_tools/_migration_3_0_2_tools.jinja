@@ -1,0 +1,28 @@
+{# Step 1: Retrieve and parse the tools JSON from Customer Attribute #}
+{% set newo_tools = GetCustomerAttribute(field="project_attributes_settings_newo_tools").strip() %}
+
+{% set tools_json = {} %}
+{% if newo_tools and newo_tools != "{}" %}
+    {% set tools_json = json.loads(newo_tools) %}
+{% endif %}
+
+{# Step 2: Exit if there are no tools to process. Using .get() is safer #}
+{% if not tools_json.get("tools") %}
+    {{Return()}}
+{% endif %}
+
+{# Step 3: Iterate through the tools and add the 'useConversationHistory' key if it's missing #}
+{% for tool_name, tool_content in tools_json.tools.items() %}
+    {% if "useConversationHistory" not in tool_content %}
+        {# Determine the value for the new key #}
+        {% set should_use_history = (tool_name == "check_timezone_tool") %}
+        {# Use the .update() method to add the new key-value pair to the existing tool_content dictionary #}
+        {{tool_content.update({"useConversationHistory": should_use_history})}}
+    {% endif %}
+{% endfor %}
+
+{# Step 4: Save the modified tools dictionary back to Customer Attribute #}
+{{SetCustomerAttribute(
+    field="project_attributes_settings_newo_tools",
+    value=json.dumps(tools_json, ensure_ascii=False, indent=2)
+)}}

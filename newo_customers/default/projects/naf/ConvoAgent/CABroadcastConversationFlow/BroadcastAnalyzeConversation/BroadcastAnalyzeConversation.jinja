@@ -1,0 +1,44 @@
+{% set arguments = GetTriggeredAct().arguments %}
+{% set toDate = arguments.get("toDate", "") %}
+
+{% set memory = get_prompt_memory(
+    user_id=GetUser().id | string,
+    to_date=toDate or GetDateTime(format="datetime", timezone="UTC"),
+    include_summary="False"
+) %}
+
+{% set main_instruction = GetTriggeredAct().arguments.mainInstruction %}
+
+{# TODO: Move setting `memory_without_latest_agent_answer` to `analyze_conversation` event senders #}
+{% set latest_agent_answer = GetTriggeredAct().arguments.convoAgentAnswer %}
+
+{% set channel = GetTriggeredAct().arguments.conversationChannel %}
+{% set latest_agent_answer_with_prefix = "ConvoAgent: " + latest_agent_answer %}
+
+{% if channel == "chat" %}
+    {% if GetCustomerAttribute(field="project_attributes_setting_chat_split_messages") == "True" %}
+        {% set messages = re.findall('(?s).*?(?<!Mr)(?<!Mrs)(?<!Ms)(?<!Dr)(?<!Sr)(?<!Jr)[.!?](?:\s|$)', latest_agent_answer) %}
+        {% if latest_agent_answer.endswith("?") and messages | length > 1 %}
+            {% set first_message = " ".join(messages[:-1]) %}
+            {% set last_message = messages[-1]|trim %}
+            {% set latest_agent_answer_with_prefix %}ConvoAgent: {{first_message}}
+ConvoAgent: {{last_message}}{% endset %}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+{% if memory.endswith(latest_agent_answer_with_prefix) %}
+    {% set memory_without_latest_agent_answer = memory.rsplit(sep=latest_agent_answer_with_prefix, maxsplit=1)[0].rstrip("\n") %}
+{% else %}
+    {% set memory_without_latest_agent_answer = memory %}
+{% endif %}
+
+{{SendSystemEvent(
+    eventIdn="broadcast_analyze_conversation",
+    connectorIdn="system",
+    conversationChannel=channel,
+    mainInstruction=main_instruction if main_instruction else "",
+    convoAgentAnswer=latest_agent_answer,
+    memory=memory,
+    memoryWithoutLatestAgentAnswer=memory_without_latest_agent_answer
+)}}

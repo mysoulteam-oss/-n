@@ -1,0 +1,9 @@
+id: f547c5bc-92d6-4aed-9a8e-ab03ff069ca6
+idn: scenario_home_service_introduction
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,12 @@
+id: 1b944d48-4693-4f87-a842-4c4e52ee5901
+idn: _utilsUnpackJSONSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 3db3c72e-f131-4a9f-b955-1b7f2e84e04a
+    name: jsonObject
+    default_value: " "
+path: ""

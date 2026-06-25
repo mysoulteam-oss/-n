@@ -1,0 +1,9 @@
+id: d32956f5-d5ab-46fa-b5ef-b153f9b975fc
+idn: _migration_4_2_0_timezone_tool
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

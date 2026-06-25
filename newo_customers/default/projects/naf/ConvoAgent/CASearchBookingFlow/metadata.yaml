@@ -1,0 +1,19 @@
+id: 65a189c4-8260-471e-b134-0e6a5059bf9d
+idn: CASearchBookingFlow
+title: CASearchBookingFlow
+description: ""
+default_runner_type: nsl
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 134a76e7-a3f2-492d-84e7-2569d6204ff9
+    description: null
+    idn: search_booking_tool
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: SearchBookingTool
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

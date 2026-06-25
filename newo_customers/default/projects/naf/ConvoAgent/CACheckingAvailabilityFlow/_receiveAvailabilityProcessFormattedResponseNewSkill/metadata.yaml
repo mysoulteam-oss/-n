@@ -1,0 +1,12 @@
+id: 2b678b94-6fce-4167-a57e-7549e73b2063
+idn: _receiveAvailabilityProcessFormattedResponseNewSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 3bd53149-03b0-4f53-9a7a-8826ed0a0735
+    name: output
+    default_value: " "
+path: ""

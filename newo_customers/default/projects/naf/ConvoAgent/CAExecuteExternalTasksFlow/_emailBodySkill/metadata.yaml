@@ -1,0 +1,12 @@
+id: 290479e5-291d-4e92-bf8d-d74fa1822ad2
+idn: _emailBodySkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 844f4655-82f0-4eb9-90bd-144d200c867c
+    name: emailContent
+    default_value: " "
+path: ""

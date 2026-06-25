@@ -1,0 +1,8 @@
+{# Rename Attribute #}
+
+{% set asr_conversation_ratio = GetCustomerAttribute(field="project_attributes_setting_asr_conversation_ratio") %}
+{% if asr_conversation_ratio.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_setting_asr_conversion_ratio", value=asr_conversation_ratio)}}
+{% endif %}
+
+{{DeleteCustomerAttribute(field="project_attributes_setting_asr_conversation_ratio")}}

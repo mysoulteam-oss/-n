@@ -1,0 +1,9 @@
+id: 9b7fbef2-6917-4cf9-880a-1f88d38afa57
+idn: default_itm_nwh_catering
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

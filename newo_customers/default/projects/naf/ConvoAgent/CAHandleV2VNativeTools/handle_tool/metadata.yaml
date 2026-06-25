@@ -1,0 +1,9 @@
+id: 6d1b3894-6cee-498a-a8f3-62a7c4c5a0a6
+idn: handle_tool
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

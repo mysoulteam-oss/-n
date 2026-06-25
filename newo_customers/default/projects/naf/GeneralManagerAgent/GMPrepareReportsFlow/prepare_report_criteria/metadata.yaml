@@ -1,0 +1,9 @@
+id: b734d768-ca6a-41f8-84a8-e73d94de30e8
+idn: prepare_report_criteria
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

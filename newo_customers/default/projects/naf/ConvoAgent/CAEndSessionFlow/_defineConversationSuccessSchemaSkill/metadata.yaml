@@ -1,0 +1,9 @@
+id: 236f7e8d-a8fb-4165-aef0-bc754c697bc7
+idn: _defineConversationSuccessSchemaSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

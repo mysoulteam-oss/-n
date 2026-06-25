@@ -1,0 +1,12 @@
+id: ee65060d-a003-4b73-bad1-f2a226c913c3
+idn: get_applied_changes
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 3c42929f-f7b8-4e04-83f1-1324e7cb5628
+    name: change_id
+    default_value: ""
+path: ""

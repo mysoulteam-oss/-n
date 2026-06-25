@@ -1,0 +1,9 @@
+id: f08d9e8b-2ed8-455e-bbdc-010deea07b16
+idn: _prepareAttributesCommonPrivateDynamicWorkScheduleSchemaSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

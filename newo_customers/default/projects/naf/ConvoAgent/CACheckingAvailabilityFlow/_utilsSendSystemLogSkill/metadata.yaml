@@ -1,0 +1,12 @@
+id: 8e9a37e2-620a-452a-b6e4-94a32b6008ba
+idn: _utilsSendSystemLogSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: e9e750dc-1f8b-413c-9551-4c639bc43bf1
+    name: message
+    default_value: " "
+path: ""

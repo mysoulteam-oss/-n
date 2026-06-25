@@ -1,0 +1,9 @@
+id: 6ed53b2b-6b47-40e2-a734-f52d70a6f6b3
+idn: library_intent_types_general
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,9 @@
+id: 82a4b1c2-9b4e-4869-b5da-1187e4353f6d
+idn: procedure_dental_gathering_insurance
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

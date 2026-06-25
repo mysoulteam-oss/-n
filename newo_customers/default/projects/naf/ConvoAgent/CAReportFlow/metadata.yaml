@@ -1,0 +1,37 @@
+id: a8ed2286-cbf4-4f4d-8407-708cbd6d92c8
+idn: CAReportFlow
+title: CAReportFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: ac168e6c-3244-44e5-8b14-50b8293cf9db
+    description: null
+    idn: broadcast_analyze_conversation
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: AnalyzeConversationSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 1043230c-b534-4d81-b33d-3f41b6438aef
+    description: null
+    idn: convoagent_send_fallback_email_report
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: SendFallbackEmailReportSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 099faa09-f353-4cae-a7b0-d70acfe3b8ad
+    description: null
+    idn: end_session
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: SendReportSkill
+    state_idn: null
+    integration_idn: program_timer
+    connector_idn: session_timer
+state_fields: []

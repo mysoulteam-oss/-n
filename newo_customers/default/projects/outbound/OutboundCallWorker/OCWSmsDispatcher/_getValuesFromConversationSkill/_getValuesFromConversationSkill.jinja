@@ -1,0 +1,11 @@
+{% system %}
+Based on the conversation (enclosed in <Conversation>...</Conversation>) build JSON object using descriptions in provided JSON schema.
+Avoid coming up with any value. If you can't fill any field, set to `null`.
+
+<Conversation>
+{{conversation}}
+</Conversation>
+{% end %}
+{% set result_json = Gen(jsonSchema=json.loads(schema), temperature=0.2, topP=0, thinkingBudget=425) %}
+
+{{Return(val=result_json)}}

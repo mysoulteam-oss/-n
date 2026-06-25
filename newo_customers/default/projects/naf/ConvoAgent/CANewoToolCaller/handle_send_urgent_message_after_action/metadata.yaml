@@ -1,0 +1,21 @@
+id: e1d782e2-d95c-4581-97f4-618062f8fa71
+idn: handle_send_urgent_message_after_action
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: d2a00929-65d0-4e89-8b6c-e93bee2f278c
+    name: after_action
+    default_value: ""
+  - id: 88c7d150-48b4-4338-9f72-999d206baf9f
+    name: user_id
+    default_value: ""
+  - id: 40412b08-7870-4a1a-ba43-cc65cd786602
+    name: tool_name
+    default_value: ""
+  - id: cd259431-e6b0-4fd0-9e79-19539c7f98ef
+    name: input
+    default_value: ""
+path: ""

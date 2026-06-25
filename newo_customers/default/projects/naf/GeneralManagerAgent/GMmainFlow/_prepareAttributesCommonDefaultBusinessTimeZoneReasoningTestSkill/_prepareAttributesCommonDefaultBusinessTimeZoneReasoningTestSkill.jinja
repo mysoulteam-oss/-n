@@ -1,0 +1,69 @@
+{% set expected_supported_time_zones = json.loads(_prepareAttributesCommonDefaultBusinessTimeZoneSupportedValuesSkill()) %}
+{% set actual_supported_time_zones = GetCustomerMetadataAttribute(idn="project_business_time_zone").possibleValues %}
+{% set zoneinfo_available_time_zones = zoneinfo.available_timezones() %}
+{% set missing_possible_values = not actual_supported_time_zones %}
+
+{% set mismatches = [] %}
+{% set actual_vs_zoneinfo_mismatches = [] %}
+{% set expected_vs_zoneinfo_mismatches = [] %}
+{% set actual_supported_time_zones_text = json.dumps(actual_supported_time_zones, ensure_ascii=False, indent=2) %}
+{% set expected_supported_time_zones_text = json.dumps(expected_supported_time_zones, ensure_ascii=False, indent=2) %}
+
+{% for index in range(actual_supported_time_zones | length) %}
+    {% set supported_time_zone = actual_supported_time_zones[index] %}
+    {% if supported_time_zone not in zoneinfo_available_time_zones %}
+        {% set _ = actual_vs_zoneinfo_mismatches.append({
+            "index": index,
+            "time_zone": supported_time_zone,
+        }) %}
+    {% endif %}
+{% endfor %}
+
+{% for index in range(expected_supported_time_zones | length) %}
+    {% set supported_time_zone = expected_supported_time_zones[index] %}
+    {% if supported_time_zone not in zoneinfo_available_time_zones %}
+        {% set _ = expected_vs_zoneinfo_mismatches.append({
+            "index": index,
+            "time_zone": supported_time_zone,
+        }) %}
+    {% endif %}
+{% endfor %}
+
+{% for index in range(expected_supported_time_zones | length) %}
+    {% set expected_value = expected_supported_time_zones[index] %}
+    {% set actual_value = actual_supported_time_zones[index] if index < (actual_supported_time_zones | length) else "__MISSING__" %}
+
+    {% if actual_value != expected_value %}
+        {% set _ = mismatches.append({
+            "index": index,
+            "expected": expected_value,
+            "actual": actual_value,
+        }) %}
+    {% endif %}
+{% endfor %}
+
+{% for index in range(expected_supported_time_zones | length, actual_supported_time_zones | length) %}
+    {% set _ = mismatches.append({
+        "index": index,
+        "expected": "__MISSING__",
+        "actual": actual_supported_time_zones[index],
+    }) %}
+{% endfor %}
+
+{% set is_valid = (not missing_possible_values) and (not mismatches) and (not actual_vs_zoneinfo_mismatches) and (not expected_vs_zoneinfo_mismatches) %}
+
+{% if not is_valid %}
+    {{_utilsSendSystemLogSkill(message="Business time zone supported values test failed.
+Missing actual possibleValues:
+" + json.dumps(missing_possible_values, ensure_ascii=False, indent=2) + "
+Expected:
+" + expected_supported_time_zones_text + "
+Actual:
+" + actual_supported_time_zones_text + "
+Actual vs zoneinfo.available_timezones() mismatches:
+" + json.dumps(actual_vs_zoneinfo_mismatches, ensure_ascii=False, indent=2) + "
+Expected vs zoneinfo.available_timezones() mismatches:
+" + json.dumps(expected_vs_zoneinfo_mismatches, ensure_ascii=False, indent=2) + "
+Mismatches:
+" + json.dumps(mismatches, ensure_ascii=False, indent=2))}}
+{% endif %}

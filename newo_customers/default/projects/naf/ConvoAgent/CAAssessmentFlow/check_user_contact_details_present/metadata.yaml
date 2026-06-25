@@ -1,0 +1,12 @@
+id: 87416118-945f-4c5e-a057-6b348f30aff0
+idn: check_user_contact_details_present
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: edfe3227-d7f3-4898-9c08-3e8ac3ba0a6a
+    name: user_id
+    default_value: ""
+path: ""

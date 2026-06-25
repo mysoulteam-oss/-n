@@ -1,0 +1,27 @@
+id: 88b51623-3e17-411d-8e2a-11d83197af48
+idn: _setupRetrySkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: a6f7e499-08d3-423d-8a8f-b21ca6ab7d18
+    name: comment
+    default_value: " "
+  - id: 75497f37-b7c9-49a5-98e6-d23c6eb394fc
+    name: recording
+    default_value: " "
+  - id: e77b9703-58fc-4fde-b905-372c677415d3
+    name: attemptNumber
+    default_value: " "
+  - id: d798bbfb-8615-4cbe-92f9-2e6f5a19a525
+    name: userId
+    default_value: " "
+  - id: 43161738-46b3-4325-9d59-72d017fc01f8
+    name: taskId
+    default_value: " "
+  - id: ccd2855e-ec34-4b5b-acb8-e46a489d90be
+    name: reason
+    default_value: ""
+path: ""

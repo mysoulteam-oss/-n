@@ -1,0 +1,12 @@
+id: fef061fe-9b5c-4dea-ab86-c716b89041ec
+idn: _cleanUpSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 5a88355b-ba87-4b5b-99f8-160cb690a653
+    name: userId
+    default_value: ""
+path: ""

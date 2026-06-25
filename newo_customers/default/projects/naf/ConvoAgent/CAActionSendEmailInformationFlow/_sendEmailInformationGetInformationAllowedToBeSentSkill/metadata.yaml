@@ -1,0 +1,12 @@
+id: c3fe64b5-f6e7-4c0d-88a0-84d6d2d8b5bc
+idn: _sendEmailInformationGetInformationAllowedToBeSentSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 387c2562-f76e-4484-a055-3f8f3e606e06
+    name: userId
+    default_value: " "
+path: ""

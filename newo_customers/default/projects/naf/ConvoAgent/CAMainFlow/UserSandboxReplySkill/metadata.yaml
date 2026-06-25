@@ -1,0 +1,9 @@
+id: d25a619b-bba1-4160-ab43-ae1cba023516
+idn: UserSandboxReplySkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

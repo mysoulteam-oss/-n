@@ -1,0 +1,15 @@
+id: 59225735-3a2d-4786-a5a4-7daac1c5dafa
+idn: _defineConversationRevenueGeneratingSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 81674050-afb1-4f03-8b7f-602f9f331ff1
+    name: classification
+    default_value: " "
+  - id: 6936b002-19ba-4fdc-9c47-4a75de487bf2
+    name: duringWorkingHours
+    default_value: " "
+path: ""

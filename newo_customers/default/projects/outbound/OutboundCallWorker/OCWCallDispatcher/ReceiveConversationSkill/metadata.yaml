@@ -1,0 +1,9 @@
+id: d292d184-13f0-4911-89ec-245c4db31cf1
+idn: ReceiveConversationSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

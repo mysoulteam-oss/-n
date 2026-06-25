@@ -1,0 +1,15 @@
+id: 09598d7b-c923-4d57-83ef-3cd23ee190c2
+idn: _schemasSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 17febe3a-7bd9-42e5-9963-9f4a15e7a976
+    name: conversationQuality
+    default_value: "False"
+  - id: 41a42aa7-c11d-4fd3-af8a-0c5cdd02de24
+    name: extractInformation
+    default_value: "False"
+path: ""

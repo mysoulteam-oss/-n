@@ -1,0 +1,9 @@
+id: 0192a58b-fe15-411f-b048-11edf73ed7e5
+idn: _defineExecutionTimeSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

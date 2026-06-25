@@ -1,0 +1,9 @@
+id: 238d212c-c360-42d2-a546-71439adeb65e
+idn: VoiceMailDetectedSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

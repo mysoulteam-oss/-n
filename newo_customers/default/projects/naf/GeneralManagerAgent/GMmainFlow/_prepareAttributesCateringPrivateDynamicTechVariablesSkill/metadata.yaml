@@ -1,0 +1,9 @@
+id: 9f234e9b-a3bd-4bea-8b3d-2dbfa8f09317
+idn: _prepareAttributesCateringPrivateDynamicTechVariablesSkill
+title: _prepareAttributesCateringPrivateDynamicTechVariablesSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

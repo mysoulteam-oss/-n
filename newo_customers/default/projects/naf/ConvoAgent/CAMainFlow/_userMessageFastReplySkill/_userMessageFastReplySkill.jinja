@@ -1,0 +1,84 @@
+{# Send `extend_session` event #}
+{% set user_id = user_id or GetUser().id | string %}
+{{SendSystemEvent(eventIdn="extend_session", connectorIdn="system")}}
+{% set conversation_channel = session_get_conversation_channel(integration_idn=integration_idn, user_id=user_id) %}
+{% set current_override_version = GetPersonaAttribute(id=user_id, field="convoagent_recompile_override_version").strip() %}
+
+{# Prepare RAG #}
+{# TODO: Potentially, add setting for RAG mode (wait for RAG or not) #}
+{% if conversation_channel != "chat" %}
+    {{SendSystemEvent(eventIdn="prepare_rag_context_command", connectorIdn="system")}}
+{% else %}
+    {# TODO: Refactor #}
+    {# TODO: Make a library for RAG to reuse code between `CAMainFlow` and `CARagFlow` #}
+    {# Retrieve corrected memory from corrected_memory state or get_memory if it's empty. #}
+    {# TODO: Discuss get_memory from_date parameter.
+    Potentially it's better do not provide it since we need to get rag based on part of the previous conversation
+    Can user write with the same intent again? Potentially, only chat affected, so let's leave it without providing from_date parameter for now. #}
+    {{prepare_rag_context(user_id=user_id, memory=GetState(name="corrected_memory").strip() or get_memory(user_id=user_id))}}
+{% endif %}
+
+{% set last_convo_actor_id = session_get_and_set_last_convo_actor_id(user_id=user_id) %}
+
+{% if not last_convo_actor_id.strip() %}
+    {# Return if there is no actor to send message to. #}
+    {{Return(val="")}}
+{% endif %}
+
+{% if base_instruction.strip() %}
+    {% set fast_prompt = prompt_fast_compile(user_id=user_id, order="before_gen", conversation_channel=conversation_channel, base_instruction=base_instruction) %}
+{% else %}
+    {% set fast_prompt = GetState(name="fast_prompt") %}
+    {% set fast_prompt_override_version = GetState(name="fast_prompt_override_version").strip() %}
+    {% if not fast_prompt.strip() or fast_prompt_override_version != current_override_version %}
+        {% set fast_prompt = prompt_fast_compile(user_id=user_id, order="before_gen", conversation_channel=conversation_channel) %}
+    {% endif %}
+{% endif %}
+
+{% set fast_prompt = fast_prompt.replace("<||last_user_message||>", GetState(name="user_reply_buffer") if not base_instruction else "") %}
+{% set fast_prompt = fast_prompt.replace("<||convo_agent_thoughts_placeholder||>", GetPersonaAttribute(id=user_id, field="convoagent_thoughts") if inject_thoughts == "True" else "Follow `<UrgentMessage>`.") %}
+{% set fast_prompt = fast_prompt.replace("<||rag_placeholder||>", GetPersonaAttribute(id=user_id, field="rag")) %}
+{# This is to remove unnecessary placeholders #}
+{% set cleaned_prompt = re.sub("<\\|\\|.*?\\|\\|>", "", fast_prompt.strip()) %}
+
+{% set repeating_user_messages = json.loads(track_repeating_user_messages(user_id=user_id)) %}
+{% set repeated_user_message_counter = repeating_user_messages.get("repeat_counter", 0) | int %}
+{% set repeated_user_message_text = repeating_user_messages.get("message_text", "") %}
+
+{% if repeated_user_message_counter > 1 %}
+    {% set should_reply = evaluate_repeating_user_messages(
+        user_id=user_id,
+        message_text=repeated_user_message_text
+    ).strip() %}
+    {% if should_reply != "True" %}
+        {{_utilsSendSystemLogSkill(
+            message="Repeating-user-messages guard is activated. Agent will not respond here because User multiple times repeated the same message: '"
+            ~ repeated_user_message_text
+            ~ "'"
+        )}}
+        {{user_message_fast_reply_post_actions(
+            user_id=user_id,
+            agent_answer="",
+            conversation_channel=conversation_channel,
+            call_analyze_conversation="False",
+            set_follow_up_timer="False"
+        )}}
+        {{Return(val="")}}
+    {% endif %}
+{% endif %}
+
+{% set agent_answer = user_message_generate_reply(conversation_channel=conversation_channel, actor_id=last_convo_actor_id, prompt=cleaned_prompt) %}
+
+{# Compare with string "True", since this skill is called from skill written in guidance due to Start/StopNotInterruptibleBlock actions are available only for this type. #}
+{% if external_event == "True" %}
+    {{SendSystemEvent(
+        eventIdn="send_external_reply",
+        connectorIdn="system",
+        message=agent_answer,
+        lastConvoActorId=last_convo_actor_id
+    )}}
+{% endif %}
+
+{# Execute post actions in separate skill, because guidance has Start/StopNotInterruptibleBlock action #}
+{# Do we still need use them? #}
+{{user_message_fast_reply_post_actions(user_id=user_id, agent_answer=agent_answer, conversation_channel=conversation_channel, call_analyze_conversation=call_analyze_conversation, set_follow_up_timer=set_follow_up_timer)}}

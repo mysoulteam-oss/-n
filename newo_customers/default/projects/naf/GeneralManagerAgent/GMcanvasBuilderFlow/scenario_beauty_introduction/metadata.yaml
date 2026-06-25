@@ -1,0 +1,9 @@
+id: d780681c-5f81-466e-9576-28a9b53bb91e
+idn: scenario_beauty_introduction
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

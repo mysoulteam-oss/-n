@@ -1,0 +1,28 @@
+id: 418bb6fd-b143-47d2-a6be-edfd84ce0279
+idn: CAGen2SendAgentMessageFlow
+title: CAGen2SendAgentMessageFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: a55f3d9d-176e-417a-baee-94b3f257f00d
+    description: null
+    idn: agent_message_finished
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: SendAgentMessageSkill
+    state_idn: null
+    integration_idn: newo_voice
+    connector_idn: newo_voice_connector
+  - id: 3aa4f262-e160-4921-881c-a7bf4cb7d9a5
+    description: null
+    idn: agent_message_finished
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: SendAgentMessageSkill
+    state_idn: null
+    integration_idn: newo_voice
+    connector_idn: newo_voice_connector_web
+state_fields: []

@@ -1,0 +1,160 @@
+id: cc458d1e-350a-4e35-a231-ad31abd888e8
+idn: GMmainFlow
+title: GMmainFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: f63e88c7-67ce-480e-81da-3018bd62cadd
+    description: null
+    idn: project_publish_finish
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ProjectPublishSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: project
+  - id: 23c62e20-83fe-47ad-9d7f-05d81d8d4911
+    description: null
+    idn: run_tests
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: RunTestsSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 9b4d0761-89fe-4fe2-aec1-993874a7b388
+    description: null
+    idn: sa_init_finished
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: RegisterInitEvents
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 333e94f6-6065-4060-92eb-1216fb56cf14
+    description: null
+    idn: sa_init_started
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: RegisterInitEvents
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 2c7d6489-4385-4e53-a6a6-35af46fc8d50
+    description: null
+    idn: web_search_event
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: RagAppendWebSearchResponse
+    state_idn: null
+    integration_idn: api
+    connector_idn: webhook
+state_fields:
+  - id: 8ab3a155-1cab-4666-bb86-43a3a1a2be08
+    title: ""
+    idn: agent_creator_callback_must_be_sent
+    default_value: "True"
+    scope: agent
+  - id: 0285e2fd-e3b7-4978-8ee1-861bb1ca4459
+    title: ""
+    idn: demo_init_was_completed
+    default_value: "False"
+    scope: agent
+  - id: 60067bfe-6ee1-4006-8581-61638852d9d2
+    title: ""
+    idn: previous_catering_menu
+    default_value: none
+    scope: agent
+  - id: e93d23cc-1eb5-4ad9-8c90-9352b785817b
+    title: ""
+    idn: previous_intents
+    default_value: ""
+    scope: agent
+  - id: 2cd72f3b-9ff6-4072-87f1-fd6be51ad76a
+    title: ""
+    idn: previous_intent_type_map
+    default_value: none
+    scope: agent
+  - id: b16dff17-07b8-46d9-9d25-9de94c164254
+    title: ""
+    idn: previous_multilocation_flag
+    default_value: "False"
+    scope: agent
+  - id: da455db2-ae82-4539-8317-b1dc2bed04c9
+    title: ""
+    idn: previous_multilocation_locations
+    default_value: ""
+    scope: agent
+  - id: 70ccc035-1909-461b-8826-013d725d3394
+    title: ""
+    idn: previous_products_and_services
+    default_value: ""
+    scope: agent
+  - id: 39c2b8c7-2e61-4ddb-9701-b53a296cfd28
+    title: ""
+    idn: previous_products_and_services_not_offering
+    default_value: ""
+    scope: agent
+  - id: ef014005-78b3-4fc4-afe2-af360ba532d6
+    title: ""
+    idn: previous_products_and_services_structured_representation_enabled
+    default_value: ""
+    scope: agent
+  - id: 5a239cbb-d321-42e8-96f6-18bc9f125937
+    title: ""
+    idn: previous_rag_knowledge_base_append_text
+    default_value: ""
+    scope: agent
+  - id: f0c66154-7032-4317-a239-7cb85fd853dc
+    title: ""
+    idn: previous_rag_knowledge_base_append_websites
+    default_value: ""
+    scope: agent
+  - id: 9846855a-dd71-4bca-86fc-8b4ea7e3c48f
+    title: ""
+    idn: previous_restaurant_googlemaps_reservation_url
+    default_value: none
+    scope: agent
+  - id: 986a2d6f-c9d1-4796-b213-b0ef240dd065
+    title: ""
+    idn: previous_restaurant_menu
+    default_value: none
+    scope: agent
+  - id: 914917e0-2950-4566-997e-b316ff46c264
+    title: ""
+    idn: previous_send_report_content
+    default_value: ""
+    scope: agent
+  - id: 4b239b47-8c2e-4c8c-b60d-f459df796976
+    title: ""
+    idn: previous_time_zone
+    default_value: none
+    scope: agent
+  - id: ab7e387a-3172-4aa3-8c9c-c36bc65324cd
+    title: ""
+    idn: previous_work_schedule
+    default_value: none
+    scope: agent
+  - id: 79aacbbe-c49f-4c99-88bc-360e073efe85
+    title: ""
+    idn: previous_work_schedule_object
+    default_value: none
+    scope: agent
+  - id: e35aaac2-a5ba-4253-bdd0-c6093e4f2e0d
+    title: ""
+    idn: previous_zip_codes
+    default_value: none
+    scope: agent
+  - id: 68c325cb-415d-4f04-a749-d3923ad2571a
+    title: ""
+    idn: skip_init_was_completed
+    default_value: "False"
+    scope: agent
+  - id: a3d8ad87-7a2d-47f1-8b12-5b2b8690b2b4
+    title: ""
+    idn: whe_producer_last_input
+    default_value: ""
+    scope: agent

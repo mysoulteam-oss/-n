@@ -1,0 +1,9 @@
+id: ec2afdf3-6b74-4ebe-93a8-b741bb9f8a01
+idn: MakeCallSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

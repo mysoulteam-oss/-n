@@ -1,0 +1,9 @@
+id: bd363d94-8369-47da-b7c8-be28454451ec
+idn: revert_to_checkpoint
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

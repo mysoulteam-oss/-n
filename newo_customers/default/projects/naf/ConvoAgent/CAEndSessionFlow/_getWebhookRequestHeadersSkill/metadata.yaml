@@ -1,0 +1,9 @@
+id: 93874640-1106-4343-ab3d-63c7a470eff7
+idn: _getWebhookRequestHeadersSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

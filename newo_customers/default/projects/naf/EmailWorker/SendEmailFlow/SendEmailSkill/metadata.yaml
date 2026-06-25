@@ -1,0 +1,9 @@
+id: f3d91484-b179-47f0-b1f5-e4ac28544088
+idn: SendEmailSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

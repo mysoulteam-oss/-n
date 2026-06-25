@@ -1,0 +1,9 @@
+id: 12afc13d-bf33-4ed2-b37e-5cd15f291099
+idn: _prepareAttributesHospitalitySMSContentSkill
+title: _prepareAttributesHospitalitySMSContentSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

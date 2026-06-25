@@ -1,0 +1,20 @@
+{% if utils_customer_attribute_exists(idn="project_attributes_rag_knowledge_base_text") %}
+    {{utils_customer_attribute_rename(
+        old_idn="project_attributes_rag_knowledge_base_text",
+        new_idn="project_attributes_rag_knowledge_base_append_text"
+    )}}
+{% endif %}
+
+{% if utils_customer_attribute_exists(idn="project_attributes_rag_knowledge_base_websites") %}
+    {{utils_customer_attribute_rename(
+        old_idn="project_attributes_rag_knowledge_base_websites",
+        new_idn="project_attributes_rag_knowledge_base_append_websites"
+    )}}
+{% endif %}
+
+{{DeleteCustomerAttribute(field="project_attributes_private_dynamic_rag_knowledge_base_text_structured")}}
+{{DeleteCustomerAttribute(field="project_attributes_private_dynamic_rag_knowledge_base_websites_text")}}
+{{DeleteCustomerAttribute(field="project_attributes_private_dynamic_rag_knowledge_base_websites_text_structured")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_rag_knowledge_base_append_text_reset", value="True")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_rag_knowledge_base_append_websites_reset", value="True")}}

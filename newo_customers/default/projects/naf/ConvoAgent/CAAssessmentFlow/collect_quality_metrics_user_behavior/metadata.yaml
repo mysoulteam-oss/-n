@@ -1,0 +1,15 @@
+id: 2697caf4-6ce3-4f47-95dd-d14ad1161bc0
+idn: collect_quality_metrics_user_behavior
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 0c8591f3-bf7f-49be-b71c-f7acc5d47007
+    name: session_short_description
+    default_value: ""
+  - id: d7c3e552-eef6-4874-92dc-b366a4a0c1cc
+    name: transcript
+    default_value: ""
+path: ""

@@ -1,0 +1,17 @@
+{{Set(name="meta", value=SearchFuzzyAkb(
+        query=GetValueJSON(obj=taskObject, key="task_idn"),
+        searchFields=["name"],
+        numberTopics=1,
+        fields=["summary"],
+        scoreThreshold=0.9,
+        filterByPersonaIds=convoAgentPersonaId,
+        labels=CreateArray("task_object_format", industry)
+    )
+)}}
+
+{{Set(name="task_object", value=UpdateValueJSON(obj=meta, key="info", value=taskObject))}}
+
+
+{{_sendWorkerMessageSkill(
+    taskObject=task_object
+)}}

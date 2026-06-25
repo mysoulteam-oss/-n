@@ -1,0 +1,12 @@
+id: 26984bf6-c7ea-4074-8670-5c5359c8630b
+idn: _summarizeInjectedData
+title: _summarizeInjectedData
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: e48b5abd-772a-4bf1-8201-47bbcb5b3e49
+    name: rawData
+    default_value: " "
+path: ""

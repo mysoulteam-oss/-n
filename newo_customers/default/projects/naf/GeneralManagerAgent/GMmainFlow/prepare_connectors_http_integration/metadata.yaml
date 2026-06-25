@@ -1,0 +1,9 @@
+id: e421eff7-830b-4900-b0be-dbaab9a7d777
+idn: prepare_connectors_http_integration
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

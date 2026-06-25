@@ -1,0 +1,9 @@
+id: cce36372-4311-480a-8dbd-a2446d976a96
+idn: CheckPhoneNumberSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

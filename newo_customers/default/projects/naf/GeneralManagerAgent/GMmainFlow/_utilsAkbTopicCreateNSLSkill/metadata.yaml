@@ -1,0 +1,33 @@
+id: e9158e3a-cfaf-4167-b21a-28c83000e81f
+idn: _utilsAkbTopicCreateNSLSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: f82a8f52-6bb9-464e-a214-1f54bc734c96
+    name: labels
+    default_value: ""
+  - id: ef561a80-d381-485c-bcc2-e563478d3320
+    name: facts
+    default_value: ""
+  - id: 2c87cb3d-41d7-409e-917b-be41dc46d44f
+    name: confidence
+    default_value: "100"
+  - id: c6a73036-d0a9-4b72-bdcd-92b6d417108b
+    name: name
+    default_value: ""
+  - id: c6c30f03-894b-4b93-88b0-2812515bf50a
+    name: overwrite
+    default_value: "False"
+  - id: be380f2e-1dd2-411b-bd7a-15529e720eca
+    name: personaId
+    default_value: ""
+  - id: 18f83da3-485a-4172-9d5e-fe1b56fffa49
+    name: source
+    default_value: ""
+  - id: bcb5da1f-b2e0-4dcf-afbe-76501eddb15c
+    name: summary
+    default_value: ""
+path: ""

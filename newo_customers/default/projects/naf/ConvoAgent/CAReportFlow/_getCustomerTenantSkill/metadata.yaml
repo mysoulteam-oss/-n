@@ -1,0 +1,9 @@
+id: 32e6010f-ff7c-4b74-ab7e-97f6128b191b
+idn: _getCustomerTenantSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

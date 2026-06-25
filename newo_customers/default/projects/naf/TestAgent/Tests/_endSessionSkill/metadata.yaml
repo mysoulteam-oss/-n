@@ -1,0 +1,9 @@
+id: f79c89ea-d04e-40c1-848e-87a3dd58f475
+idn: _endSessionSkill
+title: _endSessionSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

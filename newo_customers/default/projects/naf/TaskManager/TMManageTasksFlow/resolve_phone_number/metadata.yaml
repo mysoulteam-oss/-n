@@ -1,0 +1,9 @@
+id: 793d9deb-c9cc-4ed8-a1f7-7cab78198a35
+idn: resolve_phone_number
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

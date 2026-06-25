@@ -1,0 +1,12 @@
+id: 8044630d-069c-48ae-b51a-e3c37892ffbf
+idn: _utilsFeatureFlagIsActiveSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 51e7abd4-27b1-4912-b342-973c5d595048
+    name: featureFlagName
+    default_value: " "
+path: ""

@@ -1,0 +1,9 @@
+id: b86df5ac-c691-400b-b9bc-58d804ef4016
+idn: send_transactions_update
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

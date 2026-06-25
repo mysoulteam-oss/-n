@@ -1,0 +1,12 @@
+id: f8b01dc6-3945-48ce-bf42-34f5817b05e3
+idn: _sendReportEmailPrepareTranscriptSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: dd80a617-77aa-4a97-9bad-6001d003645d
+    name: transcript
+    default_value: " "
+path: ""

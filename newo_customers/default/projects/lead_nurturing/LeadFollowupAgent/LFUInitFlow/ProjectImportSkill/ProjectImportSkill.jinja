@@ -1,0 +1,13 @@
+{% set instructions = GetCustomerAttribute(field="project_attributes_setting_lead_nurturing_instructions") %}
+{% if not instructions.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_setting_lead_nurturing_instructions", value=" ")}}
+{% endif %}
+
+{% set init_attributes_metadata_enabled = GetProjectAttribute(field="project_attributes_setting_init_attributes_metadata_enabled") %}
+{% if not init_attributes_metadata_enabled.strip() %}
+    {{SetProjectAttribute(field="project_attributes_setting_init_attributes_metadata_enabled", value="True")}}
+{% endif %}
+
+{{_prepareAttributesLeadNurturingMetadataSkill()}}
+
+{{SetProjectAttribute(field="project_attributes_setting_init_attributes_metadata_enabled", value="False")}}

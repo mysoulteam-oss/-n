@@ -1,0 +1,20 @@
+{# Remove all active call entries for a task when a call ends or fails to start #}
+{% set agent_persona_id = GetAgentPersona().id | string %}
+{% set active_call_name = "active_call_" ~ task_id %}
+{% set active_call_entries = SearchFuzzyAkb(
+    query=active_call_name,
+    searchFields=["name"],
+    numberTopics=100,
+    scoreThreshold=1,
+    labels=["active_call"],
+    filterByPersonaIds=[agent_persona_id]
+) %}
+{% if active_call_entries %}
+    {% set active_call_ids = namespace(ids=[]) %}
+    {% for active_call_entry in active_call_entries %}
+        {% set active_call_ids.ids = active_call_ids.ids + [active_call_entry.topicId | string] %}
+    {% endfor %}
+    {% if active_call_ids.ids %}
+        {{DeleteAkb(ids=active_call_ids.ids)}}
+    {% endif %}
+{% endif %}

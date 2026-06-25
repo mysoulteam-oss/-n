@@ -1,0 +1,78 @@
+{% set tools = json.loads(tools) %}
+
+{% if tools is not iterable or tools is string or tools is mapping %}
+    {{DUMMY("validate_tools_format: Input must be an array")}}
+    {{Return(val="False")}}
+{% endif %}
+
+{% for tool in tools %}
+    {% if tool is not mapping %}
+        {{DUMMY("validate_tools_format: Each tool must be an object")}}
+        {{Return(val="False")}}
+    {% endif %}
+
+    {% for tool_name, tool_config in tool.items() %}
+        {% if tool_config is not mapping %}
+            {{DUMMY("validate_tools_format: Tool '" ~ tool_name ~ "' config must be an object")}}
+            {{Return(val="False")}}
+        {% endif %}
+
+        {% if "conditions" not in tool_config %}
+            {{DUMMY("validate_tools_format: Tool '" ~ tool_name ~ "' missing 'conditions'")}}
+            {{Return(val="False")}}
+        {% elif tool_config.conditions is not mapping %}
+            {{DUMMY("validate_tools_format: Tool '" ~ tool_name ~ "' conditions must be an object")}}
+            {{Return(val="False")}}
+        {% endif %}
+
+        {% for condition_name, condition_config in tool_config.conditions.items() %}
+            {% if condition_config is not mapping %}
+                {{DUMMY("validate_tools_format: Each tool must be an object")}}
+                {{DUMMY("validate_tools_format: Tool '" ~ tool_name ~ "', condition '" ~ condition_name ~ "' must be an object")}}
+                {{Return(val="False")}}
+            {% elif "type" not in condition_config %}
+                {{DUMMY("validate_tools_format: Tool '" ~ tool_name ~ "', condition '" ~ condition_name ~ "' missing 'type'")}}
+                {{Return(val="False")}}
+            {% elif "description" not in condition_config %}
+                {{DUMMY("validate_tools_format: Tool '" ~ tool_name ~ "', condition '" ~ condition_name ~ "' missing 'description'")}}
+                {{Return(val="False")}}
+            {% endif %}
+        {% endfor %}
+
+        {% if "useConversationHistory" not in tool_config %}
+            {{DUMMY("validate_tools_format: Tool '" ~ tool_name ~ "' missing 'useConversationHistory'")}}
+            {{Return(val="False")}}
+        {% elif tool_config.useConversationHistory is not sameas true and tool_config.useConversationHistory is not sameas false %}
+            {{DUMMY("validate_tools_format: Tool '" ~ tool_name ~ "' useConversationHistory must be boolean")}}
+            {{Return(val="False")}}
+        {% endif %}
+
+        {% if "action" in tool_config %}
+            {% if tool_config.action is not mapping %}
+                {{DUMMY("validate_tools_format: Tool '" ~ tool_name ~ "' action must be an object")}}
+                {{Return(val="False")}}
+            {% elif "type" not in tool_config.action %}
+                {{DUMMY("validate_tools_format: Tool '" ~ tool_name ~ "' action missing 'type'")}}
+                {{Return(val="False")}}
+            {% endif %}
+        {% endif %}
+
+        {% if "after_actions" in tool_config %}
+            {% if tool_config.after_actions is not iterable or tool_config.after_actions is string or tool_config.after_actions is mapping %}
+                {{DUMMY("validate_tools_format: Tool '" ~ tool_name ~ "' after_actions must be an array")}}
+                {{Return(val="False")}}
+            {% endif %}
+            {% for action in tool_config.after_actions %}
+                {% if action is not mapping %}
+                    {{DUMMY("validate_tools_format: Tool '" ~ tool_name ~ "' after_actions item must be an object")}}
+                    {{Return(val="False")}}
+                {% elif "type" not in action %}
+                    {{DUMMY("validate_tools_format: Tool '" ~ tool_name ~ "' after_actions item missing 'type'")}}
+                    {{Return(val="False")}}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+
+{{Return(val="True")}}

@@ -1,0 +1,15 @@
+id: cff1d356-a3ff-420a-a157-29ac15362850
+idn: _receiveAvailableSlotsCheckAvailabilitySkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: bf4ae4a0-4d13-4fca-b886-ecbef97f49e3
+    name: availability
+    default_value: " "
+  - id: aedb7e8e-66c4-46e1-971d-2e6fca6b262a
+    name: userId
+    default_value: " "
+path: ""

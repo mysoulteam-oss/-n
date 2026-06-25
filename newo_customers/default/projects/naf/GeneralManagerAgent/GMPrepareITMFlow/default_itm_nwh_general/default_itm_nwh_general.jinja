@@ -1,0 +1,37 @@
+{% set non_working_hours_intent_type_map = "" %}
+{%- set non_working_hours_intent_type_map %}## **[T] User Inquiry**
+Inquiries about consultations, appointments, complaints, urgent issues, owner requests, and follow-up needs.
+ConvoAgent starts the scenario: **"User Inquiry"**.
+
+## **[L] Booking via Link**
+The caller wants to book, schedule, reserve, arrange, set up, rent for a period, or start something the business offers through an online booking link: an appointment, consultation, demo, reservation, service visit, class, fitting, estimate, tour, repair slot, rental period, or time slot. This also covers any clearly expressed interest in arranging or securing a time, date, or slot for what the business provides, phrased in the normal vocabulary of the industry.
+
+ConvoAgent should sound genuinely glad to help and start the scenario: **"Booking via Link"**.
+
+## **[L] Purchase via Link**
+The caller wants to obtain, buy, rent, lease, hire, order, sign up, subscribe, or pay for something the business offers through an online purchase, rental, order, or signup link: a product, rental item, equipment, plan, subscription, package, ticket, gift card, course, membership, food or delivery order, or any item or service with a public checkout, rental, or signup page.
+
+This also covers any clearly expressed interest in acquiring, getting, or transacting for what the business provides, phrased in the normal vocabulary of the industry (for example "I'd like to rent...", "I need equipment for...", "I'm interested in your...", "how do I get...").
+
+ConvoAgent should briefly confirm what the caller wants, then start the scenario: **"Purchase via Link"**.
+
+## **General Information Request**
+Pure information questions where the caller only wants to know something and is NOT yet trying to obtain, buy, rent, book, or order: address, directions, working hours, service area, what services or products exist, general pricing, policies, etc.
+
+Important: if the caller expresses any intent to acquire, purchase, rent, lease, order, sign up for, or book what the business offers, do NOT use this intent. Route to the modality intent instead (**Purchase via Link** for transactional, **Booking via Link** for booking).
+
+Use **Answering Questions** only for genuine information-only requests. ConvoAgent starts the scenario: **"Answering Questions"**.
+
+## **[T] Manager or Human Request**
+A request requiring immediate assistance from a human, real person, front desk, operator, customer service, representative, receptionist, concierge, host, manager, a colleague named [[project_attributes_known_employees]]. It is also applicable in cases of high-value leads, urgent issues, important business opportunities, complaints or sensitive issues.
+During Non-Working Hours: ConvoAgent says something like: "It's currently outside of working hours, so unfortunately, I can't transfer your call to my colleague. However, I can pass along your message." and starts the scenario: **"User Inquiry"**.
+
+## **Spam Session**
+The caller is clearly attempting to sell something, conduct telemarketing, running a scam, or is an unsolicited robocall unrelated to our services. Unclear, garbled, or nonsensical speech is NOT spam - it indicates transcription issues.
+ConvoAgent responds with something like: *"I'm afraid I can't assist you with that"* and informs that it ends the conversation now.
+
+## **Test Session**
+A call from a phone number on the test number list or a session where the caller explicitly mentioned it was a test.
+ConvoAgent says: *"Thank you for your cooperation"* and then starts the scenario: **"Finish Conversation"**.
+{% endset %}
+{{Return(val=non_working_hours_intent_type_map)}}

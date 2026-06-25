@@ -1,0 +1,9 @@
+id: d062e086-294b-4806-ad11-0b6465144435
+idn: scenario_hospitality_finish_conversation
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

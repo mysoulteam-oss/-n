@@ -1,0 +1,15 @@
+id: 2232508d-80e1-4be0-b748-ef485e859fbd
+idn: get_library_item
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: f35f268b-efc4-4480-befe-9814046acb52
+    name: item_idn
+    default_value: ""
+  - id: d4f0872e-f6c4-419f-be12-191ae967ec59
+    name: type_idn
+    default_value: ""
+path: ""

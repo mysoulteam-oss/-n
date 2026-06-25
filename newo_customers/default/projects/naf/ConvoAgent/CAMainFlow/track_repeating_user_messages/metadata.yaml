@@ -1,0 +1,12 @@
+id: a54b2e21-6613-4d7e-9247-eea71d3a3d15
+idn: track_repeating_user_messages
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: dd3545fd-6d38-478e-b43d-a955a7660d50
+    name: user_id
+    default_value: ""
+path: ""

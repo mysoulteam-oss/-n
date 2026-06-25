@@ -1,0 +1,9 @@
+id: ef0f55d6-cfb5-47d2-bec8-4f3cbda7d898
+idn: _stopReceivingDataSkill
+title: _stopReceivingDataSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

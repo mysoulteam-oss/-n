@@ -1,0 +1,9 @@
+id: 852c0cab-53c3-46c2-a5a4-03bec307d598
+idn: scenario_dental_regular_transfer
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

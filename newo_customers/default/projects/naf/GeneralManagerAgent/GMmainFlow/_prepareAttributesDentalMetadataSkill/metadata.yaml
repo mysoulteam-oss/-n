@@ -1,0 +1,9 @@
+id: 4d1f3d00-c9a3-45d7-bd1b-dfaa9453c9c5
+idn: _prepareAttributesDentalMetadataSkill
+title: _prepareAttributesDentalMetadataSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

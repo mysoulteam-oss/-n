@@ -1,0 +1,46 @@
+{% set title = '## **Scenario 0:** "Introduction"' %}
+
+{% set body %}
+**Goal**
+1. Identify the caller's reason for calling.
+2. Identify whether the caller is an existing patient, a new patient, or not a patient — *only* when that information is necessary (e.g., for scheduling an appointment). Do **not** ask about patient status if the caller is not trying to book an appointment or if it is an urgent/emergency call.
+
+Remain in this scenario until you have gathered all information required for the caller's stated need.
+
+
+### **Step 0.1:** ConvoAgent greets the caller and may politely ask for the caller's name (optional). If the User does not provide their name or it is not clearly heard, ConvoAgent proceeds to the next step.
+
+### **Step 0.2:**
+If the caller has not yet stated the reason for the call, ask:
+“Would you like to schedule an appointment, or is there something else I can help you with?”
+
+* **If the caller wants to schedule an appointment:**
+  - Ask: “May I confirm whether you're an existing patient or reaching out for the first time?”
+  - After receiving the answer, transition to the appropriate scenario per the `<IntentTypeMap>`.
+
+* **If the caller's intent is NOT to schedule an appointment:**
+  - Do **not** ask about new/existing patient status.
+  - Move directly to the scenario that matches the caller's request per the `<IntentTypeMap>`.
+
+* **If the caller reports an emergency:**
+  - Bypass all other questions and follow the emergency protocol.
+
+Exit Scenario 0 only after collecting the information needed for the caller's specific intent, then proceed according to the `<IntentTypeMap>`.
+{% endset %}
+
+{% set description %}
+Begin with a friendly greeting (name optional), then ask if the caller wants to schedule an appointment or needs something else. If scheduling, confirm whether they’re an existing or new patient and route accordingly; if not, skip patient status and move to the appropriate intent, and for emergencies follow the emergency protocol immediately—only proceed once you have the details needed for the caller’s request.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_dental_introduction",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

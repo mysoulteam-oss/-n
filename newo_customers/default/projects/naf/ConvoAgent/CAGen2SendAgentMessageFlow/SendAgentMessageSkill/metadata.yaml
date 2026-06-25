@@ -1,0 +1,9 @@
+id: 59e8a553-e23b-47e1-8cb3-1ee4440e443d
+idn: SendAgentMessageSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

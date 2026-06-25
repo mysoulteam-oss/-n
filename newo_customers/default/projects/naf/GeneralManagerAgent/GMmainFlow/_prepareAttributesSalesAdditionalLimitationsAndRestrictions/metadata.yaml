@@ -1,0 +1,9 @@
+id: b3680363-c06f-4027-8cf4-4db214080a6b
+idn: _prepareAttributesSalesAdditionalLimitationsAndRestrictions
+title: _prepareAttributesSalesAdditionalLimitationsAndRestrictions
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

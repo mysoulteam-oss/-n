@@ -1,0 +1,25 @@
+{% set user_id = GetUser().id | string %}
+{% set act = GetTriggeredAct() %}
+{% set levels = json.loads(act.arguments.levels or '["conversation"]') %}
+
+{% set conversation = get_memory(
+    user_id=user_id,
+    from_date=GetPersonaAttribute(id=user_id, field="last_session_ended_datetime_utc"),
+    to_date=GetDateTime(),
+    count=act.arguments.count or "300",
+    include_system=("system" in levels) | string,
+    include_thoughts=("thoughts" in levels) | string
+) %}
+
+{% set arguments = act.arguments %}
+{% set requester_idn = arguments.requesterIdn %}
+{% set callback_arguments = arguments.callbackArguments %}
+
+{{SendSystemEvent(
+    eventIdn="convoagent_conversation_retrieved",
+    connectorIdn="system",
+    global="True",
+    conversation=conversation,
+    requesterIdn=requester_idn,
+    callbackArguments=callback_arguments
+)}}

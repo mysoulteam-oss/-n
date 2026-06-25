@@ -1,0 +1,12 @@
+id: 42980faa-b5ad-4088-92aa-1a6dc701930f
+idn: _prepareAkbCommonMenuOverviewSkill
+title: _prepareAkbCommonMenuOverviewSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 999e20e5-8ac8-4287-a0b5-75df91d6d6bf
+    name: currentMenu
+    default_value: " "
+path: ""

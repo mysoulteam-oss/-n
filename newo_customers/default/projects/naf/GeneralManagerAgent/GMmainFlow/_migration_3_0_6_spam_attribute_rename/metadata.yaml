@@ -1,0 +1,9 @@
+id: 93c11956-b156-42d3-90ab-78f91d145f74
+idn: _migration_3_0_6_spam_attribute_rename
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

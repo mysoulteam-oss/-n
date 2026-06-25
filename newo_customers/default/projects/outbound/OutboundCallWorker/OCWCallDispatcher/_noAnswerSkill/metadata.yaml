@@ -1,0 +1,18 @@
+id: 876353e2-252f-4936-bd85-77822a5bd471
+idn: _noAnswerSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: d0a0adc1-0fd3-4c94-90ea-49dd47ec5ccf
+    name: taskId
+    default_value: ""
+  - id: 91c65355-4113-4b97-87d0-29a34623f484
+    name: reason
+    default_value: ""
+  - id: ad06472e-7f9c-41f0-a984-01823474f13f
+    name: userId
+    default_value: ""
+path: ""

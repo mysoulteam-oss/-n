@@ -1,0 +1,6 @@
+id: d3bd6de8-2708-4f02-9ebd-2fcb15835563
+idn: EmailWorker
+title: EmailWorker
+description: >-
+  Validates and sends outbound email, including opt-out handling, logging, and
+  mock delivery in test mode.

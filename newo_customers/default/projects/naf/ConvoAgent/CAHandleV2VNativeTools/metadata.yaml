@@ -1,0 +1,28 @@
+id: c1de65f0-94a6-4bc7-a3b2-eebbcd2a74fe
+idn: CAHandleV2VNativeTools
+title: CAHandleV2VNativeTools
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 3d2b4a31-66e5-4328-9f25-80239085e170
+    description: null
+    idn: tool_called
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: handle_tool
+    state_idn: null
+    integration_idn: newo_voice
+    connector_idn: newo_voice_connector
+  - id: c0a77896-4be7-40bf-938b-7d0f3b220506
+    description: null
+    idn: tool_called
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: handle_tool
+    state_idn: null
+    integration_idn: newo_voice
+    connector_idn: newo_voice_connector_web
+state_fields: []

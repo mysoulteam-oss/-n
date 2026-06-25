@@ -1,0 +1,28 @@
+id: 627d3476-6a1d-418f-868a-98d8954c2312
+idn: CAExecuteExternalTasksFlow
+title: CAExecuteExternalTasksFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: fb5e015a-80f8-49e9-bfe7-09e3c5508807
+    description: null
+    idn: execute_tasks
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ExecuteTasksSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 5b077a2e-0bb6-4bb8-b0d3-8266254b87fd
+    description: null
+    idn: task_manager_dispatch_task
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveTaskSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

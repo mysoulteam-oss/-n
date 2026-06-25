@@ -1,0 +1,9 @@
+id: ac7fab3d-2931-4afb-9b1e-b12e8a494dfe
+idn: EndConversationToolSkill
+title: EndConversationToolSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

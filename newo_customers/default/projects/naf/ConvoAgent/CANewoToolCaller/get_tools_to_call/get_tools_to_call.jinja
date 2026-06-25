@@ -1,0 +1,72 @@
+{# ! TODO: split conversation channel to two entities: technical channel (webcall, phone, chat) and conversational channel (voice, chat) #}
+{% if channel == "webcall" %}
+    {% set prompt_conversation_channel = "phone" %}
+{% else %}
+    {% set prompt_conversation_channel = channel %}
+{% endif %}
+
+{% set tools_json = json.loads(tools) %}
+{% set tool_list = [] %}
+{% set tool_list_names = [] %}
+{% for k in tools_json.tools.keys() %}
+    {% set _ = tool_list_names.append(k) %}
+    {% set tool = tools_json.tools[k] %}
+    {% set tool_text = "# " ~ k %}
+    {% if tool.description %}
+        {% set tool_text = tool_text ~ "\n## Description:\n" ~ tool.description %}
+    {% endif %}
+    {% if tool.conditions %}
+        {% set tool_text = tool_text ~ "\n## Conditions:" %}
+        {% for tc in tool.conditions.keys() %}
+            {% set tool_text = tool_text ~ "\n- `" ~ tc ~ "`: " ~ tool.conditions[tc].description %}
+        {% endfor %}
+    {% endif %}
+    {% set _ = tool_list.append(tool_text ~ "\n") %}
+{% endfor %}
+{% set tools_to_call_schema = json.loads(get_tools_to_call_schema(keys=json.dumps(tool_list_names, ensure_ascii=False, indent=2))) %}
+
+{% set prompt %}
+{% if use_conversation_history %}You are observing the conversation between `ConvoAgent` and `{{GetUser().name | string}}` (enclosed in <Conversation>). You are also provided with the latest ConvoAgent answer (enclosed in <LatestConvoAgentAnswer>).{% else %}You are provided with the latest ConvoAgent answer (enclosed in <LatestConvoAgentAnswer>) from the conversation between `ConvoAgent` and `{{GetUser().name | string}}`.{% endif %}
+You have a set of `tools` (functions) specified in <AvailableTools>.
+Each tool has conditions defining whether it must be called or not.
+
+Your goal is to build a JSON object using the provided schema and determine whether there are some tools that must be called right now.
+A tool must be called only when all of its conditions are met and fit the tool's defined purpose directly.
+
+**Important rules:**
+- **DO NOT** call a tool for an action that is **already in progress**. Phrases like "I'm *still* checking" or "I'm *still* waiting" mean the action was started earlier and **must be ignored**.
+- **DO NOT** call a tool for an action that was **completed in the past** (e.g., "I've sent it", "I already checked").
+- **DO NOT** call a tool if the action is described as a **future step** in a sequence (e.g., "I need to ask X, *and then* I will...", "Once you answer, I will..."). The action must be the **immediate** priority, not a promise to act after user input.
+- **DO NOT** call tools for mere offers, suggestions, or conditional/question phrasing (e.g., "I can...", "Would you like me to...?").
+- **STRICT SUBJECT CHECK:** A tool can **only** be called if the Agent ("I", "We", "Let me") is the **grammatical subject** of the sentence containing the action keyword.
+- **IGNORE USER-SUBJECT SENTENCES:** If the User ("You") is the subject of the sentence (e.g., "**You** will receive...", "**You** will find...", "**You** get..."), this is an informational update and **MUST NOT** trigger a tool, even if an action is implied.
+
+<AvailableTools>
+{{'\n'.join(tool_list)}}
+# no_tool
+## Description:
+When none of the tools need to be called right now, select only “no_tool” and put it into toolToCall array.
+## Conditions:
+- `no_tool_to_call`: When none of the tools need to be called right now, select only “no_tool” and put it into toolToCall array.
+</AvailableTools>
+
+<ConversationMeta>
+conversation.channel: {{prompt_conversation_channel}}
+</ConversationMeta>{% if use_conversation_history %}
+
+<Conversation>
+{{memory_without_latest_agent_answer}}
+</Conversation>{% endif %}
+
+<LatestConvoAgentAnswer>
+{{latest_agent_answer}}
+</LatestConvoAgentAnswer>
+{% endset %}
+
+{% set result_json = json.loads(structured_generation(prompt=prompt, schema=json.dumps(tools_to_call_schema, ensure_ascii=False, indent=2))) %}
+
+{% if "no_tool" in result_json["toolsToCall"] %}
+    {% set _ = result_json["toolsToCall"].remove("no_tool") %}
+{% endif %}
+
+{{Return(val=result_json["toolsToCall"] | tojson(indent=2))}}

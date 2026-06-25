@@ -1,0 +1,12 @@
+id: bea44258-820e-418c-b631-ae16b7fd098d
+idn: ProjectImportSkill
+title: ProjectImportSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 7d5428ee-7d05-45fa-879d-a58a42aba975
+    name: force_agent_creator_callback
+    default_value: ""
+path: ""

@@ -1,0 +1,9 @@
+id: 1bbb99c1-3e75-4554-9b96-6879757c0631
+idn: prepare_connectors_magic_browser_integration
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

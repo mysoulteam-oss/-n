@@ -1,0 +1,24 @@
+id: 78988304-08af-467b-adcc-09e7d0dfc190
+idn: _defineSpamOrVoiceMailSkill
+title: _defineSpamOrVoiceMailSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 670a932b-847a-4692-a101-1bad0e75f1c8
+    name: executionAllowed
+    default_value: "True"
+  - id: dc1d2be2-35e3-4d40-926c-6043142db29d
+    name: actorId
+    default_value: " "
+  - id: 1621c720-048c-4a38-b7cc-5819e3543ff3
+    name: humanRecheck
+    default_value: "False"
+  - id: a2fb28ae-56d0-45d6-a499-5e571fcef098
+    name: voiceMailRecheck
+    default_value: "False"
+  - id: 8e56959e-6397-4c60-98ba-6225395ffd05
+    name: userId
+    default_value: " "
+path: ""

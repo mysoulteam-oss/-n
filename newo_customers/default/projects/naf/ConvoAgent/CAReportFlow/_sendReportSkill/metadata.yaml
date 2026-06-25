@@ -1,0 +1,24 @@
+id: ef6f2fc9-9c1f-48b3-ac07-e1f1220d5c16
+idn: _sendReportSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 8f5251d7-371d-4d46-a524-fdaef3febf01
+    name: transcript
+    default_value: " "
+  - id: b996ee88-5dd5-420f-8be2-f7b788062792
+    name: intentType
+    default_value: ""
+  - id: dedeb18f-64a6-439c-907b-843f97f4f852
+    name: customSmsSection
+    default_value: ""
+  - id: cb4d4614-ab8b-4421-b757-11207e6e9e78
+    name: customEmailSection
+    default_value: ""
+  - id: ad2bd7b6-bb02-4baf-bc02-000271c66c8e
+    name: userId
+    default_value: " "
+path: ""

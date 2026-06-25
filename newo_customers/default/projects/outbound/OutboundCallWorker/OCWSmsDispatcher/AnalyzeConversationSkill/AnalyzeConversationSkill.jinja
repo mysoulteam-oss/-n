@@ -1,0 +1,69 @@
+{% set user_id = GetUser().id | string %}
+
+{% set outbound_sms = GetPersonaAttribute(id=user_id, field="outbound_sms") %}
+
+{% if outbound_sms != "True" %}
+    {{Return()}}
+{% endif %}
+
+{% if GetState(name="error_occurred") == "True" %}
+    {{SetState(name="error_occurred", value="")}}
+    {{Return()}}
+{% endif %}
+
+{% set arguments = GetTriggeredAct().arguments %}
+{% set conversation = arguments.memory.strip() %}
+{% set task_id = GetState(name="task_id") %}
+{% set task = json.loads(GetPersonaAttribute(id=user_id, field="outbound_sms_context"))[task_id] %}
+{% set primary_task = task.content %}
+
+{# if conversation is empty or there is no user's turns, we assume conversation did not happen#}
+{% if not conversation or (conversation.count(GetUser().name ~ ":") == 0) %}
+    {% set payload = {
+        "phone_number": GetPersonaAttribute(id=user_id, field="sms_outbound_original_phone_number"),
+        "status": "failed",
+        "task_id": task_id,
+        "user_id": user_id
+    } %}
+    {{_sendWebhookResultSkill(taskId=task_id, userId=user_id, payload=json.dumps(payload, ensure_ascii=False, indent=2))}}
+    {{_updateCallTableSkill(userId=user_id, reason="customer-did-not-answer", summary="Customer did not answer.", taskId=task_id, transcript=conversation)}}
+    {{_updateTaskManagerStatusSkill(taskId=task_id, status="failed", comment="Task finished.")}}
+    {% set current_datetime = GetDateTime(format="datetime", timezone=GetCustomerAttribute(field="project_business_time_zone"), weekday=True) %}
+    {% set summary = "Previously, you have tried to reach the customer via SMS. The main goal was: " ~ primary_task %}
+    {% set actors = GetActors(personaId=user_id, externalId=GetPersonaAttribute(id=user_id, field="sms_outbound_original_phone_number"), integrationIdn="twilio_messenger", connectorIdn="sms_connector") %}
+    {% if actors %}
+        {{SendSystemEvent(
+            eventIdn="convoagent_update_user_memories",
+            connectorIdn="system",
+            actorIds=[actors[0].id | string],
+            latest_interaction=json.dumps({"date_added": current_datetime, "content": summary}, ensure_ascii=False, indent=2)
+        )}}
+    {% endif %}
+    {{ Return() }}
+{% endif %}
+
+{% set summary = _summarizeConversation(conversation=conversation, primaryTask=primary_task) %}
+
+{{_updateTaskManagerStatusSkill(taskId=task_id, status="analyzing", comment=summary)}}
+
+{% set payload = {
+    "phone_number": GetPersonaAttribute(id=user_id, field="sms_outbound_original_phone_number"),
+    "transcript": conversation,
+    "status": "finished",
+    "task_id": task_id,
+    "user_id": user_id
+} %}
+
+{% set outbound_schema = GetCustomerAttribute(field="project_attributes_setting_outbound_payload_schema") %}
+
+{% if outbound_schema.strip() and (not outbound_schema == "{}") %}
+    {{payload.update(json.loads(_getValuesFromConversationSkill(conversation=conversation, schema=outbound_schema)))}}
+{% endif %}
+
+{{_sendWebhookResultSkill(taskId=task_id, userId=user_id, payload=json.dumps(payload, ensure_ascii=False, indent=2))}}
+
+{{_updateCallTableSkill(reason="customer-answered", transcript=conversation, userId=user_id, summary=summary, taskId=task_id)}}
+
+{{_cleanUpSkill(userId=user_id)}}
+
+{{_updateTaskManagerStatusSkill(taskId=task_id, status="done", comment="Task finished.")}}

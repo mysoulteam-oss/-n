@@ -1,0 +1,17 @@
+{% set schema = json.loads(schema) %}
+
+{% set prepared_schema = {
+    "should_be_sent":
+        {
+            "type": "boolean",
+            "description": "Indicates whether report to " ~ title ~ " should be sent. Set to `true` if one or more requirements about sending an " ~ title ~ " report above are met. Otherwise set to `false`."
+        }
+    } %}
+
+{{prepared_schema.update(schema.properties)}}
+
+{{schema.update({"properties": prepared_schema})}}
+
+{% set final_schema = {criteria_key: schema } %}
+
+{{Return(val=json.dumps(final_schema, ensure_ascii=False, indent=2))}}

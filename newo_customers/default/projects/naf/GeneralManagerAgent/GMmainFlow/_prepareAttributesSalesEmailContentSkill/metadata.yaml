@@ -1,0 +1,9 @@
+id: 242bad01-036b-45dc-8026-13fc350d25a8
+idn: _prepareAttributesSalesEmailContentSkill
+title: _prepareAttributesSalesEmailContentSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

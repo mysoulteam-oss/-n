@@ -1,0 +1,12 @@
+id: 13d6dd83-5c29-4701-b085-006f78f98fae
+idn: build_report_content_json
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 3ba92eea-383f-4a6b-85cf-d31ccb436b3d
+    name: reportContent
+    default_value: ""
+path: ""

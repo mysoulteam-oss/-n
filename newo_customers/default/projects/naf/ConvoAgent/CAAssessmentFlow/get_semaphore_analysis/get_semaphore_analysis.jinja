@@ -1,0 +1,170 @@
+{% set semaphore_analysis_schema = {
+  "type": "object",
+  "properties": {
+    "session": {
+      "type": "object",
+      "properties": {
+        "existing_customer": {
+          "type": "boolean",
+          "description": "Set to `true` if the user stated they are a existing customer or existing patient or existing client. Otherwise set to false."
+        },
+        "is_lead": {
+          "type": "boolean",
+          "description": "Set to `true` if, at any point in <ConversationHistory>, the user explicitly indicated an intent to START a NEW action — such as making a new booking, reservation, order, or purchase — even if they later ask for consultation, cancellation of another order, or other non-purchase actions. Set to `false` only if no clear new booking/order/purchase intent was expressed at any point (e.g., only cancellations, reschedules, order modifications, status checks, refunds, or general information requests)."
+        }
+      },
+      "required": [
+        "existing_customer",
+        "is_lead"
+      ]
+    },
+    "scenario": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Put scenario name the agent was supposed to follow mentioned in <ConversationMeta> under `conversation.scenario`."
+        },
+        "task": {
+          "type": "string",
+          "description": "Based on the `scenario_name` and considering other properties in <ConversationMeta>, outline the general task/action the agent needs to complete (e.g. perform booking, send an sms, relay message...)."
+        },
+        "steps": {
+          "type": "array",
+          "description": "A list of exactly ALL steps based on `name` of the scenario (described in <Scenarios>) outlined one-by-one in short.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "step_id": {
+                "type": "string",
+                "description": "Step number in the specified scenario `name` of <Scenarios>."
+              },
+              "step_outline": {
+                "type": "string",
+                "description": "Outline the step the agent must complete based on chosen scenario `name` from described in <Scenarios> considering properties in <ConversationMeta>."
+              },
+              "is_completed": {
+                "type": "boolean",
+                "description": "Set `true` if the step has been completed."
+              },
+              "essential": {
+                "type": "boolean",
+                "description": "Completing certain steps, such as gathering contact details, preferred date and time, or checking availability, is essential. Set `true` if step is essential or marked as `CRITICAL STEP` in scenario."
+              }
+            },
+            "required": [
+              "step_id",
+              "step_outline",
+              "is_completed"
+            ]
+          }
+        },
+        "all_steps_completed": {
+          "type": "boolean",
+          "description": "Set `true` if all steps from `steps` are marked as completed."
+        },
+        "essential_steps_completed": {
+          "type": "boolean",
+          "description": "Set this field to `true` if all essential steps are completed."
+        },
+        "task_completed": {
+          "type": "boolean",
+          "description": "Set `true` if the `task` is completed (may occur even `essential_steps_completed` is `false`, but agent promised to relay message to the manager or transferred a call)."
+        }
+      },
+      "required": [
+        "name",
+        "task",
+        "steps",
+        "all_steps_completed",
+        "essential_steps_completed",
+        "task_completed"
+      ]
+    },
+    "analysis": {
+      "type": "object",
+      "properties": {
+        "user_behavior_analysis": {
+            "type": "string",
+            "description": "Analyze user's behavior to understand if they caused incomplete step(s) (e.g., refused interaction) or broke scenario by accidentally finishing conversation."
+        },
+        "fail_caused_by_user": {
+          "type": "boolean",
+          "description": "Set `true` if the agent's behavior was correct but based on `user_behavior_analysis` the user caused incomplete step(s) (e.g., refused interaction) or broke scenario by accidentally finishing conversation."
+        },
+        "agent_saved": {
+          "type": "boolean",
+          "description": "Set `true` if `scenario.essential_steps_completed` is false AND (the agent offered/initiated a transfer to a human in <ConversationHistory> — e.g., connect/transfer to manager, pass info to manager, start 'Regular Transfer'/'Relaying Message to the Manager' — OR <SystemLogs> shows a transfer was executed, e.g., 'The command to transfer the call was executed' or 'The call ended because the agent forwarded the call.')."
+        },
+        "user_refused": {
+          "type": "boolean",
+          "description": "Set `true` if the conversation finished prematurely due to user decision while agent tried to follow the scenario."
+        },
+        "user_rejected": {
+          "type": "boolean",
+          "description": "Set `true` if the conversation contains a clean user's statement rejecting to buy / order / reserve / book / make appointment."
+        },
+        "user_relayed_message": {
+          "type": "boolean",
+          "description": "Set `true` if the user has relayed a message."
+        },
+        "technical_issues": {
+          "type": "string",
+          "description": "Based on <SystemLogs>, outline any errors/issues during the conversation; indicate `n/a` if none mentioned."
+        },
+        "mentioned_issues": {
+          "type": "string",
+          "enum": [
+            "sms message didn't received",
+            "n/a"
+          ],
+          "description": "Based on <ConversationHistory>, choose the issue experienced by the user during the conversation."
+        },
+        "business_issues": {
+          "type": "string",
+          "enum": [
+            "requested slots unavailable",
+            "n/a"
+          ],
+          "description": "Choose one of the issues appeared during conversation or set to `n/a` if no matched issues."
+        },
+        "agent_promised_third_party_help": {
+          "type": "boolean",
+          "description": "Set `true` if the ConvoAgent promised that a human colleague, business representative, team, or human manager will follow up (e.g., will call, contact) or if the agent promised to pass information to a manager. Otherwise set to `false`."
+        }
+      },
+      "required": [
+        "fail_caused_by_user",
+        "agent_saved",
+        "user_refused",
+        "user_rejected",
+        "technical_issues",
+        "mentioned_issues",
+        "business_issues",
+        "agent_promised_third_party_help"
+      ]
+    },
+    "is_test": {
+      "type": "boolean",
+      "description": "If the user mentions in the conversation that it is test conversation set to true. Otherwise false."
+    }
+  },
+  "required": [
+    "session",
+    "scenario",
+    "analysis",
+    "is_test"
+  ]
+} %}
+
+{{Return(val=semaphore_analyze(
+    scenarios=scenarios,
+    logs=logs,
+    main_scenario=main_scenario,
+    session_short_description=session_short_description,
+    working_hours_status_bool=working_hours_status_bool,
+    transcript=transcript,
+    conversation_channel=conversation_channel,
+    schema=semaphore_analysis_schema,
+    intents=intents
+))}}

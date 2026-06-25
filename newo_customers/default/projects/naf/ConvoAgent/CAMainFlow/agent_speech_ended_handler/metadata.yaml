@@ -1,0 +1,9 @@
+id: f13f39ee-a812-4074-bfb5-df56693a3b66
+idn: agent_speech_ended_handler
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

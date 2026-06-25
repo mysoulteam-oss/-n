@@ -1,0 +1,12 @@
+id: 7d98ad31-5a4a-4e0d-bfc7-0b11d9543e02
+idn: _buildEmailBodyExtractValuesSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: a9c568e6-5086-491b-8a9f-cd52e6c10618
+    name: payload
+    default_value: " "
+path: ""

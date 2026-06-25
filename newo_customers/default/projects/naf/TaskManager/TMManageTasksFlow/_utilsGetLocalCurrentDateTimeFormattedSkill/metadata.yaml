@@ -1,0 +1,9 @@
+id: c070d219-e1bd-471f-aade-b88dfea1b55e
+idn: _utilsGetLocalCurrentDateTimeFormattedSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,12 @@
+id: 031a4096-ded6-468d-bbea-26e13a68c593
+idn: try_start_call
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 3dac3e65-5575-4557-9f71-e61fd573f4c4
+    name: task
+    default_value: ""
+path: ""

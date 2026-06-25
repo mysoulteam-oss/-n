@@ -1,0 +1,9 @@
+id: 70139094-2df8-4daf-8d2f-51ca808fd5d1
+idn: ReceiveAvailableSlotsDefaultErrorSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

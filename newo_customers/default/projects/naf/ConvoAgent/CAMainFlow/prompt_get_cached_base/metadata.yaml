@@ -1,0 +1,12 @@
+id: 439c9f08-57cc-4409-8c20-43c3f5430a69
+idn: prompt_get_cached_base
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 4995cdcb-93cc-4273-a609-49f9357048d2
+    name: user_id
+    default_value: ""
+path: ""

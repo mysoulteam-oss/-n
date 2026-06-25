@@ -1,0 +1,12 @@
+id: e4ed2382-1c23-471d-b008-a4c2db650a08
+idn: get_transaction
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 830b7ffa-9059-4cd3-ac6d-8c420a0c2d3c
+    name: transaction_id
+    default_value: ""
+path: ""

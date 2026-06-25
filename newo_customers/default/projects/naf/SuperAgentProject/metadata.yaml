@@ -1,0 +1,6 @@
+id: a5dc322f-8302-4bb0-944a-7b70d6246de8
+idn: SuperAgentProject
+title: SuperAgentProject
+description: >-
+  Publishes repository metadata and stores the current SuperAgent version in
+  customer state.

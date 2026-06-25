@@ -1,0 +1,22 @@
+{# Setup account #}
+{{_setupAccountSkill()}}
+
+{# Operations which take place only during account creation (first setup) #}
+{% set account_initialized_first_time = GetCustomerAttribute(field="project_attributes_private_account_initialized_first_time") %}
+{% if not account_initialized_first_time.strip() %}
+    {% set account_initialized_first_time = "False" %}
+    {{SetCustomerAttribute(field="project_attributes_private_account_initialized_first_time", value=account_initialized_first_time)}}
+{% endif %}
+{% if account_initialized_first_time == "False" %}
+    {{send_agent_creator_callback_event(force_agent_creator_callback=force_agent_creator_callback, skip_init="False")}}
+{% endif %}
+
+{# Post-setup potentially might fail that's why we set this value before post-setup #}
+{{SetCustomerAttribute(field="project_attributes_private_account_initialized_first_time", value="True")}}
+
+{# Post-setup account containing time-consuming operations #}
+{{_postSetupAccountSkill()}}
+
+{# Setup process ends here, event is used for statistical purposes, it can be used in other projects as well #}
+{# TODO: handle `GMPrepareReportsFlow` - send this event when it was finished #}
+{{SendSystemEvent(eventIdn="sa_init_finished", connectorIdn="system", global="True")}}

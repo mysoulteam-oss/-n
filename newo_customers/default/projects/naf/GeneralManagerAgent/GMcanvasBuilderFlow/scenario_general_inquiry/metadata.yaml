@@ -1,0 +1,9 @@
+id: 89c76daf-a265-4542-b136-542a029474f6
+idn: scenario_general_inquiry
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

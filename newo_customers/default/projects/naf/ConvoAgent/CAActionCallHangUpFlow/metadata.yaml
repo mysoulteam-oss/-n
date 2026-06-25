@@ -1,0 +1,19 @@
+id: fd4e0687-be4f-4a4b-b600-8f70176865d1
+idn: CAActionCallHangUpFlow
+title: CAActionCallHangUpFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 0e3a363a-932d-4b40-8776-5c04355edb67
+    description: null
+    idn: end_conversation_tool
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: EndConversationToolSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

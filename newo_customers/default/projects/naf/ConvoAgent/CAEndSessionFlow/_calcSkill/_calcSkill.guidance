@@ -1,0 +1,48 @@
+{{Set(name="schema", value=_calcSchemaSkill())}}
+
+{{#system~}}You are an AI calculator. Calculate the task provided in <Task> section below by splitting it by mathematical steps in a correct order and evaluating them step by step. Result must be a raw JSON.
+
+Always take into account <Constants> to solve your task.
+
+
+# **Example**
+
+Given constants:
+number_of_people: 10
+average_bill_per_persona: 50
+tips: 100
+broken_dishes: 30
+
+Given task: "number_of_people * average_bill_per_persona + tips - broken_dishes"
+
+{
+  "task": "10 * 50 + 100 - 30",
+  "steps": [
+    {"step": 1, "operation": "10 * 50", "result": 500},
+    {"step": 2, "operation": "500 + 100", "result": 600},
+    {"step": 3, "operation": "600 - 30", "result": 570}
+  ],
+  "result": "570"
+}
+
+---
+<Constants>
+{{constants}}
+</Constants>
+
+<Task>
+{{task}}
+</Task>
+
+---
+
+Result JSON:
+{{~/system}}
+{{#assistant~}}{{Set(name="result_json", value=Gen(jsonSchema=schema, validateSchema=True, temperature=0.2, topP=0, skipFilter=True, thinkingBudget=1020))}}{{~/assistant}}
+{{Set(name="result", value=Stringify(GetValueJSON(obj=result_json, key="result")))}}
+
+{{#if result == "undefined"}}
+    {{Return(val="0")}}
+{{/if}}
+
+{{Return(val=result)}}

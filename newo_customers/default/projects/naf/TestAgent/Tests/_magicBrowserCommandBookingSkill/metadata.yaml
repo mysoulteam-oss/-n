@@ -1,0 +1,9 @@
+id: 3eed4bcc-2a85-415c-9374-addf578e6068
+idn: _magicBrowserCommandBookingSkill
+title: _magicBrowserCommandBookingSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

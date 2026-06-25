@@ -1,0 +1,118 @@
+{{Set(name="is_first_init_done", value=GetCustomerAttribute(field="project_attributes_private_account_initialized_first_time"))}}
+{{!-- All `representative agent` common Customer Attributes must be specified here with default values --}}
+{{!-- (must be sorted alphabetically) --}}
+
+{{!-- Is being set in each industry independently if `agent_creator_chat_channel_greeting_phrase` is empty --}}
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_representative_agent_chat_greeting_phrase", ac_field="agent_creator_chat_channel_greeting_phrase")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_representative_agent_name", ac_field="agent_creator_agent_info_name")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_chat_formatting_style", value="- Do not use any lists (numbered or bulleted) when communicating information.
+- Summarize all details in a single sentence where appropriate.
+- Do not use markdown formatting.
+- Do not use hashtags.
+- Do not use emojis.")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_chat_speaking_style", value="Friendly professional, super welcoming.")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_providing_prices_explicit_constraint", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_voicemail_detection_behavior_instruction", value="Leave a clear, meaningful message. State your name, company, the reason for your call, and what you need from them. Then explicitly say goodbye. Keep it brief but clear.")}}
+
+{{!-- TODO: Enable feature back (it was disabled in order to speed-up SA Init process) --}}
+{{!-- {{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_voice_speaking_style", value=_prepareAgentStyleSkill())}} --}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_voice_speaking_style", value="Friendly professional, super welcoming. Speak energetic and fast.")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_representative_agent_title", ac_field="agent_creator_agent_info_title")}}
+
+{{Set(name="agent_creator_voice_channel_disclaimer_phrase", value=GetCustomerAttribute(field="agent_creator_voice_channel_disclaimer_phrase"))}}
+{{#if not IsEmpty(text=agent_creator_voice_channel_disclaimer_phrase)}}
+  {{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_representative_agent_voice_disclaimer_phrase", ac_field="agent_creator_voice_channel_disclaimer_phrase")}}
+{{else}}
+  {{Set(name="language_primary", value=GetCustomerAttribute(field="project_business_language_primary"))}}
+  {{utils_customer_attribute_set_if_empty_depending_on_language(
+      attribute_idn="project_representative_agent_voice_disclaimer_phrase",
+      input_text="This call may be recorded.",
+      input_text_language="English",
+      target_language=language_primary
+  )}}
+{{/if}}
+
+{{!-- TODO: check that `agent_creator_agent_info_gender` falls under allowed values set: `auto`, `female`, `male`  --}}
+{{Set(name="agent_gender", value=GetCustomerAttribute(field="agent_creator_agent_info_gender"))}}
+{{#if not IsEmpty(text=agent_gender)}}
+  {{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_representative_agent_gender", ac_field="agent_creator_agent_info_gender")}}
+{{else}}
+  {{Set(name="agent_gender", value=_prepareAgentGenderSkill())}}
+  {{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_gender", value=agent_gender)}}
+{{/if}}
+
+{{!-- TODO: Refactor --}}
+{{#if agent_gender == "auto" }}
+  {{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_voice", value="Female Despina - Smooth")}}
+  {{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_openai_voice", value="Neutral - Alloy")}}
+  {{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_grok_voice", value="Neutral Sal - Smooth")}}
+{{/if}}
+{{#if agent_gender == "female" }}
+  {{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_voice", value="Female Despina - Smooth")}}
+  {{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_openai_voice", value="Female - Sage")}}
+  {{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_grok_voice", value="Female Ara - Warm")}}
+{{/if}}
+{{#if agent_gender == "male" }}
+  {{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_voice", value="Male Iapetus - Clear")}}
+  {{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_openai_voice", value="Male - Cedar")}}
+  {{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_grok_voice", value="Male Rex - Confident")}}
+{{/if}}
+
+{{!-- Is being set in each industry independently if `agent_creator_voice_channel_greeting_phrase` is empty --}}
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_representative_agent_voice_greeting_phrase", ac_field="agent_creator_voice_channel_greeting_phrase")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_voice_greeting_phrase_later_returning", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_voice_greeting_phrase_recent_returning", value=" ")}}
+
+{{_prepareAttributesCommonDefaultRepresentativeAgentCountryCodeSkill()}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_voice_stt_model_id", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_voice_stt_provider_id", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_voice_transcriber_language", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_voice_tts_model_id", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_voice_tts_provider_id", value=" ")}}
+
+
+{{!-- TODO: Verify potential timing issues (will the Connector be available with phone number during this `init` step?) --}}
+{{Set(name="voice_integration_service", value=GetCustomerAttribute(field="project_attributes_setting_voice_integration_service"))}}
+{{!-- TODO: Refactor --}}
+{{Set(name="agent_phone_number", value=" ")}}
+{{#if voice_integration_service == "VAPI Integration"}}
+  {{Set(
+    name="agent_phone_number",
+    value=Stringify(
+      GetActors(
+        personaId=GetAgentPersona(field="id"),
+        integrationIdn="vapi",
+        connectorIdn="vapi_caller",
+        fields="externalId"
+      )
+    )
+  )}}
+{{/if}}
+{{#if voice_integration_service == "NEWO Voice Integration"}}
+  {{Set(
+    name="agent_phone_number",
+    value=Stringify(
+        GetConnectorInfo(
+          integrationIdn="newo_voice",
+          connectorIdn="newo_voice_connector",
+          field="ai_phone_number"
+        )
+    )
+  )}}
+{{/if}}
+{{#if IsEmpty(text=agent_phone_number)}}
+  {{Set(name="agent_phone_number", value="null")}}
+{{/if}}
+{{SetCustomerAttribute(field="project_representative_agent_voice_phone_number", value=agent_phone_number)}}

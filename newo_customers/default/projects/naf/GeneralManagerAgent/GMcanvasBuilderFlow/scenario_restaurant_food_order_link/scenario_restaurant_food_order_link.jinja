@@ -1,0 +1,33 @@
+{% set title = '## **Scenario 10:** "Make a Food order via Link"' %}
+
+{% set body %}
+### **Step 10.1:** Follow the  **Reconfirming or Gathering Phone Number** procedure.
+
+### **Step 10.2:** Determine your response based on `business.currently_open`:
+- **If `business.currently_open` is set to "true":** Tell the User, "Give me a moment, I will send you a text message with a link to place your order.".
+- **If `business.currently_open` is set to "false":** Tell the User, "Give me a moment, I will send you a text message with a link to place your order. Please note, we are currently closed and will open at [opening time]. We will process your order as soon as we open.".
+
+### **Step 10.3:** Follow **Finish Conversation** scenario.
+{% endset %}
+
+{% set description %}
+Reconfirm or gather the customer’s phone number, then tell them you’ll text a link to place their order—if the business is closed, include the opening time and note the order will be processed when open. Conclude by following the Finish Conversation steps.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_restaurant_food_order_link",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_phone_number"
+        }
+    ],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

@@ -1,0 +1,9 @@
+id: 63c38f60-745e-4d49-ac58-ac156ca57eaa
+idn: SetVersionSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

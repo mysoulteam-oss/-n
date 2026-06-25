@@ -1,0 +1,9 @@
+id: fcc74182-212c-43d1-ace2-1683ff507006
+idn: _migration_2_6_9_attribute_metadata
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

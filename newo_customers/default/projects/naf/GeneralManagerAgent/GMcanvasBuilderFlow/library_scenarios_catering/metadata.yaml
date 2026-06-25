@@ -1,0 +1,9 @@
+id: 23bbc03b-bc1c-44cb-80a2-857eab1d9617
+idn: library_scenarios_catering
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

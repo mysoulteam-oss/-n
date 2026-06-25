@@ -1,0 +1,18 @@
+id: 755d6384-d076-483f-b549-9e2505a8057f
+idn: generate_missing_lead_sms
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 06613846-666e-49ca-80af-8e2524d86ac5
+    name: session_short_description
+    default_value: ""
+  - id: 28937594-4d0c-4416-b8d9-ab95c1e35f46
+    name: user_id
+    default_value: ""
+  - id: 159456ce-3823-4877-ba25-f9da0889a670
+    name: user_behavior_analysis
+    default_value: ""
+path: ""

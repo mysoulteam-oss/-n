@@ -1,0 +1,9 @@
+id: bfbe03ac-dacb-411e-8111-14a78c03f2ae
+idn: _prepareAttributesCommonDefaultBusinessTypeSkill
+title: _prepareAttributesCommonDefaultBusinessTypeSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

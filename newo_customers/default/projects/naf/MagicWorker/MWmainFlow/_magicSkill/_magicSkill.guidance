@@ -1,0 +1,74 @@
+{{Set(name="convo_agent_persona", value=GetAgent(idn="ConvoAgent", field="personaId"))}}
+{{Set(name="industry", value=GetCustomerAttribute(field="project_business_industry"))}}
+{{Set(name="scenario", value=GetCustomerAttribute(field="project_attributes_scenario"))}}
+{{Set(name="project_business_time_zone", value=GetCustomerAttribute(field="project_business_time_zone"))}}
+
+{{#if retry == "true"}}
+    {{Set(name="mb_session_name", value=_getRandomSessionNameSkill())}}
+{{else}}
+    {{Set(name="mb_session_name", value=GetAgentPersona(field="id"))}}
+{{/if}}
+
+{{#system~}}
+CURRENT_TIME: {{GetDatetime(format="datetime", timezone=project_business_time_zone)}}
+YOUR_LOCAL_TIMEZONE: {{project_business_time_zone}}
+
+**INPUT_VALUES:**
+{{GetValueJSON(obj=task_context, key="info")}}
+**END INPUT_VALUES**
+
+**CURRENT_OBJECTIVE:**
+{{SearchFuzzyAkb(
+    query=task_idn ,
+    searchFields=["name"],
+    fromPerson="Agent",
+    numberTopics = 1,
+    fields = ["summary"],
+    scoreThreshold=0.9,
+    labels=CreateArray("task_instruction", industry, scenario),
+    filterByPersonaIds=convo_agent_persona
+)}}
+**END CURRENT_OBJECTIVE**
+
+**TASK_CONTEXT:**
+{{GetCustomerAttribute(field=Concat("project_attributes_task_context_", task_idn))}}
+**END TASK_CONTEXT**
+{{~/system}}
+
+{{Set(name="task_script", value=Stringify(SearchFuzzyAkb(
+    query=Concat(GetAgentPersona(field="name"), "_", task_idn),
+    searchFields=["name"],
+    fromPerson="Agent",
+    numberTopics = 1,
+    fields = ["summary"],
+    scoreThreshold=0.9,
+    labels=["scripts"],
+    filterByPersonaIds=convo_agent_persona
+)))}}
+
+{{#if IsEmpty(text=task_script)}}
+
+{{SendCommand(
+    commandIdn="magic_browser_command",
+    integrationIdn="magic_browser",
+    connectorIdn="magic_browser_connector",
+    objective=GetCurrentPrompt(),
+    persona_id=GetUser(field="id"),
+    persona_name=GetUser(),
+    session_name=mb_session_name
+)}}
+
+{{else}}
+
+{{SendCommand(
+    commandIdn="magic_browser_command",
+    integrationIdn="magic_browser",
+    connectorIdn="magic_browser_connector",
+    objective=GetCurrentPrompt(),
+    script=task_script,
+    persona_id=GetUser(field="id"),
+    persona_name=GetUser(),
+    session_name=mb_session_name
+)}}
+
+{{/if}}

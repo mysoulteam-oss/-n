@@ -1,0 +1,9 @@
+{{Set(name="nl", value="
+")}}
+
+{{!-- Basic JSON unpack --}}
+{{Set(name="source", value=source.replace("\n", nl))}}
+{{Set(name="source", value=source.replace('\"', '"'))}}
+{{Set(name="source", value=Stringify(source))}}
+
+{{Return(val=source)}}

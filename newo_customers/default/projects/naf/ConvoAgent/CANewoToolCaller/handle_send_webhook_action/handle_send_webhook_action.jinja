@@ -1,0 +1,56 @@
+{% set webhook_options = {
+    'method': 'GET'
+} %}
+{% set action_options = tool_object.action.options %}
+{% if not action_options or not action_options.url %}
+    {{utils_send_system_log(message="`send_webhook` action cannot be called without `action.options.url`")}}
+    {{Return()}}
+{% endif %}
+{{webhook_options.update(action_options)}}
+{{utils_send_system_log(message="`send_webhook` action scheduled with the following options: " ~ json.dumps(webhook_options, ensure_ascii=False, indent=2))}}
+{% set query_object = '{}' %}
+{% if webhook_options.query %}
+    {% set query_object = generate_object_by_schema(user_id=user_id, schema=json.dumps(webhook_options.query, ensure_ascii=False, indent=2), latest_agent_answer=latest_agent_answer, memory_without_latest_agent_answer=memory_without_latest_agent_answer) %}
+{% endif %}
+
+{% set body = '{}' %}
+{% if webhook_options.body %}
+    {% set body = generate_object_by_schema(user_id=user_id, schema=json.dumps(webhook_options.body, ensure_ascii=False, indent=2), latest_agent_answer=latest_agent_answer, memory_without_latest_agent_answer=memory_without_latest_agent_answer) %}
+{% endif %}
+
+{% set headers = '{}' %}
+{% if webhook_options.headers %}
+    {% set headers = generate_object_by_schema(user_id=user_id, schema=json.dumps(webhook_options.headers, ensure_ascii=False, indent=2), latest_agent_answer=latest_agent_answer, memory_without_latest_agent_answer=memory_without_latest_agent_answer) %}
+{% endif %}
+
+{% set method = webhook_options.method or 'GET' %}
+{% set url = webhook_options.url %}
+{% if query_object and query_object|trim and query_object != '{}' %}
+    {% set parameters = json.loads(query_object).items() | urlencode %}
+    {% if parameters %}
+        {% set url_parts = url.split("#", 1) %}
+        {% set base_url = url_parts[0] %}
+        {% set fragment = "#" ~ url_parts[1] if url_parts|length > 1 else "" %}
+
+        {% if base_url.endswith("?") or base_url.endswith("&") %}
+            {% set separator = "" %}
+        {% elif "?" in base_url %}
+            {% set separator = "&" %}
+        {% else %}
+            {% set separator = "?" %}
+        {% endif %}
+
+        {% set url = base_url ~ separator ~ parameters ~ fragment %}
+    {% endif %}
+{% endif %}
+{{SendCommand(
+    commandIdn="send_request",
+    integrationIdn="http",
+    connectorIdn="http_connector",
+    userPersonaId=user_id,
+    method=method,
+    url=url,
+    body=body,
+    headers=headers,
+    targetAction=tool_name
+)}}

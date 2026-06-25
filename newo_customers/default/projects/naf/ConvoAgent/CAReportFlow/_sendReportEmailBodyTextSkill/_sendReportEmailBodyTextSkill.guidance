@@ -1,0 +1,112 @@
+{{!-- TODO: Specify path to Portal depending on environment where it will be technically possible --}}
+{{Set(name="tenant", value=_getCustomerTenantSkill())}}
+
+{{Set(name="include_conversation_and_record_urls", value=GetCustomerAttribute(field="project_attributes_setting_session_ended_report_include_conversation_and_record_urls"))}}
+
+{{Set(name="portal_url", value=_getPortalUrlSkill())}}
+{{Set(name="raw_conversation_url", value=_getConversationUrlSkill(portal_url=portal_url, include_conversation_records=include_conversation_and_record_urls))}}
+{{Set(name="conversation_url_html", value=" ")}}
+{{#if not IsEmpty(text=raw_conversation_url)}}
+    {{Set(name="conversation_url_html", value=Concat('<strong>Conversation URL:</strong> <a href="', raw_conversation_url, '">Learn more</a><br>'))}}
+{{/if}}
+
+{{Set(name="hipaa_mode_enabled", value=GetCustomerAttribute(field="project_attributes_setting_hipaa_mode_enabled"))}}
+
+{{Set(name="detected_phone_number", value=GetPersonaAttribute(id=userId, field="detected_phone_number_with_country_code"))}}
+{{Set(name="phone_number_html", value=" ")}}
+{{#if not IsEmpty(text=detected_phone_number)}}
+    {{#if detected_phone_number != "null"}}
+        {{Set(name="phone_number_html", value=Concat("<strong>Caller phone number:</strong> ", detected_phone_number, "<br>"))}}
+    {{/if}}
+{{/if}}
+
+{{#if include_conversation_and_record_urls == "False"}}
+    {{Set(name="record", value=" ")}}
+{{else}}
+    {{#if hipaa_mode_enabled == "True"}}
+        {{Set(name="record", value=" ")}}
+    {{else}}
+        {{#if tenant == "newo"}}
+            {{Set(name="recording_urls_raw", value=GetPersonaAttribute(id=userId, field="recording_urls"))}}
+            {{Set(name="recording_urls", value=recording_urls_raw.strip())}}
+            {{#if IsEmpty(text=recording_urls)}}
+                {{Set(name="record", value=" ")}}
+            {{else}}
+                {{#if recording_urls != "[]"}}
+                    {{Set(name="record", value=Concat(_utilsPrepareRecordingUrls(recording_urls=recording_urls, portal_url=portal_url), "<br>"))}}
+                {{else}}
+                    {{Set(name="record", value=" ")}}
+                {{/if}}
+            {{/if}}
+        {{else}}
+            {{Set(name="record", value=" ")}}
+        {{/if}}
+    {{/if}}
+{{/if}}
+
+{{Set(name="owner_name", value=GetCustomerAttribute(field="project_business_top_owner_name"))}}
+
+{{Set(name="conversation_transcript", value=" ")}}
+{{#if hipaa_mode_enabled == "False"}}
+    {{Set(name="include_transcript", value=GetCustomerAttribute(field="project_attributes_setting_session_ended_report_include_transcript"))}}
+    {{#if include_transcript == "True"}}
+        {{Set(name="conversation_transcript", value=_sendReportEmailPrepareTranscriptSkill(transcript=transcript))}}
+    {{/if}}
+{{/if}}
+
+{{Set(name="utm_tags", value=" ")}}
+{{Set(name="include_utm_tags", value=GetCustomerAttribute(field="project_attributes_setting_session_ended_report_include_utm_tags"))}}
+{{#if include_utm_tags == "True"}}
+    {{Set(name="utm_tags", value=GetPersonaAttribute(id=userId, field="url_params"))}}
+    {{#if not IsEmpty(text=utm_tags)}}
+        {{#if utm_tags != "None"}}
+            {{Set(name="utm_tags", value=_sendReportEmailPrepareUTMsSkill(utmTags=utm_tags))}}
+        {{/if}}
+    {{/if}}
+{{/if}}
+
+{{Set(name="time_zone", value=GetCustomerAttribute(field="project_business_time_zone"))}}
+{{Set(name="current_date", value=GetDatetime(format="date", timezone=time_zone))}}
+{{Set(name="current_time", value=GetDatetime(format="time", timezone=time_zone))}}
+{{Set(name="current_time_list", value=current_time.split(":"))}}
+{{Set(name="current_time_list", value=Stringify(current_time_list))}}
+{{Set(name="current_time_list", value=current_time_list.replace("'", '"'))}}
+
+{{Set(name="current_hour", value=Stringify(GetItemsArrayByIndexesJSON(array=current_time_list, indexes=0)))}}
+{{Set(name="current_minutes", value=Stringify(GetItemsArrayByIndexesJSON(array=current_time_list, indexes=1)))}}
+
+{{Set(name="current_date_time", value=Concat(current_date, " ", current_hour, ":", current_minutes))}}
+
+
+{{Set(name="report_type", value=reportType.replace("_", " "))}}
+{{Set(name="report_type", value=report_type.upper())}}
+{{Set(name="custom_section", value=customSection)}}
+{{#if not IsEmpty(text=custom_section)}}
+    {{Set(name="custom_section", value=custom_section.replace("\n", "<br>"))}}
+    {{Set(name="custom_section", value=Concat(custom_section, "<br><br>"))}}
+{{/if}}
+
+{{#system~}}
+{{_getEmailBodyHeaderSkill()}}
+
+Dear {{#if not IsEmpty(text=owner_name)}}{{owner_name}}{{else}}manager{{/if}},<br><br>
+
+{{report_type}}<br><br>
+{{customSection}}
+{{_sendReportEmailCustomFieldsSkill(fieldsToExtract=fieldsToExtract, transcript=transcript, userId=userId, currentDateTime=current_date_time, hipaaEnabled=hipaa_mode_enabled)}}
+
+{{conversation_url_html}}
+{{record}}
+{{phone_number_html}}
+
+<strong>Conversation session ended:</strong> {{current_date_time}}<br>
+<strong>Working hours:</strong> {{workingHourStatus}}<br><br>
+Yours truly,<br>
+{{GetCustomerAttribute(field="project_representative_agent_name")}}<br>
+{{GetCustomerAttribute(field="project_representative_agent_title")}}<br>
+{{GetCustomerAttribute(field="project_business_name")}}<br><br>
+{{conversation_transcript}}
+{{utm_tags}}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

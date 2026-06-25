@@ -1,0 +1,3 @@
+{% set text = GetCustomerAttribute(field=template_attribute_name) %}
+
+{{SetCustomerAttribute(field=compiled_attribute_name, value=utils_compile_text_with_customer_attributes(text=text, exclude_attributes=[template_attribute_name]))}}

@@ -1,0 +1,60 @@
+id: d79e74f9-b360-4945-87c2-4f5c631a264f
+idn: TaskTableFlow
+title: TaskTableFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 5e1af24b-1e42-4c93-8351-fcb09aca31b8
+    description: null
+    idn: contact_details_received
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveContactDetailsSkill
+    state_idn: null
+    integration_idn: api
+    connector_idn: webhook
+  - id: 3ac0a3e5-4382-415c-addd-a667edc119a0
+    description: null
+    idn: start_calling
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: StartCallingSkill
+    state_idn: null
+    integration_idn: api
+    connector_idn: webhook
+  - id: 4a3bc47f-58fa-4e87-8663-8227b1f37581
+    description: null
+    idn: stop_calling
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: StopCallingSkill
+    state_idn: null
+    integration_idn: api
+    connector_idn: webhook
+  - id: 8fff9e47-a2e6-4e14-aac3-bb9501997819
+    description: null
+    idn: task_manager_start_calling
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: StartCallingFromAttributeSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 757b2f7b-48c9-467c-941d-bf6a8653f181
+    description: null
+    idn: update_call_record
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: UpdateCallRecordSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields:
+  - id: bd02b7dc-dd0b-48a9-b31a-8b4389ba5d17
+    title: ""
+    idn: launched
+    default_value: ""
+    scope: user

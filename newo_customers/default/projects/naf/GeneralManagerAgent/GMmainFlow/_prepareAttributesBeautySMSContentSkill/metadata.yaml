@@ -1,0 +1,9 @@
+id: 620bf5e3-5d66-492f-8ce9-c1a1602ddd1c
+idn: _prepareAttributesBeautySMSContentSkill
+title: _prepareAttributesBeautySMSContentSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

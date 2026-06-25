@@ -1,0 +1,9 @@
+id: ed349213-97d3-4081-bbfa-c975c64e4d12
+idn: default_report_content_beauty
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,9 @@
+id: 419358a0-cf02-4621-985b-4c67e75ef753
+idn: ReceiveRequestSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,9 @@
+id: ef37863b-5050-4856-88e5-46fa000073ee
+idn: default_report_content_home_service_json
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

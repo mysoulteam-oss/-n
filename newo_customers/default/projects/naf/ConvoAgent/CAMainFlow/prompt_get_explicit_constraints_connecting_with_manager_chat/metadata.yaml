@@ -1,0 +1,12 @@
+id: 061d4e3d-e9ba-4a9f-85bb-04c136318311
+idn: prompt_get_explicit_constraints_connecting_with_manager_chat
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: c76ef097-a9a1-4b0d-9ff7-52fe01a08211
+    name: working_hours
+    default_value: ""
+path: ""

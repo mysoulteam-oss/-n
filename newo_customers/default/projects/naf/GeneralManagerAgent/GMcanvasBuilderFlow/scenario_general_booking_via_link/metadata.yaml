@@ -1,0 +1,9 @@
+id: b31f8be6-93c9-4c0d-8b02-1d532cc667b4
+idn: scenario_general_booking_via_link
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

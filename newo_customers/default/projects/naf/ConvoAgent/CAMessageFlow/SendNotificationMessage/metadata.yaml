@@ -1,0 +1,9 @@
+id: fd7fb38b-83f0-4bbd-b182-4662a2c33464
+idn: SendNotificationMessage
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

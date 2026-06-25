@@ -1,0 +1,15 @@
+id: c9a9c7a6-da05-4d12-ac28-b28190c0a311
+idn: check_service_area_by_zip
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 85336076-3329-4a7e-8fc6-7404a86b0f60
+    name: zip_code
+    default_value: ""
+  - id: f26c7abd-1b45-4cc8-8c48-2676db84dfa0
+    name: served_zip_codes
+    default_value: ""
+path: ""

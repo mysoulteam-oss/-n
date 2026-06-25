@@ -1,0 +1,9 @@
+id: c8789bb8-c5e4-4745-a5a0-117ed04aa793
+idn: _playgroundGuidanceSkill
+title: _playgroundGuidanceSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

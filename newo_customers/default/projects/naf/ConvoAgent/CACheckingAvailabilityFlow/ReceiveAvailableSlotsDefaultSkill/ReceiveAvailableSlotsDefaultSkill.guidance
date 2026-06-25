@@ -1,0 +1,72 @@
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_type") == "intercom"}}
+    {{Set(name="target_action", value=GetTriggeredAct(fields=["targetAction"]))}}
+
+    {{#if target_action != "check_availability"}}
+        {{Return()}}
+    {{/if}}
+
+    {{Set(name="output", value="{}")}}
+    {{Set(name="output", value=UpdateValueJSON(obj=output, key="availability", value=GetTriggeredAct(fields="availability")))}}
+    {{#if _utilsFeatureFlagIsActiveSkill(featureFlagName="booking_use_new_availability_formatted_response_processor")}}
+        {{_receiveAvailabilityProcessFormattedResponseNewSkill(output=output)}}
+    {{else}}
+        {{_receiveAvailabilityProcessFormattedResponseSkill(output=output)}}
+    {{/if}}
+    {{Return()}}
+{{/if}}
+
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_type") == "project"}}
+    {{Set(name="output", value=GetTriggeredAct(fields=["output"]))}}
+
+    {{Set(name="target_action", value=Stringify(GetValueJSON(obj=output, key="targetAction")))}}
+
+    {{#if target_action != "check_availability"}}
+        {{Return()}}
+    {{/if}}
+
+    {{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_processing_type") == "use_llm"}}
+        {{_receiveAvailabilityProcessLLMSkill(output=output)}}
+    {{/if}}
+
+    {{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_processing_type") == "formatted_response"}}
+        {{#if _utilsFeatureFlagIsActiveSkill(featureFlagName="booking_use_new_availability_formatted_response_processor")}}
+            {{_receiveAvailabilityProcessFormattedResponseNewSkill(output=output)}}
+        {{else}}
+            {{_receiveAvailabilityProcessFormattedResponseSkill(output=output)}}
+        {{/if}}
+    {{/if}}
+
+    {{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_processing_type") == "custom"}}
+        {{_utilsSendSystemLogSkill(message="Processing type is custom, skipping default method")}}
+    {{/if}}
+    {{Return()}}
+{{/if}}
+
+{{Set(name="command_act_id", value=GetTriggeredAct(fields="commandActId"))}}
+{{Set(name="target_action", value=GetAct(id=command_act_id, fields=["targetAction"]))}}
+
+{{#if target_action != "check_availability"}}
+    {{Return()}}
+{{/if}}
+
+{{#if GetActor(field="integrationIdn") == "magic_browser"}}
+    {{Set(name="output", value=GetTriggeredAct(fields=["output"]))}}
+{{else}}
+    {{Set(name="output", value=GetTriggeredAct(fields=["body"]))}}
+{{/if}}
+
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_processing_type") == "use_llm"}}
+    {{_receiveAvailabilityProcessLLMSkill(output=output)}}
+{{/if}}
+
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_processing_type") == "formatted_response"}}
+    {{#if _utilsFeatureFlagIsActiveSkill(featureFlagName="booking_use_new_availability_formatted_response_processor")}}
+        {{_receiveAvailabilityProcessFormattedResponseNewSkill(output=output)}}
+    {{else}}
+        {{_receiveAvailabilityProcessFormattedResponseSkill(output=output)}}
+    {{/if}}
+{{/if}}
+
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_processing_type") == "custom"}}
+    {{_utilsSendSystemLogSkill(message="Processing type is custom, skipping default method")}}
+{{/if}}

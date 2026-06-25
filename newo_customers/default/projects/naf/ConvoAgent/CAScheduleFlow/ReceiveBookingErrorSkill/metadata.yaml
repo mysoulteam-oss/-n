@@ -1,0 +1,9 @@
+id: b86368b7-b3c2-4bf8-ba9d-1d9def68c50a
+idn: ReceiveBookingErrorSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

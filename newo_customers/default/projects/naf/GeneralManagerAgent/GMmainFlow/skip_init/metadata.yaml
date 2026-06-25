@@ -1,0 +1,9 @@
+id: d09051d6-3670-4b59-a1f5-ffdae87d5ffb
+idn: skip_init
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

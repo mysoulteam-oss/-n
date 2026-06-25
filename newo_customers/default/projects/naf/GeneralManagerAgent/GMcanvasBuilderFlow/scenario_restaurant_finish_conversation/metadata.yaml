@@ -1,0 +1,9 @@
+id: dfd904a6-7aac-4ee1-a126-97f719952f88
+idn: scenario_restaurant_finish_conversation
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

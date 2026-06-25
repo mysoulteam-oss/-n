@@ -1,0 +1,101 @@
+{% if GetCustomerAttribute(field="project_attributes_setting_session_ended_report_enabled") != "True" %}
+    {{_utilsSendSystemLogSkill(message="Sending reports is disabled in settings.")}}
+    {{Return(val="False")}}
+{% endif %}
+
+{% set content_json = GetCustomerAttribute(field="project_attributes_private_dynamic_session_ended_report_content_json") %}
+
+{% if not content_json %}
+    {{_utilsSendSystemLogSkill(message="Issue during preparing report. Content json is empty.")}}
+    {{Return("False")}}
+{% endif %}
+
+{% set reports = json.dumps(json.loads(content_json).reports, ensure_ascii=False, indent=2) %}
+
+{# BOOL "true"/"false" from cache. Convert to human-readable for the LLM prompt
+   token in _sendReportDefineDirectionsSkill (semantic input) and the partner-facing
+   email body in _sendReportEmailBodyTextSkill. #}
+{% set working_hour_status_raw = _defineConversationWorkingHoursStatusSkill(userId=userId) %}
+{% set working_hour_status = "Working hours" if working_hour_status_raw == "true" else "Non working hours" %}
+
+{% set information_should_be_send_to = json.loads(_sendReportDefineDirectionsSkill(intentType=intentType, workingHourStatus=working_hour_status, transcript=transcript, contentJSON=reports, userId=userId, customSmsSection=customSmsSection)) %}
+
+{% if not information_should_be_send_to.email_should_be_sent and not information_should_be_send_to.sms_should_be_sent %}
+    {{_utilsSendDebugLogSkill(message="The report is not being sent right now due to the agent’s decision (but it might be sent later during session assessment) - " ~ information_should_be_send_to.analysis )}}
+    {{Return(val="False")}}
+{% endif %}
+
+{% if information_should_be_send_to.email_should_be_sent %}
+    {% set emails_to_send = information_should_be_send_to.email_addresses %}
+    {% if emails_to_send | length > 1 %}
+        {% set cc = json.dumps(emails_to_send[1:], ensure_ascii=False, indent=2) %}
+    {% else %}
+        {% set cc = "" %}
+    {% endif %}
+
+    {% set report_class = "" %}
+
+    {% if "[T]" in intentType %}
+        {% set report_class = "[TODO]" %}"[", report_type, "][", session_type, "]"
+    {% elif "[L]" in intentType %}
+        {% set report_class = "[NEW LEAD]" %}
+    {% endif %}
+
+    {# Compile subject with leading report class #}
+    {% set subject = report_class ~ "[" ~ intentType.replace("[L]", "").replace("[T]", "").strip() ~"]" ~ information_should_be_send_to.email_subject %}
+    {% if information_should_be_send_to.fallback %}
+        {% set fields_to_extract = json.dumps(["User name", "User phone", "20 word summary"], ensure_ascii=False, indent=2) %}
+    {% else %}
+        {% set fields_to_extract = json.dumps(json.loads(_utilsFindObjectByKeyValue(obj=reports, key="report_type", value=intentType)).fields, ensure_ascii=False, indent=2) %}
+    {% endif %}
+
+    {{_sendReportEmailSkill(
+        email=emails_to_send[0],
+        cc=cc,
+        transcript=transcript,
+        userId=userId,
+        contentJSON=content_json,
+        workingHourStatus=working_hour_status,
+        reportType=intentType,
+        subject=subject,
+        fieldsToExtract=fields_to_extract,
+        customSection=customEmailSection
+    )}}
+{% else %}
+    {{_utilsSendDebugLogSkill(message="Email report is not sent due to agent decision - " ~ information_should_be_send_to.analysis )}}
+{% endif %}
+
+{% if information_should_be_send_to.sms_should_be_sent %}
+    {% set sms_text = information_should_be_send_to.sms_body %}
+    {% for phone_number in information_should_be_send_to.phone_numbers %}
+        {{SendSystemEvent(
+            eventIdn="sms_worker_send_sms",
+            connectorIdn="system",
+            sms_text=sms_text,
+            phone_number=phone_number,
+            ignore_opt_out="true",
+            send_as="command"
+        )}}
+
+        {{_utilsSendSystemLogSkill(message="Report SMS is sent to " ~ phone_number ~ ".",
+        actorIds=_utilsGetFootnoteSkill(userId=userId, system="True")
+    )}}
+    {% endfor %}
+{% else %}
+    {{_utilsSendDebugLogSkill(message="SMS report is not sent due to agent decision - " ~ information_should_be_send_to.analysis )}}
+{% endif %}
+
+{% if information_should_be_send_to.additional_directions %}
+    {% set report_event_map = json.loads(GetCustomerAttribute(field="project_attributes_setting_session_ended_report_event_map")) %}
+    {% for report_key, direction in information_should_be_send_to.additional_directions.items() %}
+        {% if direction.should_be_sent %}
+            {{SendSystemEvent(
+                eventIdn=report_event_map.get(report_key),
+                connectorIdn="system",
+                body=json.dumps(direction, ensure_ascii=False, indent=2)
+            )}}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{{Return(val="True")}}

@@ -1,0 +1,9 @@
+id: 1fc993ec-fa36-4d6d-b240-e0b651a6a797
+idn: library_procedures_restaurant
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

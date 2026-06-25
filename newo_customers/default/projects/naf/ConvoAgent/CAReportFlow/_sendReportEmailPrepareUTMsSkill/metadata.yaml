@@ -1,0 +1,12 @@
+id: a19cb469-e659-43c5-b575-4c25baba017c
+idn: _sendReportEmailPrepareUTMsSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: a0261fee-d8eb-4539-90f4-e7cf55feda87
+    name: utmTags
+    default_value: " "
+path: ""

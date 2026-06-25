@@ -1,0 +1,40 @@
+{{#system~}}{
+  "type": "object",
+  "description": "Schema for mathematical calculations step by step",
+  "properties": {
+    "task": {
+      "type": "string",
+      "description": "A python-like mathematical expression that needs to be solved"
+    },
+    "steps": {
+      "type": "array",
+      "description": "An array of steps, each of them must represent a single mathematical operation in a correct order",
+      "items": {
+        "type": "object",
+        "description": "A specific step and its result",
+        "properties": {
+          "step": {
+            "type": "number",
+            "description": "Step number"
+          },
+          "operation": {
+            "type": "string",
+            "description": "A single operation"
+          },
+          "result": {
+            "type": "number",
+            "description": "Operation result"
+          }
+        },
+        "required": ["step", "operation", "result"]
+      }
+    },
+    "result": {
+      "type": "string",
+      "description": "final overall result in a **string format**"
+    }
+  },
+  "required": ["task", "steps", "result"]
+}{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

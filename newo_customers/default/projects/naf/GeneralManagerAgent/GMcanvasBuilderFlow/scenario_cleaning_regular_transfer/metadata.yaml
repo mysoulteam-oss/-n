@@ -1,0 +1,9 @@
+id: c5d5c56f-cbc6-42d7-8a5a-a0167ced3b72
+idn: scenario_cleaning_regular_transfer
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

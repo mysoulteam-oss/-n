@@ -1,0 +1,9 @@
+id: bc13d948-fd8e-4276-a5d1-cb48e9c50d56
+idn: GetTaskSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

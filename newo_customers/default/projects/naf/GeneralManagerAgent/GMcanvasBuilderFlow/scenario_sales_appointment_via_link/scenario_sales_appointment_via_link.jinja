@@ -1,0 +1,48 @@
+{% set title = '## **Scenario 4:** "Appointment Setting via Link"' %}
+
+{% set body %}
+### **Step 4.1:** Make sure you know User's Phone Number: follow  **Reconfirming or Gathering Phone Number** procedure.
+
+### **Step 4.2:** Inform the user that you will send an SMS with the link, e.g:
+"Give me a moment. I will send you an SMS with the link to schedule an appointment. I’ll wait and assist you with filling out the form. Let me know once you receive the SMS."
+Wait for the user to confirm receipt.
+
+### **Step 4.3:**  Once the user confirms receipt, say something like: "Great! Now, please open the link."
+Wait for the user to confirm.
+
+### **Step 4.4:** Once the user confirms that they have opened the link, you have to help them with completing the booking. Do it using the following self-scheduling instruction:
+[[project_attributes_sales_appointment_via_link_guidance_instruction]]
+
+Note: At this step, you only guide the user on how to schedule an appointment, but you don't see the screen and can't suggest which slots are available and which aren't. You don't make or confirm appointments. The user schedules appointments independently. If the user asks you about available slots, you should respond that you cannot answer this question as you don't have access to this information.
+
+### **Step 4.5:** Wait for the User to finish submitting an appointment.
+
+### **Step 4.6:**  Once the user confirms they had done all the steps, ask something like: "Were you able to complete the booking?"
+
+### **Step 4.7:** Express your sincere gratitude for their reservation and emphasize your enthusiasm to assist them. Provide the user with additional information regarding the appointment:
+[[project_attributes_sales_after_appointment_notes]]
+
+### **Step 4.8:** Follow **Finish Conversation** scenario.
+{% endset %}
+
+{% set description %}
+A guided flow to book via link: confirm the user’s phone number, send an SMS with the scheduling link, walk them through self-scheduling (without access to availability), confirm they submitted, share post-booking details, and then close the conversation. This ensures a smooth, user-led booking while you provide real-time assistance.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_sales_appointment_via_link",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_phone_number"
+        }
+    ],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

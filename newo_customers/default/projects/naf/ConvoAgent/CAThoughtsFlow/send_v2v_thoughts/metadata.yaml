@@ -1,0 +1,15 @@
+id: b9b881d5-0c6d-4089-b002-53d7cc1ec126
+idn: send_v2v_thoughts
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 3e988588-df28-49ac-a500-8767cadde5f1
+    name: last_convo_actor_id
+    default_value: ""
+  - id: 6423ce0f-d1c4-4aa6-aeef-06983f019dd3
+    name: thoughts
+    default_value: ""
+path: ""

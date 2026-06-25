@@ -1,0 +1,8 @@
+{{Set(name="user_time_zone", value=GetPersonaAttribute(id=user_id, field="time_zone"))}}
+{{#if not IsEmpty(text=user_time_zone)}}
+    {{Set(name="time_zone", value=user_time_zone)}}
+{{else}}
+    {{Set(name="time_zone", value=GetCustomerAttribute(field="project_business_time_zone"))}}
+{{/if}}
+
+{{Return(val=time_zone)}}

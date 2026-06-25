@@ -1,0 +1,9 @@
+id: 3b9681cc-5955-4080-a09f-b158000c4a4d
+idn: StartCallingFromAttributeSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

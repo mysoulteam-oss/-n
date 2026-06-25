@@ -1,0 +1,9 @@
+id: 32099732-7f65-4588-b35a-68cea9ee4f2a
+idn: _prepareAkbRestaurantSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,21 @@
+{{!-- TODO: Set `Agent Gender` attribute if name or voice was changed  --}}
+{{Set(name="current_gender", value=GetCustomerAttribute(field="project_representative_agent_gender"))}}
+{{#if not IsEmpty(text=current_gender)}}
+    {{Return(val=current_gender)}}
+{{/if}}
+
+{{#system~}}
+Your goal is to build JSON object with a properly set agent gender, based on **Agent name**.
+
+**Agent name**: {{GetCustomerAttribute(field="project_representative_agent_name")}}
+
+# Instruction
+
+There are three possible choices of gender:
+- **female** - must be chosen for female names.
+- **male** - must be chosen for male names.
+- **auto** - must be chosen for gender neutral names.
+
+{{~/system}}{{#assistant~}}{{Set(name="result_json", value=Gen(jsonSchema=_prepareAgentGenderSchemaSkill(), validateSchema=True, temperature=0.2, topP=0, thinkingBudget=425))}}{{~/assistant}}
+
+{{Return(val=Stringify(GetValueJSON(obj=result_json, key="gender")))}}

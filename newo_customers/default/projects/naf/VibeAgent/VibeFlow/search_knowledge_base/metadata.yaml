@@ -1,0 +1,21 @@
+id: 6100d9b3-3dd2-4fa6-9de7-14ca4c1740f6
+idn: search_knowledge_base
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 6117e537-80db-4a84-a733-a3ee3608d151
+    name: transaction_id
+    default_value: ""
+  - id: 8a17689e-4a16-44d7-851e-f25719c6a26d
+    name: parameters
+    default_value: ""
+  - id: b226dfd7-d7a5-45c2-8982-81106fb8ec74
+    name: memory
+    default_value: ""
+  - id: 4177263c-5da6-4792-acd5-ac0f3cb08e06
+    name: already_taken_actions
+    default_value: ""
+path: ""

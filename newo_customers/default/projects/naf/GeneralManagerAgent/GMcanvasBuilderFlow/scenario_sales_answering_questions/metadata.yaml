@@ -1,0 +1,9 @@
+id: 4f911610-a12f-4e0c-809b-55e4fc25d080
+idn: scenario_sales_answering_questions
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

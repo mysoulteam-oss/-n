@@ -1,0 +1,12 @@
+id: 8c010033-6d0e-4ac3-9bcf-36648ceae869
+idn: _extractPhoneNumberSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 86c3423c-d62c-48c7-aef8-b406c2fbb7ec
+    name: content
+    default_value: " "
+path: ""

@@ -1,0 +1,106 @@
+{% set integration_idn = session_utils.session_get_current_integration_idn(user_id=user_id) %}
+{% set conversation_channel = session_get_conversation_channel(integration_idn=integration_idn) %}
+{% set working_hours = True if session_get_working_hours_status(user_id=user_id) == "true" else False %}
+{% set voice_mode = GetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_mode") %}
+{% set v2v_enabled = integration_idn == "newo_voice" and voice_mode in ("voice-to-voice", "speech-to-speech") %}
+{% set outbound = True if GetPersonaAttribute(id=user_id, field="outbound_session") == "True" else False %}
+{% set prompt %}{{prompt_get_header_main_instruction(v2v_enabled=v2v_enabled, outbound=outbound, user_id=user_id)}}
+
+---
+
+<OutputFormat alt="ConvoAgent output format requirements" role="instructions">
+{{prompt_get_output_format(conversation_channel=conversation_channel)}}
+</OutputFormat>
+
+---
+
+<BusinessContext alt="business context" role="context">
+{{GetCustomerAttribute(field="project_attributes_private_dynamic_business_context")}}
+</BusinessContext>
+
+---
+<||sms_allowed_content_placeholder||><||email_allowed_content_placeholder||>
+<ExplicitConstraints alt="explicit constraints defining limitations for ConvoAgent" role="instructions">
+{{prompt_get_explicit_constraints(conversation_channel=conversation_channel, working_hours=working_hours, v2v_enabled=v2v_enabled)}}
+</ExplicitConstraints>
+
+---
+
+{{working_schedule_utils.working_schedule_get_content()}}
+
+---
+
+<IntentTypeMap alt="ConvoAgent behavior for various intent types" role="instructions">
+All communication sessions are categorized based on the User's request. This **Intent Type Map** determines which scenario you should execute depending on the type of communication session.
+
+{{prompt_get_intent_type_map(working_hours=working_hours, user_id=user_id)}}
+</IntentTypeMap>
+
+---
+<||tool_functions_placeholder||>
+<ConvoAgentScenariosAndProcedures alt="ConvoAgent Scenarios and Procedures" role="instructions">
+{{prompt_get_scenarios_procedures(user_id=user_id)}}
+</ConvoAgentScenariosAndProcedures>
+
+---
+
+<ConvoAgentCalendar alt="convoagent calendar" role="context">
+<||calendar_placeholder||>
+</ConvoAgentCalendar>
+
+---
+
+<AdditionalBusinessContext alt="business context" role="context">
+{{GetCustomerAttribute(field="project_attributes_static_additional_business_context").strip() or "No additional business context."}}
+</AdditionalBusinessContext>
+
+---
+
+<AdditionalInformation alt="additional information" role="context">
+<||rag_placeholder||>
+</AdditionalInformation>
+
+---
+
+<UserInformation alt="user information" role="context">
+<||user_information_placeholder||><||custom_user_information_placeholder||>
+</UserInformation>
+
+---
+
+<PreviousConversationSummary alt="ConvoAgent-user previous conversation summary" role="context">
+{{prompt_get_memories()}}
+</PreviousConversationSummary>
+
+---
+
+<ConversationMeta role="context">
+<||conversation_meta_placeholder||><||working_hours_phrase_placeholder||><||custom_section_placeholder||>
+</ConversationMeta>
+
+---
+<||current_task_analysis_placeholder||><||prompt_availability_placeholder||>
+<ActionsStates alt="actions states" role="context">
+<||action_booking_placeholder||><||action_meeting_placeholder||>
+</ActionsStates>
+
+---
+<||conversation_placeholder||>
+<||general_instruction_footer||>
+
+{% endset %}
+
+{# Adding sms allowed content items #}
+{% set prompt = prompt.replace("<||sms_allowed_content_placeholder||>", prompt_get_allowed_content_sms()) %}
+{# Adding email allowed content items #}
+{% set prompt = prompt.replace("<||email_allowed_content_placeholder||>", prompt_get_allowed_content_email()) %}
+{# Define function tools(for v2v) #}
+{% set prompt = prompt.replace("<||tool_functions_placeholder||>", prompt_get_tool_functions(v2v_enabled=v2v_enabled)) %}
+{# Adding prompt availability section #}
+{% set prompt = prompt.replace("<||prompt_availability_placeholder||>", prompt_get_section_availability()) %}
+{# Adding current task analysis section #}
+{% set prompt = prompt.replace("<||current_task_analysis_placeholder||>", prompt_get_section_current_task_analysis(v2v_enabled=v2v_enabled)) %}
+{# Adding conversation section. We set to <||conversation_placeholder||> in case of empty section, because in case of v2v and returning call we need to put memory before call was ended  #}
+{% set prompt = prompt.replace("<||conversation_placeholder||>", prompt_get_section_conversation(v2v_enabled=v2v_enabled, user_id=user_id).strip() or "<||conversation_placeholder||>") %}
+
+{{Return(val=prompt.strip())}}

@@ -1,0 +1,13 @@
+{% set payload = json.loads(payloadMeta) %}
+
+{% set datetime = payload.meta.dateTime %}
+
+{% set existing_bookings = GetPersonaAttribute(id=userId, field="bookings") %}
+
+{% if not existing_bookings %}
+    {{ SetPersonaAttribute(id=userId, field="bookings", value=json.dumps([{"datetime": datetime, "meta": json.loads(bookingResult)}], ensure_ascii=False, indent=2)) }}
+{% else %}
+    {% set existing_bookings = json.loads(existing_bookings) %}
+    {{ existing_bookings.append({"datetime": datetime, "meta": json.loads(bookingResult)}) }}
+    {{ SetPersonaAttribute(id=userId, field="bookings", value=json.dumps(existing_bookings, ensure_ascii=False, indent=2)) }}
+{% endif %}

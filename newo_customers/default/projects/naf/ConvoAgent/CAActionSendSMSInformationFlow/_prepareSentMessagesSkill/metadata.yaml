@@ -1,0 +1,15 @@
+id: da9ff585-dca1-4f6a-957b-f9ea33399d78
+idn: _prepareSentMessagesSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 8d362e68-5570-427f-8c48-d57b423b776c
+    name: newMessage
+    default_value: " "
+  - id: 38e71fa7-4376-4822-abca-d23138632eee
+    name: oldMessages
+    default_value: " "
+path: ""

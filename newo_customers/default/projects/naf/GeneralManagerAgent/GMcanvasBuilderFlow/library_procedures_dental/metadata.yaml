@@ -1,0 +1,9 @@
+id: c1da991d-66b0-4058-aa16-005584373745
+idn: library_procedures_dental
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

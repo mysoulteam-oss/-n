@@ -1,0 +1,15 @@
+id: fb766c0e-c6c9-4f1f-8cc6-a499c2a34f58
+idn: evaluate_repeating_user_messages
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 8c9f3d21-b74c-4405-bfe7-c1dd2fedc494
+    name: user_id
+    default_value: ""
+  - id: 50bb4918-0f81-41e1-8ce3-9c55b739e14a
+    name: message_text
+    default_value: ""
+path: ""

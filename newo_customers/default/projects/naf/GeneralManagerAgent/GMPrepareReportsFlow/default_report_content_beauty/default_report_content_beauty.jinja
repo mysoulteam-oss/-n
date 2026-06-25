@@ -1,0 +1,205 @@
+{% set report_content %}
+## Report Type: **[L] New Client Appointment**
+### Fields to be included in the report:
+User name
+User phone
+User email
+Client type: [adult|child]
+Date of Birth
+Service requested
+Appointment day requested
+Appointment time requested
+How did you hear about us
+40-word summary
+
+### Subject line format:
+Congratulations with a NEW CLIENT! [user name] [user phone] - [6-word summary]
+
+### SMS example:
+Congratulations! NEW CLIENT: [user name] [user phone] [Service requested] [Appointment day requested] [Appointment time requested] - [10-word additional summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **[T] Existing Client Appointment**
+### Fields to be included in the report:
+User name
+User phone
+User email
+Date of Birth
+Service requested
+Appointment day requested
+Appointment time requested
+How did you hear about us
+40-word summary
+
+### Subject line format:
+EXISTING CLIENT: [user name] [user phone] - [6-word summary]
+
+### SMS example:
+EXISTING CLIENT: [user name] [user phone] [Service requested] [Appointment day requested] [Appointment time requested] - [10-word additional summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **[L] Sale to a Client**
+### Fields to be included in the report:
+User name
+User phone
+User email
+Service interested in
+Appointment day requested
+Appointment time requested
+40-word summary
+
+### Subject line format:
+SALE TO A CLIENT: [user name] [user phone] - [6-word summary]
+
+### SMS example:
+SALE TO A CLIENT: [user name] [user phone] [Service interested in] [Appointment day requested] [Appointment time requested] - [10-word additional summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **[T] Emergency Call**
+### Fields to be included in the report:
+User name
+User phone
+40-word summary
+
+### Subject line format:
+EMERGENCY: [user name] [user phone] - [6-word summary]
+
+### SMS example:
+EMERGENCY: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **[T] Reschedule or Modification**
+### Fields to be included in the report:
+User name
+User phone
+Original appointment date/time
+New requested date/time
+40-word summary
+
+### Subject line format:
+RESCHEDULE: [user name] [user phone] - [6-word summary]
+
+### SMS example:
+RESCHEDULE: [user name] [user phone] [Original date/time] to [New date/time] [10-word summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **[T] Cancellation**
+### Fields to be included in the report:
+User name
+User phone
+Appointment date/time being cancelled
+Reason for cancellation
+40-word summary
+
+### Subject line format:
+CANCELLATION: [user name] [user phone] - [6-word summary]
+
+### SMS example:
+CANCELLATION: [user name] [user phone] [Appointment date/time] [10-word reason summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **[T] Client Support**
+### Fields to be included in the report:
+User name
+User phone
+40-word summary
+
+### Subject line format:
+CLIENT SUPPORT: [user name] [user phone] - [6-word summary]
+
+### SMS example:
+CLIENT SUPPORT: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **[T] Contractor Support**
+### Fields to be included in the report:
+Contractor name
+Contractor phone
+Contractor company (if provided)
+Message to manager
+
+### Subject line format:
+CONTRACTOR SUPPORT: [contractor name] [contractor phone] - [6-word summary]
+
+### SMS example:
+CONTRACTOR SUPPORT: [contractor name] [contractor phone] - [20-word summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **[T] Manager or Human Request**
+### Fields to be included in the report:
+User name
+User phone
+User message to manager
+
+### Subject line format:
+MANAGER OR HUMAN REQUEST: [user name] [user phone] - [6-word summary]
+
+### SMS example:
+MANAGER OR HUMAN REQUEST: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **General Information Request**
+### Fields to be included in the report:
+User name
+User phone
+Question asked
+40-word summary
+
+### Subject line format:
+GENERAL INFORMATION REQUEST: [user name] [user phone] - [6-word summary]
+
+### SMS example:
+GENERAL INFORMATION REQUEST: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **Spam Session**
+### Fields to be included in the report:
+Caller phone number
+40-word summary
+
+### Subject line format:
+SPAM SESSION: [caller phone number] - [6-word summary]
+
+### SMS example:
+SPAM SESSION: [caller phone number] - [20-word summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **Test Session**
+### Fields to be included in the report:
+User name (if provided)
+User phone
+40-word summary
+
+### Subject line format:
+TEST SESSION: [user name or "Unknown"] [user phone] - [6-word summary]
+
+### SMS example:
+TEST SESSION: [user name or "Unknown"] [user phone] - [20-word summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **Other type of session**
+### Fields to be included in the report:
+User name
+User phone
+40-word summary
+
+### Subject line format:
+OTHER: [user name] [user phone] - [6-word summary]
+
+### SMS example:
+OTHER: [user name] [user phone] - [20-word summary] Truly, [agent name], [agent title]
+{% endset %}
+
+{{Return(val=report_content)}}

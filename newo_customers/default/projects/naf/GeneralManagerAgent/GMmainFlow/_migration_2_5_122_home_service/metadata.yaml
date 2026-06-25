@@ -1,0 +1,9 @@
+id: a7c0ca6b-f8b2-438f-9ba2-288910ce1830
+idn: _migration_2_5_122_home_service
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

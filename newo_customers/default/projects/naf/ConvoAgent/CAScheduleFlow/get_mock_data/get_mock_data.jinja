@@ -1,0 +1,36 @@
+{% if type == "task_object" %}
+{% set task_object %}
+{
+  "task_idn": "w1s3_reserve_table_task",
+  "receiver_worker_idn": "SmsWorker",
+  "receiver_task_idn": "w1s4_send_sms_user_task",
+  "second_receiver_worker_idn": "NO_WORKER",
+  "second_receiver_task_idn": "NO_TASK",
+  "task_description": "Here MW books the slot at Opentable and sends the result to CW",
+  "owner_send_due": "ASAP",
+  "owner_task_start_user_message": " ",
+  "owner_task_send_user_message": " ",
+  "info": {
+    "task_idn": "w1s3_reserve_table_task",
+    "user_phone": {{user_phone}},
+    "user_name": {{user_name}},
+    "time_slots_booked": [
+      {
+        "date": {{reservation_date}},
+        "time_slot": {{reservation_time}},
+        "location": "Restaurant",
+        "number_of_guests": {{number_of_guests}}
+      }
+    ]
+  }
+}
+{% endset %}
+{{Return(val=task_object)}}
+{% endif %}
+
+{% if type == "success" %}
+{% set success %}
+{"success": true, "targetAction": "book_slot", "manage_booking_url": "https://dial-244-to-paradise.ai", "statusCode": 200, "output": {"success": true, "targetAction": "book_slot", "statusCode": 200, "manage_booking_url": "https://dial-244-to-paradise.ai"}}
+{% endset %}
+{{Return(val=success)}}
+{% endif %}

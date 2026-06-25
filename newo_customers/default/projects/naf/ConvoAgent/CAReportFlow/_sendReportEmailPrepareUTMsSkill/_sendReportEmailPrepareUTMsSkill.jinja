@@ -1,0 +1,20 @@
+{% if not utmTags.strip() or utmTags.strip() == "None" %}
+  {{Return()}}
+{% endif %}
+
+{% set params = json.loads(utmTags) %}
+
+{% if not params %}
+  {{Return()}}
+{% endif %}
+
+{% set param_strings = [] %}
+{% for param in params %}
+  {{param_strings.append("<strong>" + param.name + ":</strong> " + param.value + "<br>")}}
+{% endfor %}
+
+{% if not param_strings %}
+  {{Return()}}
+{% endif %}
+
+{{Return(val="<br><br>***<br>UTM Tags:<br>" + param_strings|join(''))}}

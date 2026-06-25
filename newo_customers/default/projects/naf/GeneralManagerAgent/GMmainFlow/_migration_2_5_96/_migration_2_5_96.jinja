@@ -1,0 +1,133 @@
+{# Migrating Follow-up Attributes #}
+
+{{DeleteCustomerAttribute(field="project_attributes_setting_agent_speech_ended_follow_up_interval")}}
+
+{% set follow_up_timer_enabled = GetCustomerAttribute(field="project_attributes_setting_followup_timer_enabled") %}
+{% if follow_up_timer_enabled == "False" %}
+    {{SetCustomerAttribute(field="project_attributes_setting_follow_up_timer_chat_interval_base", value="-1")}}
+{% endif %}
+
+{{DeleteCustomerAttribute(field="project_attributes_setting_followup_timer_enabled")}}
+
+{# Migrating restaurant and catering menu AKB topics #}
+
+{% set general_manager_persona_id = GetAgentPersona().id|string %}
+{% set convo_agent_persona_id = GetAgent(idn="ConvoAgent").persona_id %}
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+{% set scenario = GetCustomerAttribute(field="project_attributes_scenario") %}
+{% set labels = [industry, scenario, "rag_context"] %}
+{% set existing_topics = [] %}
+{% set search = SearchFuzzyAkb(
+    query="**Restaurant Menu (in JSON format):**",
+    searchFields=["name"],
+    numberTopics=1,
+    labels=labels,
+    filterByPersonaIds=[general_manager_persona_id],
+    scoreThreshold=1.0
+  ) %}
+
+{% if search %}
+    {% for result in search %}
+        {{existing_topics.append(result.topicId)}}
+    {% endfor %}
+{% endif %}
+
+{% set search = SearchFuzzyAkb(
+    query="**Restaurant Menu (in JSON format):**",
+    searchFields=["name"],
+    numberTopics=1,
+    labels=labels,
+    filterByPersonaIds=[convo_agent_persona_id],
+    scoreThreshold=1.0
+  ) %}
+{% if search %}
+    {% for result in search %}
+        {{existing_topics.append(result.topicId)}}
+    {% endfor %}
+{% endif %}
+
+{% set search = SearchFuzzyAkb(
+    query="**Catering Menu (in JSON format):**",
+    searchFields=["name"],
+    numberTopics=1,
+    labels=labels,
+    filterByPersonaIds=[general_manager_persona_id],
+    scoreThreshold=1.0
+  ) %}
+
+{% if search %}
+    {% for result in search %}
+        {{existing_topics.append(result.topicId)}}
+    {% endfor %}
+{% endif %}
+
+{% set search = SearchFuzzyAkb(
+    query="**Catering Menu (in JSON format):**",
+    searchFields=["name"],
+    numberTopics=1,
+    labels=labels,
+    filterByPersonaIds=[convo_agent_persona_id],
+    scoreThreshold=1.0
+  ) %}
+
+{% if search %}
+    {% for result in search %}
+        {{existing_topics.append(result.topicId)}}
+    {% endfor %}
+{% endif %}
+
+{% if existing_topics %}
+    {% set name = '' %}
+    {% if industry == "catering_industry" %}
+        {% set name = '**Catering Menu**' %}
+    {% endif %}
+    {% if industry == 'restaurant_industry' %}
+        {% set name = '**Restaurant Menu**' %}
+    {% endif %}
+    {% for t in existing_topics %}
+        {{UpdateAkb(id=t|string, name=name)}}
+    {% endfor %}
+{% endif %}
+
+
+{# Restaurant Only #}
+
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+{% if industry != "restaurant_industry" %}
+    {{Return()}}
+{% endif %}
+
+{# Enabling the feature flag back #}
+
+{{SetCustomerAttribute(field="project_attributes_setting_booking_cancellation_enabled", value="True")}}
+
+{# Migrating ITM #}
+
+{% set itm = GetCustomerAttribute(field="project_attributes_itm") %}
+{% if not itm.strip() %}
+    {{Return()}}
+{% endif %}
+
+{% set old_cancellation_instruction = "ConvoAgent should very politely explain that, as an AI Assistant, they are not able to independently cancel a booking.
+During Working Hours: ConvoAgent should say that they will transfer the call to a human co-worker and start the scenario: **\"Regular Transfer\"**.
+During Non-Working Hours: ConvoAgent should ask the details of the booking (name, time, date and phone number) the guest wants to cancel. Then, ConvoAgent should start the scenario: **\"Relaying Message to the Manager\"**." %}
+
+{% set old_modifying_instruction = "ConvoAgent should very politely explain that, as an AI Assistant, they are not able to independently modify a booking.
+During Working Hours: ConvoAgent should say that they will transfer the call to a human co-worker and start the scenario: **\"Regular Transfer\"**.
+During Non-Working Hours: ConvoAgent should ask the details of the booking (name, time, date and phone number) the guest wants to modify. Then, ConvoAgent should start the scenario: **\"Relaying Message to the Manager\"**." %}
+
+{% set new_modifying_instruction = "ConvoAgent must ask what is the date and time of the existing booking and start the scenario: **\"Modifying Existing Reservation\"**" %}
+
+{% set new_cancellation_instruction = "ConvoAgent must ask what is the date and time of the booking the user wants to cancel and start the scenario: **\"Canceling Existing Reservation\"**" %}
+
+{% set itm = itm.replace(
+    old_modifying_instruction,
+    new_modifying_instruction
+) %}
+
+{% set itm = itm.replace(
+    old_cancellation_instruction,
+    new_cancellation_instruction
+) %}
+
+{{SetCustomerAttribute(field="project_attributes_itm", value=itm)}}

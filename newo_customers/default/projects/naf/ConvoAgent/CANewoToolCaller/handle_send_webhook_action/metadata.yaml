@@ -1,0 +1,33 @@
+id: d6c314a3-354f-40bd-adbe-fb607a491f89
+idn: handle_send_webhook_action
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 2a0cacf1-b384-486e-8bc9-362cef32d463
+    name: latest_agent_answer
+    default_value: ""
+  - id: 6a04bff8-cbbc-4c87-8d98-be4e049d8aef
+    name: memory
+    default_value: ""
+  - id: 53723504-51ce-470c-a0c7-1cbb252938af
+    name: tool_name
+    default_value: ""
+  - id: 30955580-102b-4fb4-b0d8-9d6261dde086
+    name: tool_object
+    default_value: ""
+  - id: e0af08c4-1cf4-413e-845f-2d4f3f4316d7
+    name: user_id
+    default_value: ""
+  - id: 93fd1090-4029-4ffe-ba0c-a0b3589db6c9
+    name: memory_without_latest_agent_answer
+    default_value: ""
+  - id: a1d43511-f7aa-4a86-be48-442fa01e6e3d
+    name: conversation_channel
+    default_value: ""
+  - id: ea1070da-cc88-4aa7-9fb4-b3299a59dfa7
+    name: main_instruction
+    default_value: ""
+path: ""

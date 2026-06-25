@@ -1,0 +1,9 @@
+id: e1533175-ed11-4b7f-85aa-47408ac5682c
+idn: _getWorkingHoursStatusBlockWrapper
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

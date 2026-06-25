@@ -1,0 +1,15 @@
+id: 95e47d05-2d78-4628-8345-f4925674857c
+idn: v2v_update_current_prompt_genai
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: be24fee9-8b12-4d40-8943-81949eb9ea31
+    name: footer_instruction
+    default_value: ""
+  - id: 06ae9823-6a0a-46d1-8122-ba8ade4f39a3
+    name: user_id
+    default_value: ""
+path: ""

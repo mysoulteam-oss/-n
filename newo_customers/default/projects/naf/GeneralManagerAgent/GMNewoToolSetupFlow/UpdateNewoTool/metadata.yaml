@@ -1,0 +1,9 @@
+id: 051817c3-0873-467a-b5fa-77563a15175a
+idn: UpdateNewoTool
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

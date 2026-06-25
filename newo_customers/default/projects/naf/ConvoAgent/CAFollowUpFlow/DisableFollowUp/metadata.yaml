@@ -1,0 +1,9 @@
+id: f7275ff2-df7a-4452-aab6-4053fcb9ec69
+idn: DisableFollowUp
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

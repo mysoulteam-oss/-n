@@ -1,0 +1,12 @@
+id: 4d3ad514-dd68-431a-b5e7-d3693dddf3bc
+idn: utils_build_itm_template_from_items
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 30e54924-fc73-48d4-98d8-d926fd0930bb
+    name: intent_type_items
+    default_value: ""
+path: ""

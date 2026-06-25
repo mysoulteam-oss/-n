@@ -1,0 +1,12 @@
+id: 6af546c5-6033-4044-acac-07391b41067f
+idn: _startNewSessionSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 243fd11b-9eed-4d49-a551-a3f0feb17ed6
+    name: user_id
+    default_value: ""
+path: ""

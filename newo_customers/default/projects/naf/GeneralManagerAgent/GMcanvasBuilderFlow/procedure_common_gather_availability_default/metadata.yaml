@@ -1,0 +1,9 @@
+id: 6d5fce8d-7fe1-45ad-8b26-f85d0f4b4086
+idn: procedure_common_gather_availability_default
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

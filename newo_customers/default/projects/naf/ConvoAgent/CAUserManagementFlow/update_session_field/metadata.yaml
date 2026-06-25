@@ -1,0 +1,9 @@
+id: 159dce41-2438-4010-a291-e3658e7b35e0
+idn: update_session_field
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

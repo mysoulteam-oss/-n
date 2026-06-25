@@ -1,0 +1,9 @@
+id: 8d204ff2-9d98-4f1a-b0b9-a1bb0514ebd3
+idn: AgentCreatorIncomingEvent
+title: AgentCreatorIncomingEvent
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

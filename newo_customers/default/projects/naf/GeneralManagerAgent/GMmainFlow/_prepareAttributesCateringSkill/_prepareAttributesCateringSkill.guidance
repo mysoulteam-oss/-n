@@ -1,0 +1,55 @@
+{{! Applying industry-specific Attributes if not set }}
+{{_prepareAttributesCateringASRVariablesSkill()}}
+{{_prepareAttributesCateringVariablesSkill()}}
+
+{{! Applying dynamic Attributes (are being overwritten each time) }}
+{{_prepareAttributesCateringPrivateDynamicBusinessContextSkill()}}
+{{_prepareAttributesCateringPrivateDynamicEmailVariablesSkill()}}
+{{_prepareAttributesCateringPrivateDynamicPhoneVariablesSkill()}}
+{{_prepareAttributesCateringPrivateDynamicTechVariablesSkill()}}
+{{_prepareAttributesCateringPrivateDynamicVariablesSkill()}}
+
+{{!-- Setting scenario --}}
+{{_prepareAttributesCateringScenarioSkill()}}
+
+{{#system~}}
+- **Cancellation policy**: null
+{{~/system}}
+
+{{!-- Setting `Products and Services` to empty value on first-time account initialization --}}
+{{#if IsEmpty(text=GetCustomerAttribute(field="project_attributes_private_account_initialized_first_time"))}}
+    {{SetCustomerAttribute(field="project_attributes_products_and_services", value=" ")}}
+{{/if}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_terms_and_conditions", value=GetCurrentPrompt())}}
+
+{{_prepareAttributesCateringRepresentativeAgentSkill()}}
+{{!-- TODO: Fix - `Agent Representative` Attributes are being set on industry-level so dynamic Attribute must be rebuilt --}}
+{{_prepareAttributesCommonPrivateDynamicAgentPersonaSkill()}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_cancellation_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_check_availability_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_phrase_template_on_booking_submitting", value="You will receive SMS confirmation shortly. We are eagerly awaiting your catering event on [catering order date and time].")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_phrase_template_on_booking_success", value="Meanwhile, your catering order has been successfully confirmed for [catering order date and time].")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_calendar_event_integration", value="disabled")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_settings_newo_tools", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_timezone_reasoning_enabled", value="False")}}
+
+{{_prepareAttributesCateringSMSContentSkill()}}
+
+{{_prepareAttributesCateringEmailContentSkill()}}
+
+{{_prepareAttributesCateringTransferCallSkill()}}
+
+{{_prepareAttributesCateringAdditionalLimitationsAndRestrictions()}}
+
+{{!-- Booking schemas --}}
+{{_prepareAttributesBookingSchemasSkill()}}

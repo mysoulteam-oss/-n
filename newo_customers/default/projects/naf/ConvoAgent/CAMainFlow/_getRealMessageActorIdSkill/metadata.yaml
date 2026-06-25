@@ -1,0 +1,12 @@
+id: 45c9cb4c-91c3-4811-b4fd-5758cc89cdc6
+idn: _getRealMessageActorIdSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 5ec80bf4-4880-4c93-a63b-78175b8a11c1
+    name: userId
+    default_value: " "
+path: ""

@@ -1,0 +1,47 @@
+{% set follow_up_timer_migrations = [
+    {
+        "field": "project_attributes_setting_follow_up_timer_chat_interval_base",
+        "old_value": "60",
+        "new_value": "120"
+    },
+    {
+        "field": "project_attributes_setting_follow_up_timer_voice_interval_agent_speech_ended",
+        "old_value": "15",
+        "new_value": "20"
+    },
+    {
+        "field": "project_attributes_setting_follow_up_timer_voice_interval_agent_speech_started",
+        "old_value": "60",
+        "new_value": "70"
+    },
+    {
+        "field": "project_attributes_setting_follow_up_timer_voice_interval_conversation_started_inbound",
+        "old_value": "7",
+        "new_value": "12"
+    },
+    {
+        "field": "project_attributes_setting_follow_up_timer_voice_interval_conversation_started_outbound",
+        "old_value": "7",
+        "new_value": "12"
+    },
+    {
+        "field": "project_attributes_setting_follow_up_timer_voice_interval_user_speech_ended",
+        "old_value": "11",
+        "new_value": "20"
+    },
+    {
+        "field": "project_attributes_setting_follow_up_timer_voice_interval_user_speech_started",
+        "old_value": "60",
+        "new_value": "70"
+    }
+] %}
+
+{% for follow_up_timer_migration in follow_up_timer_migrations %}
+    {% set current_value = GetCustomerAttribute(field=follow_up_timer_migration.field) %}
+    {% if current_value == follow_up_timer_migration.old_value %}
+        {{SetCustomerAttribute(
+            field=follow_up_timer_migration.field,
+            value=follow_up_timer_migration.new_value
+        )}}
+    {% endif %}
+{% endfor %}

@@ -1,0 +1,12 @@
+id: 366ff739-74b6-4d4b-a9c0-ddd8cb719ab6
+idn: get_type_title
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 252e3de4-ec03-47f3-9030-e3e48ea2ee0f
+    name: canvas_type
+    default_value: ""
+path: ""

@@ -1,0 +1,9 @@
+id: c920160c-5d90-4c59-bd21-c789bec1ccbe
+idn: scenario_hospitality_introduction
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

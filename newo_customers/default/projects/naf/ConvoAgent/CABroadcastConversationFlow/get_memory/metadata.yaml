@@ -1,0 +1,30 @@
+id: 508473e9-a91c-49f5-8bed-2c04264581a4
+idn: get_memory
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 640afc7f-9430-41b8-9b0c-fbc0c9fb5b4a
+    name: user_id
+    default_value: ""
+  - id: 55fb8b83-f41e-4b07-9e18-1fb8c8b6e70d
+    name: actors
+    default_value: ""
+  - id: a0510c4c-11cb-4d21-9bf8-1dd28e0fb4ba
+    name: count
+    default_value: "100"
+  - id: a187613c-96b2-4eed-890b-a8a72f9295ec
+    name: from_date
+    default_value: ""
+  - id: f90d8f5a-6779-46ec-8649-6324073757f6
+    name: include_system
+    default_value: "False"
+  - id: 2f6b5ea1-7535-4c72-8373-583e81d21c43
+    name: include_thoughts
+    default_value: "False"
+  - id: 4f2d8ece-715f-481c-88fe-13a58a6c95c9
+    name: to_date
+    default_value: ""
+path: ""

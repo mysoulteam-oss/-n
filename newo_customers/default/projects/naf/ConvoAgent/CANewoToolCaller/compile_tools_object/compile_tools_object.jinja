@@ -1,0 +1,11 @@
+{% set tools = json.loads(get_naf_defined_tools(conversation_channel=conversation_channel)) %}
+
+{% set custom_tools = GetCustomerAttribute(field="project_attributes_settings_newo_tools").strip() %}
+
+{% if custom_tools and custom_tools != "{}" %}
+    {% set custom_tools_json = json.loads(custom_tools) %}
+    {% if custom_tools_json.tools %}
+        {{tools.tools.update(custom_tools_json.tools)}}
+    {% endif %}
+{% endif %}
+{{Return(val=json.dumps(tools, ensure_ascii=False, indent=2))}}

@@ -1,0 +1,15 @@
+id: de2131a2-cd13-46ad-819b-9cb16dd02f75
+idn: _sendSMSInformationSchemasSkill
+title: _sendSMSInformationSchemasSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: b54dfc64-920b-48d1-b762-75ab72899f05
+    name: promiseSMSSchema
+    default_value: "False"
+  - id: 64aba595-bc43-4d2c-a972-3d0fbd3ea032
+    name: sendSMSInformationSchema
+    default_value: "False"
+path: ""

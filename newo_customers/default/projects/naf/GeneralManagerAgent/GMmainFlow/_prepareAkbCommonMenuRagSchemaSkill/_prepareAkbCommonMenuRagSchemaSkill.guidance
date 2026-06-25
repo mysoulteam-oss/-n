@@ -1,0 +1,27 @@
+{{#system~}}
+{
+    "type": "object",
+    "properties": {
+        "chunks": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "string"
+                    },
+                    "facts": {
+                        "type": "string"
+                    }
+                },
+                "required": ["name", "value", "facts"]
+            }
+        }
+    },
+    "required": ["chunks"]
+}
+{{~/system}}
+{{Return(val=GetCurrentPrompt())}}

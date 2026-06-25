@@ -1,0 +1,9 @@
+id: cbc30517-e828-4206-bccd-0c014bf6c668
+idn: _promptRefactoringExampleSkill
+title: _promptRefactoringExampleSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

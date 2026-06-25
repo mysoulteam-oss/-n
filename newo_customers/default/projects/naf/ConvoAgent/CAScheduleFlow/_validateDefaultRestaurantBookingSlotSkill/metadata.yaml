@@ -1,0 +1,18 @@
+id: b980f13c-dd57-4664-90f6-31b9210dc3ac
+idn: _validateDefaultRestaurantBookingSlotSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 2954938d-33c6-408a-845f-61478d40a14b
+    name: availability
+    default_value: ""
+  - id: 0a9cdb74-5d32-407b-ae4c-9a012e3220c9
+    name: place
+    default_value: ""
+  - id: 26ff70c6-4e2b-433a-9cd6-a0b4b7815785
+    name: time
+    default_value: ""
+path: ""

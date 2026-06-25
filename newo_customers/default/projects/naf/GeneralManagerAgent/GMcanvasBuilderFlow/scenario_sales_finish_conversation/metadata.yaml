@@ -1,0 +1,9 @@
+id: dbf79632-b092-4315-8973-476267729b63
+idn: scenario_sales_finish_conversation
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

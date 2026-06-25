@@ -1,0 +1,9 @@
+id: 5e72004d-5053-4a9a-aca7-272f412d07cd
+idn: _resolveFollowupSchemasSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

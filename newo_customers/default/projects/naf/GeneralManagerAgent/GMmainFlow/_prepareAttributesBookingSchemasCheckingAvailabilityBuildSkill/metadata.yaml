@@ -1,0 +1,15 @@
+id: 11107d32-0ffb-47ed-9f1f-181088039779
+idn: _prepareAttributesBookingSchemasCheckingAvailabilityBuildSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 5ec3fe23-f5c3-4e32-9c74-b233d3dd7b90
+    name: payloadSchema
+    default_value: " "
+  - id: d506ca1a-a95f-4f14-8bc0-d6711bbd55a3
+    name: validationSchema
+    default_value: " "
+path: ""

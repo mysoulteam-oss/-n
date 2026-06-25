@@ -1,0 +1,465 @@
+{% set already_taken_actions = already_taken_actions or [] %}
+
+{# health_check — one read-only audit of the live configuration and compiled behavior. Detection
+   layers: a deterministic CRITICAL floor over the real gathered values (residue, silent greeting,
+   missing availability artifact, language conflict — reproducible, never flicker run-to-run),
+   pass-1 structured_generation over the full gather (anchored trigger table, closed `rule` enum —
+   owns the loose/semantic call-breakers and all judgment-bound WARNING/INFO), a deterministic
+   allowed-values check in the gather, and a focused pass-2 forcing a per-entry verdict for every
+   contract-carrying setting. Auth-header secrets are masked to length stubs before any value
+   reaches a model or a log. Findings merge (the floor wins its (idn, rule), pass-1 adds the rest),
+   pass a measured suppression/demote post-pass, and render CRITICAL → WARNING → INFO back to main(). #}
+
+{# Internal / PII / log attributes — never audited, never shown to the model. #}
+{% set excluded_idns = [
+    "project_attributes_rag_knowledge_base_append_text_log",
+    "project_attributes_rag_knowledge_base_append_text_reset",
+    "project_attributes_rag_knowledge_base_append_websites_log",
+    "project_attributes_rag_knowledge_base_append_websites_reset",
+    "project_attributes_private_data_injection_is_timer_running",
+    "project_attributes_private_data_injection_payload",
+    "project_attributes_private_data_injection_retrieved_data",
+    "project_attributes_private_account_initialized_first_time",
+    "project_attributes_private_sa_version",
+    "project_attributes_private_technical_owners",
+    "project_attributes_private_feature_flag_multi_location",
+    "project_attributes_private_feature_flag_booking_use_new_availability_formatted_response_processor",
+    "project_attributes_info_client_session_logs_table_link",
+    "project_attributes_support_log_document_link",
+    "project_attributes_settings_newo_tools",
+    "project_attributes_setting_blocked_phone_numbers",
+    "customer_email",
+    "customer_first_name",
+    "customer_last_name",
+    "customer_phone"
+] %}
+
+{# Auth/header secrets — masked to length stubs (plus any idn containing auth/api_key/secret/password);
+   the set/unset signal survives, the credential never leaves. #}
+{% set secret_value_idns = [
+    "project_attributes_setting_booking_request_headers",
+    "project_attributes_setting_booking_check_availability_request_headers",
+    "project_attributes_setting_session_ended_webhook_auth_header"
+] %}
+
+{# Compiled behavior the searchable catalogue hides but which drives every call (remediation = canvas). #}
+{% set behavior_idns = [
+    "project_attributes_private_dynamic_ami_compiled",
+    "project_attributes_private_dynamic_itm_compiled"
+] %}
+
+{# Compiled / derived settings that break calls when wrong (remediation = hand_off). #}
+{% set compiled_setting_idns = [
+    "project_attributes_private_dynamic_voice_greeting_phrase",
+    "project_attributes_private_dynamic_booking_schema_compiled",
+    "project_attributes_private_dynamic_booking_check_availability_payload_schema_compiled",
+    "project_attributes_private_dynamic_restaurant_google_restaurant_id",
+    "project_attributes_private_dynamic_session_ended_report_content_json"
+] %}
+
+{% set searchable_raw = get_searchable_attribute_idns() %}
+{% set candidate_idns = (json.loads(searchable_raw) if searchable_raw else []) + compiled_setting_idns + behavior_idns %}
+
+{# Gather full values with full metadata (behavior blobs audited whole), split present vs empty. #}
+{% set audited_idns = [] %}
+{% set present_attributes = [] %}
+{% set empty_idns = [] %}
+{% set seen_idns = {} %}
+{% set gathered_ns = namespace(values_blob="", ami_value="") %}
+{% set value_by_idn = {} %}
+{% set det_contract_findings = [] %}
+{% set voice_enabled = GetCustomerAttribute(field="project_attributes_setting_voice_integration_service").strip() != "" %}
+{% for idn in candidate_idns %}
+    {% if idn not in seen_idns and idn not in excluded_idns %}
+        {{seen_idns.update({idn: True})}}
+        {% set attribute_metadata = GetCustomerMetadataAttribute(idn=idn) %}
+        {% if attribute_metadata %}
+            {% set attribute_metadata = attribute_metadata.model_dump() %}
+            {% set attribute_value = ((attribute_metadata.value if attribute_metadata.value is not none else "") | string).strip() %}
+            {% if attribute_value and (idn in secret_value_idns or "auth" in idn or "api_key" in idn or "secret" in idn or "password" in idn) %}
+                {% set attribute_value = "<configured, " ~ (attribute_value | length) ~ " chars; value hidden from audit>" %}
+            {% endif %}
+            {% set attribute = {
+                "idn": idn,
+                "value": attribute_value,
+                "title": attribute_metadata.title,
+                "description": attribute_metadata.description,
+                "possible_values": attribute_metadata.possibleValues,
+                "value_type": attribute_metadata.valueType,
+                "is_hidden": attribute_metadata.isHidden
+            } %}
+            {# Deterministic allowed-values check — scalars only, question-framed WARNING, never CRITICAL. #}
+            {% set pv_list = (attribute_metadata.possibleValues or []) | map("string") | list %}
+            {% set pv_lower = pv_list | map("lower") | list %}
+            {% if attribute_value and pv_list and (attribute_value | lower) not in pv_lower
+                  and not attribute_value.startswith("[") and not attribute_value.startswith("{")
+                  and not attribute_value.startswith("<configured,") and (voice_enabled or "voice" not in idn) %}
+                {{det_contract_findings.append({
+                    "attribute_idn": idn,
+                    "severity": "WARNING",
+                    "rule": "none",
+                    "remediation": "canvas" if idn in behavior_idns else ("hand_off" if "_private_dynamic_" in idn else "settable"),
+                    "quoted_value": attribute_value[:300],
+                    "explanation": "The current value is not one of this setting's documented allowed values (" ~ ((pv_list | join(", "))[:200]) ~ "). Which of the allowed values should be used?"
+                })}}
+            {% endif %}
+        {% else %}
+            {% set attribute_value = GetCustomerAttribute(field=idn).strip() %}
+            {% if attribute_value and (idn in secret_value_idns or "auth" in idn or "api_key" in idn or "secret" in idn or "password" in idn) %}
+                {% set attribute_value = "<configured, " ~ (attribute_value | length) ~ " chars; value hidden from audit>" %}
+            {% endif %}
+            {% set attribute = {"idn": idn, "value": attribute_value} %}
+        {% endif %}
+        {{audited_idns.append(idn)}}
+        {{value_by_idn.update({idn: attribute_value})}}
+        {% set gathered_ns.values_blob = gathered_ns.values_blob ~ "\n" ~ attribute_value %}
+        {% if idn == "project_attributes_private_dynamic_ami_compiled" %}
+            {% set gathered_ns.ami_value = attribute_value %}
+        {% endif %}
+        {% if attribute_value %}
+            {{present_attributes.append(attribute)}}
+        {% else %}
+            {{empty_idns.append(idn)}}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{% set audit_prompt %}You audit one business's AI phone/chat receptionist: SETTINGS + compiled BEHAVIOR (`...ami_compiled`
+= Introduction/Scenarios/Procedures; `...itm_compiled` = intent-to-scenario routing). Report every
+state that breaks/degrades a real call/chat, each framed as a QUESTION for a human; a healthy config
+returns no findings. <Configuration> entries: idn + value + metadata (title, description, allowed
+values, value type, is_hidden) where present — the metadata states each attribute's PURPOSE and what
+a correct value looks like; judge every value against it. is_hidden=true means the owner cannot see
+the setting in their portal — when such a finding is settable, mention you can change it for them.
+<EmptyOrUnsetSettings>: valueless idns, mostly intentional — flag only when an ENABLED feature needs one.
+
+Evaluate EVERY row of BOTH tables on EVERY run; file each that fires. Table-1 names are the ONLY
+legal `rule` values; Table-2 names NEVER go in `rule` (file with rule="none").
+
+| rule | FIRES (CRITICAL) when | does NOT fire when |
+|---|---|---|
+| unresolved_residue | a {% raw %}`{{...}}`{% endraw %} or `<||...||>` token in text the agent speaks/sends — greeting, business name/story, disclaimer, or ANY behavior text (ami_compiled AND itm_compiled) | the same token (or [address]-style) in a `*_template`/`*_send_information` setting resolves at runtime — never flag there, despite matching the trigger |
+| transfer_loop / bypass_loop | a transfer/bypass target equals the agent's own public/voice line (loose match: +1 prefix, spacing), or all transfer targets empty with transfer on; bypass=bypass_loop, transfer=transfer_loop | a seeded/test bypass number alone; `transfer_call_phone_numbers` set (escalation phones then NOT the live target); voice off; the number appears only in report criteria, templates, or other non-target text (loops fire ONLY on the bypass/escalation/transfer-list target settings) |
+| silent_greeting | voice on AND the spoken opener/greeting resolves to empty | voice off; wording/punctuation/style never a finding |
+| missing_scenario | an intent routes to a scenario that does not EXIST; remediation = canvas | a matching bold-name reference exists — re-scan the WHOLE behavior before claiming absence; an intent handled by an inline instruction with no scenario named is NOT missing_scenario — including an inline REFUSAL ("we don't offer X"), even when behavior elsewhere mentions X |
+| booking_artifact_missing | booking on but its required availability artifact empty | booking off |
+| language_conflict | the primary language ALSO appears in the restricted list (match the form both fields use) | primary merely absent; empty primary ≤WARNING rule "none" |
+
+| check | finding when | max severity |
+|---|---|---|
+| identity_split | agent / business / greeting names disagree | WARNING |
+| empty_spoken_fact | the business name is empty while the agent must speak one (even if the greeting still carries a name) | WARNING |
+| after_hours_transfer | transfer on, off-hours number empty, working-hours number set | INFO |
+| placeholder_in_enabled_field | junk/placeholder/demo value, domain as spoken name, stub TODO body, wrong-language behavior, contradictory hours/timezone in any business-fact or enabled-feature field | WARNING |
+| metadata_contract | the value violates its OWN metadata: not among its `possible_values`; breaking a format, structure, unit, or range the description documents; a plausible value of the wrong KIND for the documented purpose; or misusing a documented sentinel/special value. Check EVERY attribute's value against its description — the most damaging faults look innocent until the description is read | WARNING |
+
+CRITICAL only when a Table-1 row fired (its name in `rule`) AND a real call/chat measurably fails; else at most WARNING, rule "none"; INFO
+= worth confirming, no impact. Torn → LOWER. Don't cap the list; orthogonal issues on one attribute
+= separate findings (e.g. residue + a routing ghost).
+
+Never flag: storage type — every value is stored as a string, so a string holding a valid number or
+True/False for a number/boolean-typed setting is correct by design (storage type is never a
+finding, but CONTENT still is: a unit or kind contradicting the documented meaning — e.g. a
+fraction where a whole-number percentage is documented — stays a finding); in-range allowed values
+(gender "auto", turn_message_type "user"); literal "null" in
+compiled/schema values; empties of disabled features; natural-language hours ("Monday 10-4", "Open
+24/7"); real brand emails/domains; compiled STRUCTURE (`# Scenarios`, `Step X.Y`, bold refs, and
+`<Section>`-style references like `<ExplicitConstraints>` — these are resolved by the runtime, not
+residue) and a routing-deferring Introduction = required format. Voice off (`...setting_voice_integration_service`
+empty): zero voice-only findings (greeting, bypass, transfer).
+
+Order findings most-severe-first; look hardest at behavior-vs-settings contradictions and broken routing; surface genuine doubt as a question rather than stay silent.
+
+Ground each finding: `quoted_value` VERBATIM (empty for unset); never invent values or
+"effective"/"override" relationships. Cross-attribute: quote EVERY involved attribute in
+`explanation`, safest-to-edit idn in `attribute_idn`, ask which is correct. `remediation`: canvas =
+ami/itm behavior; hand_off = `...private_dynamic_...` compiled; settable otherwise.
+
+Before finalizing, make one dedicated contract pass over EVERY <Configuration> entry that carries
+metadata: check the value against its description and allowed values — exact membership for
+enumerated values, documented format/structure/units, documented numeric ranges or maxima, and
+documented sentinel/special values. File a metadata_contract finding (WARNING or INFO, rule "none")
+for each violation, even when the value looks plausible on its own; a plausible value that breaks
+its documented contract is the most commonly missed defect class.
+
+<Configuration>
+{{json.dumps(present_attributes, indent=2, ensure_ascii=False)}}
+</Configuration>
+
+<EmptyOrUnsetSettings>
+{{json.dumps(empty_idns, indent=2, ensure_ascii=False)}}
+</EmptyOrUnsetSettings>{% endset %}
+
+{% set audit_schema = {
+  "type": "object",
+  "properties": {
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "attribute_idn": {"type": "string", "enum": audited_idns, "description": "the exact idn of the offending setting or behavior item, from the configuration above"},
+          "severity": {"type": "string", "enum": ["CRITICAL", "WARNING", "INFO"], "description": "CRITICAL = a real call clearly fails or behaves wrongly; WARNING = wrong/degraded/inconsistent but the call still works; INFO = worth confirming"},
+          "rule": {"type": "string", "enum": ["silent_greeting", "transfer_loop", "bypass_loop", "missing_scenario", "booking_artifact_missing", "unresolved_residue", "language_conflict", "none"], "description": "for a CRITICAL finding, the exact trigger that fired; 'none' for WARNING/INFO"},
+          "remediation": {"type": "string", "enum": ["settable", "canvas", "hand_off"], "description": "canvas for ami/itm behavior; hand_off for compiled/private values; settable otherwise"},
+          "quoted_value": {"type": "string", "description": "the offending value copied verbatim from the shown attribute; empty when the finding is about an empty/unset setting"},
+          "explanation": {"type": "string", "description": "1-3 sentences framed as a question; for an inconsistency, name every attribute involved and quote each disagreeing value"}
+        },
+        "required": ["attribute_idn", "severity", "rule", "remediation", "quoted_value", "explanation"]
+      }
+    }
+  },
+  "required": ["findings"]
+} %}
+
+{% set result = json.loads(structured_generation(schema=audit_schema, prompt=audit_prompt, thinking_budget=1020)) %}
+{% set llm_findings = result.findings or [] %}
+
+{# Pass-2: one-pass contract detection is salience-bound, so a second focused call forces a verdict
+   per contract-carrying entry (shortlist ≤60, catalogue order). The platform schema parser rejects
+   minItems/maxItems (the whole Gen dies) — coverage rests on the numbered every-entry instruction. #}
+{% set contract_candidates = [] %}
+{# Shortlist is capped at 60 (the schema parser rejects minItems/maxItems, so the cap is the only
+   bound). Catalogue order alone saturates the cap on early keyword-contract settings and starves
+   late numeric/enumerated ones (e.g. asr_*) — the highest-value contract checks. So admit high-risk
+   entries (own possible_values, or a number-typed value) first, then fill the rest with keyword-only
+   carriers; n is assigned at append time and stays contiguous 1..N. #}
+{% for risk_pass in ["high", "rest"] %}
+    {% for attribute in present_attributes %}
+        {% set attribute_desc = (attribute.get("description") or "") | lower %}
+        {% set attribute_is_high_risk = (attribute.get("possible_values") or []) or attribute.get("value_type") == "number" %}
+        {% set attribute_has_contract = attribute_is_high_risk or "json" in attribute_desc or " array" in attribute_desc or "format" in attribute_desc or "must be" in attribute_desc or "maximum" in attribute_desc or "minimum" in attribute_desc or "one of" in attribute_desc or "allowed values" in attribute_desc or "between " in attribute_desc %}
+        {% set in_this_pass = attribute_is_high_risk if risk_pass == "high" else (attribute_has_contract and not attribute_is_high_risk) %}
+        {% if in_this_pass and attribute.idn not in behavior_idns and attribute.idn not in compiled_setting_idns
+              and not attribute.value.startswith("<configured,") and (voice_enabled or "voice" not in attribute.idn)
+              and contract_candidates | length < 60 %}
+            {{contract_candidates.append({
+                "n": (contract_candidates | length) + 1,
+                "idn": attribute.idn,
+                "value": attribute.value,
+                "title": attribute.get("title"),
+                "value_type": attribute.get("value_type"),
+                "possible_values": attribute.get("possible_values"),
+                "description": attribute.get("description")
+            })}}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+{% set pass2_findings = [] %}
+{% if contract_candidates %}
+    {% set contract_idns = contract_candidates | map(attribute="idn") | list %}
+    {% set contract_prompt %}You verify one business's AI receptionist SETTINGS against their OWN documentation. For EVERY entry in <ContractEntries> decide whether the current value satisfies everything its metadata documents: allowed values (exact membership), format and structure (for example a JSON array vs a comma list vs a keyed object), units and value kind (for example whole-number percentage vs fraction), documented numeric limits, and documented sentinel/special values. Judge each entry strictly against its own description and possible_values, not against general plausibility — a natural-looking value that breaks its documented contract IS a violation; an unusual-looking value that satisfies the documentation is ok. Contracts the metadata does not document are ok by definition.
+
+Do not flag values that already satisfy the documentation: a value that is one of its own possible_values is ok even when a "Pro-Tip" or "Best Practice" recommends a different choice (advice is not a contract); literal "null" inside a documented JSON or array value is ok; a real brand email or domain in a field documented to hold one is ok. Every value in this system is STORED AS A STRING: a string holding a valid number or True/False for a number- or boolean-typed setting is correct by design — storage type is NEVER a violation. The CONTENT must still satisfy the documented contract: a value whose unit or KIND contradicts the documented meaning (for example a fraction where a whole-number percentage is documented), or a value outside a documented limit, IS a violation. A numeric value within a documented limit satisfies it. Most entries will be ok — flag only genuine contract breaks, but do read each description before deciding ok.
+
+Output one verdict per entry n=1..N, in order, covering EVERY entry exactly once. For a violation, the explanation quotes the documented contract phrase being broken and asks the owner one short question.
+
+<ContractEntries>
+{{json.dumps(contract_candidates, indent=2, ensure_ascii=False)}}
+</ContractEntries>{% endset %}
+    {% set contract_schema = {
+        "type": "object",
+        "properties": {
+            "checks": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "attribute_idn": {"type": "string", "enum": contract_idns, "description": "the entry being judged, in the given order n=1..N"},
+                        "verdict": {"type": "string", "enum": ["ok", "violation"]},
+                        "explanation": {"type": "string", "description": "MUST be the empty string when verdict is ok — write nothing. Only for a violation: 1-2 sentences quoting the documented contract phrase being broken, framed as a question"}
+                    },
+                    "required": ["attribute_idn", "verdict", "explanation"]
+                }
+            }
+        },
+        "required": ["checks"]
+    } %}
+    {% set contract_result = json.loads(structured_generation(schema=contract_schema, prompt=contract_prompt, thinking_budget=1020)) %}
+    {% for check in contract_result.checks or [] %}
+        {% if check.verdict == "violation" %}
+            {% set check_idn = check.attribute_idn | string %}
+            {{pass2_findings.append({
+                "attribute_idn": check_idn,
+                "severity": "WARNING",
+                "rule": "none",
+                "remediation": "hand_off" if "_private_dynamic_" in check_idn else "settable",
+                "quoted_value": value_by_idn.get(check_idn, "")[:300],
+                "explanation": check.explanation | string
+            })}}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{# Deterministic CRITICAL floor — scans the REAL gathered values (value_by_idn / behavior blobs), so
+   any token, emptiness, or membership it reports is verbatim from a stored value: it cannot be
+   fabricated and does not flicker across runs (gemini sampling is non-deterministic even at temp 0,
+   so the mechanically-decidable call-breakers must not depend on it). Covers residue, silent
+   greeting, missing availability artifact, and language conflict; the loose/semantic forms (loop
+   phone fuzzy-match, missing_scenario routing) stay with the LLM pass above. Floor findings carry
+   det_authoritative so the CRITICAL-demote post-pass leaves them intact. #}
+{% set det_critical_findings = [] %}
+
+{% set residue_scan_idns = behavior_idns + [
+    "project_business_name",
+    "project_business_story",
+    "project_representative_agent_voice_greeting_phrase",
+    "project_representative_agent_voice_greeting_phrase_recent_returning",
+    "project_representative_agent_voice_greeting_phrase_later_returning",
+    "project_representative_agent_chat_greeting_phrase",
+    "project_representative_agent_voice_disclaimer_phrase",
+    "project_attributes_private_dynamic_voice_greeting_phrase"
+] %}
+{% for residue_idn in residue_scan_idns %}
+    {% set residue_value = value_by_idn.get(residue_idn, "") | string %}
+    {% if residue_value and not residue_value.startswith("<configured,")
+          and "_template" not in residue_idn and "_send_information" not in residue_idn %}
+        {% set residue_tokens = re.findall('[{][{].*?[}][}]|<[|][|].*?[|][|]>', residue_value) %}
+        {% if residue_tokens %}
+            {{det_critical_findings.append({
+                "attribute_idn": residue_idn,
+                "severity": "CRITICAL",
+                "rule": "unresolved_residue",
+                "remediation": "canvas" if residue_idn in behavior_idns else ("hand_off" if "_private_dynamic_" in residue_idn else "settable"),
+                "quoted_value": (residue_tokens | join(", "))[:300] if residue_idn in behavior_idns else residue_value[:300],
+                "explanation": "This value contains an unresolved template token (" ~ ((residue_tokens | join(", "))[:120]) ~ ") that the agent will say or send to the caller verbatim. What should replace the placeholder?",
+                "det_authoritative": True
+            })}}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{% if voice_enabled and value_by_idn.get("project_attributes_private_dynamic_voice_greeting_phrase", "").strip() == "" %}
+    {{det_critical_findings.append({
+        "attribute_idn": "project_attributes_private_dynamic_voice_greeting_phrase",
+        "severity": "CRITICAL",
+        "rule": "silent_greeting",
+        "remediation": "hand_off",
+        "quoted_value": "",
+        "explanation": "Voice is enabled but the compiled voice greeting is empty, so the agent opens the call with silence. What should the greeting say?",
+        "det_authoritative": True
+    })}}
+{% endif %}
+
+{% if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_enabled").strip() == "True"
+      and value_by_idn.get("project_attributes_private_dynamic_booking_check_availability_payload_schema_compiled", "").strip() == "" %}
+    {{det_critical_findings.append({
+        "attribute_idn": "project_attributes_private_dynamic_booking_check_availability_payload_schema_compiled",
+        "severity": "CRITICAL",
+        "rule": "booking_artifact_missing",
+        "remediation": "hand_off",
+        "quoted_value": "",
+        "explanation": "Availability checking is enabled but its compiled availability payload schema is empty, so the agent cannot check availability on a call. Which booking integration should drive availability?",
+        "det_authoritative": True
+    })}}
+{% endif %}
+
+{% set lang_primary = (value_by_idn.get("project_business_language_primary", "") | string).strip() %}
+{% set lang_restricted_raw = value_by_idn.get("project_business_language_restricted_list", "") | string %}
+{% set lang_restricted_norm = lang_restricted_raw.replace("[", "").replace("]", "").replace('"', "").replace("'", "").lower() %}
+{% set lang_restricted_tokens = [] %}
+{% for lang_token in lang_restricted_norm.split(",") %}
+    {{lang_restricted_tokens.append(lang_token.strip())}}
+{% endfor %}
+{% if lang_primary and lang_primary.lower() in lang_restricted_tokens %}
+    {{det_critical_findings.append({
+        "attribute_idn": "project_business_language_restricted_list",
+        "severity": "CRITICAL",
+        "rule": "language_conflict",
+        "remediation": "settable",
+        "quoted_value": lang_restricted_raw[:300],
+        "explanation": "The primary language (" ~ lang_primary ~ ") also appears in the restricted-languages list, so the agent is instructed to both use and refuse its main language. Should the primary language be removed from the restricted list?",
+        "det_authoritative": True
+    })}}
+{% endif %}
+
+{# Merge: the deterministic floor is seeded FIRST so it wins (idn, rule) collisions for the rules it
+   owns (the verdict is identical whether or not the LLM also caught it). Pass-1 then adds every
+   other finding additively — including a DIFFERENT-rule finding on a floored idn, so orthogonal
+   issues on one attribute stay separate. Pass-2 has a rare mark-everything mode, so its
+   contribution is capped; the deterministic findings are never capped. #}
+{% set pass2_findings_cap = 6 %}
+{% set merged_findings = [] %}
+{% set claimed_idns = {} %}
+{% set claimed_idn_rules = {} %}
+{% for finding in det_critical_findings %}
+    {{merged_findings.append(finding)}}
+    {{claimed_idns.update({finding.attribute_idn | string: True})}}
+    {{claimed_idn_rules.update({(finding.attribute_idn | string) ~ "|" ~ (finding.rule | string): True})}}
+{% endfor %}
+{% for finding in llm_findings %}
+    {% if ((finding.attribute_idn | string) ~ "|" ~ (finding.rule | string)) not in claimed_idn_rules %}
+        {{merged_findings.append(finding)}}
+        {{claimed_idns.update({finding.attribute_idn | string: True})}}
+    {% endif %}
+{% endfor %}
+{% for finding in det_contract_findings + pass2_findings[:pass2_findings_cap] %}
+    {% if (finding.attribute_idn | string) not in claimed_idns %}
+        {{merged_findings.append(finding)}}
+        {{claimed_idns.update({finding.attribute_idn | string: True})}}
+    {% endif %}
+{% endfor %}
+
+{# Post-pass, every branch backed by a measured prompt failure: context suppressions where prose
+   exemptions do not bind, and severity demotes for CRITICALs without a justified trigger — rule
+   "none", loop rules off the target settings, residue quotes whose token exists in no gathered
+   value, and missing_scenario whose routed targets all exist (inline instructions are not routes). #}
+{% set transfer_enabled = GetCustomerAttribute(field="project_attributes_setting_transfer_call_enabled").strip() == "True" %}
+{% set transfer_numbers = GetCustomerAttribute(field="project_attributes_setting_transfer_call_phone_numbers").strip() %}
+{% set voice_only_idns = ["project_attributes_private_dynamic_voice_greeting_phrase", "project_representative_agent_voice_greeting_phrase", "project_attributes_setting_voice_integration_service_bypass_phone_number"] %}
+{% set escalation_idns = ["project_business_working_hour_escalation_phone", "project_business_non_working_hour_escalation_phone"] %}
+{# The two line idns stay so a genuine loop filed cross-attribute is never demoted. #}
+{% set loop_target_idns = escalation_idns + ["project_attributes_setting_voice_integration_service_bypass_phone_number", "project_attributes_setting_transfer_call_phone_numbers", "project_business_public_phone", "project_representative_agent_voice_phone_number"] %}
+{% set findings_kept = [] %}
+{% for finding in merged_findings %}
+    {% set finding_rule = finding.rule | string %}
+    {% set finding_idn = finding.attribute_idn | string %}
+    {% set is_voice_false_positive = (not voice_enabled) and (finding_rule in ["bypass_loop", "silent_greeting", "transfer_loop"] or finding_idn in voice_only_idns) %}
+    {% set is_escalation_false_positive = finding_rule == "transfer_loop" and finding_idn in escalation_idns and (transfer_numbers or not transfer_enabled) %}
+    {% set is_template_false_positive = finding_rule == "unresolved_residue" and ("_template" in finding_idn or "_send_information" in finding_idn) %}
+    {% set finding_qv = finding.quoted_value | string %}
+    {% set qv_tokens = re.findall('[{][{].*?[}][}]|<[|][|].*?[|][|]>', finding_qv) %}
+    {% set ns_tok = namespace(grounded=False) %}
+    {% for token in qv_tokens %}
+        {% if token in gathered_ns.values_blob %}{% set ns_tok.grounded = True %}{% endif %}
+    {% endfor %}
+    {% set residue_ungrounded = finding_rule == "unresolved_residue" and not ns_tok.grounded %}
+    {# 'starts the scenario' / 'says something like' are the itm compiler's own routing/inline
+       markers (the qv quotes the itm value verbatim) — these patterns move with prepare_itm. #}
+    {% set scenario_names = re.findall('starts the scenario[^"]*"([^"]+)"', finding_qv) %}
+    {% set ns_scenario = namespace(all_exist=True) %}
+    {% for scenario_name in scenario_names %}
+        {% if scenario_name not in gathered_ns.ami_value %}{% set ns_scenario.all_exist = False %}{% endif %}
+    {% endfor %}
+    {% set scenario_ungrounded = finding_rule == "missing_scenario" and ((scenario_names and ns_scenario.all_exist) or ((not scenario_names) and "says something like" in finding_qv)) %}
+    {% if not is_voice_false_positive and not is_escalation_false_positive and not is_template_false_positive %}
+        {% if finding.severity == "CRITICAL" and not finding.get("det_authoritative") and (finding_rule == "none" or (finding_rule in ["transfer_loop", "bypass_loop"] and finding_idn not in loop_target_idns) or residue_ungrounded or scenario_ungrounded) %}
+            {{finding.update({"severity": "WARNING"})}}
+        {% endif %}
+        {{findings_kept.append(finding)}}
+    {% endif %}
+{% endfor %}
+{% set findings = [] %}
+{% for sev in ["CRITICAL", "WARNING", "INFO"] %}
+    {% for finding in findings_kept %}
+        {% if finding.severity == sev %}
+            {{findings.append(finding)}}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+
+{% set thoughts %}I ran a read-only audit of the whole live configuration and compiled behavior — the settable settings, the compiled values normal search hides, and the behavior layer (introduction, scenarios, procedures, and intent routing).
+{% if not findings %}
+No call-breaking, degrading, or suspicious configuration or behavior was detected.
+{% else %}
+I found {{findings | length}} item(s) to review, most important first — these are the most impactful items; a re-run may surface additional lower-priority ones. When I present these to the user I name the exact setting or behavior item, quote its current value, and frame each as a question. `remediation: settable` means I can apply a fix via `set_attribute` after the user confirms the correct value (checkpointed and one-click reversible). `remediation: canvas` means the fix is in the behavior layer — I inspect the canvas and edit the relevant item. `remediation: hand_off` means the value is compiled/derived and cannot be edited directly — I explain it and point at the source setting.
+
+{% for finding in findings %}- **[{{finding.severity}}]** `{{finding.attribute_idn}}` — {{finding.explanation}}
+  quoted value: {{finding.quoted_value if finding.quoted_value else "(empty)"}} · remediation: {{finding.remediation}}
+{% endfor %}
+{% endif %}{% endset %}
+
+{{SendMessage(message='<thinking>\n' ~ thoughts ~ '\n</thinking>', actorIds=[GetActor().id | string], useFilter=False)}}
+{{already_taken_actions.append(thoughts)}}
+
+{{main(memory=memory, already_taken_actions=already_taken_actions)}}

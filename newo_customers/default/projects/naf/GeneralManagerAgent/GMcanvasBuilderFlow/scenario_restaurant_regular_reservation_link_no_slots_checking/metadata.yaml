@@ -1,0 +1,9 @@
+id: 189395bc-0b30-4dde-83a3-663b8b974c43
+idn: scenario_restaurant_regular_reservation_link_no_slots_checking
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

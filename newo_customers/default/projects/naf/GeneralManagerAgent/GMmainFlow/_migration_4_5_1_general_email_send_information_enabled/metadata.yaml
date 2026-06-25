@@ -1,0 +1,9 @@
+id: 846eddab-ec10-41a9-a6f2-81c0028ed9b3
+idn: _migration_4_5_1_general_email_send_information_enabled
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

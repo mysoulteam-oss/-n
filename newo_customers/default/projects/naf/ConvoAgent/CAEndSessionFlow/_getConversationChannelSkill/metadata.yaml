@@ -1,0 +1,15 @@
+id: a85d4f9c-dfcc-41dd-abd6-e3c8c19e1133
+idn: _getConversationChannelSkill
+title: _getConversationChannelSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: a32ece0c-99f5-4359-a416-fd135ed2bb6b
+    name: outboundCall
+    default_value: " "
+  - id: 6284e0fa-c747-4ef3-bbae-e9bda3167a60
+    name: userId
+    default_value: " "
+path: ""

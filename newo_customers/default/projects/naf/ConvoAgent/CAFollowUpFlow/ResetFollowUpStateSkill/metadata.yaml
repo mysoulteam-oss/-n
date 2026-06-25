@@ -1,0 +1,9 @@
+id: bace0855-61e2-48ad-80e7-4a88f686711f
+idn: ResetFollowUpStateSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

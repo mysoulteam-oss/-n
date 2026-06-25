@@ -1,0 +1,19 @@
+id: e4c49ae4-2a3d-4dd8-806e-a5ab42db8d2e
+idn: CAAssessmentFlow
+title: CAAssessmentFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: f4bd0661-a96b-4d38-a773-cb49a13316f5
+    description: null
+    idn: assess_session
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: convo_agent_assessment
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

@@ -1,0 +1,9 @@
+id: f772ed19-d6e5-44d8-ac9c-e62b8eaa9de3
+idn: ExecuteTasksSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

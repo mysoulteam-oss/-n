@@ -1,0 +1,27 @@
+id: 3130496f-3e9d-4001-9675-445d4b32c29b
+idn: _sendReportDefineDirectionsFallbackSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: b9ec4e4a-22ce-4b42-b812-ba4884719316
+    name: transcript
+    default_value: ""
+  - id: d0d163c0-e37d-471f-94c5-67806b099139
+    name: custom_sms_section
+    default_value: ""
+  - id: e298641b-bad7-4a79-95bd-f0f8a7bb0660
+    name: report_criteria
+    default_value: ""
+  - id: 89f85199-1f75-490d-af09-02fa59cfdb0e
+    name: intent_type
+    default_value: ""
+  - id: 240f6634-d843-40d1-9568-8b47dcc8127a
+    name: dynamic_variables
+    default_value: ""
+  - id: 73ee6e53-33fa-4bcc-bd21-252d976791a2
+    name: provided_phone_number_with_country_code
+    default_value: ""
+path: ""

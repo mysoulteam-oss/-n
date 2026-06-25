@@ -1,0 +1,9 @@
+id: ee71e561-1187-4bfd-bf24-3995ed265f53
+idn: scenario_beauty_schedule_appointment_manually
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

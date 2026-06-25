@@ -1,0 +1,9 @@
+id: 242a2147-0274-4696-8341-21d88832d843
+idn: prepare_instructions_update_from_library
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

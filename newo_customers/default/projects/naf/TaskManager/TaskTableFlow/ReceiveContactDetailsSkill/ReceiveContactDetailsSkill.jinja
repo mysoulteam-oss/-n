@@ -1,0 +1,26 @@
+{% set contact_details = json.loads(GetTriggeredAct().arguments.contactDetails) %}
+
+{% set task_type = contact_details.taskType.strip() %}
+
+{% set task_types = '["make_call"]' %}
+{% set task_prefix = "Call the user at " ~ contact_details.phoneNumber ~ ". " %}
+
+{% if task_type == "sms" %}
+    {% set task_types = '["send_sms"]' %}
+    {% set task_prefix = "Send an SMS the user at " ~ contact_details.phoneNumber ~ ". " %}
+{% elif task_type == "email" %}
+    {% set task_types = '["send_email"]' %}
+    {% set task_prefix = "Send an email the user." ~ contact_details.phoneNumber ~ ". " %}
+{% endif %}
+
+{% set content = task_prefix ~ "User name: " ~ contact_details.firstName ~ " " ~ contact_details.lastName ~ ". " ~ contact_details.callReason %}
+
+{{send_task(
+    content=content,
+    task_types=task_types,
+    phone_number=contact_details.phoneNumber
+)}}
+
+{% if GetState(name="launched") == "True" %}
+    {{_getContactDetailsSkill()}}
+{% endif %}

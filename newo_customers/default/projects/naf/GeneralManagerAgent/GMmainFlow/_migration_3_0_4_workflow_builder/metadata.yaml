@@ -1,0 +1,9 @@
+id: d01829f1-0d96-4c0b-ae63-b04b898c8c1f
+idn: _migration_3_0_4_workflow_builder
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

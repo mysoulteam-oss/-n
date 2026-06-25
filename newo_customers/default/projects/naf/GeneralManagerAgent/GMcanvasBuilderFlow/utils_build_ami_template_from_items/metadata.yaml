@@ -1,0 +1,24 @@
+id: 156eaf43-d268-43d3-9d34-88e6436c41f3
+idn: utils_build_ami_template_from_items
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 8e123e4c-ea22-482a-b300-cd545f1ed517
+    name: introduction_items
+    default_value: ""
+  - id: 1aae66af-3efa-47c4-b321-b185c22f0f26
+    name: scenario_items
+    default_value: ""
+  - id: abf4b533-875e-45ca-9d14-c9de93a66171
+    name: procedure_items
+    default_value: ""
+  - id: 19122285-0c3a-4d01-a02b-a910535585cc
+    name: allow_default_introduction
+    default_value: "True"
+  - id: 02e6b0ad-1024-459f-b643-a39c7d75de62
+    name: ensure_language_switch_procedure
+    default_value: "True"
+path: ""

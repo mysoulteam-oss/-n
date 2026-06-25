@@ -1,0 +1,52 @@
+{% set schema = {
+  "type": "object",
+  "properties": {
+    "intent_misclassified": {
+      "type": "boolean",
+      "description": "Set to `true` if the agent misclassified the user's intent at least once during the conversation."
+    },
+    "mixed_steps_present": {
+      "type": "boolean",
+      "description": "Set to `true` if the agent, one or more times during the conversation, combined two steps together."
+    },
+    "agent_did_not_follow_workflow": {
+      "type": "boolean",
+      "description": "Set to `true` if the agent did not follow the prescribed steps of scenario."
+    },
+    "agent_cannot_switch_scenario": {
+      "type": "boolean",
+      "description": "Set to `true` if the agent fails or refuses to switch to another scenario when requested or clearly required."
+    },
+    "conversation_termination_type": {
+      "type": "string",
+      "enum": [
+        "finish_scenario_called",
+        "user_ended_before_completion",
+        "finish_scenario_not_applicable"
+      ],
+      "description": "How the conversation ended in relation to the finish-conversation scenario."
+    }
+  }
+} %}
+
+{% set prompt %}
+
+In this conversation session, {{session_short_description}}, ConvoAgent was expected to follow the {{main_scenario}} scenario. You will be provided with the scenario definition (enclosed in <Scenarios>...</Scenarios>), intent types (enclosed in <IntentTypes>...</IntentTypes>) and the conversation transcript (enclosed in <Conversation>...</Conversation>). Please analyze whether the agent followed the scenario correctly and whether it was guided by the appropriate intent types. Compare the expected outcome with the actual result, and evaluate the relevant metrics based on how accurately the agent adhered to the expected intent types, scenario structure, and workflow.
+
+<IntentTypes>
+{{intents}}
+</IntentTypes>
+
+<Scenarios>
+{{scenarios}}
+</Scenarios>
+
+<Conversation>
+{{transcript}}
+</Conversation>
+
+{% endset %}
+
+{% set result_json = structured_generation(schema=schema, prompt=prompt.strip()) %}
+
+{{Return(val=result_json)}}

@@ -1,0 +1,13 @@
+{% set user_id = GetUser().id | string %}
+{% set task_id = GetState(name="task_id") %}
+{{SetPersonaAttribute(id=user_id, field="call_happened", value="True")}}
+{{SendCommand(
+    commandIdn="set_timer",
+    integrationIdn="program_timer",
+    connectorIdn="outbound_timer",
+    eventIdn="call_deadline_exceeded",
+    timerName="deadline_timer_" ~ task_id,
+    personaId=user_id,
+    interval="1",
+    enabled="False"
+)}}

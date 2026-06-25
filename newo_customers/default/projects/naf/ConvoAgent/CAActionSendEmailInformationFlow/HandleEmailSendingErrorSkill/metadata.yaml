@@ -1,0 +1,9 @@
+id: aff76fdb-497e-44e5-b48e-da2a3a4d39ea
+idn: HandleEmailSendingErrorSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

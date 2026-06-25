@@ -1,0 +1,12 @@
+id: 19d68076-432c-4e0d-99eb-c4c286571c63
+idn: get_naf_defined_tools
+title: get_naf_defined_tools
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: a5faa76c-9fe3-44b7-9b98-8fd9003bff84
+    name: conversation_channel
+    default_value: " "
+path: ""

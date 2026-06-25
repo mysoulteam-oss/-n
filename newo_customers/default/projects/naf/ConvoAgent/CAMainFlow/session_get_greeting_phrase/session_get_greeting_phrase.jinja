@@ -1,0 +1,36 @@
+{% set greeting_phrase = GetState(name="greeting_phrase") %}
+
+{% if not greeting_phrase.strip() %}
+    {% set integration_idn = session_utils.session_get_current_integration_idn(user_id=user_id) %}
+    {% set conversation_channel = session_get_conversation_channel(integration_idn=integration_idn) %}
+
+    {% if conversation_channel in ("phone", "voice") %}
+        {% if integration_idn == "newo_voice" %}
+            {# We don't get greeting phrase for newo_voice, since in case of transcriber, as well as voice to voice mode the greeting automatically comes to memory.  #}
+            {% set greeting_phrase = "none" %}
+        {% else %}
+            {% set greeting_phrase = GetCustomerAttribute(field="project_attributes_private_dynamic_voice_greeting_phrase") %}
+        {% endif %}
+    {% elif conversation_channel == "chat" %}
+        {% if integration_idn in ("twilio_messenger", "api") %}
+            {# In case of inbound SMS or api integration (such as manychat) usually we don't greet users first. Except outbound sessions. #}
+            {% if GetPersonaAttribute(id=user_id, field="outbound_session") == "True" %}
+                {# In case of outbound sessions, greeting phrase lays in persona attribute #}
+                {% set greeting_phrase = GetPersonaAttribute(id=user_id, field="greeting_phrase")%}
+            {% else %}
+                {% set greeting_phrase = "none" %}
+            {% endif %}
+        {% else %}
+            {# In all other cases for now we get greeting phrase assuming agent greeted the user (for example newo chat)  #}
+            {% set greeting_phrase = GetCustomerAttribute(field="project_representative_agent_chat_greeting_phrase") %}
+        {% endif %}
+    {% endif %}
+
+    {{SetState(name="greeting_phrase", value=greeting_phrase)}}
+{% endif %}
+
+{% if greeting_phrase == "none" %}
+    {{Return(val="")}}
+{% endif %}
+
+{{Return(val=greeting_phrase)}}

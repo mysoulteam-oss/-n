@@ -1,0 +1,12 @@
+{% set canvas = json.loads(GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas")) %}
+{% set found_instruction = {} %}
+{% for type in canvas.types %}
+    {% if type.idn == type_idn %}
+        {% for item in type["items"] %}
+            {% if item.idn == item_idn %}
+                {% set found_instruction = item %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+{{Return(val=json.dumps(found_instruction, ensure_ascii=False, indent=2))}}

@@ -1,0 +1,9 @@
+id: 1be5712f-db99-421b-9515-21e90b0d76e7
+idn: UserNewoChatReplySkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,9 @@
+id: 10463829-0288-4e00-b852-74b008cd69ed
+idn: _defineCalendarSkill
+title: _defineCalendarSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

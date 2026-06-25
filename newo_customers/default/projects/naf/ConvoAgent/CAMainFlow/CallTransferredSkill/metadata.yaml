@@ -1,0 +1,9 @@
+id: aa001f21-ce85-46c9-9df8-113e9b99234c
+idn: CallTransferredSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

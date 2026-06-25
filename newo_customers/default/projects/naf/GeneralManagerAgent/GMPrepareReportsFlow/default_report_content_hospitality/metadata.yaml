@@ -1,0 +1,9 @@
+id: d304238b-d3aa-4ebc-b142-c18fb12b6b35
+idn: default_report_content_hospitality
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

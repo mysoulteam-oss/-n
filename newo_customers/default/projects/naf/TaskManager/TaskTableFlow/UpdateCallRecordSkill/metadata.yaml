@@ -1,0 +1,9 @@
+id: d28290b9-665a-404a-9203-d5aa1b2aab44
+idn: UpdateCallRecordSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

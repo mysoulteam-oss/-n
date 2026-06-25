@@ -1,0 +1,9 @@
+id: 1561fbe3-ae06-4158-9863-761b4e3f4ab5
+idn: _migration_3_8_0_remove_long_operation_follow_up
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

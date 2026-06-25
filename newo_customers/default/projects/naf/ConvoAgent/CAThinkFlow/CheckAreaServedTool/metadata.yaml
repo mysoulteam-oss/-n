@@ -1,0 +1,9 @@
+id: bd47fa47-eb22-429f-a25b-5b0633fdb596
+idn: CheckAreaServedTool
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

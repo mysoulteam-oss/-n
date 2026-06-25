@@ -1,0 +1,9 @@
+id: 8a292295-9b96-4c45-8cc7-92bf3905b505
+idn: InjectCustomSectionSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

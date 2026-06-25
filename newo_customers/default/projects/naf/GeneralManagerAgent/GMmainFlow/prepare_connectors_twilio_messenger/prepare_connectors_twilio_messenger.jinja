@@ -1,0 +1,9 @@
+{{utils_connector_create_if_not_exists(
+    integrationIdn = "twilio_messenger",
+    connectorIdn = "sms_connector",
+    title = "sms_connector",
+    settings = {
+        "create_without_phone_number": "true"
+    },
+    start = True
+)}}

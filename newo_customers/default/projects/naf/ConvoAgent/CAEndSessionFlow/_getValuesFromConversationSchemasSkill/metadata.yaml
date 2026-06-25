@@ -1,0 +1,18 @@
+id: 769e6183-f039-4f23-959a-60248e972106
+idn: _getValuesFromConversationSchemasSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: bb953b68-21f1-45bb-bc5b-89c4efd9022f
+    name: customValuesSchema
+    default_value: "False"
+  - id: 65254fa8-5e80-46b3-b395-c9066a8f1b9f
+    name: commonValuesSchema
+    default_value: "False"
+  - id: 4972661d-754b-4a93-aa70-422fb3cba546
+    name: webhookValuesSchema
+    default_value: "False"
+path: ""

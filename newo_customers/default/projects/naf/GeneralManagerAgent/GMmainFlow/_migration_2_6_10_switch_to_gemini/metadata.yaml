@@ -1,0 +1,9 @@
+id: 1419f816-588f-428b-83bd-47cbc52d3623
+idn: _migration_2_6_10_switch_to_gemini
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

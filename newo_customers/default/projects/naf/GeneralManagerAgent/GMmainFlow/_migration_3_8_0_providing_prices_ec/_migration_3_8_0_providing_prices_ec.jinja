@@ -1,0 +1,6 @@
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+
+{# Setting providing prices explicit constraint for sales industry by default #}
+{% if industry == "sales_industry" %}
+    {{SetCustomerAttribute(field="project_representative_agent_providing_prices_explicit_constraint", value="- Always mention that actual prices might differ whenever you provide prices.")}}
+{% endif %}

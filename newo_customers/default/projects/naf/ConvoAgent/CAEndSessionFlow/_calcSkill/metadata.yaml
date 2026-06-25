@@ -1,0 +1,15 @@
+id: 7edf7f19-5dcd-4825-94d1-d6709baa9a33
+idn: _calcSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 6f2fbdee-8e4c-457a-9005-56747ac02691
+    name: task
+    default_value: " "
+  - id: 4da24075-f3fc-4081-af2b-4cb8a2cde997
+    name: constants
+    default_value: " "
+path: ""

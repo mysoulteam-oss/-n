@@ -1,0 +1,9 @@
+id: 165398c3-138f-44e4-a101-cf6e36554414
+idn: _prepareAttributesCommonDefaultSettingsSkill
+title: _prepareAttributesCommonDefaultSettingsSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

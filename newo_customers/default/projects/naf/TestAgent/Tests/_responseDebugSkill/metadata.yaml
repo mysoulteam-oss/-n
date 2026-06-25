@@ -1,0 +1,9 @@
+id: e8397040-9e03-4361-b471-660844f3b2ac
+idn: _responseDebugSkill
+title: _responseDebugSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_pro
+parameters: []
+path: ""

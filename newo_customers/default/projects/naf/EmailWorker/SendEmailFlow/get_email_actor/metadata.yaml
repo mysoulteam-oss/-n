@@ -1,0 +1,15 @@
+id: c5a6ae39-6fb8-43b9-983e-6f35352db1e9
+idn: get_email_actor
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: e3f43f1e-7d3a-4d77-9842-0289f688621e
+    name: email
+    default_value: ""
+  - id: 90eb3620-fc6a-4733-9c60-e1191aafc403
+    name: user_id
+    default_value: ""
+path: ""

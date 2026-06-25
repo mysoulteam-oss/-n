@@ -1,0 +1,12 @@
+id: 0445b0e4-ce3f-4940-b13d-9aff1b5c08f3
+idn: prompt_build_base
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: b55c3b09-7945-4d29-a044-58b5efa740eb
+    name: user_id
+    default_value: ""
+path: ""

@@ -1,0 +1,15 @@
+id: eb29ae3a-ebf5-4d28-8064-8fa8e751fc77
+idn: generate_missing_lead_email
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: fe91b2f7-7521-4ab1-9b39-6904bd68964f
+    name: user_behavior_analysis
+    default_value: ""
+  - id: 0a2e5486-b137-4175-aff9-a4d2711d8a5b
+    name: session_short_description
+    default_value: ""
+path: ""

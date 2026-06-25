@@ -1,0 +1,15 @@
+id: 7b24a5cf-afc5-4ce4-be19-90dbd8949601
+idn: prepare_rag_context
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: b99e0d2f-8fbe-4716-998b-d7c86ffd5fdb
+    name: memory
+    default_value: ""
+  - id: 187fc618-1e5b-4eeb-90a2-0a139c151546
+    name: user_id
+    default_value: ""
+path: ""

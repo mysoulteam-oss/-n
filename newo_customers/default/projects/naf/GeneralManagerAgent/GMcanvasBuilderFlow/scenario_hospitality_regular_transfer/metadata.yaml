@@ -1,0 +1,9 @@
+id: f4b17cc4-eeb0-4108-b334-1b27fe9965bc
+idn: scenario_hospitality_regular_transfer
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

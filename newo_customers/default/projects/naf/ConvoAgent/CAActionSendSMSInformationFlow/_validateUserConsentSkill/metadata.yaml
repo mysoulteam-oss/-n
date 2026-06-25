@@ -1,0 +1,15 @@
+id: 9ee561ed-071a-4393-82e5-be2fff5cf3eb
+idn: _validateUserConsentSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_pro
+parameters:
+  - id: bdf5ec44-cc55-4730-9281-0baab8da4130
+    name: agentAnswer
+    default_value: ""
+  - id: 6135519c-cc03-4c38-acff-d4bdf46fbb1f
+    name: memory
+    default_value: ""
+path: ""

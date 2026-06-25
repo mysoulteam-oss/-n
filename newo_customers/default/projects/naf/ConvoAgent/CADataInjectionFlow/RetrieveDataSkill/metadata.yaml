@@ -1,0 +1,9 @@
+id: 92475717-9c8d-4741-bec3-3bdf68a8bf81
+idn: RetrieveDataSkill
+title: RetrieveDataSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

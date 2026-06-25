@@ -1,0 +1,12 @@
+id: 65dda773-418a-42e4-a8ab-dacae40728a5
+idn: _defineConversationCategorySchemaSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 60acccda-18bc-4299-a00f-897300511f58
+    name: categories
+    default_value: ""
+path: ""

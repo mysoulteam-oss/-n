@@ -1,0 +1,9 @@
+id: 30fad2dd-85fc-48f4-b5e0-2bf1d3ee5dc9
+idn: ReceiveContactDetailsSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

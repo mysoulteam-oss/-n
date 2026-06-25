@@ -1,0 +1,16 @@
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "isValid": {
+      "type": "boolean",
+      "description": "Always must be `true`"
+    }
+  },
+  "required": [
+    "isValid"
+  ]
+}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

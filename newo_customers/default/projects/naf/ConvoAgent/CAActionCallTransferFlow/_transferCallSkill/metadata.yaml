@@ -1,0 +1,15 @@
+id: dbf3f1de-87c2-4ee9-877c-33a0cc5ef3fd
+idn: _transferCallSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: aa93ff69-9298-4944-95e1-5462bb5aac7f
+    name: memory
+    default_value: " "
+  - id: 27cf470c-a1b7-453d-8702-29c2cc42dc7b
+    name: userId
+    default_value: " "
+path: ""

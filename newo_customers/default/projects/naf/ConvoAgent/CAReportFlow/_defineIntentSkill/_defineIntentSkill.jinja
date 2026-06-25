@@ -1,0 +1,127 @@
+{% set canvas = json.loads(GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas")) %}
+
+{# Get all scenario titles #}
+{% set scenarios_items = json.loads(utils_find_object_by_key_value(
+    obj=canvas.types,
+    value="scenarios",
+    key="idn"
+))["items"] %}
+
+{% set scenario_titles = [] %}
+{% for scenario in scenarios_items %}
+  {% set _ = scenario_titles.append(scenario.title) %}
+{% endfor %}
+
+{{scenario_titles.append("undefined")}}
+
+{# Get all intent items #}
+{% set intents_items = json.loads(utils_find_object_by_key_value(
+    obj=canvas.types,
+    value="intent_types",
+    key="idn"
+))["items"] %}
+
+{% set schema = {
+  "type": "object",
+  "properties": {
+    "user_inquiry_analysis": {
+      "type": "string",
+      "description": "Analyze the entire <ConversationHistory> and identify the user's intents during conversation. Start by considering the user's initial intent at the beginning of the conversation."
+    },
+    "intents": {
+      "type": "array",
+      "description": "List all unique intents identified from the conversation based on `user_inquiry_analysis`, in the order they appear. Each intent should be included only once.",
+      "items": {
+        "type": "string",
+        "enum": json.loads(GetCustomerAttribute(field="project_attributes_private_dynamic_intents_list"))
+      }
+    },
+    "general_intent_name": {
+      "type": "string",
+      "enum": json.loads(GetCustomerAttribute(field="project_attributes_private_dynamic_intents_list")),
+      "description": "Identify the user’s general intent. If the user expresses actionable intent - such as to buy, book, reserve, or order - then describe that as the general intent."
+    },
+    "scenario_name": {
+      "type": "string",
+      "description": "Based on the chosen `general_intent_name`, cite the scenario name the ConvoAgent was supposed to follow."
+    },
+    "scenarios": {
+      "type": "array",
+      "description": "Based on `intents`, list all unique scenarios the ConvoAgent was supposed to follow during this conversation. If intent doesn't contain explicit reference the scenario to follow, set as `undefined`",
+      "items": {
+        "type": "string",
+        "enum": scenario_titles
+      }
+    }
+  },
+  "required": [
+    "user_inquiry_analysis",
+    "intents",
+    "general_intent_name",
+    "scenario_name"
+  ]
+} %}
+
+{% set prompt %}
+
+You are the call center supervisor agent. You will be provided with intent type map (enclosed in <IntentTypeMap>...</IntentTypeMap>), scenarios (enclosed in <Scenarios>...</Scenarios>), and conversation (enclosed in <ConversationHistory>...</ConversationHistory>). Your goal is to analyze the conversation and determine the main user intent.
+CRITICAL: Revenue-generating intents (e.g., leads, opportunities, bookings, appointments) always take priority. If detected anywhere in the conversation, classify accordingly regardless of other content.
+Once the intent is identified, define the main scenario the ConvoAgent is supposed to follow.
+
+<IntentTypeMap>
+{{intent_type_map}}
+</IntentTypeMap>
+
+<ConversationHistory>
+{{transcript}}
+</ConversationHistory>
+
+{% endset %}
+
+{% set result_json = json.loads(structured_generation(schema=schema, prompt=prompt.strip())) %}
+
+
+{# Build a list of only the scenarios the agent could have followed #}
+{% set relevant_scenarios = [] %}
+{% for scenario_title in result_json.scenarios %}
+    {% for scenario in scenarios_items %}
+        {% if scenario.title == scenario_title %}
+            {% set _ = relevant_scenarios.append({
+                "title": scenario.title,
+                "body": scenario.body
+            }) %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+
+{% set compiled_scenarios %} {% for scenario in relevant_scenarios %} {{ scenario.title }}
+{{ scenario.body }}
+
+---
+{% endfor %}
+{% endset %}
+
+{# Build a list of only the intents the user could have expressed #}
+{% set relevant_intents = [] %}
+{% for intent_title in result_json.intents %}
+    {% for intent in intents_items %}
+        {# In project_attributes_private_dynamic_intents_list we store plain name of the intent (for example [L] Regular Booking), but intent item title contains markdown formatting (for example, ## **[L] Regular Booking**), so we need to check with in operator.#}
+        {% if intent.title.replace("## **", "").replace("**", "") == intent_title  %}
+            {% set _ = relevant_intents.append({
+                "title": intent.title,
+                "body": intent.body
+            }) %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+
+{% set compiled_intents %} {% for intent in relevant_intents %} {{ intent.title }}
+{{ intent.body }}
+
+---
+{% endfor %}
+{% endset %}
+
+{{ result_json.update({"relevant_scenarios": compiled_scenarios.strip(), "relevant_intents": compiled_intents.strip()}) }}
+
+{{Return(val=json.dumps(result_json, ensure_ascii=False, indent=2))}}

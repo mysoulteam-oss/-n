@@ -1,0 +1,9 @@
+id: 1b8131df-6d8c-4853-b77b-ffd98bc8e846
+idn: _prepareAttributesHospitalityMetadataSkill
+title: _prepareAttributesHospitalityMetadataSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

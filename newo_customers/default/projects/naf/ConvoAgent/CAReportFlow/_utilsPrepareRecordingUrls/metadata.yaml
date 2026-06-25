@@ -1,0 +1,15 @@
+id: 53141188-172b-41b4-8203-f5f4969ab18e
+idn: _utilsPrepareRecordingUrls
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 9effd730-0e7d-4214-b331-d53149ab9f06
+    name: portal_url
+    default_value: ""
+  - id: c77275ea-b3e9-4c84-ac8f-2659ec4dad70
+    name: recording_urls
+    default_value: ""
+path: ""
