@@ -1,0 +1,7 @@
+# Exported newo.ai project data — contains customer PII / business config.
+# Do NOT commit. Regenerate with: NEWO_API_KEY=... python3 export_newo.py
+export/
+
+# Secrets
+.env
+*.token
