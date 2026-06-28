@@ -2,6 +2,10 @@
 # Do NOT commit. Regenerate with: NEWO_API_KEY=... python3 export_newo.py
 export/
 
+# Call report outputs — phones + transcripts (PII)
+_callreport_*/
+*-calls-report-*.html
+
 # Secrets
 .env
 *.token
