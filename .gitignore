@@ -1,0 +1,9 @@
+# Generated call-report artifacts contain PII (phone numbers, call transcripts).
+# Keep them out of version control / the remote.
+callreport/
+*-calls-report.html
+*-calls-report-*.html
+
+# Secrets
+.env
+*.env
