@@ -1,0 +1,21 @@
+id: 019f2274-fa70-7a5a-b5a0-b8dd89935709
+idn: inspect_library
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa70-7a5a-b5a0-b8dd89935708
+    name: transaction_id
+    default_value: ""
+  - id: 019f2274-fa70-7a5a-b5a0-b8dd89935705
+    name: already_taken_actions
+    default_value: ""
+  - id: 019f2274-fa70-7a5a-b5a0-b8dd89935706
+    name: memory
+    default_value: ""
+  - id: 019f2274-fa70-7a5a-b5a0-b8dd89935707
+    name: parameters
+    default_value: ""
+path: ""

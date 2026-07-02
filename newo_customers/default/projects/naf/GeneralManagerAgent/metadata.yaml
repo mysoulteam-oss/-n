@@ -1,0 +1,6 @@
+id: 019f2274-f64b-7c6a-a5af-44cbab6349c2
+idn: GeneralManagerAgent
+title: GeneralManagerAgent
+description: >-
+  Owns core Project initialization, migrations, tool setup, reports, and
+  workflow-builder assets for the SuperAgent runtime.

@@ -1,0 +1,15 @@
+id: 019f2274-f6ed-7657-859b-c462f0a92aa0
+idn: _getExplicitConstraintsByChannelSkill
+title: _getExplicitConstraintsByChannelSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ed-7657-859b-c462f0a92a9e
+    name: userId
+    default_value: " "
+  - id: 019f2274-f6ed-7657-859b-c462f0a92a9f
+    name: conversationChannel
+    default_value: " "
+path: ""

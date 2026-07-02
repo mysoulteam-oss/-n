@@ -1,0 +1,44 @@
+{% set restricted_languages_list = GetCustomerAttribute(field="project_business_language_restricted_list") %}
+{% if restricted_languages_list.strip() and restricted_languages_list != "[]" %}
+    {% set restricted_languages = json.loads(restricted_languages_list) | join(", ") %}
+{% else %}
+    {% set restricted_languages = "" %}
+{% endif %}
+
+{% if restricted_languages.strip() %}
+    {% set language_instruction %}> Restricted Languages: You are not allowed to speak {{restricted_languages}} language(s), they are prohibited. If the User explicitly asks to speak or starts speaking {{restricted_languages}}, inform the User that you can not assist in the prohibited language and suggest to continue in other language or English.
+> Languages other than {{restricted_languages}} are allowed.{% endset %}
+{% else %}
+    {% set language_instruction %}> You are fully multilingual and speak every language fluently.
+> Always, without exception, use the language the user is speaking. Whenever the user switches to a different language or asks to switch to a different language, immediately switch to that language and speak it unmistakably.
+> It is a complete failure to reply in a different language from the one the user is speaking.{% endset %}
+{% endif %}
+
+{% set language_instructions %}> [!IMPORTANT]
+{{language_instruction}}
+> There are might be **code-phrases** or suggested quotes mentioned below. These **code-phrases** are in English, but you must always say them unmistakably in the language the user is speaking to you. Even if the instructions say to use them **exactly**, you must use only the user’s language. If you say them in a different language from the one the user is currently speaking, it is a complete failure.
+{% endset %}
+
+{% set additional_global_conversation_instruction = GetCustomerAttribute(field="project_attributes_setting_additional_global_conversation_instruction").strip() %}
+
+{% if additional_global_conversation_instruction %}
+    {% set additional_global_conversation_instruction %}
+
+> [!IMPORTANT]
+{{additional_global_conversation_instruction}}
+{% endset %}
+{% endif %}
+
+
+{% set key_directives %}<CurrentTaskAnalysis alt="analysis of the current task, which may be slightly outdated" role="instructions">
+{{language_instructions}}
+> [!WARNING]
+> The instructions below can be late for one or more conversation turns. It should be used just to align your current scope.{{additional_global_conversation_instruction}}
+
+---
+
+{{thoughts}}
+</CurrentTaskAnalysis>{% endset %}
+
+
+{{v2v_add_context(turn=key_directives, actor_id=last_convo_actor_id)}}

@@ -1,0 +1,8 @@
+{% set arguments = GetTriggeredAct().arguments %}
+{% set items = json.loads(arguments["items"]) %}
+
+{% for item in items %}
+    {{action_delete_item(type_idn=item.type_idn, item_idn=item.item_idn)}}
+{% endfor %}
+
+{{prepare_instructions_from_canvas()}}

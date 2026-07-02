@@ -1,0 +1,33 @@
+{% set act_arguments = GetTriggeredAct().arguments %}
+{% set user_id = GetUser().id |string %}
+
+{% if act_arguments.conversationChannel == "phone" %}
+  {% set last_convo_actor_id = GetPersonaAttribute(id=user_id, field="last_convo_actor_id") %}
+  
+  {% if last_convo_actor_id and last_convo_actor_id|trim %}
+    {% set is_newo_voice = GetActor(id=last_convo_actor_id).integrationIdn == "newo_voice" %}
+  {% else %}
+    {% set is_newo_voice = False %}
+  {% endif %}
+  {% set is_v2v_mode = GetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_mode") == "voice-to-voice" %}
+  {% set is_genai = GetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider") == "genai" %}
+  {% set ff_is_active = True if system_utils.ff_active(ff_name="thoughts_genai_native_tools") else False %}
+
+  {% if is_newo_voice and is_v2v_mode and is_genai and ff_is_active %}
+    {{Return()}}
+  {% endif %}
+
+{% endif %}
+
+{% if GetState(name="waiting_mode") == "activated" %}
+    {{Return()}}
+{% endif %}
+
+{% set memory_without_latest_agent_answer = act_arguments.memoryWithoutLatestAgentAnswer %}
+{% set latest_agent_answer = act_arguments.convoAgentAnswer %}
+
+{{_genThoughtsSkill(
+  userId=user_id,
+  memory=memory_without_latest_agent_answer,
+  agentAnswer=latest_agent_answer
+)}}

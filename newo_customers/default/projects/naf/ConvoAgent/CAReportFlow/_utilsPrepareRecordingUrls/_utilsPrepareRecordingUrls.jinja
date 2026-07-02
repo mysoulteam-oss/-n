@@ -1,0 +1,19 @@
+{% set url_list = json.loads(recording_urls) %}
+{% set total_count = url_list | length %}
+{% set ns = namespace(results=[]) %}
+    
+{% for url in url_list %}
+    {% set call_id = url.strip().split('/') | last %}
+    {% set full_portal_url = portal_url ~ "/recording/" ~ call_id %}
+
+    {% set label = "Recording" if total_count == 1 else "Recording " ~ loop.index %}
+    {% if total_count > 1 and loop.last %}
+        {% set label = label ~ " <strong>(Most Recent)</strong>" %}
+    {% endif %}
+    
+    {% set link_tag = '<a href="' ~ full_portal_url ~ '">' ~ label ~ '</a>' %}
+    {% set ns.results = ns.results + [link_tag] %}
+{% endfor %}
+
+{% set formatted_links = ns.results | join(', ') %}
+{{ Return(val="<strong>Recording(s):</strong> " ~ formatted_links) }}

@@ -1,0 +1,120 @@
+{# Update Attribute values to new defaults #}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_voice_disclaimer_phrase", value="This call may be recorded.")}}
+
+{% set voice_greeting_phrase = GetCustomerAttribute(field="project_representative_agent_voice_greeting_phrase") %}
+{% set voice_greeting_phrase = voice_greeting_phrase.replace(" This call may be recorded. ", " ") %}
+{{SetCustomerAttribute(field="project_representative_agent_voice_greeting_phrase", value=voice_greeting_phrase)}}
+
+{# Delete redundant Attributes #}
+
+{{DeleteCustomerAttribute(field="project_attributes_setting_session_started_report_enabled")}}
+
+{{DeleteCustomerAttribute(field="project_representative_agent_voice_filler_words")}}
+
+{{DeleteCustomerAttribute(field="project_representative_agent_voice_first_set_words")}}
+
+{{DeleteCustomerAttribute(field="project_representative_agent_voice_second_set_words")}}
+
+{{DeleteCustomerAttribute(field="project_representative_agent_voice_redirect_phrase")}}
+
+{{DeleteCustomerAttribute(field="customer_query_params")}}
+
+{{DeleteCustomerAttribute(field="creator_actor_id")}}
+
+{{DeleteCustomerAttribute(field="customer_account_type")}}
+
+{{DeleteCustomerAttribute(field="customer_master_partner_idn")}}
+
+{{DeleteCustomerAttribute(field="customer_reseller_partner_idn")}}
+
+{# Delete redundant Connectors #}
+
+{{DeleteConnector(integrationIdn = "api", connectorIdn = "environment")}}
+
+{{DeleteConnector(integrationIdn = "api", connectorIdn = "init_settings")}}
+
+{{DeleteConnector(integrationIdn = "magic_api", connectorIdn = "magic_api_connector")}}
+
+{{DeleteConnector(integrationIdn = "program_timer", connectorIdn = "ca_clean_the_list_of_recent_tasks_event")}}
+
+{{DeleteConnector(integrationIdn = "program_timer", connectorIdn = "newSessionMessage")}}
+
+{{DeleteConnector(integrationIdn = "vapi_caller", connectorIdn = "vapi_caller")}}
+
+{# Rename actual Connectors #}
+
+{{DeleteConnector(integrationIdn = "sandbox", connectorIdn = "GMAgent")}}
+{% set sandbox_connector_object = GetConnectorInfo(integrationIdn="sandbox", connectorIdn="test_agent_sandbox") %}
+{% if not sandbox_connector_object %}
+    {{CreateConnector(
+        integrationIdn = "sandbox",
+        connectorIdn = "test_agent_sandbox",
+        title = "test_agent_sandbox",
+        settings = {},
+        start = True
+    )}}
+{% endif %}
+
+{# Delete redundant webhooks #}
+
+{% set sa_session_started_webhook = GetWebhook(webhookIdn = "sa_session_started", webhookType = "outgoing") %}
+{% if sa_session_started_webhook %}
+    {{DeleteWebhook(
+        webhookId = sa_session_started_webhook.id,
+        webhookType = "outgoing"
+    )}}
+{% endif %}
+
+{% set sa_session_ended_webhook = GetWebhook(webhookIdn = "sa_session_ended", webhookType = "outgoing") %}
+{% if sa_session_ended_webhook %}
+    {{DeleteWebhook(
+        webhookId = sa_session_ended_webhook.id,
+        webhookType = "outgoing"
+    )}}
+{% endif %}
+
+{% set sa_get_restaurant_availability_webhook = GetWebhook(webhookIdn = "sa_get_restaurant_availability", webhookType = "outgoing") %}
+{% if sa_get_restaurant_availability_webhook %}
+    {{DeleteWebhook(
+        webhookId = sa_get_restaurant_availability_webhook.id,
+        webhookType = "outgoing"
+    )}}
+{% endif %}
+
+{# Set Connector channels #}
+
+{{utils_connector_set_setting_if_exists(
+    integrationIdn = "newo_chat",
+    connectorIdn = "newo_chat",
+    field = "channel",
+    value = "chat"
+)}}
+
+{{utils_connector_set_setting_if_exists(
+    integrationIdn = "newo_voice",
+    connectorIdn = "newo_voice_connector",
+    field = "channel",
+    value = "voice"
+)}}
+
+{{utils_connector_set_setting_if_exists(
+    integrationIdn = "sandbox",
+    connectorIdn = "convo_agent_sandbox",
+    field = "channel",
+    value = "chat"
+)}}
+
+{{utils_connector_set_setting_if_exists(
+    integrationIdn = "sandbox",
+    connectorIdn = "test_agent_sandbox",
+    field = "channel",
+    value = "chat"
+)}}
+
+{{utils_connector_set_setting_if_exists(
+    integrationIdn = "twilio_messenger",
+    connectorIdn = "sms_connector",
+    field = "channel",
+    value = "chat"
+)}}

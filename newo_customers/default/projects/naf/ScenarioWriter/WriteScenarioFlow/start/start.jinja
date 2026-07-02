@@ -1,0 +1,55 @@
+{% set request = GetTriggeredAct().text %}
+
+{% if GetState(name="mode") == "conversation" %}
+    {% if request.lower() == "no" %}
+        {{SetState(name="mode", value="scenario_builder")}}
+        {{SendMessage(message="Thank you for your cooperation. You can now submit a new request for writing a scenario.")}}
+        {{Return()}}
+    {% endif %}
+    {{SendMessage(message="Fixing the scenario.")}}
+    {{fix_scenario(request=request)}}
+    {{Return()}}
+{% endif %}
+
+
+{% set classification = json.loads(analyze_request(request=request)) %}
+
+{% if classification.classification_type != "CLEAR REQUEST" %}
+    {{SendMessage(message=classification.advice)}}
+    {{Return(val="")}}
+{% endif %}
+
+{{SendMessage(message="The request is clear and understandable. I’m currently preparing the draft scenario.")}}
+
+{% set draft = write_draft(request=request) %}
+
+{% set draft_output %}Here is draft:
+
+{{draft}}{% endset %}
+
+{{SendMessage(message=draft_output)}}
+
+{{SendMessage(message="Injecting procedures.")}}
+
+{% set injected_procedures = map_procedures(draft=draft) %}
+
+{% set procedure_output %}Here is draft with injected procedures:
+
+{{injected_procedures}}{% endset %}
+
+{{SendMessage(message=procedure_output)}}
+
+{{SendMessage(message="Formatting the scenario.")}}
+
+{% set formatted_scenario = format_scenario(draft=procedure_output, request=request) %}
+
+{% set scenario_output %}Here is final version:
+
+{{formatted_scenario}}{% endset %}
+
+{{SendMessage(message=scenario_output)}}
+{{SendMessage(message="Title examples: \n\n" ~ generate_titles(scenario=formatted_scenario, request=request))}}
+{{SendMessage(message="Please let me know if you need to change anything. If not, just reply with no.")}}
+
+{{SetState(name="original_scenario", value=formatted_scenario)}}
+{{SetState(name="mode", value="conversation")}}

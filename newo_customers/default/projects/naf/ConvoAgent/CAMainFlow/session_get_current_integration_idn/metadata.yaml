@@ -1,0 +1,15 @@
+id: 019f2274-f6ea-7d44-89d3-e603c29ce167
+idn: session_get_current_integration_idn
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce166
+    name: user_id
+    default_value: ""
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce165
+    name: set_persona_attribute
+    default_value: "False"
+path: ""

@@ -1,0 +1,15 @@
+id: 019f2274-f6ed-7657-859b-c462f0a92b03
+idn: _schemasSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ed-7657-859b-c462f0a92b01
+    name: promise
+    default_value: "False"
+  - id: 019f2274-f6ed-7657-859b-c462f0a92b02
+    name: transferPhoneNumber
+    default_value: "False"
+path: ""

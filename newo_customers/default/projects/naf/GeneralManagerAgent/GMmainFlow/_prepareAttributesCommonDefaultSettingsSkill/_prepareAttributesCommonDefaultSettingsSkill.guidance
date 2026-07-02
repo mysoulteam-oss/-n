@@ -1,0 +1,322 @@
+{{Set(name="is_first_init_done", value=GetCustomerAttribute(field="project_attributes_private_account_initialized_first_time"))}}
+{{!-- All `settings` common Customer Attributes must be specified here with default values --}}
+{{!-- (must be sorted alphabetically) --}}
+
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_ami_template", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_ami_compiled", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_additional_global_conversation_instruction", value=" ")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_additional_limitations_and_restrictions", value=" ")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_asr_average_lead_value", value=" ")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_asr_conversion_ratio", value=" ")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_asr_recognition", value=" ")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_asr_redirection_type_working_hours", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_blocked_phone_numbers", value="[]")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_spam_limit", value="5")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_cancellation_enabled", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_cancellation_type", value="default")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_cancellation_url", value=" ")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_check_availability_enabled", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_check_availability_payload_schema_template", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_booking_check_availability_payload_schema_compiled", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_check_availability_request_headers", value="{}")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_check_availability_request_http_method", value="POST")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_check_availability_validation_schema_template", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_meta_fields_schema_template", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_payload_schema_template", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_booking_schema_compiled", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_check_availability_max_days_in_advance", value="30")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_check_availability_processing_type", value="formatted_response")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_check_availability_type", value="default")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_check_availability_url", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_check_availability_window", value="12")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_check_availability_working_hours_status", value="True")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_setting_booking_email", ac_field="agent_creator_setting_booking_email")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_enabled", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_fallback_processing_type", value="default")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_phrase_template_on_booking_submitting", value=" ")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_phrase_template_on_booking_success", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_request_headers", value="{}")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_success_notification_on_email_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_success_notification_on_sms_enabled", value="True")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_type", value="default")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_url", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_calculation_context", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_calculation_rules", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_calendar_injection_is_enabled", value="True")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_check_spam_or_voicemail", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_chat_split_messages", value="True")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_common_phone_numbers", value="[]")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_connect_with_the_manager_in_case_of_unhandled_issues", value="True")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_conversation_session_timeout_finished_chat", value="60")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_conversation_session_timeout_finished_voice", value="60")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_conversation_session_timeout_unfinished_chat", value="580")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_conversation_session_timeout_unfinished_voice", value="300")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_conversation_sources_map", value="{}")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(
+  field="project_attributes_setting_conversation_summary_instruction",
+  value="Summarize the given conversation between a customer and a AI Agent (digital employee). The summary should be concise and around 100 words."
+)}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_data_injection_is_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_data_injection_max_summary_tokens", value="1000")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_data_injection_needs_summary", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_data_injection_update_period", value="14400")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_define_conversation_is_during_working_hours_enabled", value="True")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_outbound_tasks_working_hours_status", value="False")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_email_send_information_allowed_content", value=" ")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_email_send_information_allowed_content_items", value=" ")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_email_send_information_enabled", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(
+  field="project_attributes_setting_email_sender_name",
+  value=Concat(_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_name", defaultValue="Your Business"), " | DoNotReply")
+)}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_external_reply_type", value="default")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_evaluate_ongoing_conversation_quality", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_follow_up_timer_chat_interval_base", value="120")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_follow_up_timer_voice_interval_agent_speech_ended", value="20")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_follow_up_timer_voice_interval_agent_speech_started", value="70")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_follow_up_timer_voice_interval_conversation_started_inbound", value="12")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_follow_up_timer_voice_interval_conversation_started_outbound", value="12")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_follow_up_timer_voice_interval_user_speech_ended", value="20")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_follow_up_timer_voice_interval_user_speech_started", value="70")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_initial_thoughts", value="Just greeted the User. Next - understand inquiry and follow instructions.")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_instant_callback_on_abort_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_reset_persona_attributes", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_hipaa_mode_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_hitl_monitoring_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_magic_browser_alert_enabled", value="True")}}
+
+{{! Is being set in each industry independently }}
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_setting_calendar_event_integration",
+  ac_field="agent_creator_setting_calendar_event_integration",
+  default=" "
+)}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_meeting_check_availability_working_hours_status", value="True")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_meeting_duration", value="60")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_meeting_setup_phrase", value="I will set up an appointment request.")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_settings_newo_tools", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_phone_dialpad_output_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_products_and_services_background_check_availability_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_products_and_services_background_check_location_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_products_and_services_structured_representation_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_send_report_during_conversation", value="False")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_report_content", value=" ")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_report_additional_schema", value="{}")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_report_additional_criteria", value="{}")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_report_criteria_template", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_report_criteria_compiled", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_report_criteria_complete_template", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_report_event_map", value="{}")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_itm_template", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_itm_compiled", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_itm_non_working_hours_compiled", value=" ")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_itm_working_hours_compiled", value=" ")}}
+
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_report_enabled", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_report_type_email", value="default")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_report_include_transcript", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_report_include_utm_tags", value="False")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_setting_session_ended_report_include_conversation_and_record_urls",
+  ac_field="agent_creator_setting_session_ended_report_include_conversation_and_record_urls",
+  default="True"
+)}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_sms_content", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_sms_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_webhook_auth_header", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_webhook_schema", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_session_ended_webhook_url", value=" ")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_setting_sms_provider",
+  ac_field="agent_creator_setting_sms_provider",
+  default="twilio_messenger"
+)}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_sms_send_information_allowed_content", value=" ")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_sms_send_information_allowed_content_items", value=" ")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_sms_send_information_enabled", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_test_mode", value="False")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_test_mode_phone_numbers", value="[]")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_timezone_reasoning_enabled", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_time_format", value="12-hour format (hh:mm A)")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_transfer_call_criteria", value=" ")}}
+
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_transfer_call_confirmation_phrase", value=" ")}}
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_transfer_call_additional_statement", value=" ")}}
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_transfer_call_enabled", value=" ")}}
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_transfer_call_phone_numbers", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service", value="NEWO Voice Integration")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_bypass_phone_number", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_mode", value="voice-to-voice")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider", value="genai")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_functions", value="[]")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_voice_integration_service_voice_to_voice_provider_genai_functions", value="[]")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_functions_description", value=" ")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_voice_integration_service_voice_to_voice_provider_genai_functions_description", value="**GLOBAL FUNCTIONS / TOOLS APPLICABLE TO ALL SCENARIOS / PROCEDURES:**")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_functions_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_voice_integration_service_voice_to_voice_provider_genai_functions_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_set_turn_message_type", value="user")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_set_turn_message_context_type", value="user")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_stop_call_timeout", value="6")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_voice_transfer_call_timeout", value="6")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_waiting_mode_timeout", value="60")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_waiting_mode_fallback_instruction", value="Suggest to the user that you will relay the information to the manager, and they will reach out as soon as they are available.")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_number_of_past_interactions_to_observe", value="3")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_working_hours_structured_format_enabled", value="False")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_schedule_compiled", value=" ")}}
+
+{{! Common feature flags }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_feature_flag_multi_location", value="False")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_feature_flag_booking_use_new_availability_formatted_response_processor", value="False")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_feature_flag_thoughts_genai_native_tools", value="False")}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_feature_flag_v2v_outbound_include_voicemail_rule_initial_instruction", value="False")}}

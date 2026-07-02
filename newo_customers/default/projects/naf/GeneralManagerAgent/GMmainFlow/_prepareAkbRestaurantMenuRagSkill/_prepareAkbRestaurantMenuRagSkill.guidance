@@ -1,0 +1,20 @@
+{{Set(name="current_restaurant_menu", value=GetCustomerAttribute(field="project_attributes_restaurant_menu"))}}
+
+{{!-- Exit if `Restaurant Menu` is empty --}}
+{{#if IsEmpty(text=current_restaurant_menu)}}
+    {{!-- TODO: Delete `AKB` item --}}
+    {{Return()}}
+{{/if}}
+
+{{!-- Exit if `Restaurant Menu` was not changed --}}
+{{Set(name="previous_restaurant_menu", value=GetState(name="previous_restaurant_menu"))}}
+{{#if current_restaurant_menu == previous_restaurant_menu}}
+    {{!-- TODO: Check if `AKB` topic exists --}}
+    {{Return()}}
+{{/if}}
+
+{{!-- Validate, transform and set `Restaurant Menu Overview` --}}
+{{Set(name="menu_overview", value=_prepareAkbCommonMenuOverviewSkill(currentMenu=current_restaurant_menu))}}
+{{SetCustomerAttribute(field="project_attributes_restaurant_menu_overview", value=menu_overview)}}
+{{_prepareAkbCommonMenuRagSkill(currentMenu=current_restaurant_menu)}}
+{{SetState(name="previous_restaurant_menu", value=current_restaurant_menu)}}

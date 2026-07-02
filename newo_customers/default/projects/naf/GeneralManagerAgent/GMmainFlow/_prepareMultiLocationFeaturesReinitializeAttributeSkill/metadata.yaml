@@ -1,0 +1,15 @@
+id: 019f2274-f881-76e7-9c26-b420cae23662
+idn: _prepareMultiLocationFeaturesReinitializeAttributeSkill
+title: _prepareMultiLocationFeaturesReinitializeAttributeSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f881-76e7-9c26-b420cae23660
+    name: attributeName
+    default_value: ""
+  - id: 019f2274-f881-76e7-9c26-b420cae23661
+    name: side
+    default_value: ""
+path: ""

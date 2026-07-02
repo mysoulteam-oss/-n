@@ -1,0 +1,16 @@
+{{StartNotInterruptibleBlock()}}
+{{SetState(name="user_reply_buffer", value=Stringify(Concat(GetState(name="user_reply_buffer"), " ", GetTriggeredAct(fields="text"))))}}
+{{StopNotInterruptibleBlock()}}
+
+{{Set(name="user_id", value=GetUser(field="id"))}}
+{{SetPersonaAttribute(id=user_id, field="last_convo_actor_id", value=GetActor(field="id"))}}
+
+{{!-- Define integration IDN --}}
+{{Set(name="integration_idn", value=session_get_current_integration_idn(user_id=user_id, set_persona_attribute="True"))}}
+
+{{_userMessageFastReplySkill(
+  call_analyze_conversation="True",
+  set_follow_up_timer="True",
+  user_id=user_id,
+  integration_idn=integration_idn
+)}}

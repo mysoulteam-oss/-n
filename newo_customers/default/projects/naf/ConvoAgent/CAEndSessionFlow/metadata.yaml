@@ -1,0 +1,28 @@
+id: 019f2274-f6ef-7b06-8ded-f33728515595
+idn: CAEndSessionFlow
+title: CAEndSessionFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 019f2274-f6ef-7b06-8ded-f3372851562e
+    description: null
+    idn: end_session
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: EndSessionSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-f6ef-7b06-8ded-f3372851562f
+    description: null
+    idn: extend_session
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ExtendSessionSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

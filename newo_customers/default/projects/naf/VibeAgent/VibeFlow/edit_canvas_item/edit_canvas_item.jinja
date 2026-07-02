@@ -1,0 +1,80 @@
+{% set user_id = GetUser().id | string %}
+{% set actor_id = GetActor().id | string %}
+{% set actor_id_normalized = actor_id.replace('-', '') %}
+
+{% set parameters = json.loads(parameters) %}
+{% set type_idn = parameters[0] %}
+{% set item_idn = parameters[1] %}
+{% set description = parameters[2] %}
+
+{% set found_item = json.loads(get_canvas_item(type_idn=type_idn, item_idn=item_idn)) %}
+
+{% if found_item %}
+    {% set found_item_str = json.dumps(found_item, ensure_ascii=False, indent=2) %}
+    {% set skill_idn = 'generate_' ~ type_idn %}
+    {% set item = json.loads(Do(actionName=skill_idn, source=found_item_str, query=description)) %}
+    {% set transactions = [] %}
+    {% set resulting_item_idn = item_idn %}
+    {% if found_item.is_from_library %}
+        {% set new_item_idn = uuid.uuid4() | string %}
+        {% set resulting_item_idn = new_item_idn %}
+        {{item.update({
+            "idn": new_item_idn,
+            "is_from_library": false,
+            "origin_idn": item_idn
+        })}}
+
+        {{execute_delete_canvas_item(type_idn=type_idn, item_idn=item_idn)}}
+
+        {{transactions.append({
+            "revert_action": "execute_delete_canvas_item",
+            "revert_action_parameters": {"type_idn": type_idn, "item_idn": new_item_idn}
+        })}}
+
+        {{transactions.append({
+            "revert_action": "execute_add_canvas_item",
+            "revert_action_parameters": {"type_idn": type_idn, "item": found_item_str}
+        })}}
+
+    {% else %}
+        {{item.update({
+            "idn": found_item.idn,
+            "is_from_library": false,
+            "origin_idn": found_item.origin_idn
+        })}}
+
+        {{transactions.append({
+            "revert_action": "execute_add_canvas_item",
+            "revert_action_parameters": {"type_idn": type_idn, "item": found_item_str}
+        })}}
+    {% endif %}
+
+    {% set item_str = json.dumps(item, ensure_ascii=False, indent=2) %}
+    {% set item_title = item.title if item.title is defined else '' %}
+    {% set previous_title = found_item.title if found_item.title is defined else '' %}
+    {% set applied_change = {
+        "action": "edit_canvas_item",
+        "summary": "Edited `" ~ type_idn ~ "` item `" ~ item_idn ~ "`.",
+        "details": {
+            "type_idn": type_idn,
+            "previous_item_idn": item_idn,
+            "resulting_item_idn": resulting_item_idn,
+            "previous_title": previous_title,
+            "new_title": item_title
+        }
+    } %}
+
+    {{execute_add_canvas_item(type_idn=type_idn, item=item_str)}}
+
+    {{add_transaction(transaction_id=transaction_id, transaction=json.dumps(transactions, ensure_ascii=False, indent=2))}}
+    {{add_applied_change(change_id=transaction_id, change=json.dumps(applied_change, ensure_ascii=False, indent=2))}}
+    {{SetPersonaAttribute(id=user_id, field="pending_canvas_review_type_" ~ actor_id_normalized, value=type_idn)}}
+    {{SetPersonaAttribute(id=user_id, field="pending_canvas_review_item_id_" ~ actor_id_normalized, value=resulting_item_idn)}}
+    {{SendMessage(message='<thinking>\nI have updated an item in `' ~ type_idn ~ '`:\n' ~ '<old_value>\n```\n' ~ found_item_str ~ '\n```\n</old_value>\n<new_value>\n```\n' ~ item_str ~ '\n```\n</new_value>\n</thinking>', actorIds=[actor_id], useFilter=False)}}
+    {{already_taken_actions.append('I have updated an item in `' ~ type_idn ~ '`:\n' ~ '<old_value>\n```\n' ~ found_item_str ~ '\n```\n</old_value>\n<new_value>\n```\n' ~ item_str ~ '\n```\n</new_value>')}}
+{% else %}
+    {{SendMessage(message='<thinking>\nI could not find a `' ~ type_idn ~ '` item with idn `' ~ item_idn ~ '`.\nI should re-inspect the canvas.\n</thinking>', actorIds=[actor_id], useFilter=False)}}
+    {{already_taken_actions.append('I could not find a `' ~ type_idn ~ '` item with idn `' ~ item_idn ~ '`.\nI should re-inspect the canvas.')}}
+{% endif %}
+
+{{main(memory=memory, already_taken_actions=already_taken_actions)}}

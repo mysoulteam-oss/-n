@@ -1,0 +1,455 @@
+{% set parameters_parsed = json.loads(parameters) if parameters and parameters.strip() else [] %}
+{% set query = parameters_parsed[0] if parameters_parsed else "" %}
+{% set tenant = GetCustomerInfo().tenant | string %}
+{% set is_newo_tenant = not tenant or tenant == "newo" %}
+{% set project_business_industry = GetCustomerAttribute(field="project_business_industry").strip() %}
+{% set branding_sensitive_attributes = ["project_attributes_settings_newo_tools"] if is_newo_tenant else [] %}
+{# Based on metadata/superagent/attributes/industries/*.md, excluding self-setting and *_private_dynamic_* attributes. #}
+{% set industry_attributes_map = {
+    "beauty_industry": [
+        "project_attributes_beauty_appointment_check_in_notes",
+        "project_attributes_beauty_appointment_scenario_link_guidance_instruction",
+        "project_attributes_beauty_appointment_schedule_questions_and_info",
+        "project_attributes_beauty_appointment_url"
+    ],
+    "catering_industry": [
+        "project_attributes_catering_email",
+        "project_attributes_catering_opentable_url",
+        "project_attributes_catering_googlemaps_url",
+        "project_attributes_catering_yelp_url",
+        "project_attributes_catering_menu",
+        "project_attributes_catering_order_minimum_days_in_advance",
+        "project_attributes_catering_service_details",
+        "project_attributes_catering_signature_dishes",
+        "project_attributes_catering_menu_overview",
+        "project_attributes_catering_menu_url",
+        "project_attributes_catering_questions",
+        "project_attributes_catering_bill_per_person_exceeding_deposit",
+        "project_attributes_catering_deposit",
+        "project_attributes_catering_deposit_covered_number_of_people"
+    ],
+    "cleaning_industry": [
+        "project_attributes_cleaning_frequency",
+        "project_attributes_cleaning_appointment_url",
+        "project_attributes_cleaning_estimate_url"
+    ],
+    "dental_industry": [
+        "project_attributes_dental_insurances",
+        "project_attributes_dental_appointment_check_in_notes",
+        "project_attributes_dental_appointment_scenario_link_guidance_instruction",
+        "project_attributes_dental_appointment_schedule_questions_and_info",
+        "project_attributes_dental_appointment_url"
+    ],
+    "home_service_industry": [],
+    "hospitality_industry": [
+        "project_attributes_hospitality_large_group_reservation_email",
+        "project_attributes_hospitality_large_group_reservation_minimum_party_size",
+        "project_attributes_hospitality_large_group_reservation_questions",
+        "project_attributes_hospitality_regular_reservation_check_in_notes",
+        "project_attributes_hospitality_regular_reservation_questions",
+        "project_attributes_hospitality_regular_reservation_via_link_guidance_instruction",
+        "project_attributes_hospitality_reservation_url",
+        "project_attributes_hospitality_bill_average_per_person_per_day_large_group_reservation",
+        "project_attributes_hospitality_bill_average_per_person_per_day_regular_reservation",
+        "project_attributes_hospitality_bill_minimum_per_day_large_group_reservation"
+    ],
+    "restaurant_industry": [
+        "project_attributes_restaurant_catering_email",
+        "project_attributes_restaurant_googlemaps_reservation_url",
+        "project_attributes_restaurant_large_group_reservation_email",
+        "project_attributes_restaurant_order_email",
+        "project_attributes_restaurant_private_dining_email",
+        "project_attributes_restaurant_googlemaps_url",
+        "project_attributes_restaurant_opentable_url",
+        "project_attributes_restaurant_yelp_url",
+        "project_attributes_restaurant_menu",
+        "project_attributes_restaurant_regular_events_schedule",
+        "project_attributes_restaurant_signature_dishes",
+        "project_attributes_restaurant_menu_overview",
+        "project_attributes_restaurant_menu_url",
+        "project_attributes_restaurant_regular_events_schedule_url",
+        "project_attributes_restaurant_catering_questions",
+        "project_attributes_restaurant_large_group_reservation_minimum_party_size",
+        "project_attributes_restaurant_large_group_reservation_questions",
+        "project_attributes_restaurant_order_url",
+        "project_attributes_restaurant_private_dining_questions",
+        "project_attributes_restaurant_regular_reservation_via_link_guidance_instruction",
+        "project_attributes_restaurant_bill_average_order",
+        "project_attributes_restaurant_bill_average_per_person_catering",
+        "project_attributes_restaurant_bill_average_per_person_large_group_reservation",
+        "project_attributes_restaurant_bill_average_per_person_private_dining",
+        "project_attributes_restaurant_bill_average_per_person_regular_reservation",
+        "project_attributes_restaurant_bill_minimum_catering",
+        "project_attributes_restaurant_bill_minimum_large_group_reservation",
+        "project_attributes_restaurant_bill_minimum_private_dining"
+    ],
+    "sales_industry": [
+        "project_attributes_sales_after_appointment_notes",
+        "project_attributes_sales_appointment_via_link_guidance_instruction",
+        "project_attributes_sales_appointment_url",
+        "project_attributes_sales_pre_sale_questions",
+        "project_attributes_sales_qualifying_criteria",
+        "project_attributes_sales_qualifying_criteria_fallback_action",
+        "project_attributes_sales_qualifying_questions"
+    ],
+    "general_industry": [
+        "project_attributes_general_appointment_check_in_notes",
+        "project_attributes_general_appointment_scenario_link_guidance_instruction",
+        "project_attributes_general_appointment_url",
+        "project_attributes_general_modality"
+    ]
+} %}
+{% set industry_attributes = industry_attributes_map.get(project_business_industry, []) %}
+{% set industry_label = project_business_industry.replace("_industry", "").replace("_", " ").title() if (project_business_industry and project_business_industry != "general_industry") else "" %}
+
+{# Searchable IDN catalogue, hoisted to a local so the schema enum further down references it by name instead of duplicating a literal. Must stay in sync with `get_searchable_attribute_idns.nsl` (drift is currently checked manually; follow-up refactor anticipated). #}
+{% set base_attribute_idns = [
+    "project_business_name",
+    "project_business_name_phonetic",
+    "project_business_address",
+    "project_business_country",
+    "project_business_public_phone",
+    "project_business_story",
+    "project_business_website_url",
+    "project_business_working_hours",
+    "project_business_time_zone",
+    "project_attributes_payment_methods",
+    "project_business_top_owner_name",
+    "project_business_top_owner_phone",
+    "project_business_top_owner_email",
+    "project_attributes_setting_common_phone_numbers",
+    "project_attributes_info_crm",
+    "project_business_expected_number_of_calls_month_location",
+    "project_business_industry",
+    "project_business_language_primary",
+    "project_business_language_additional",
+    "project_business_language_restricted_list",
+    "project_attributes_known_employees",
+    "project_business_locations",
+    "project_business_top_location_count",
+    "project_business_top_name",
+    "project_business_top_url",
+    "project_business_type",
+    "project_attributes_setting_hipaa_mode_enabled",
+    "project_attributes_static_additional_business_context",
+    "project_representative_agent_name",
+    "project_representative_agent_title",
+    "project_representative_agent_chat_formatting_style",
+    "project_representative_agent_chat_speaking_style",
+    "project_representative_agent_voice_speaking_style",
+    "project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_voice",
+    "project_attributes_setting_voice_integration_service_voice_to_voice_provider_grok_voice",
+    "project_attributes_setting_voice_integration_service_voice_to_voice_provider_openai_voice",
+    "project_representative_agent_voice_phone_number",
+    "project_representative_agent_voice_disclaimer_phrase",
+    "project_representative_agent_voice_greeting_phrase",
+    "project_representative_agent_voice_greeting_phrase_recent_returning",
+    "project_representative_agent_voice_greeting_phrase_later_returning",
+    "project_representative_agent_chat_greeting_phrase",
+    "project_representative_agent_gender",
+    "project_attributes_setting_voice_integration_service_bypass_phone_number",
+    "project_representative_agent_voicemail_detection_behavior_instruction",
+    "project_representative_agent_providing_prices_explicit_constraint",
+    "project_representative_agent_voice_phone_area_code",
+    "project_representative_agent_voice_phone_alpha2_code",
+    "project_representative_agent_voice_phone_fallback_area_code",
+    "project_representative_agent_voice_phone_country_code",
+    "project_representative_agent_voice_stt_model_id",
+    "project_representative_agent_voice_stt_provider_id",
+    "project_representative_agent_voice_transcriber_language",
+    "project_representative_agent_voice_tts_model_id",
+    "project_representative_agent_voice_tts_provider_id",
+    "project_attributes_setting_voice_integration_service",
+    "project_attributes_setting_voice_integration_service_voice_mode",
+    "project_attributes_setting_voice_integration_service_voice_to_voice_provider",
+    "project_attributes_products_and_services",
+    "project_attributes_products_and_services_not_offering",
+    "project_attributes_current_specials",
+    "project_attributes_faq",
+    "project_attributes_terms_and_conditions",
+    "project_attributes_rag_knowledge_base_append_text",
+    "project_attributes_rag_knowledge_base_append_text_log",
+    "project_attributes_rag_knowledge_base_append_text_reset",
+    "project_attributes_rag_knowledge_base_append_websites",
+    "project_attributes_rag_knowledge_base_append_websites_log",
+    "project_attributes_rag_knowledge_base_append_websites_reset",
+    "project_business_average_prices",
+    "project_attributes_current_specials_url",
+    "project_attributes_products_and_services_served_area",
+    "project_attributes_products_and_services_served_zip_codes",
+    "project_attributes_setting_calendar_event_integration",
+    "project_attributes_setting_email_send_information_enabled",
+    "project_attributes_setting_email_send_information_allowed_content",
+    "project_attributes_setting_email_send_information_allowed_content_items",
+    "project_attributes_setting_sms_send_information_enabled",
+    "project_attributes_setting_sms_send_information_allowed_content",
+    "project_attributes_setting_sms_send_information_allowed_content_items",
+    "project_attributes_setting_sms_provider",
+    "project_business_manager_email",
+    "project_attributes_setting_transfer_call_enabled",
+    "project_business_non_working_hour_escalation_phone",
+    "project_business_working_hour_escalation_phone",
+    "project_attributes_setting_transfer_call_criteria",
+    "project_attributes_setting_transfer_call_phone_numbers",
+    "project_attributes_setting_session_ended_sms_enabled",
+    "project_attributes_setting_session_ended_sms_content",
+    "project_attributes_setting_instant_callback_on_abort_enabled",
+    "project_attributes_scenario",
+    "project_attributes_setting_additional_global_conversation_instruction",
+    "project_attributes_setting_additional_limitations_and_restrictions",
+    "project_attributes_setting_blocked_phone_numbers",
+    "project_attributes_setting_spam_limit",
+    "project_attributes_setting_booking_cancellation_enabled",
+    "project_attributes_setting_booking_cancellation_type",
+    "project_attributes_setting_booking_cancellation_url",
+    "project_attributes_setting_booking_check_availability_enabled",
+    "project_attributes_setting_booking_check_availability_processing_type",
+    "project_attributes_setting_booking_check_availability_payload_schema_template",
+    "project_attributes_setting_booking_check_availability_request_headers",
+    "project_attributes_setting_booking_check_availability_request_http_method",
+    "project_attributes_setting_booking_check_availability_validation_schema_template",
+    "project_attributes_setting_booking_check_availability_type",
+    "project_attributes_setting_booking_check_availability_url",
+    "project_attributes_setting_booking_check_availability_window",
+    "project_attributes_setting_booking_check_availability_working_hours_status",
+    "project_attributes_setting_booking_email",
+    "project_attributes_setting_booking_enabled",
+    "project_attributes_setting_booking_fallback_processing_type",
+    "project_attributes_setting_booking_check_availability_max_days_in_advance",
+    "project_attributes_setting_booking_phrase_template_on_booking_submitting",
+    "project_attributes_setting_booking_phrase_template_on_booking_success",
+    "project_attributes_setting_booking_payload_schema_template",
+    "project_attributes_setting_booking_request_headers",
+    "project_attributes_setting_booking_meta_fields_schema_template",
+    "project_attributes_setting_booking_success_notification_on_email_enabled",
+    "project_attributes_setting_booking_success_notification_on_sms_enabled",
+    "project_attributes_setting_booking_type",
+    "project_attributes_setting_booking_url",
+    "project_attributes_setting_calculation_context",
+    "project_attributes_setting_calculation_rules",
+    "project_attributes_setting_calendar_injection_is_enabled",
+    "project_attributes_setting_chat_split_messages",
+    "project_attributes_setting_check_spam_or_voicemail",
+    "project_attributes_setting_common_phone_numbers",
+    "project_attributes_setting_connect_with_the_manager_in_case_of_unhandled_issues",
+    "project_attributes_setting_conversation_session_timeout_finished_chat",
+    "project_attributes_setting_conversation_session_timeout_finished_voice",
+    "project_attributes_setting_conversation_session_timeout_unfinished_chat",
+    "project_attributes_setting_conversation_session_timeout_unfinished_voice",
+    "project_attributes_setting_conversation_sources_map",
+    "project_attributes_setting_data_injection_is_enabled",
+    "project_attributes_setting_data_injection_max_summary_tokens",
+    "project_attributes_setting_data_injection_needs_summary",
+    "project_attributes_setting_data_injection_update_period",
+    "project_attributes_setting_define_conversation_is_during_working_hours_enabled",
+    "project_attributes_setting_outbound_tasks_working_hours_status",
+    "project_attributes_setting_email_sender_name",
+    "project_attributes_setting_evaluate_ongoing_conversation_quality",
+    "project_attributes_setting_follow_up_timer_chat_interval_base",
+    "project_attributes_setting_follow_up_timer_voice_interval_agent_speech_ended",
+    "project_attributes_setting_follow_up_timer_voice_interval_agent_speech_started",
+    "project_attributes_setting_follow_up_timer_voice_interval_conversation_started_inbound",
+    "project_attributes_setting_follow_up_timer_voice_interval_conversation_started_outbound",
+    "project_attributes_setting_follow_up_timer_voice_interval_user_speech_ended",
+    "project_attributes_setting_follow_up_timer_voice_interval_user_speech_started",
+    "project_attributes_setting_initial_thoughts",
+    "project_attributes_setting_meeting_check_availability_working_hours_status",
+    "project_attributes_setting_meeting_duration",
+    "project_attributes_setting_meeting_setup_phrase",
+    "project_attributes_setting_phone_dialpad_output_enabled",
+    "project_attributes_setting_products_and_services_background_check_location_enabled",
+    "project_attributes_setting_products_and_services_background_check_availability_enabled",
+    "project_attributes_setting_products_and_services_structured_representation_enabled",
+    "project_attributes_setting_test_mode",
+    "project_attributes_setting_test_mode_phone_numbers",
+    "project_attributes_setting_timezone_reasoning_enabled",
+    "project_attributes_setting_time_format",
+    "project_attributes_setting_transfer_call_confirmation_phrase",
+    "project_attributes_setting_transfer_call_additional_statement",
+    "project_attributes_setting_voice_stop_call_timeout",
+    "project_attributes_setting_voice_transfer_call_timeout",
+    "project_attributes_setting_number_of_past_interactions_to_observe",
+    "project_attributes_setting_session_ended_reset_persona_attributes",
+    "project_attributes_setting_waiting_mode_fallback_instruction",
+    "project_attributes_setting_waiting_mode_timeout",
+    "project_attributes_setting_asr_average_lead_value",
+    "project_attributes_setting_asr_conversion_ratio",
+    "project_attributes_setting_asr_redirection_type_working_hours",
+    "project_attributes_setting_session_ended_report_enabled",
+    "project_attributes_setting_session_ended_report_content",
+    "project_attributes_setting_session_ended_report_criteria_template",
+    "project_attributes_setting_session_ended_report_include_transcript",
+    "project_attributes_setting_session_ended_report_include_utm_tags",
+    "project_attributes_private_custom_schema_inbound_call_report",
+    "project_attributes_setting_asr_recognition",
+    "project_attributes_setting_conversation_summary_instruction",
+    "project_attributes_setting_send_report_during_conversation",
+    "project_attributes_setting_session_ended_report_include_conversation_and_record_urls",
+    "project_attributes_setting_session_ended_webhook_auth_header",
+    "project_attributes_setting_session_ended_webhook_schema",
+    "project_attributes_setting_session_ended_webhook_url",
+    "project_attributes_info_client_session_logs_table_link",
+    "project_attributes_private_technical_owners",
+    "project_attributes_private_sa_version",
+    "project_attributes_free_notes",
+    "project_attributes_setting_hitl_monitoring_enabled",
+    "project_attributes_setting_magic_browser_alert_enabled",
+    "project_attributes_support_log_document_link",
+    "customer_email",
+    "customer_first_name",
+    "customer_last_name",
+    "customer_phone",
+    "project_attributes_setting_session_ended_report_additional_criteria",
+    "project_attributes_setting_session_ended_report_additional_schema",
+    "project_attributes_setting_session_ended_report_criteria_complete_template",
+    "project_attributes_setting_session_ended_report_criteria_compiled",
+    "project_attributes_setting_session_ended_report_event_map",
+    "project_attributes_private_account_initialized_first_time",
+    "project_attributes_private_data_injection_is_timer_running",
+    "project_attributes_private_data_injection_payload",
+    "project_attributes_private_data_injection_retrieved_data",
+    "project_attributes_private_feature_flag_multi_location",
+    "project_attributes_private_feature_flag_booking_use_new_availability_formatted_response_processor",
+    "project_attributes_setting_external_reply_type",
+    "project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_functions",
+    "project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_functions_description",
+    "project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_functions_enabled",
+    "project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_set_turn_message_context_type",
+    "project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_set_turn_message_type",
+    "project_attributes_chat_link_demo",
+    "project_attributes_setting_init_attributes_metadata_enabled",
+    "project_attributes_setting_init_on_auto_update_enabled"
+] %}
+{% set candidate_attribute_idns = base_attribute_idns + branding_sensitive_attributes + industry_attributes %}
+{% set searchable_attributes = [] %}
+{% set searchable_attribute_idns = [] %}
+{% set attributes_by_idn = {} %}
+{% for attribute_idn in candidate_attribute_idns %}
+    {% if attribute_idn not in attributes_by_idn %}
+        {% set attribute_metadata = GetCustomerMetadataAttribute(idn=attribute_idn) %}
+        {% if attribute_metadata %}
+            {% set attribute_metadata = attribute_metadata.model_dump() %}
+            {% set attribute_value = ((attribute_metadata.value if attribute_metadata.value is not none else "") | string).strip() %}
+            {% if attribute_value | length > 500 %}
+                {% set attribute_value = attribute_value[:500] ~ "..." %}
+            {% endif %}
+            {% set attribute = {
+                "idn": attribute_idn,
+                "value": attribute_value,
+                "title": attribute_metadata.title,
+                "description": attribute_metadata.description,
+                "group": attribute_metadata.group,
+                "is_hidden": attribute_metadata.isHidden,
+                "possible_values": attribute_metadata.possibleValues,
+                "value_type": attribute_metadata.valueType
+            } %}
+        {% else %}
+            {% set attribute_value = GetCustomerAttribute(field=attribute_idn).strip() %}
+            {% if attribute_value | length > 500 %}
+                {% set attribute_value = attribute_value[:500] ~ "..." %}
+            {% endif %}
+            {% set attribute = {
+                "idn": attribute_idn,
+                "value": attribute_value
+            } %}
+        {% endif %}
+
+        {% set branding_check_text = json.dumps(attribute, indent=2, ensure_ascii=False).lower() %}
+        {% if is_newo_tenant or "newo" not in branding_check_text %}
+            {{searchable_attributes.append(attribute)}}
+            {{searchable_attribute_idns.append(attribute_idn)}}
+            {{attributes_by_idn.update({attribute_idn: attribute})}}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{% set prompt %}You are the `search_attribute` action for Vibe Builder{% if is_newo_tenant %} at Newo{% endif %}. Vibe Builder passes you a semantic description of what it needs to understand or change in the AI Employee configuration.
+
+Your job:
+- Read <SearchIntent> as the user's configuration intent, not as a bag of keywords.
+- Inspect every object in <SearchableAttributes>. Each object contains the searchable attribute idn, current value, title, description, group, visibility, possible values, and value type when available.
+- Return the customer attribute idns that are most relevant to the intent.
+- If the intent exactly names an attribute idn, include it.
+- Prefer a small, useful set. Return multiple attributes only when they are genuinely related or ambiguity is useful for the caller.
+- Do not return the whole catalog.
+
+<SearchIntent>
+{{query}}
+</SearchIntent>{% if industry_label %}
+
+<Industry>
+The customer operates in the {{industry_label}} industry. When the query relates to a workflow specific to this industry (booking, scheduling, services, products, pricing, etc.), prefer industry-specific attributes over generic settings whenever both could plausibly match.
+</Industry>{% endif %}
+
+<SearchableAttributes>
+{{json.dumps(searchable_attributes, ensure_ascii=False, indent=2)}}
+</SearchableAttributes>{% endset %}
+
+{% set schema = {
+  "type": "object",
+  "properties": {
+    "related_attributes": {
+        "type": "array",
+        "items": {
+            "type": "string",
+            "description": "One of the customer attribute idns listed in SearchableAttributes",
+            "enum": searchable_attribute_idns
+        },
+        "description": "Customer attributes to return to the main VibeAgent loop"
+    }
+  },
+  "required": ["related_attributes"]
+}
+%}
+
+{% set result = json.loads(structured_generation(schema=schema, prompt=prompt)) %}
+{% set resolved_related_attributes = [] %}
+{% for attr in result.related_attributes %}
+    {% set attribute = attributes_by_idn.get(attr) %}
+    {% if attribute %}
+        {{resolved_related_attributes.append(attribute)}}
+    {% endif %}
+{% endfor %}
+{% set thoughts = '' %}
+{% if not resolved_related_attributes %}
+    {% set thoughts = 'I did not find any attributes for the query: `' ~ query ~ '`' %}
+{% else %}
+    {% set thoughts = "I have found the following attributes:\n\n" %}
+{% endif %}
+{% for attribute in resolved_related_attributes %}
+    {% set attribute_value = attribute.value %}
+    {% if not attribute_value %}
+        {% set attribute_value = '[No value]' %}
+    {% endif %}
+    {% set thoughts = thoughts ~ '**IDN:** `' ~ attribute.idn ~ '`\n**Current value:** ' ~ attribute_value ~ '\n' %}
+
+    {% if attribute.title and attribute.title.strip() %}
+        {% set thoughts = thoughts ~ '**Title:** ' ~ attribute.title.strip() ~ '\n' %}
+    {% endif %}
+
+    {% if attribute.description and attribute.description.strip() %}
+        {% set thoughts = thoughts ~ '**Description:** ' ~ attribute.description.strip() ~ '\n' %}
+    {% endif %}
+
+    {% if attribute.group and attribute.group.strip() %}
+        {% set thoughts = thoughts ~ '**Group:** ' ~ attribute.group.strip() ~ '\n' %}
+    {% endif %}
+
+    {% if attribute.is_hidden is not none %}
+        {% set thoughts = thoughts ~ '**Is Hidden:** ' ~ attribute.is_hidden | string ~ '\n' %}
+    {% endif %}
+
+    {% if attribute.possible_values %}
+        {% set thoughts = thoughts ~ '**Possible Values:** ' ~ attribute.possible_values ~ '\n' %}
+    {% endif %}
+
+    {% if attribute.value_type and attribute.value_type.strip() %}
+        {% set thoughts = thoughts ~ '**Value Type:** ' ~ attribute.value_type.strip() ~ '\n' %}
+    {% endif %}
+
+{% endfor %}
+
+{{SendMessage(message='<thinking>\n' ~ thoughts ~ '\n</thinking>', actorIds=[GetActor().id| string], useFilter=False)}}
+{{already_taken_actions.append(thoughts)}}
+
+{{main(memory=memory, already_taken_actions=already_taken_actions)}}

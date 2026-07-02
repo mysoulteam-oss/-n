@@ -1,0 +1,18 @@
+id: 019f2274-f881-76e7-9c26-b420cae23672
+idn: rag_append_create_akb_topics
+title: rag_append_create_akb_topics
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f881-76e7-9c26-b420cae23671
+    name: label
+    default_value: ""
+  - id: 019f2274-f881-76e7-9c26-b420cae2366f
+    name: input_structured_text
+    default_value: ""
+  - id: 019f2274-f881-76e7-9c26-b420cae23670
+    name: id_prefix
+    default_value: ""
+path: ""

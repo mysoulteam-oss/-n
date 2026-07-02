@@ -1,0 +1,96 @@
+{% set act = GetTriggeredAct() %}
+{% set user_id = GetUser().id | string %}
+{% set actor_id = GetActor().id | string %}
+{% set actor_id_normalized = actor_id.replace('-', '') %}
+{% set checkpoint_key = act.arguments.checkpoint_id.replace('-', '').strip() %}
+{% if not checkpoint_key %}
+    {{Return()}}
+{% endif %}
+
+{% set checkpoint_raw = GetPersonaAttribute(id=user_id, field="checkpoint_" ~ checkpoint_key).strip() %}
+{% if not checkpoint_raw %}
+    {{Return()}}
+{% endif %}
+
+{% set checkpoint_payload = json.loads(checkpoint_raw) %}
+{% set checkpoint_sequence_value = checkpoint_payload.sequence | int(default=0) %}
+{% set transactions = json.loads(get_transaction(transaction_id='')) %}
+{% set transaction_metadata = json.loads(get_transaction_metadata(transaction_id='')) %}
+{% set applied_changes_field = "applied_changes_" ~ actor_id_normalized %}
+{% set applied_changes_raw = GetPersonaAttribute(id=user_id, field=applied_changes_field).strip() %}
+{% set applied_changes = json.loads(applied_changes_raw) if applied_changes_raw else {} %}
+{% set remaining_transactions = {} %}
+{% set remaining_transaction_metadata = {} %}
+{% set checkpoints_to_delete = [] %}
+{% set removed_transaction_ids = [] %}
+
+{% for transaction_key, transaction_value in transactions.items() %}
+    {% set metadata = transaction_metadata.get(transaction_key, {}) %}
+    {% set metadata_sequence = metadata.get("checkpoint_sequence", 0) | int(default=0) %}
+    {% set metadata_checkpoint_id = metadata.get("checkpoint_id", "").replace('-', '') %}
+    {% if metadata_sequence and metadata_sequence >= checkpoint_sequence_value %}
+        {{removed_transaction_ids.append(transaction_key)}}
+        {% if metadata_checkpoint_id and metadata_checkpoint_id not in checkpoints_to_delete %}
+            {{checkpoints_to_delete.append(metadata_checkpoint_id)}}
+        {% endif %}
+        {% if transaction_key in applied_changes %}
+            {{applied_changes.pop(transaction_key)}}
+        {% endif %}
+    {% else %}
+        {{remaining_transactions.update({transaction_key: transaction_value})}}
+        {% if transaction_key in transaction_metadata %}
+            {{remaining_transaction_metadata.update({transaction_key: metadata})}}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{% for checkpoint_id_to_delete in checkpoints_to_delete %}
+    {{DeletePersonaAttribute(id=user_id, field="checkpoint_" ~ checkpoint_id_to_delete)}}
+{% endfor %}
+{% if checkpoint_key not in checkpoints_to_delete %}
+    {{DeletePersonaAttribute(id=user_id, field="checkpoint_" ~ checkpoint_key)}}
+{% endif %}
+
+{% for attribute_idn, value in checkpoint_payload.attributes.items() %}
+    {{SetCustomerAttribute(field=attribute_idn, value=value)}}
+{% endfor %}
+
+{% set transactions_field = "transaction_" ~ actor_id_normalized %}
+{% if remaining_transactions %}
+    {{SetPersonaAttribute(id=user_id, field=transactions_field, value=json.dumps(remaining_transactions, ensure_ascii=False, indent=2))}}
+{% else %}
+    {{DeletePersonaAttribute(id=user_id, field=transactions_field)}}
+{% endif %}
+
+{% set transaction_metadata_field = "transaction_metadata_" ~ actor_id_normalized %}
+{% if remaining_transaction_metadata %}
+    {{SetPersonaAttribute(id=user_id, field=transaction_metadata_field, value=json.dumps(remaining_transaction_metadata, ensure_ascii=False, indent=2))}}
+{% else %}
+    {{DeletePersonaAttribute(id=user_id, field=transaction_metadata_field)}}
+{% endif %}
+
+{% if applied_changes %}
+    {{SetPersonaAttribute(id=user_id, field=applied_changes_field, value=json.dumps(applied_changes, ensure_ascii=False, indent=2))}}
+{% else %}
+    {{DeletePersonaAttribute(id=user_id, field=applied_changes_field)}}
+{% endif %}
+
+{{DeletePersonaAttribute(id=user_id, field="checkpoint_id_" ~ actor_id_normalized)}}
+{{DeletePersonaAttribute(id=user_id, field="checkpoint_sequence_" ~ actor_id_normalized)}}
+{{SendSystemEvent(
+    eventIdn="project_publish_finish",
+    connectorIdn="project",
+    triggered_by="vibe_builder_revert_checkpoint",
+    registry_item_idn="naf",
+    global="True"
+)}}
+{{SendCommand(
+   commandIdn="revert_to_checkpoint_success",
+   integrationIdn="newo_chat",
+   connectorIdn="vibe_agent",
+   user_actor_id=actor_id,
+   checkpoint_ids=json.dumps(checkpoints_to_delete, indent=2, ensure_ascii=False)
+)}}
+{% if removed_transaction_ids %}
+    {{send_transactions_update()}}
+{% endif %}

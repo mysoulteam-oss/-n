@@ -1,0 +1,30 @@
+
+{% set current_send_report_content = GetCustomerAttribute(field="project_attributes_setting_session_ended_report_content") %}
+{% set current_json_report_content = GetCustomerAttribute(field="project_attributes_private_dynamic_session_ended_report_content_json") %}
+
+{% if current_json_report_content.strip() %}
+    {% set intents_from_report_content = json.loads(GetCustomerAttribute(field="project_attributes_private_dynamic_intents_list")) %}
+    {% set intents_from_json_report_content = [] %}
+    {% for report_object in json.loads(current_json_report_content).reports %}
+        {{ intents_from_json_report_content.append(report_object.report_type) }}
+    {% endfor %}
+    {% if intents_from_report_content | sort != intents_from_json_report_content | sort %}
+        {% set content_json = build_report_content_json(reportContent=current_send_report_content) %}
+        {{utils_set_attribute_json(attribute_idn="project_attributes_private_dynamic_session_ended_report_content_json", value_json=content_json)}}
+    {% else %}
+        {% set previous_report_content = GetState(name="report_content_previous") %}
+        {% if not previous_report_content.strip() %}
+            {{SetState(name="report_content_previous", value=current_send_report_content)}}
+            {{Return()}}
+        {% else %}
+            {% if current_send_report_content.strip() != previous_report_content %}
+                {% set content_json = build_report_content_json(reportContent=current_send_report_content) %}
+                {{utils_set_attribute_json(attribute_idn="project_attributes_private_dynamic_session_ended_report_content_json", value_json=content_json)}}
+                {{SetState(name="report_content_previous", value=current_send_report_content)}}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% else %}
+    {% set content_json = build_report_content_json(reportContent=current_send_report_content) %}
+    {{utils_set_attribute_json(attribute_idn="project_attributes_private_dynamic_session_ended_report_content_json", value_json=content_json)}}
+{% endif %}

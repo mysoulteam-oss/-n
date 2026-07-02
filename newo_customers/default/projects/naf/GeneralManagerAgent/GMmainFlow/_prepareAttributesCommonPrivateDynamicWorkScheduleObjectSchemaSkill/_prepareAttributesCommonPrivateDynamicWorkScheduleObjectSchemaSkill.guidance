@@ -1,0 +1,39 @@
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "hint": {
+      "type": "string",
+      "description": "Explain the operating hours for the target day. Must include: 1) Previous day's EXACT closing time from the data. 2) Whether there's spillover (yes if previous day closes with AM time, no if PM). 3) If spillover, show the range in brackets (e.g., 'Spillover hours: [000-005]'). 4) Target day's EXACT operating hours from the data. 5) The increment range(s) in brackets, where the end value is the LAST VALID INCREMENT (e.g., for 9:30 PM closing, use [070-212] not [070-211]). Use exact times as written in the business hours (e.g., '9:30 PM' not '930PM' or '9:30PM')."
+    },
+    "{{dayOfWeek}}": {
+      "type": "object",
+      "properties": {
+        "working_day": {
+          "type": "boolean",
+          "description": "True if {{dayOfWeek}} has ANY operating hours (including spillover from {{previousDayOfWeek}}), false if closed all day."
+        },
+        "working_hours": {
+          "type": "array",
+          "description": "Array of HHM strings representing EVERY 10-minute increment when the business is open on {{dayOfWeek}}. MUST include: 1) Any spillover increments from {{previousDayOfWeek}} if {{previousDayOfWeek}} closes after midnight (AM time). 2) All increments from {{dayOfWeek}}'s opening time up to AND INCLUDING the last valid increment before closing (e.g., if closing at 213, MUST include 212; if closing at 223, MUST include 222). Increments must be in chronological order with no duplicates. Each increment is a 3-digit string where the first 2 digits are the hour (00-23) and the last digit is the 10-minute increment (0-5 only). CRITICAL: Do not stop one increment too early!",
+          "items": {
+            "type": "string",
+            "pattern": "^(0[0-9]|1[0-9]|2[0-3])[0-5]$",
+            "description": "3-digit time in HHM format. First 2 digits = hour (00-23), last digit = 10-minute increment (0=:00, 1=:10, 2=:20, 3=:30, 4=:40, 5=:50). The last digit MUST be 0-5 only."
+          }
+        }
+      },
+      "required": [
+        "working_day",
+        "working_hours"
+      ]
+    }
+  },
+  "required": [
+    "hint",
+    "{{dayOfWeek}}"
+  ]
+}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

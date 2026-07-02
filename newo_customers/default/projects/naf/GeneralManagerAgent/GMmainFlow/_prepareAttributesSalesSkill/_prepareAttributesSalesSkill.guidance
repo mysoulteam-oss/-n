@@ -1,0 +1,73 @@
+{{! Applying industry-specific Attributes if not set }}
+{{_prepareAttributesSalesASRVariablesSkill()}}
+{{_prepareAttributesSalesVariablesSkill()}}
+
+{{! Applying dynamic Attributes (are being overwritten each time) }}
+{{_prepareAttributesSalesPrivateDynamicBusinessContextSkill()}}
+{{_prepareAttributesSalesPrivateDynamicEmailVariablesSkill()}}
+{{_prepareAttributesSalesPrivateDynamicPhoneVariablesSkill()}}
+{{_prepareAttributesSalesPrivateDynamicTechVariablesSkill()}}
+{{_prepareAttributesSalesPrivateDynamicVariablesSkill()}}
+
+{{!-- Setting scenario --}}
+{{_prepareAttributesSalesScenarioSkill()}}
+
+{{!-- TODO: Define --}}
+{{!-- {{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_terms_and_conditions", value=GetCurrentPrompt())}} --}}
+
+{{_prepareAttributesSalesRepresentativeAgentSkill()}}
+{{!-- TODO: Fix - `Agent Representative` Attributes are being set on industry-level so dynamic Attribute must be rebuilt --}}
+{{_prepareAttributesCommonPrivateDynamicAgentPersonaSkill()}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_cancellation_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_check_availability_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_enabled", value="False")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_phrase_template_on_booking_submitting", value="Your booking request is being processed.")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_booking_phrase_template_on_booking_success", value="Meanwhile, your booking has been successfully confirmed.")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_calendar_event_integration", value="google_integration")}}
+
+{{#system~}}
+{
+  "tools": {
+    "check_timezone_tool": {
+      "description": "This tool checks and identifies timezones mismatches to help agent to correct its answer.",
+      "conditions": {
+        "timeZoneQuestioning": {
+          "type": "boolean",
+          "description": "The user's last message is **questioning** time **zone** / time **difference** (not just stating time/timezone). (it means that `tool` must be called to double-check whether Agent provided valid date and time conversion)."
+        },
+        "userInterestAboutTimeDifferenceActive": {
+          "type": "boolean",
+          "description": "If the user’s last message **changes topic**, **confirms understanding**, or **asks about something else**, this flag becomes `false`."
+        },
+        "redundantTimeClarificationsAbsent": {
+          "type": "boolean",
+          "description": "This condition is `true` only if, in `<Conversation>` & `<LatestConvoAgentAnswer>` together, the total count of agent messages that mention **last** **related time** or **related timezones** is no more than 1. If there are more than 1 mentions, the condition is NOT met and tool must NOT be called."
+        }
+      },
+      "useConversationHistory": true
+    }
+  }
+}
+{{~/system}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_settings_newo_tools", value=GetCurrentPrompt())}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_timezone_reasoning_enabled", value="True")}}
+
+{{set_customer_attribute_if_first_init_and_empty(field="project_representative_agent_providing_prices_explicit_constraint", value="- Always mention that actual prices might differ whenever you provide prices.")}}
+
+{{_prepareAttributesSalesSMSContentSkill()}}
+
+{{_prepareAttributesSalesEmailContentSkill()}}
+
+{{_prepareAttributesSalesTransferCallSkill()}}
+
+{{_prepareAttributesSalesAdditionalLimitationsAndRestrictions()}}
+
+{{!-- Booking schemas --}}
+{{_prepareAttributesBookingSchemasSkill()}}

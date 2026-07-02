@@ -1,0 +1,65 @@
+{% set init_attributes_metadata_enabled = GetProjectAttribute(field="project_attributes_setting_init_attributes_metadata_enabled") %}
+{% if not init_attributes_metadata_enabled.strip() %}
+    {{SetProjectAttribute(field="project_attributes_setting_init_attributes_metadata_enabled", value="True")}}
+{% endif %}
+
+{% set default_retry_number = GetCustomerAttribute(field="project_attributes_setting_outbound_default_retry_number") %}
+{% if not default_retry_number.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_setting_outbound_default_retry_number", value="3")}}
+{% endif %}
+
+{% set default_retry_timeout = GetCustomerAttribute(field="project_attributes_setting_outbound_default_retry_timeout") %}
+{% if not default_retry_timeout.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_setting_outbound_default_retry_timeout", value="10")}}
+{% endif %}
+
+{% set greeting_delay = GetCustomerAttribute(field="project_attributes_setting_outbound_greeting_delay") %}
+{% if not greeting_delay.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_setting_outbound_greeting_delay", value="0")}}
+{% endif %}
+
+{% set payload_schema = GetCustomerAttribute(field="project_attributes_setting_outbound_payload_schema") %}
+{% if not payload_schema.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_setting_outbound_payload_schema", value="{}")}}
+{% endif %}
+
+{% set request_endpoint = GetCustomerAttribute(field="project_attributes_setting_outbound_request_endpoint") %}
+{% if not request_endpoint.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_setting_outbound_request_endpoint", value="")}}
+{% endif %}
+
+{% set request_headers = GetCustomerAttribute(field="project_attributes_setting_outbound_request_headers") %}
+{% if not request_headers.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_setting_outbound_request_headers", value="")}}
+{% endif %}
+
+{% set sms_session_duration = GetCustomerAttribute(field="project_attributes_setting_outbound_sms_session_duration") %}
+{% if not sms_session_duration.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_setting_outbound_sms_session_duration", value="60")}}
+{% endif %}
+
+{% set max_active_calls = GetCustomerAttribute(field="project_attributes_setting_outbound_max_active_calls") %}
+{% if not max_active_calls.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_setting_outbound_max_active_calls", value="50")}}
+{% endif %}
+
+{% set deadline = GetCustomerAttribute(field="project_attributes_setting_outbound_naive_conversation_deadline_seconds") %}
+{% if not deadline.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_setting_outbound_naive_conversation_deadline_seconds", value="180")}} {# 3 minutes #}
+{% endif %}
+
+{% set call_table_csv = GetCustomerAttribute(field="project_attributes_outbound_call_table_csv") %}
+{% if not call_table_csv.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_outbound_call_table_csv", value="")}}
+{% else %}
+    {{SendSystemEvent(eventIdn="task_manager_start_calling", connectorIdn="system", global="True", task_type="make_call")}}
+{% endif %}
+
+{% set call_table_csv_result = GetCustomerAttribute(field="project_attributes_outbound_call_table_csv_result") %}
+{% if not call_table_csv_result.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_outbound_call_table_csv_result", value="")}}
+{% endif %}
+
+{{_prepareAttributesOutboundMetadataSkill()}}
+
+{{SetProjectAttribute(field="project_attributes_setting_init_attributes_metadata_enabled", value="False")}}

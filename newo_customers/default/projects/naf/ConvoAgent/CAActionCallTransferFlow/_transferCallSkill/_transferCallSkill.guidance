@@ -1,0 +1,73 @@
+{{Set(name="transfer_call_phone_number_and_clarification_instruction", value=_transferCallGetPhoneNumberSkill(userId=userId, memory=memory))}}
+
+{{Set(name="transfer_call_phone_number", value=Stringify(GetValueJSON(obj=transfer_call_phone_number_and_clarification_instruction, key="transfer_call_phone_number")))}}
+
+{{Set(name="test_mode", value=session_in_test_mode(userId=userId))}}
+{{#if test_mode == "True"}}
+    {{_utilsSendSystemLogSkill(message=Concat("Test mode is active. `transfer_call_tool` is replaced with `end_conversation_tool`. The call would be transferred to phone number: ", transfer_call_phone_number))}}
+    {{SendSystemEvent(
+        eventIdn="end_conversation_tool",
+        connectorIdn="system",
+        conversation_channel="phone",
+        uninterruptible="True"
+    )}}
+    {{Return()}}
+{{/if}}
+
+{{#if transfer_call_phone_number == "null"}}
+    {{Set(name="clarification_instruction", value=Stringify(GetValueJSON(obj=transfer_call_phone_number_and_clarification_instruction, key="clarification_instruction")))}}
+
+    {{_utilsSendSystemLogSkill(message=Concat("The command to transfer the call was not executed. A transfer call phone number was not determined.
+Clarification instruction: '", clarification_instruction, "'"))}}
+
+    {{Set(name="session_ended_report_enabled", value=GetCustomerAttribute(field="project_attributes_setting_session_ended_report_enabled"))}}
+    {{#if session_ended_report_enabled == "True"}}
+        {{SendSystemEvent(
+            eventIdn="urgent_message",
+            connectorIdn="system",
+            baseInstruction=Concat("Apologize to the user and **explain** why you cannot connect with the manager right now (refer to 'clarification instruction' below).
+Alternatively, you can relay user's message instead.
+**Clarification instruction** (explanation of why you can not connect with the manager right now potentially containing a **question which must be addressed to the user**):
+'", clarification_instruction, "'"),
+            uninterruptible="True"
+        )}}
+    {{else}}
+        {{SendSystemEvent(
+            eventIdn="urgent_message",
+            connectorIdn="system",
+            baseInstruction=Concat("Apologize to the user and **explain** why you cannot connect with the manager right now (refer to 'clarification instruction' below).
+**Clarification instruction** (explanation of why you can not connect with the manager right now potentially containing a **question which must be addressed to the user**):
+'", clarification_instruction, "'"),
+            uninterruptible="True"
+        )}}
+    {{/if}}
+
+    {{Return()}}
+{{/if}}
+
+{{Set(name="voice_integration_service", value=GetCustomerAttribute(field="project_attributes_setting_voice_integration_service"))}}
+
+{{#if voice_integration_service == "VAPI Integration"}}
+    {{SendCommand(
+        commandIdn="transfer_call",
+        integrationIdn="vapi",
+        connectorIdn="vapi_caller",
+        phoneNumber=transfer_call_phone_number
+    )}}
+{{/if}}
+
+{{#if voice_integration_service == "NEWO Voice Integration"}}
+    {{Set(name="transfer_call_timeout", value=GetCustomerAttribute(field="project_attributes_setting_voice_transfer_call_timeout"))}}
+    {{#if IsEmpty(text=transfer_call_timeout)}}
+        {{Set(name="transfer_call_timeout", value="6")}}
+    {{/if}}
+    {{SendCommand(
+        commandIdn="transfer_call",
+        integrationIdn="newo_voice",
+        connectorIdn="newo_voice_connector",
+        phoneNumber=transfer_call_phone_number,
+        waitForTransferSeconds=transfer_call_timeout
+    )}}
+{{/if}}
+
+{{_utilsSendSystemLogSkill(message=Concat("The command to transfer the call was executed. Phone number: ", transfer_call_phone_number))}}

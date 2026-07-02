@@ -1,0 +1,15 @@
+id: 019f2274-f6ed-7657-859b-c462f0a92a6e
+idn: _getCompletePromptSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ed-7657-859b-c462f0a92a6d
+    name: userId
+    default_value: " "
+  - id: 019f2274-f6ed-7657-859b-c462f0a92a6c
+    name: taskIdn
+    default_value: " "
+path: ""

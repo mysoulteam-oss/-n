@@ -1,0 +1,9 @@
+{# Use this util to leave only unique items in the list and preserve their order, since jinja `unique` filter doesn't preserve order  #}
+{% set result = [] %}
+{% for n in items %}
+  {% if n not in result %}
+    {{result.append(n)}}
+  {% endif %}
+{% endfor %}
+
+{{Return(val=json.dumps(result, ensure_ascii=False, indent=2))}}

@@ -1,0 +1,226 @@
+{% set its_library_items = [] %}
+
+{% set regular_reservation_title = "## **[L] Regular Reservation**" %}
+{% set regular_reservation_body %}
+A guest wants to make a reservation for a party size below [[project_attributes_hospitality_large_group_reservation_minimum_party_size]] guests.
+ConvoAgent starts the scenario: **"Make a Regular Reservation via Link"**.
+{% endset %}
+{% set regular_reservation_description %}
+Standard booking for fewer than [[project_attributes_hospitality_large_group_reservation_minimum_party_size]] guests via the reservation link.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_make_regular_reservation_via_link",
+    "title": regular_reservation_title,
+    "body": regular_reservation_body.strip(),
+    "description": regular_reservation_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_hospitality_regular_reservation_via_link"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set regular_reservation_relay_title = "## **[L] Regular Reservation**" %}
+{% set regular_reservation_relay_body %}
+A guest wants to make a reservation for a party size below [[project_attributes_hospitality_large_group_reservation_minimum_party_size]] guests.
+ConvoAgent starts the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set regular_reservation_relay_description %}
+Standard booking below size threshold; request is relayed to the manager to complete.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_relay_regular_reservation_to_manager",
+    "title": regular_reservation_relay_title,
+    "body": regular_reservation_relay_body.strip(),
+    "description": regular_reservation_relay_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_hospitality_relaying_message_to_the_manager"}],
+    "is_from_library": True,
+    "origin_idn": "Customer specific - relay to manager on regular reservation"
+}) }}
+
+{% set large_group_reservation_title = "## **[L] Large Group Reservation**" %}
+{% set large_group_reservation_body %}
+A guest wants to make a reservation for a party size [[project_attributes_hospitality_large_group_reservation_minimum_party_size]] guests or above.
+ConvoAgent starts the scenario: **"Make a Large Group Reservation via Email"**.
+{% endset %}
+{% set large_group_reservation_description %}
+Booking for [[project_attributes_hospitality_large_group_reservation_minimum_party_size]]+ guests initiated via email.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_make_large_group_reservation_via_email",
+    "title": large_group_reservation_title,
+    "body": large_group_reservation_body.strip(),
+    "description": large_group_reservation_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_hospitality_large_group_reservation"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{{ its_library_items.append(json.loads(library_intent_types_common_appointment_agent())) }}
+{{ its_library_items.append(json.loads(library_intent_types_common_cancellation_agent())) }}
+
+{% set reschedule_or_modification_title = "## **[T] Reschedule or Modification**" %}
+{% set reschedule_or_modification_body %}
+A guest wants to modify an existing booking.
+ConvoAgent should say that it cannot assist with this request and start the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set reschedule_or_modification_description %}
+Change an existing booking; agent cannot modify and will relay to a team member.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_reschedule_or_modification",
+    "title": reschedule_or_modification_title,
+    "body": reschedule_or_modification_body.strip(),
+    "description": reschedule_or_modification_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_hospitality_relaying_message_to_the_manager"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set cancellation_title = "## **[T] Cancellation**" %}
+{% set cancellation_body %}
+A guest wants to cancel an existing booking.
+ConvoAgent should say that it cannot assist with this request and start the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set cancellation_description %}
+Cancel an existing booking; agent cannot cancel and will relay to a team member.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_cancellation",
+    "title": cancellation_title,
+    "body": cancellation_body.strip(),
+    "description": cancellation_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_hospitality_relaying_message_to_the_manager"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set guest_support_title = "## **[T] Guest Support**" %}
+{% set guest_support_body %}
+Questions related to existing booking details, billing, restaurant table reservations, room service, food order to the room, cleaning, towels, repairs, room temperature, and requests for additional services, etc.
+ConvoAgent asks the room number and then starts the scenario: **"Regular Transfer"**
+{% endset %}
+{% set guest_support_description %}
+In-stay help (billing, housekeeping, services, etc.); collect room number then transfer.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_guest_support",
+    "title": guest_support_title,
+    "body": guest_support_body.strip(),
+    "description": guest_support_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_hospitality_regular_transfer"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set contractor_support_title = "## **[T] Contractor Support**" %}
+{% set contractor_support_body %}
+Inquiries from vendors, contractors, or providers.
+ConvoAgent starts the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set contractor_support_description %}
+Vendor or contractor inquiry; agent relays the message to the manager.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_contractor_support",
+    "title": contractor_support_title,
+    "body": contractor_support_body.strip(),
+    "description": contractor_support_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_hospitality_relaying_message_to_the_manager"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set manager_or_human_request_title = "## **[T] Manager or Human Request**" %}
+{% set manager_or_human_request_body %}
+A request requiring immediate assistance from a human, real person, front desk, operator, customer service, representative, receptionist, concierge, host, manager, a colleague named [[project_attributes_known_employees]].
+During Working Hours: ConvoAgent starts the scenario: **"Regular Transfer"**.
+During Non-Working Hours: ConvoAgent says something like: "It's currently outside of working hours, so unfortunately, I can't transfer your call to my colleague. However, I can pass along your message." and starts the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set manager_or_human_request_description %}
+Caller requests a human; transfer during working hours, otherwise take a message and relay.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_manager_or_human_request",
+    "title": manager_or_human_request_title,
+    "body": manager_or_human_request_body.strip(),
+    "description": manager_or_human_request_description.strip(),
+    "mentions": [
+        {"type": "scenarios", "item_idn": "scenario_hospitality_regular_transfer"},
+        {"type": "scenarios", "item_idn": "scenario_hospitality_relaying_message_to_the_manager"}
+        ],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set general_information_request_title = "## **General Information Request**" %}
+{% set general_information_request_body %}
+Questions about the address, directions, working hours, services, prices, etc.
+ConvoAgent starts the scenario: **"Answering Questions"**.
+{% endset %}
+{% set general_information_request_description %}
+General questions about location, hours, services, or prices; agent answers directly.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_general_information_request",
+    "title": general_information_request_title,
+    "body": general_information_request_body.strip(),
+    "description": general_information_request_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_hospitality_answering_questions"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set spam_session_title = "## **Spam Session**" %}
+{% set spam_session_body %}
+The caller is clearly attempting to sell something, conduct telemarketing, running a scam, or is an unsolicited robocall unrelated to our services. Unclear, garbled, or nonsensical speech is NOT spam - it indicates transcription issues.
+ConvoAgent responds with something like: *"I'm afraid I can't assist you with that"* and informs that it ends the conversation now.
+{% endset %}
+{% set spam_session_description %}
+Sales or irrelevant call; politely decline and finish the conversation.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_spam_session",
+    "title": spam_session_title,
+    "body": spam_session_body.strip(),
+    "description": spam_session_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_hospitality_finish_conversation"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set test_session_title = "## **Test Session**" %}
+{% set test_session_body %}
+A call from a phone number on the test number list or a session where the caller explicitly mentioned it was a test.
+ConvoAgent says: *"Thank you for your cooperation"* and then starts the scenario: **"Finish Conversation"**.
+{% endset %}
+{% set test_session_description %}
+Known test call; thank the caller and finish.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_test_session",
+    "title": test_session_title,
+    "body": test_session_body.strip(),
+    "description": test_session_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_hospitality_finish_conversation"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set other_session_title = "## **Other type of session**" %}
+{% set other_session_body %}
+Any type of session not covered by the categories listed above.
+ConvoAgent should say that it cannot assist with this request, needs to pass the information to a co-worker, and start the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set other_session_description %}
+Uncategorized issue; agent cannot assist directly and will relay to a co-worker.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_other_session",
+    "title": other_session_title,
+    "body": other_session_body.strip(),
+    "description": other_session_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_hospitality_relaying_message_to_the_manager"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{{Return(val=json.dumps(its_library_items, ensure_ascii=False, indent=2))}}

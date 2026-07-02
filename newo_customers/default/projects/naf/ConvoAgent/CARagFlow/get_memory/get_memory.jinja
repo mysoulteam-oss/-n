@@ -1,0 +1,102 @@
+{% if not actors %}
+    {% set vapi_actors = GetActors(
+        personaId=user_id,
+        integrationIdn="vapi"
+    ) %}
+
+    {% set newo_voice_actors = GetActors(
+        personaId=user_id,
+        integrationIdn="newo_voice"
+    ) %}
+
+    {% set twilio_messenger_actors = GetActors(
+        personaId=user_id,
+        integrationIdn="twilio_messenger"
+    ) %}
+
+    {% set newo_chat_actors = GetActors(
+        personaId=user_id,
+        integrationIdn="newo_chat"
+    ) %}
+
+    {% set talking_head_actors = GetActors(
+        personaId=user_id,
+        integrationIdn="talking_head"
+    ) %}
+
+    {% set telegram_actors = GetActors(
+        personaId=user_id,
+        integrationIdn="telegram"
+    ) %}
+
+    {% set system_real_message_actors = GetActors(
+        personaId=user_id,
+        integrationIdn="system",
+        connectorIdn="real_message"
+    ) %}
+
+    {% set system_actors = GetActors(
+        personaId=user_id,
+        integrationIdn="system",
+        connectorIdn="system"
+    ) %}
+
+    {% set email_actors = [] %}
+    {% for actor in system_actors %}
+        {% if actor.externalId.startswith("email_actor_") %}
+            {{email_actors.append(actor)}}
+        {% endif %}
+    {% endfor %}
+
+    {% set api_webhook_actors = GetActors(
+        personaId=user_id,
+        integrationIdn="api"
+    ) %}
+
+    {% set sandbox_actors = GetActors(
+        personaId=user_id,
+        integrationIdn="sandbox"
+    ) %}
+
+    {% set actors = vapi_actors + newo_voice_actors + twilio_messenger_actors + newo_chat_actors + talking_head_actors + telegram_actors + system_real_message_actors + api_webhook_actors + sandbox_actors + email_actors %}
+
+    {% if include_thoughts == "True" %}
+        {% set footnote_actors = utils_get_footnote_actors(
+            user_id=user_id,
+            thoughts="True"
+        ) %}
+        {% set actors = actors + footnote_actors %}
+    {% endif %}
+
+    {% if include_system == "True" %}
+        {% set system_actors = utils_get_footnote_actors(
+            user_id=user_id,
+            system="True"
+        ) %}
+        {% set actors = actors + system_actors %}
+    {% endif %}
+
+    {% set actors = actors | map(attribute='id') | map('string') | list %}
+{% else %}
+    {# We might have a real array on input or guidance Concat() which arrives here as string+string #}
+    {% if actors is string %}
+        {# in this case we except uuid string or uuid+uuid string (36*N length string) #}
+        {% set transformed_array = [] %}
+        {% for i in range(0, actors | length, 36) %}
+            {{transformed_array.append(actors[i:i+36])}}
+        {% endfor %}
+        {% set actors = transformed_array %}
+    {% endif %}
+{% endif %}
+
+{% if from_date.strip() %}
+    {% if to_date.strip() %}
+        {{Return(val=GetMemory(count=count, maxLen=10000, filterByActorIds=actors, fromDate=from_date, toDate=to_date))}}
+    {% endif %}
+        {{Return(val=GetMemory(count=count, maxLen=10000, filterByActorIds=actors, fromDate=from_date))}}
+{% else %}
+    {% if to_date.strip() %}
+        {{Return(val=GetMemory(count=count, maxLen=10000, filterByActorIds=actors, toDate=to_date))}}
+    {% endif %}
+        {{Return(val=GetMemory(count=count, maxLen=10000, filterByActorIds=actors))}}
+{% endif %}

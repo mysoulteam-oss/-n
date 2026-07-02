@@ -1,0 +1,12 @@
+{# TODO: CHECK IF NEEDED #}
+{{SetState(name="fast_prompt", value="")}}
+{{SetState(name="fast_prompt_override_version", value="")}}
+{{SetState(name="cached_base_prompt", value="")}}
+{{SetState(name="cached_base_prompt_override_version", value="")}}
+
+{# Some persona attributes should be reset on the session started event #}
+{{session_get_and_set_last_convo_actor_id(user_id=userId)}}
+
+{# FOR HITL #}
+
+{{SetPersonaAttribute(id=userId, field="conversation_session_started_time_pt", value=GetDateTime(format="time", timezone="America/Los_Angeles"))}}

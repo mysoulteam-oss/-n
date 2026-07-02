@@ -1,0 +1,27 @@
+id: 019f2274-f6ee-7e87-a894-58d91cb68079
+idn: _schemasSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68075
+    name: userId
+    default_value: " "
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68073
+    name: promisedSchema
+    default_value: "False"
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68074
+    name: requestMethod
+    default_value: POST
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68076
+    name: workingHoursSchema
+    default_value: "False"
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68077
+    name: availabilitySchema
+    default_value: "False"
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68078
+    name: checkAvailabilitySchema
+    default_value: "False"
+path: ""

@@ -1,0 +1,36 @@
+{% set intent_type_items = [] %}
+
+{{DUMMY(intent_type_items[0])}}
+
+{% for intent_type in intent_types %}
+    {{DUMMY(intent_type)}}
+
+    {% set matches = re.findall("(?<=##\s).+\n", intent_type)|list %}
+
+    {% set title = matches[0]|string %}
+
+    {{DUMMY(title)}}
+
+    {% set body = intent_type|replace("## " ~ title, "")|trim(" \n") %}
+    {% set title = title|trim(" \n") %}
+
+    {{DUMMY(body)}}
+
+    {% set mentions = [] %}
+
+    {% set description = _migration_3_0_0_helper_get_description(body=body) %}
+
+    {% set idn = uuid.uuid4() | string %}
+    {% set intent_type_item = {
+        "idn": idn,
+        "title": "## "~title,
+        "body": body,
+        "mentions": mentions,
+        "description": description,
+        "is_from_library": False,
+        "origin_idn": ""
+    } %}
+    {% set intent_type_items = intent_type_items + [intent_type_item] %}
+{% endfor %}
+
+{{Return(val=json.dumps(intent_type_items, ensure_ascii=False, indent=2))}}

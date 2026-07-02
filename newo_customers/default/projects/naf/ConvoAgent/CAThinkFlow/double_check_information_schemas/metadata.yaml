@@ -1,0 +1,15 @@
+id: 019f2274-f6ed-7657-859b-c462f0a92a5a
+idn: double_check_information_schemas
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ed-7657-859b-c462f0a92a58
+    name: service_schema
+    default_value: ""
+  - id: 019f2274-f6ed-7657-859b-c462f0a92a59
+    name: zip_code_city_schema
+    default_value: ""
+path: ""

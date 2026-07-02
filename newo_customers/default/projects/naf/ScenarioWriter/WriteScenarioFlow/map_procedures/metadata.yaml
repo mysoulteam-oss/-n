@@ -1,0 +1,12 @@
+id: 019f2274-fa12-7403-a9fe-971388cebae9
+idn: map_procedures
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa12-7403-a9fe-971388cebae8
+    name: draft
+    default_value: ""
+path: ""

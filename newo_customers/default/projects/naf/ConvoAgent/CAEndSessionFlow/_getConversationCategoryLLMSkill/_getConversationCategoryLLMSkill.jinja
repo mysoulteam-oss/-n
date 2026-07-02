@@ -1,0 +1,30 @@
+{% set schema = {
+  "type": "object",
+  "properties": {
+    "revenue_model_key": {
+      "type": "string",
+      "enum": revenueModels | list,
+      "description": "Key of the revenue model that best fits the SessionType. If there is no category that clearly fits best, set this field to `default`."
+    }
+  },
+  "required": ["revenue_model_key"]
+}%}
+
+{% system %}
+Based on the provided JSON object with revenue models (enclosed in <RevenueModels>...</RevenueModels>), you must get the key that best matches the provided sessionType (enclosed in <SessionType>...</SessionType>).
+- If there is no category that clearly fits best, set the `revenue_model_key` as `default`
+
+<RevenueModels>
+{% for key in revenueModels | list %}
+{{key}}
+{% endfor %}
+</RevenueModels>
+
+<SessionType>
+{{sessionName}}
+</SessionType>
+
+{% end %}
+{% set result_json = Gen(jsonSchema=schema, validateSchema=True, temperature=0.2, topP=0, skipFilter=True, thinkingBudget=1020) %}
+
+{{Return(val=json.loads(result_json).revenue_model_key)}}

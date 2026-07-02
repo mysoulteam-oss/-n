@@ -1,0 +1,18 @@
+id: 019f2274-f6ef-7b06-8ded-f3372851559e
+idn: _calculatePotentialRevenueSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ef-7b06-8ded-f3372851559b
+    name: transcript
+    default_value: " "
+  - id: 019f2274-f6ef-7b06-8ded-f3372851559d
+    name: userId
+    default_value: " "
+  - id: 019f2274-f6ef-7b06-8ded-f3372851559c
+    name: sessionName
+    default_value: " "
+path: ""

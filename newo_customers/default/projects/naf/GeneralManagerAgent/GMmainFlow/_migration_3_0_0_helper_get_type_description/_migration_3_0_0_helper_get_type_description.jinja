@@ -1,0 +1,96 @@
+{% if canvas_type == "introduction" %}
+    {% set description %}
+The Introduction scenario serves as the entry point of any conversation between the user and the conversational agent. It is always identified as `Scenario 0`, ensuring a consistent starting position in the overall flow.
+
+This scenario defines how the agent should greet the user and identify the purpose of their inquiry. The agent's primary objective here is to gather the minimum required information necessary to determine the correct next step - typically identifying the intent type and any critical parameters associated with it.
+
+For instance, in a service-based environment, these parameters may include details such as the reason for contact, desired time or date, or specific service request. The agent remains within this scenario until all the required fields are collected. Only after these values are confirmed does the system transition to a more specific scenario based on the identified intent (through the <IntentTypeMap>).
+
+Rules:
+1. Always use the title format: `## Scenario 0: Introduction`
+2. This scenario must have the number "0" (it is always the first scenario).
+3. Steps must be labeled in sequential order:
+    - Use the format ### Step X.Y (e.g., ### Step 0.1, ### Step 0.2). Step numbering must follow the scenario number (e.g., Scenario 0 → steps 0.1, 0.2, 0.3).
+    - Each step should describe one logical conversational action (question, confirmation, transition, etc.).
+    {% endset %}
+
+{% elif canvas_type == "intent_types" %}
+    {% set description %}
+Intent Types define the categories of user intentions that the agent can recognize and respond to. Each intent type represents a possible goal or purpose behind the user's interaction - such as requesting a service, submitting feedback, updating personal information, or seeking support.
+
+An intent type typically maps to one or more scenarios, guiding the conversation flow based on what the user wants to accomplish. These definitions form the foundation of the agent's decision-making process, allowing it to dynamically route the conversation.
+
+Each intent is represented with a clear and descriptive title - e.g.,
+
+> ## **General Inquiry**
+
+> ## **[L] Appointment Request**
+
+> ## **[T] Cancellation**
+
+and includes an explanatory body describing what should occur when the intent is recognized. For instance, an intent might describe whether the agent should launch a scenario, provide an informational response, or indicate that a service is unavailable.
+
+Rules:
+1. Use the title format: `## **<Intent Name>**`
+2. Each intent must describe a single, clearly defined user goal or request.
+3. The description must indicate what happens when the intent is recognized (e.g., starts a scenario, or provides a direct response).
+4. The body can either:
+    - Reference an existing scenario, or
+    - Define what the agent should say directly (if no scenario applies).
+5. Avoid domain-specific terms and examples.
+6. You may use placeholders (e.g., `[[project_representative_agent_name]]`) for contextual replacement from Customer Attributes during runtime.
+7. The `[L]` and `[T]` markers are optional, but when used, they help classify the intent:
+    - `[L]` - Lead Intent: used when the conversation represents a potential lead, opportunity, or conversion (e.g., a request, reservation, or inquiry that could result in a sale or engagement).
+    - `[T]` - TODO Intent: used when the conversation outcome requires manual follow-up or internal action by a manager or team member after the session (e.g., callbacks, confirmations, or approvals).
+    {% endset %}
+
+{% elif canvas_type == "scenarios" %}
+    {% set description %}
+Scenarios define the structured conversational flows that occur once the user's intent has been identified. Each scenario outlines the agent's expected sequence of actions, decision points, and information requirements.
+
+Scenarios can vary widely depending on context - ranging from handling a simple FAQ response to executing complex, multi-step processes such as registration, booking, or data validation. Each scenario may include substeps or references to procedures (modular reusable actions) that standardize how common tasks are performed.
+
+Titles follow a numeric pattern (e.g., `## Scenario 3: Data Update Request`) for clarity and traceability. Each scenario body provides step-by-step conversational guidance, example phrasing, and transition conditions that dictate when to move to another scenario or close the conversation.
+
+Scenarios may also reference placeholders in double square brackets (e.g., `[[project_attributes_restaurant_large_group_reservation_minimum_party_size]]`) which are dynamically replaced with real Customer Attribute values during runtime, ensuring personalized and contextually accurate responses.
+
+Rules:
+1. Use the title format: `## Scenario <number>: <Scenario Title>`
+2. Each scenario corresponds to a specific intent or user action.
+3. Scenarios must describe:
+    - When it starts (trigger conditions),
+    - What information must be collected or confirmed,
+    - When it should end or transition to another scenario.
+4. Steps must be labeled in sequential order:
+    - Use the format `### Step X.Y` (e.g., `### Step 2.1`, `### Step 2.2`). Step numbering must follow the scenario number (e.g., Scenario 3 → steps 3.1, 3.2, 3.3).
+    - Each step should describe one logical conversational action (question, confirmation, transition, etc.).
+5. Scenarios may reference procedures (e.g., "### **Step 1.1:** If the preferred date or time are not known get it by following the **Gathering Preferred Date and Time** procedure.") to avoid duplicating logic.
+6. Use placeholders to use values from Customer Attributes.
+    {% endset %}
+
+{% elif canvas_type == "procedures" %}
+    {% set description %}
+Procedures represent reusable conversational subroutines - standardized logic blocks that perform common actions across multiple scenarios. They are designed to avoid duplication of logic and ensure uniform handling of repeated behaviors such as confirming names, collecting phone numbers, or verifying contact information.
+
+Each procedure is written in a consistent, descriptive format using the naming convention:
+
+> ## Reconfirming or Gathering User Name procedure
+
+The body explains when and how the procedure should be used, and often includes conditional logic or example phrasing to maintain conversation quality and consistency. Procedures can reference Customer Attributes (e.g., `[[project_attributes_restaurant_large_group_reservation_minimum_party_size]]`) and should adapt based on the information already available.
+
+Rules:
+1. Use the title format: `## **<ProcedureName>** procedure`
+2. Each procedure must represent a reusable conversational unit that can appear in multiple scenarios.
+3. The body must clearly define:
+    - When the procedure should be invoked,
+    - What conditions to check before execution,
+    - What the agent should say or do in each case.
+4. Procedures must not depend on any specific scenario context - they must be generic.
+5. Keep logic simple and self-contained - no nested scenario calls inside procedures.
+    {% endset %}
+
+{% else %}
+    {% set description = "" %}
+{% endif %}
+
+{{Return(val=description.strip())}}

@@ -1,0 +1,8 @@
+{{Set(name="recording_urls", value=GetPersonaAttribute(id=userId, field="recording_urls"))}}
+{{#if IsEmpty(text=recording_urls)}}
+    {{Set(name="recording_urls", value="[]")}}
+    {{Set(name="formatted_recording_urls", value=" ")}}
+{{else}}
+  {{Set(name="formatted_recording_urls", value=_utilsPrepareRecordingUrls(recordingUrls=recording_urls))}}
+{{/if}}
+{{Return(val=formatted_recording_urls)}}

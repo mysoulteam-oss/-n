@@ -1,0 +1,15 @@
+id: 019f2274-f6eb-762d-82e0-3f503afe747d
+idn: get_tools_to_call_schema
+title: get_tools_to_call_schema
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6eb-762d-82e0-3f503afe747b
+    name: ranking
+    default_value: "False"
+  - id: 019f2274-f6eb-762d-82e0-3f503afe747c
+    name: keys
+    default_value: "[]"
+path: ""

@@ -1,0 +1,12 @@
+id: 019f2274-f6ea-7d44-89d3-e603c29ce15c
+idn: session_get_and_set_last_convo_actor_id
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce15b
+    name: user_id
+    default_value: ""
+path: ""

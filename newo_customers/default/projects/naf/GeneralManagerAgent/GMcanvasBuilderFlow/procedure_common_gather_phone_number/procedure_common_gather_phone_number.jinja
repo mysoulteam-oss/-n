@@ -1,0 +1,39 @@
+{% set title = '## **Reconfirming or Gathering Phone Number** procedure' %}
+
+{% set body %}
+Before proceeding, check the **<PreviousConversationSummary>** section, **<UserInformation>** section, and **<Conversation>**. **DO NOT** use the business phone number from <BusinessContext>. Follow the rules:
+
+- Rule 1: If `conversation.channel` in <ConversationMeta> is set to **PHONE:** - Proceed to **Step 1.**
+
+- Rule 2: If `conversation.channel` in <ConversationMeta> is set to **CHAT:** - Proceed to **Step 2.**
+
+### **Step 1:**
+  - **First-reconfirmation null-state rule.** If `user.provided_phone_number` is `null` when you need to read back the number (typically on the first reconfirmation right after the user provides a number), read back exactly the digits the user just spoke during the most recent turn — including any country-code digits they pronounced. Wait for confirmation; on subsequent turns `user.provided_phone_number` will be populated and the rules below apply.
+  - **If the User asks to change/update their phone number or provides a new phone number:** reconfirm it once digit-by-digit by reading the digits in `user.provided_phone_number` exactly as stored. Do not add or remove digit characters. Say: "Let me make sure I got that right: [repeat digits from user.provided_phone_number, digit-by-digit, exactly as stored]. Is that correct?" Wait for the user's explicit confirmation before proceeding to the next step.
+  - **If `user.detected_phone_number` is not `null`, reconfirm permission to use it - e.g.:** "I see your phone number is [user.detected_phone_number]. May I use it?"
+  - **If `user.detected_phone_number` is `null`, request to provide phone number - e.g.:** "Could you share a phone number we can use to stay in touch? Spell the phone number please.". **After they provide it, reconfirm it digit-by-digit by reading the digits in `user.provided_phone_number` exactly as stored, e.g.:** "Let me make sure I got that right: [repeat digits from user.provided_phone_number, digit-by-digit, exactly as stored]. Is that correct?" Reconfirm even if the number sounds short or partial — the spell-back is what surfaces missing or incorrect digits.
+  - **If `user.provided_phone_number` is already known, but requires validation, say:** "Just to be safe, let me make sure I have your number right: [repeat digits from user.provided_phone_number, digit-by-digit, exactly as stored]. Is that correct?"
+
+### **Step 2:**
+  - **If the User asks to change/update their phone number or provides a new phone number:** accept it, treat it as gathered immediately, and proceed to the next step. **Do not repeat it back or ask for confirmation.**
+  - **If `user.detected_phone_number` is already known:** treat it as already gathered and proceed to the next step. **Do not ask the user to repeat it or confirm it.**
+  - **If `user.detected_phone_number` is `null`, request to provide phone number - e.g.:** "Could you share a phone number we can use to stay in touch?"
+  - **After they provide it in chat, do not repeat the number back or ask for confirmation.**
+  - **Proceed to the next Step.**
+{% endset %}
+
+{% set description %}
+Use the conversation channel and <UserInformation> to determine how to handle the phone number. In chat, ask for it only if it is still missing, and if a number is already available or the user provides one in the current turn, treat it as gathered and proceed without repeating or reconfirming it. On phone, if a number is on file ask permission to use it; if not, request it and then read it back for confirmation (or re-read and confirm if reconfirmation is needed).
+{% endset %}
+
+{% set item = {
+    "idn": "procedure_common_gather_phone_number",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

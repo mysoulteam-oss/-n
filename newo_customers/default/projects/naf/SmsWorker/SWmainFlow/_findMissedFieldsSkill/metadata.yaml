@@ -1,0 +1,24 @@
+id: 019f2274-fa23-72a2-a066-1f549da39a43
+idn: _findMissedFieldsSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa23-72a2-a066-1f549da39a3f
+    name: taskIdn
+    default_value: " "
+  - id: 019f2274-fa23-72a2-a066-1f549da39a42
+    name: taskObject
+    default_value: " "
+  - id: 019f2274-fa23-72a2-a066-1f549da39a41
+    name: industry
+    default_value: " "
+  - id: 019f2274-fa23-72a2-a066-1f549da39a40
+    name: taskContext
+    default_value: " "
+  - id: 019f2274-fa23-72a2-a066-1f549da39a3e
+    name: convoAgentPersonaId
+    default_value: " "
+path: ""

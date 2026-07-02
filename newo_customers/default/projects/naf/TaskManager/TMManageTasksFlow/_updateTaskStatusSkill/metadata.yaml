@@ -1,0 +1,18 @@
+id: 019f2274-fa45-7bd6-abef-98c6b0309e3a
+idn: _updateTaskStatusSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa45-7bd6-abef-98c6b0309e37
+    name: comment
+    default_value: " "
+  - id: 019f2274-fa45-7bd6-abef-98c6b0309e38
+    name: status
+    default_value: " "
+  - id: 019f2274-fa45-7bd6-abef-98c6b0309e39
+    name: taskId
+    default_value: " "
+path: ""

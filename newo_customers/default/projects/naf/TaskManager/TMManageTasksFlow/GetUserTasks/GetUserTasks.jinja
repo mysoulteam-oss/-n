@@ -1,0 +1,19 @@
+{% set arguments = GetTriggeredAct().arguments %}
+
+{% set requester_idn = arguments.requester_idn %}
+{% set user_id = arguments.user_id %}
+{% set callback_arguments = arguments.callback_arguments %}
+{% if not callback_arguments  %}
+    {% set callback_arguments = "" %}
+{% endif %}
+
+{% set tasks = SearchFuzzyAkb(query="", searchFields=["name"], fromPerson="Agent", numberTopics=1000, scoreThreshold=0.0) %}
+{% set user_tasks = [] %}
+{% for task in tasks %}
+    {% set source = json.loads(task.source) %}
+    {% if source.user_id == user_id %}
+        {{user_tasks.append(task.summary)}}
+    {% endif %}
+{% endfor %}
+
+{{SendSystemEvent(eventIdn="task_manager_get_user_tasks_success", connectorIdn="system", global="True", requester_idn=requester_idn, tasks=json.dumps(user_tasks, ensure_ascii=False, indent=2), callback_arguments=callback_arguments, user_id=user_id)}}

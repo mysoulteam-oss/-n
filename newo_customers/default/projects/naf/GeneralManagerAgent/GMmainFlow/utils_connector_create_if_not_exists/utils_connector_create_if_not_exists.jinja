@@ -1,0 +1,11 @@
+{% if not GetConnectorInfo(integrationIdn=integrationIdn, connectorIdn=connectorIdn) %}
+    {{CreateConnector(
+        integrationIdn = integrationIdn,
+        connectorIdn = connectorIdn,
+        title = title,
+        settings = settings,
+        start = start
+    )}}
+{% else %}
+    {{DUMMY("Connector `" ~ connectorIdn ~ "` in Integration `" ~ integrationIdn ~ "` already exists. Skipping creation.")}}
+{% endif %}

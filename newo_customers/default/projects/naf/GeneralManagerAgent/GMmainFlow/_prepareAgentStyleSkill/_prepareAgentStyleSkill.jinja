@@ -1,0 +1,74 @@
+{# TODO: Refactor, potentially, rename Skill or split it into multiple skills #}
+
+{# TODO: Regenerate `project_representative_agent_voice_speaking_style` when it's needed (add states, etc.) #}
+
+{% set current_agent_style_voice = GetCustomerAttribute(field="project_representative_agent_voice_speaking_style") %}
+
+{% if current_agent_style_voice.strip() %}
+    {{ Return(val=current_agent_style_voice) }}
+{% endif %}
+
+{% set prompt %}
+Your goal is to build JSON object based on <BusinessInformation>, using descriptions in the provided schema and rules specified in <Rules> below.
+
+<BusinessInformation>
+**Business name**: {{GetCustomerAttribute(field="project_business_name")}}
+**Business country**: {{GetCustomerAttribute(field="project_business_country")}}
+**Business address**: {{GetCustomerAttribute(field="project_business_address")}}
+**Business language**: {{GetCustomerAttribute(field="project_business_language_primary")}}
+</BusinessInformation>
+
+<Rules>
+No need to define accent (leave field `accent` as empty):
+- If `country` is United States and `native_language` is English
+- If `country` is France and `native_language` is French
+- If `country` is Mexico and `native_language` is Spanish
+- If defined `native_language` is one of: ["Hindi", "Japanese", "Korean", "Mandarin", "Cantonese", "Bengali", "Telugu", "Tamil", "Marathi", "Gujarati", "Malayalam", "Punjabi", "Ukrainian", "Thai", "Vietnamese", "Turkish", "Persian", "Hebrew", "Polish", "Greek", "Hungarian", "Czech", "Romanian", "Serbian", "Swahili", "Amharic", "Burmese", "Lao", "Khmer", "Pashto", "Urdu"]
+</Rules>{% endset %}
+
+{% set schema = {
+  "type": "object",
+  "properties": {
+    "analysis": {
+      "type": "string",
+      "description": "Briefly explain your reasoning and approach for determining each field in this schema."
+    },
+    "defining_possible": {
+      "type": "boolean",
+      "description": "Based on your analysis, is it possible to identify the country? Set to `true` if yes, otherwise set to `false`."
+    },
+    "country": {
+      "type": "string",
+      "description": "If `defining_possible` is `true`, provide the name of the identified country based on the given information. Otherwise, leave this field empty."
+    },
+    "native_language": {
+      "type": "string",
+      "description": "If the `country` is identified, specify the primary (native) language spoken in that country. Otherwise, leave this field empty."
+    },
+    "accent": {
+      "type": "string",
+      "description": "Only include this field if the `native_language` is spoken across multiple regions with distinct, widely recognized accents - such as English, Spanish, or French - and if specifying the accent adds meaningful context (e.g., 'British' vs. 'American'). Do not specify an accent when the language is primarily spoken in one region or when the accent is already obvious from the country (e.g., do not use 'American' if the country is the USA). Leave this field empty in such cases."
+    }
+  },
+  "required": [
+    "analysis",
+    "defining_possible",
+    "country",
+    "native_language",
+    "accent"
+  ]
+} %}
+
+{% set agent_style = "Friendly professional, super welcoming. Speak energetic and fast." %}
+
+{% set result_json = json.loads(utils_structured_generation(schema=schema, prompt=prompt, thinking_budget=425)) %}
+
+{% if result_json.defining_possible %}
+    {% set accent = result_json.accent %}
+    {% if accent.strip() %}
+        {% set accent_instruction = ". You speak with " ~ accent ~ " accent" %}
+        {% set agent_style = agent_style ~ accent_instruction %}
+    {% endif %}
+{% endif %}
+
+{{Return(val=agent_style)}}

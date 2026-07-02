@@ -1,0 +1,144 @@
+{{#if promisedSchema == "True"}}
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "promised": {
+      "type": "boolean",
+      "description": "Set the field to true if the agent promised to check available slots as explained in examples. Otherwise set to false"
+    }
+  },
+  "required": [
+    "promised"
+  ]
+}
+{{~/system}}
+
+    {{Return(val=GetCurrentPrompt())}}
+{{/if}}
+
+{{#if availabilitySchema == "True"}}
+
+{{Set(name="availability_schema", value=GetCustomerAttribute(field="project_attributes_private_dynamic_booking_check_availability_payload_schema_compiled"))}}
+{{#if _utilsFeatureFlagIsActiveSkill(featureFlagName="multi_location")}}
+  {{Set(name="current_location", value=GetPersonaAttribute(id=userId, field="multi_location_current_location"))}}
+  {{Set(name="availability_schema_specific", value=GetValueJSON(obj=availability_schema, key=current_location))}}
+  {{#if IsEmpty(text=availability_schema_specific)}}
+    {{Set(name="availability_schema_specific", value=GetValueJSON(obj=availability_schema, key="default"))}}
+  {{/if}}
+  {{Set(name="availability_schema", value=availability_schema_specific)}}
+
+  {{!-- Some compiled schemas may still carry a nested per-location map inside `payload`
+      or inside `payload.properties`. In that case, unwrap the current/default location
+      branch into the concrete payload schema. --}}
+  {{Set(name="availability_schema_properties", value=GetValueJSON(obj=availability_schema, key="properties"))}}
+  {{Set(name="payload_schema", value=GetValueJSON(obj=availability_schema_properties, key="payload"))}}
+  {{Set(name="payload_schema_candidates", value=payload_schema)}}
+  {{Set(name="payload_schema_properties", value=GetValueJSON(obj=payload_schema, key="properties"))}}
+  {{#if not IsEmpty(text=payload_schema_properties)}}
+    {{Set(name="payload_schema_candidates", value=payload_schema_properties)}}
+  {{/if}}
+  {{Set(name="payload_schema_specific", value=GetValueJSON(obj=payload_schema_candidates, key=current_location))}}
+  {{#if IsEmpty(text=payload_schema_specific)}}
+    {{Set(name="payload_schema_specific", value=GetValueJSON(obj=payload_schema_candidates, key="default"))}}
+  {{/if}}
+  {{#if not IsEmpty(text=payload_schema_specific)}}
+    {{Set(name="availability_schema_properties", value=UpdateValueJSON(obj=availability_schema_properties, key="payload", value=payload_schema_specific))}}
+    {{Set(name="availability_schema", value=UpdateValueJSON(obj=availability_schema, key="properties", value=availability_schema_properties))}}
+  {{/if}}
+{{/if}}
+
+{{#if requestMethod == "GET"}}
+{{#system~}}
+{
+  "type": "string",
+  "description": "Using payload property collect and put a string of all query parameters, formatted as 'key1=value1&key2=value2'."
+}
+{{~/system}}
+    {{Set(name="availability_schema", value=UpdateValueJSON(obj=availability_schema, key="properties", value=UpdateValueJSON(obj=GetValueJSON(obj=availability_schema, key="properties"), key="queryParams", value=GetCurrentPrompt())))}}
+{{/if}}
+
+{{Return(val=availability_schema)}}
+
+{{/if}}
+
+{{#if checkAvailabilitySchema == "True"}}
+{{Set(name="time_format", value=GetCustomerAttribute(field="project_attributes_setting_time_format"))}}
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "requested_datetime": {
+      "type": "string",
+      "description": "Cite the date and time from `requested_slot` in this format: YYYY-MM-DD HH:MM AM/PM. This specific time string must be used for all subsequent exact matching against date and time pairs from entire `availability`."
+    },
+    "available_slots": {
+      "type": "string",
+      "description": "Comma-separated list of EXACTLY ALL available slots from `availability`, each followed by its location/doctor/provider/room etc. in parentheses."
+    },
+    "available_entities": {
+      "type": "array",
+      "description": "An array of locations/doctors/providers/rooms etc. names that have availability at the given `requested_datetime`. If no match is found in any location/doctor/provider/room etc., this array must be empty.",
+      "items": {
+        "type": "string",
+        "description": "The name of the location/doctor/provider/room etc., where the `requested_datetime` matches one of the date and time pairs in this exact location/doctor/provider/room etc."
+      }
+    },
+    "slot_available": {
+      "type": "boolean",
+      "description": "Set to `true` if the entire `availability` has a match of the `requested_datetime` in any location/doctor/provider/room etc. Otherwise, set to `false`."
+    },
+    "several_entities": {
+      "type": "boolean",
+      "description": "Set this field to `true` if the `requested_datetime` is available in several locations/doctors/providers/rooms etc. (i.e., if `available_entities` contains more than one item). Otherwise set to `false`."
+    },
+    "entities": {
+      "type": "string",
+      "description": "Put here location/doctor/provider/room etc. names where `requested_datetime` is available, comma-separated if multiple. If no location/doctor/provider/room etc. is available, this field must be an empty string."
+    },
+    "nearest_available_slots": {
+      "type": "string",
+      "description": "Populate **only when `slot_available` is `false`**. Find in the `available_slots` and put up to two *closest* available times to `requested_datetime`. Format each slot as \"YYYY-MM-DD {{time_format}} (Entity 1, Entity 2, ... or Entity n)\" joining several slots with \"and\". If only one adjacent slot exists, return only that adjacent slot."
+    }
+  },
+  "required": [
+    "requested_datetime",
+    "available_slots",
+    "available_entities",
+    "slot_available",
+    "several_entities",
+    "entities"
+  ]
+}
+{{~/system}}
+
+    {{Return(val=GetCurrentPrompt())}}
+
+{{/if}}
+
+{{#if workingHoursSchema == "True"}}
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "time": {
+      "type": "string",
+      "description": "The time in 12-hour \"hh:mm A\" format."
+    },
+    "recap": {
+      "type": "string",
+      "description": "Short explanation based on your analysis."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["non_working_day", "non_working_hours", "working_hours"],
+      "description": "Indicates if the provided day/time is a non-working day, non-working hours, or working hours."
+    }
+  },
+  "required": ["time", "recap", "status"]
+}
+{{~/system}}
+
+    {{Return(val=GetCurrentPrompt())}}
+
+{{/if}}

@@ -1,0 +1,47 @@
+{{StartNotInterruptibleBlock()}}
+
+{{#if call_analyze_conversation == "True"}}
+    {{SendSystemEvent(
+        eventIdn="analyze_conversation",
+        connectorIdn="system",
+        conversationChannel=conversation_channel,
+        convoAgentAnswer=agent_answer,
+        toDate=GetDatetime(format="datetime", timezone="UTC")
+    )}}
+{{/if}}
+
+{{SetState(name="user_reply_buffer", value=" ")}}
+{{SetState(name="fast_prompt", value=" ")}}
+{{SetState(name="fast_prompt_override_version", value=" ")}}
+{{SetState(name="corrected_memory", value=" ")}}
+
+{{StopNotInterruptibleBlock()}}
+
+{{!-- TODO: Refactor - updating conversation meta is being triggered on `analyze_conversation` event at the moment --}}
+{{!-- {{UpdateConversationMetaSkill(userId=userId)}} --}}
+
+{{#if conversation_channel != "chat" }}
+    {{SetState(name="corrected_memory", value=_memoryCorrection(userId=user_id))}}
+{{/if}}
+
+{{SetState(name="fast_prompt", value=prompt_fast_compile(user_id=user_id, conversation_channel=conversation_channel))}}
+{{SetState(name="fast_prompt_override_version", value=GetPersonaAttribute(id=user_id, field="convoagent_recompile_override_version"))}}
+
+{{!-- TODO: Send event instead, move follow-up for speeding up --}}
+{{#if set_follow_up_timer == "True"}}
+    {{Set(name="interval", value=_getFollowUpIntervalSkill(agentAnswer=agent_answer, userId=user_id))}}
+    {{SendSystemEvent(
+        eventIdn="convoagent_update_followup",
+        connectorIdn="system",
+        interval=interval,
+        personaId=user_id,
+        reason="user message reply"
+    )}}
+{{/if}}
+
+{{!-- Prepare Data Injection --}}
+{{SendSystemEvent(
+    eventIdn="prepare_injecting_data",
+    connectorIdn="system",
+    global=True
+)}}

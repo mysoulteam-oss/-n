@@ -1,0 +1,19 @@
+id: 019f2274-f6ed-7657-859b-c462f0a92af3
+idn: CAActionCallSendDialpadDigitsFlow
+title: CAActionCallSendDialpadDigitsFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 019f2274-f6ed-7657-859b-c462f0a92afd
+    description: null
+    idn: broadcast_analyze_conversation
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: AnalyzeConversationSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

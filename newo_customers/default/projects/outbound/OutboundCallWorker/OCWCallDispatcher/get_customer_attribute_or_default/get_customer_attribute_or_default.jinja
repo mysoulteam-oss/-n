@@ -1,0 +1,6 @@
+{% set val = GetCustomerAttribute(field=field) %}
+{% if val %}
+    {{Return(val=val)}}
+{% else %}
+    {{Return(val=default)}}
+{% endif %}

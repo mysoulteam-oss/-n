@@ -1,0 +1,173 @@
+{% set default_intent_type_idn_list = [] %}
+
+{% if industry == "beauty_industry" %}
+    {% set default_intent_type_idn_list = [
+        "intent_type_new_client_appointment",
+        "intent_type_existing_client_appointment",
+        "intent_type_sale_to_client",
+        "intent_type_emergency",
+        "intent_type_reschedule_or_modification",
+        "intent_type_cancellation",
+        "intent_type_client_support",
+        "intent_type_contractor_support",
+        "intent_type_manager_or_human_request",
+        "intent_type_general_information_request",
+        "intent_type_spam_session",
+        "intent_type_test_session",
+        "intent_type_other_session"
+    ] %}
+
+{% elif industry == "catering_industry" %}
+    {% set default_intent_type_idn_list = [
+        "intent_type_catering_order",
+        "intent_type_reschedule_or_modification",
+        "intent_type_cancellation",
+        "intent_type_guest_support",
+        "intent_type_contractor_support",
+        "intent_type_manager_or_human_request",
+        "intent_type_general_information_request",
+        "intent_type_spam_session",
+        "intent_type_test_session",
+        "intent_type_other_session"
+    ] %}
+
+{% elif industry == "cleaning_industry" %}
+    {% set default_intent_type_idn_list = [
+        "intent_type_approximate_ai_estimate",
+        "intent_type_in_person_estimate",
+        "intent_type_remote_virtual_estimate",
+        "intent_type_schedule_cleaning",
+        "intent_type_reschedule_or_modification",
+        "intent_type_cancellation",
+        "intent_type_confirmation",
+        "intent_type_client_support",
+        "intent_type_contractor_support",
+        "intent_type_manager_or_human_request",
+        "intent_type_general_information_request",
+        "intent_type_spam_session",
+        "intent_type_test_session",
+        "intent_type_other_session"
+    ] %}
+
+{% elif industry == "dental_industry" %}
+    {% set new_patient_appointment_scenario = "intent_type_new_patient_appointment_via_link" %}
+    {% set customer_info = GetCustomerInfo() %}
+    {% if customer_info.dlc_mode == "customer_specific" %}
+        {% set status = customer_info.dlc_status %}
+        {% if status != "approved" %}
+            {% set new_patient_appointment_scenario = "intent_type_new_patient_appointment_manual" %}
+        {% endif %}
+    {% endif %}
+    {% set default_intent_type_idn_list = [
+        new_patient_appointment_scenario,
+        "intent_type_existing_patient_appointment",
+        "intent_type_emergency_call",
+        "intent_type_reschedule_or_modification",
+        "intent_type_cancellation",
+        "intent_type_patient_support",
+        "intent_type_contractor_support",
+        "intent_type_manager_or_human_request",
+        "intent_type_general_information_request",
+        "intent_type_spam_session",
+        "intent_type_test_session",
+        "intent_type_other_session"
+    ] %}
+
+{% elif industry == "general_industry" %}
+    {% set default_intent_type_idn_list = [
+        "intent_type_booking_via_link",
+        "intent_type_purchase_via_link",
+        "intent_type_general_inquiry",
+        "intent_type_general_information_request",
+        "intent_type_manager_or_human_request",
+        "intent_type_spam_session",
+        "intent_type_test_session"
+    ] %}
+
+{% elif industry == "home_service_industry" %}
+    {% set default_intent_type_idn_list = [
+        "intent_type_appointment_scheduling",
+        "intent_type_other_services_request",
+        "intent_type_reschedule_or_modification",
+        "intent_type_cancellation",
+        "intent_type_client_support",
+        "intent_type_complaints",
+        "intent_type_emergency",
+        "intent_type_contractor_support",
+        "intent_type_manager_or_human_request",
+        "intent_type_general_information_request",
+        "intent_type_spam_session",
+        "intent_type_test_session",
+        "intent_type_other_session"
+    ] %}
+
+{% elif industry == "hospitality_industry" %}
+    {% set default_regular_reservation_scenario = "intent_type_make_regular_reservation_via_link" %}
+    {% set customer_info = GetCustomerInfo() %}
+    {% if customer_info.dlc_mode == "customer_specific" %}
+        {% set status = customer_info.dlc_status %}
+        {% if status != "approved" %}
+            {% set default_regular_reservation_scenario = "intent_type_relay_regular_reservation_to_manager" %}
+        {% endif %}
+    {% endif %}
+    {% set default_intent_type_idn_list = [
+        default_regular_reservation_scenario,
+        "intent_type_make_large_group_reservation_via_email",
+        "intent_type_reschedule_or_modification",
+        "intent_type_cancellation",
+        "intent_type_guest_support",
+        "intent_type_contractor_support",
+        "intent_type_manager_or_human_request",
+        "intent_type_general_information_request",
+        "intent_type_spam_session",
+        "intent_type_test_session",
+        "intent_type_other_session"
+    ] %}
+
+{% elif industry == "restaurant_industry" %}
+    {% if not GetCustomerAttribute(field="project_attributes_private_dynamic_restaurant_google_restaurant_id").strip() %}
+        {# Intent type with Make a Regular Table Booking scenario #}
+        {% set default_regular_reservation_scenario = "intent_type_make_regular_table_booking_via_link" %}
+    {% else %}
+        {# Intent type with Make a Regular Table Booking via Website Link scenario #}
+        {% set default_regular_reservation_scenario = "intent_type_make_regular_table_booking" %}
+    {% endif %}
+    {% set default_intent_type_idn_list = [
+        default_regular_reservation_scenario,
+        "intent_type_make_large_table_booking",
+        "intent_type_catering",
+        "intent_type_private_dining",
+        "intent_type_food_order",
+        "intent_type_reschedule_or_modification",
+        "intent_type_cancellation",
+        "intent_type_guest_support",
+        "intent_type_contractor_support",
+        "intent_type_manager_or_human_request",
+        "intent_type_general_information_request",
+        "intent_type_spam_session",
+        "intent_type_test_session",
+        "intent_type_other_session"
+    ] %}
+
+{% elif industry == "sales_industry" %}
+    {% set intent_type_closing_via_link = "intent_type_closing_via_product_link" %}
+    {% set customer_info = GetCustomerInfo() %}
+    {% if customer_info.dlc_mode == "customer_specific" %}
+        {% set status = customer_info.dlc_status %}
+        {% if status != "approved" %}
+            {# In case of "customer_specific" DLC mode and DLC status is not "approved", remove "intent_type_closing_via_product_link" from the default intent types list.#}
+            {% set intent_type_closing_via_link = "" %}
+        {% endif %}
+    {% endif %}
+
+    {% set default_intent_type_idn_list = [
+        "intent_type_sale_to_client",
+        "intent_type_closing_via_appointment",
+        intent_type_closing_via_link,
+        "intent_type_spam_session",
+        "intent_type_test_session",
+        "intent_type_other_session"
+    ] %}
+{% endif %}
+
+{{Return(val=json.dumps(default_intent_type_idn_list, ensure_ascii=False, indent=2))}}

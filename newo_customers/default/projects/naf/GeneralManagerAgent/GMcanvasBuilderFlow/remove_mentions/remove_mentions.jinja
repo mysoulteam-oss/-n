@@ -1,0 +1,4 @@
+{% set pattern = "@\\{\\s*([^}]*)\\s*\\}" %}
+{% set replacement = "\\1" %}
+{% set result = re.sub(pattern, "`" ~ replacement ~ "`", text) %}
+{{Return(val=result)}}

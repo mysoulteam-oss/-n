@@ -1,0 +1,7 @@
+{{!-- Returns Customer Attribute by provided `field` if it's not empty. Otherwise, returns `defaultValue` --}}
+
+{{#if not IsEmpty(text=GetCustomerAttribute(field=field))}}
+    {{Return(val=GetCustomerAttribute(field=field))}}
+{{/if}}
+
+{{Return(val=defaultValue)}}

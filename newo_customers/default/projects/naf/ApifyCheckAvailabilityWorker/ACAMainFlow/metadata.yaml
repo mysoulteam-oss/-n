@@ -1,0 +1,37 @@
+id: 019f2274-f6dd-7e23-9e61-79f534393ac8
+idn: ACAMainFlow
+title: ACAMainFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 019f2274-f6dd-7e23-9e61-79f534393ad3
+    description: null
+    idn: check_availability_hospitality
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: HospitalityRequestAvailableSlotsDefaultSkill
+    state_idn: null
+    integration_idn: null
+    connector_idn: null
+  - id: 019f2274-f6dd-7e23-9e61-79f534393ad4
+    description: null
+    idn: run_actor_error
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: HospitalityReceiveAvailableSlotsDefaultSkill
+    state_idn: null
+    integration_idn: apify
+    connector_idn: hospitality_availability
+  - id: 019f2274-f6dd-7e23-9e61-79f534393ad5
+    description: null
+    idn: run_actor_success
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: HospitalityReceiveAvailableSlotsDefaultSkill
+    state_idn: null
+    integration_idn: apify
+    connector_idn: hospitality_availability
+state_fields: []

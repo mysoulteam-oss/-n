@@ -1,0 +1,12 @@
+id: 019f2274-f6ed-7657-859b-c462f0a92a9a
+idn: _getEmailInformationAllowedToBeSentSkill
+title: _getEmailInformationAllowedToBeSentSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ed-7657-859b-c462f0a92a99
+    name: industry
+    default_value: " "
+path: ""

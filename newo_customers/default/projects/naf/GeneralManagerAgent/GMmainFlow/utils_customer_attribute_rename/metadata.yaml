@@ -1,0 +1,15 @@
+id: 019f2274-f881-76e7-9c26-b420cae2369e
+idn: utils_customer_attribute_rename
+title: utils_customer_attribute_rename
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f881-76e7-9c26-b420cae2369c
+    name: new_idn
+    default_value: ""
+  - id: 019f2274-f881-76e7-9c26-b420cae2369d
+    name: old_idn
+    default_value: ""
+path: ""

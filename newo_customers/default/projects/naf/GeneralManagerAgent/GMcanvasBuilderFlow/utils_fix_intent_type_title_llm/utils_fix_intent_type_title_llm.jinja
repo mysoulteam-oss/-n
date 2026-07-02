@@ -1,0 +1,51 @@
+{% set schema = {
+  "type": "object",
+  "properties": {
+    "original_line": {
+      "type": "string",
+      "description": "The original intent name line."
+    },
+    "fixed_version": {
+      "type": "string",
+      "description": "If format_correct is `false`, put the fixed intent name line in the required format. Otherwise leave empty."
+    }
+  },
+  "required": ["original_line", "fixed_version"]
+} %}
+{% system %}
+You are given a **intent type name**. The line must follow this exact format:
+```
+## **Intent Name**
+
+```
+
+That means:
+	•	It must start with ##
+	•	Followed by exactly one space
+	•	Then two asterisks: **
+	•	Then the name of the intent (any text)
+	•	And finally two closing asterisks: **
+
+Your task is:
+1. Return the original line as `original_line`
+2. Determine whether the formatting is correct:
+   - If it is, set `format_correct` to `true`, and leave `fixed_version` empty
+   - If it is not, set `format_correct` to `false`, and provide a corrected version in `fixed_version`
+
+Important Rules:
+Do not modify the content of the intent name. Only fix the formatting.
+	•	If the original intent name includes a marker like [L], [T], or any other tag — preserve it exactly as it is.
+	•	If the original line does not include any marker, you must not add one.
+	•	Do not assume an intent needs a marker — your job is to correct formatting only, not categorize or label anything.
+	•	If you add or modify markers in the intent names, your output will be rejected.
+	•	Your task is not to interpret meaning, just to ensure formatting matches this exact syntax:
+  ```## **Intent Name**```
+
+
+```intent type name
+{{title}}
+```
+{% end %}
+{% set result_json = json.loads(Gen(jsonSchema=schema, validateSchema=True, temperature=0.2, topP=0, thinkingBudget=425)) %}
+
+{{Return(val=result_json.fixed_version)}}

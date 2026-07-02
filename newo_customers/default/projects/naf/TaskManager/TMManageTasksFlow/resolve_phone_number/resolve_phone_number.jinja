@@ -1,0 +1,6 @@
+{% set phone_number = GetTriggeredAct().arguments.phoneNumber %}
+{% if phone_number and phone_number.strip() %}
+    {{Return(val=phone_number.strip())}}
+{% endif %}
+{% set external_ids_json = json.loads(_getExternalIdsFromInputTasksSkill(inputTasks=GetTriggeredAct().arguments.content)) %}
+{{Return(val=external_ids_json.phone_number)}}

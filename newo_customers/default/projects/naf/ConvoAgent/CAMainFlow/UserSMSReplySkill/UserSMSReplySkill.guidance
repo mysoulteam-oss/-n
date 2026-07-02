@@ -1,0 +1,98 @@
+{{StartNotInterruptibleBlock()}}
+
+{{Set(name="external_id", value=GetActor(field="externalId"))}}
+
+{{Set(name="user_id", value=GetUser(field="id"))}}
+
+{{!-- Define integration IDN --}}
+{{Set(name="integration_idn", value=session_get_current_integration_idn(user_id=user_id, set_persona_attribute="True"))}}
+{{Set(name="voice_mode", value=GetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_mode"))}}
+{{Set(name="v2v_enabled", value="False")}}
+{{#if voice_mode == "voice-to-voice"}}
+    {{Set(name="v2v_enabled", value="True")}}
+{{/if}}
+{{#if voice_mode == "speech-to-speech"}}
+    {{Set(name="v2v_enabled", value="True")}}
+{{/if}}
+
+{{!-- Create Actors with the same phone number for all phone-related Integrations --}}
+{{_utilsCreatePhoneActorsSkill(userId=user_id, phoneNumber=external_id)}}
+
+{{!-- Forward SMS message and exit in case of active temporal session (VAPI or NEWO Voice service phone call from common phone number) --}}
+{{Set(name="temporal_session_is_active", value=GetPersonaAttribute(id=user_id, field="temporal_session_is_active"))}}
+{{#if temporal_session_is_active == "True"}}
+    {{Set(name="temporal_convo_actor_id", value=GetPersonaAttribute(id=user_id, field="temporal_convo_actor_id"))}}
+    {{Set(name="temporal_convo_actor_ids", value=temporal_convo_actor_id.split())}}
+    {{SendSystemEvent(
+        eventIdn="real_user_message",
+        connectorIdn="system",
+        actorIds=temporal_convo_actor_ids,
+        sms_memory=GetTriggeredAct(fields=["text"])
+    )}}
+    {{Return()}}
+{{/if}}
+
+{{!-- TODO: Handle "detected phone numbers" for SMS and VAPI or NEWO Voice service independently --}}
+{{!-- Define user's phone number in background in case of unset `detected_phone_number_with_country_code` --}}
+{{Set(name="detected_phone_number_with_country_code", value=_utilsPersonaAttributeGetWithDefaultsSkill(id=user_id, field="detected_phone_number_with_country_code"))}}
+{{#if IsSimilar(val1=detected_phone_number_with_country_code, val2="null", threshold=0.8)}}
+    {{Set(name="detected_phone_number_with_country_code", value=external_id)}}
+    {{SendSystemEvent(
+        eventIdn="define_user_phone_number",
+        connectorIdn="system",
+        user_id=user_id,
+        user_phone_number_with_country_code=detected_phone_number_with_country_code
+    )}}
+{{/if}}
+
+{{Set(name="actor_id", value=session_get_and_set_last_convo_actor_id(user_id=user_id))}}
+
+{{!-- TODO: Handle `last_convo_actor_id` properly --}}
+{{#if actor_id == GetActor(field="id")}}
+    {{SetPersonaAttribute(id=user_id, field="conversation_concluded", value="False")}}
+    {{Set(name="current_connector_idn", value=session_get_current_connector_idn(user_id=user_id, set_persona_attribute="True"))}}
+    {{SetState(name="user_reply_buffer", value=Stringify(Concat(GetState(name="user_reply_buffer"), " ", GetTriggeredAct(fields="text"))))}}
+    {{_startNewSessionSkill(user_id=user_id)}}
+    {{_userMessageFastReplySkill(
+        call_analyze_conversation="True",
+        set_follow_up_timer="True",
+        user_id=user_id,
+        integration_idn=integration_idn
+    )}}
+{{else}}
+    {{!-- Must be consistent with `RealUserMessageSkill` --}}
+{{#system~}}
+You've just received the following SMS message from the user:
+"{{GetTriggeredAct(fields=["text"])}}".
+
+Say that you got their message and thank them. Proceed further.
+{{~/system}}
+    {{!-- There is a chance we disabled it before sending the SMS --}}
+    {{SendSystemEvent(
+      eventIdn="convoagent_enable_follow_up",
+      connectorIdn="system"
+    )}}
+    {{Set(name="instruction", value=GetCurrentPrompt())}}
+
+    {{#if integration_idn == "newo_voice"}}
+        {{#if v2v_enabled == "True"}}
+            {{#if v2v_get_current_provider(user_id=user_id) != "genai"}}
+                {{Set(name="key_directives", value=Concat('<CurrentTaskAnalysis alt="analysis of the current task, which may be slightly outdated" role="instructions">
+
+', instruction , "
+</CurrentTaskAnalysis>"))}}
+                {{v2v_add_context(turn=key_directives, user_id=user_id)}}
+            {{/if}}
+            {{v2v_send_command(command=instruction, user_id=user_id)}}
+            {{Return()}}
+        {{/if}}
+    {{/if}}
+    {{_userMessageFastReplySkill(
+        base_instruction=instruction,
+        call_analyze_conversation="True",
+        user_id=user_id,
+        integration_idn=integration_idn
+    )}}
+{{/if}}
+
+{{StopNotInterruptibleBlock()}}

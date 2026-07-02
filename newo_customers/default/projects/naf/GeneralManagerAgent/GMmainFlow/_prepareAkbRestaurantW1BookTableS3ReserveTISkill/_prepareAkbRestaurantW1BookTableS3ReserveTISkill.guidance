@@ -1,0 +1,65 @@
+{{Set(name="google_maps_reservation_base_url", value="https://www.google.com/maps/reserve/v/dine/c/")}}
+{{Set(name="google_restaurant_id", value=GetCustomerAttribute(field="project_attributes_private_dynamic_restaurant_google_restaurant_id"))}}
+
+{{#system~}}
+Your objective is to create a restaurant reservation based on task context provided by strictly following instructions below.
+
+# **STEP 1:** Assemble and go to book_url
+You must assemble the `book_url` by your own (as described below) and execute a command to open it.
+
+## **Assembling book_url**
+
+*Note: In your explanation, write that you constructed a booking url, mention the time and number of people you are about to book.*
+
+### **Template**
+`{{google_maps_reservation_base_url}}{{google_restaurant_id}}?hl=en&ssst=ZZZZZZZZZZZZ&ps=CCCCCCCCCCCCC`
+
+**Where:**
+- `ZZZZZZZZZZZZ` (`ssst` query parameter) is the `reservation_datetime` from `INPUT_VALUES`, for which you need to make sure to escape special characters. Example: `2024-06-25T16:30:00.000-07:00` turns to `2024-06-25T16%3A30%3A00.000-07%3A00`.
+- `CCCCCCCCCCCCC` (`ps` query parameter) is the integer `number_of_guests` from `INPUT_VALUES`.
+- In `ssst` query parameter, you should use timezone as is. The time provided already in specified timezone, so you don't need to somehow convert it. For example: if the provided time is `2024-06-25T16:30:00.000-07:00`, you must insert it in `book_url` template as `2024-06-25T16%3A30%3A00.000-07%3A00`
+
+### **Example of assembled book_url**
+{{google_maps_reservation_base_url}}{{google_restaurant_id}}?hl=en&ssst=2024-05-26T00%3A30%3A00.000Z&ps=5
+
+---
+
+# **STEP 2:** Click on time slot button with corresponding **reservation_time** from **INPUT_VALUES**
+- If seating preference is provided (**reservation_time** from **INPUT_VALUES**) in **INPUT_VALUES**, you must click the time slot under selected seating option using room names from **TASK_CONTEXT**.
+  - Issue only **CLICK** on the time slot, it should be single command.
+  - In your explanation, write that you clicked on the time slot requested by the task.
+- If the **CURRENT BROWSER CONTENT** does not contains a **reservation_time** from **INPUT_VALUES** button available, issue OUTPUT command with "Failed: selected date is unavailable" argument.
+
+---
+
+# **STEP 3:** Prefer OpenTable if you are asked to continue with OpenTable or Yelp and proceed to **STEP 4**
+- In your explanation, write that as you were asked to choose between OpenTable and Yelp and you chosen **OpenTable**.
+- If no user info form or OpenTable / Yelp select appear, it means that the time slot is unavailable, and you must issue **OUTPUT** that you failed to create a reservation due to absence of requested time slot.
+
+---
+
+# **STEP 4:** Type user data from **INPUT_VALUES**, type reservation notes if they are present in **INPUT_VALUES**, click Reserve
+- In your explanation, write what exactly you have put to fields and notice that you clicked Reserve button in the end.
+  - You can only type in <input> tags.
+  - If there is no corresponding fields (<input> tags) present in **CURRENT BROWSER CONTENT** to fill the data from **INPUT_VALUES**: **OUTPUT** that the form is not available with failed status.
+
+---
+
+# **STEP 5:** Issue **OUTPUT** according to new browser content
+- If the "Reservation confirmed" text is present in **CURRENT BROWSER CONTENT**, it means that the booking was completed successful and your **OUTPUT** must include reservation details you just created.
+- If you don't see a confirmation of the reservation, **OUTPUT** a summary what you currently see in your browser content along with "Failed" status.
+
+---
+
+# **Success Criteria**
+
+All of the criteria below must be met to finish the job successfully.
+
+## **Success** status criteria
+- A valid **book_url** was successfully opened
+- A reservation slot is present in **CURRENT BROWSER CONTENT** and is successfully clicked
+- The user data from **INPUT_VALUES** were successfully and correctly typed in a corresponding field and form is submitted
+- "Reservation confirmed" is present in **CURRENT BROWSER CONTENT**
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

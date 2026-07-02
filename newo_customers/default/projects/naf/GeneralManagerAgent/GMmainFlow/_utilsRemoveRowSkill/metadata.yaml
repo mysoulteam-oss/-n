@@ -1,0 +1,15 @@
+id: 019f2274-f880-7a8d-8da4-a860619999c8
+idn: _utilsRemoveRowSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f880-7a8d-8da4-a860619999c7
+    name: rowToRemove
+    default_value: " "
+  - id: 019f2274-f880-7a8d-8da4-a860619999c6
+    name: rows
+    default_value: " "
+path: ""

@@ -1,0 +1,10 @@
+{% set user_id = GetUser().id | string %}
+
+{% set session_identifier = utils_get_current_session_identifier(user_id=user_id) %}
+{% set session = json.loads(GetPersonaAttribute(id=user_id, field=session_identifier) | default("{}", true)) %}
+{% set arguments = GetTriggeredAct().arguments %}
+{% set fields = json.loads(arguments.fields) %}
+
+{{session.update(fields)}}
+
+{{SetPersonaAttribute(id=user_id, field=session_identifier, value=json.dumps(session, ensure_ascii=False, indent=2))}}

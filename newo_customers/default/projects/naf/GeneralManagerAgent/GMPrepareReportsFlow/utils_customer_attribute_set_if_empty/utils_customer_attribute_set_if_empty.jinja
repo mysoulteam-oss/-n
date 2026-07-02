@@ -1,0 +1,5 @@
+{# Sets Customer Attribute by provided `value` if Customer Attribute is empty. Otherwise, does not do anything #}
+
+{% if not GetCustomerAttribute(field=field).strip() %}
+    {{SetCustomerAttribute(field=field, value=value)}}
+{% endif %}

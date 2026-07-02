@@ -1,0 +1,29 @@
+{% set newo_tools = GetCustomerAttribute(field="project_attributes_settings_newo_tools").strip() %}
+
+{% if not newo_tools or newo_tools == "{}" %}
+    {{Return()}}
+{% endif %}
+
+{% set old_desc_cleaning = 'The agent promised to calculate the approximate estimate price right now exactly in their last message (enclosed in <LatestConvoAgentAnswer>).' %}
+{% set old_desc_beauty = 'The agent asked to wait a moment to check/calculate pricing in their last message (enclosed in <LatestConvoAgentAnswer>).' %}
+{% set new_desc %}The agent clearly states that they are going to calculate the price right now. So their <LatestConvoAgentAnswer> should contain something like: \"I will calculate the price for you...\", \"Let me calculate the estimate...\", \"Give me a moment, I will calculate...\", etc. Statements of capability (e.g., \"I can calculate\", \"I could estimate\") or conditional offers are NOT firm intentions and must be ignored.{% endset %}
+{% set old_condition = '"agentPromisedToCalculate"' %}
+{% set new_condition = '"agentPromised"' %}
+
+{% set requires_description_update = old_desc_cleaning in newo_tools or old_desc_beauty in newo_tools %}
+{% set requires_condition_rename = old_condition in newo_tools %}
+
+{% if requires_description_update or requires_condition_rename %}
+    {% set updated_newo_tools = newo_tools %}
+
+    {% if requires_description_update %}
+        {% set updated_newo_tools = updated_newo_tools.replace(old_desc_cleaning, new_desc) %}
+        {% set updated_newo_tools = updated_newo_tools.replace(old_desc_beauty, new_desc) %}
+    {% endif %}
+
+    {% if requires_condition_rename %}
+        {% set updated_newo_tools = updated_newo_tools.replace(old_condition, new_condition) %}
+    {% endif %}
+
+    {{SetCustomerAttribute(field="project_attributes_settings_newo_tools", value=updated_newo_tools)}}
+{% endif %}

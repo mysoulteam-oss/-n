@@ -1,0 +1,18 @@
+{{#system~}}
+- agent_name: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_representative_agent_name")}}
+- business_name: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_name")}}
+- country: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_country")}}
+- address: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_address")}}
+- public_phone: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_public_phone")}}
+
+**Links:**
+- website_url: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_website_url")}}
+- appointment_url: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_beauty_appointment_url")}}
+
+**Emails:**
+- manager_email: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_manager_email")}}
+
+# **Products and Services**
+{{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_private_dynamic_products_and_services")}}
+{{~/system}}
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_tech_variables", value=GetCurrentPrompt())}}

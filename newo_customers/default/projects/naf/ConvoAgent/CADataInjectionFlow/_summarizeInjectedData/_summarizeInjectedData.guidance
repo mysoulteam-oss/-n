@@ -1,0 +1,16 @@
+{{Set(name="maxTokens", value=GetCustomerAttribute(field="project_attributes_setting_data_injection_max_summary_tokens"))}}
+{{#system~}}
+
+# **INJECTING_DATA**
+
+---
+
+{{rawData}}
+
+---
+
+Q: If the **INJECTING_DATA** is longer than {{maxTokens}} tokens, summarize the **INJECTING_DATA**, else remain unchanged. Summary should not be longer than {{maxTokens}} tokens. All key facts must be present in the summary without modification.
+
+A: {{~/system}}{{#assistant~}}{{Set(name="summarization", value=Gen(temperature=0.75, topP=0, skipFilter=True, thinkingBudget=1020))}}{{~/assistant}}
+
+{{Return(val=summarization)}}

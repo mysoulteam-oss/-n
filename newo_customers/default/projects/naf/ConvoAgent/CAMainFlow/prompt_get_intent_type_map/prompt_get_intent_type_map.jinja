@@ -1,0 +1,15 @@
+{% set user_id = user_id or GetUser().id | string %}
+
+{% if working_hours %}
+    {% set override_intent_type_map = GetPersonaAttribute(id=user_id, field="convoagent_recompile_override_itm_working_hours_compiled").strip() %}
+    {% if override_intent_type_map %}
+        {{Return(val=override_intent_type_map)}}
+    {% endif %}
+    {{Return(val=GetCustomerAttribute(field="project_attributes_private_dynamic_itm_working_hours_compiled"))}}
+{% else %}
+    {% set override_intent_type_map = GetPersonaAttribute(id=user_id, field="convoagent_recompile_override_itm_non_working_hours_compiled").strip() %}
+    {% if override_intent_type_map %}
+        {{Return(val=override_intent_type_map)}}
+    {% endif %}
+    {{Return(val=GetCustomerAttribute(field="project_attributes_private_dynamic_itm_non_working_hours_compiled"))}}
+{% endif %}

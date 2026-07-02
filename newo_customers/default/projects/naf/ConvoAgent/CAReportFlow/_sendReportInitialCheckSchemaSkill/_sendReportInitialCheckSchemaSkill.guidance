@@ -1,0 +1,16 @@
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "promised": {
+      "type": "boolean",
+      "description": "Set the field to `true` if the agent promised to pass information to the manager. Otherwise set to `false`."
+    }
+  },
+  "required": [
+    "promised"
+  ]
+}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

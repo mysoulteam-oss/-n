@@ -1,0 +1,17 @@
+{# Set `project_attributes_setting_voice_integration_service_send_sms_via_sip_enabled` to False if SIP is not enable (switch to new default value) #}
+
+{% set newo_voice_connector_sip_enabled = "False" %}
+
+{% set newo_voice_connector_object = GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector") %}
+{% if newo_voice_connector_object %}
+    {% set newo_voice_connector_settings = newo_voice_connector_object.settings %}
+    {% if newo_voice_connector_settings %}
+        {% if newo_voice_connector_settings.provider == "sip" %}
+            {% set newo_voice_connector_sip_enabled = "True" %}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+{% if newo_voice_connector_sip_enabled != "True" %}
+    {{SetCustomerAttribute(field="project_attributes_setting_voice_integration_service_send_sms_via_sip_enabled", value="False")}}
+{% endif %}

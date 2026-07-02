@@ -1,0 +1,14 @@
+{% set user_id = user_id or GetUser().id | string %}
+{% set integration_idn = integration_idn or session_utils.session_get_current_integration_idn(user_id=user_id) %}
+
+{% if integration_idn in ("vapi", "newo_voice") %}
+    {% if integration_idn == "newo_voice" %}
+        {% if session_utils.session_get_current_connector_idn(user_id=user_id) == "newo_voice_connector_web" %}
+            {# TODO: potentially, return `voice` or some other values depending on conditions #}
+            {{Return(val="webcall")}}
+        {% endif %}
+    {% endif %}
+    {{Return(val="phone")}}
+{% endif %}
+
+{{Return(val="chat")}}

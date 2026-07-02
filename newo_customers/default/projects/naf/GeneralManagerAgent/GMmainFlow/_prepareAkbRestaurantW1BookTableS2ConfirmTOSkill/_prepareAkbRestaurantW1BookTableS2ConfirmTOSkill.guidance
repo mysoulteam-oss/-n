@@ -1,0 +1,80 @@
+{{Set(name="voice_phone_country_code", value=GetCustomerAttribute(field="project_representative_agent_voice_phone_country_code"))}}
+
+{{#system~}}
+{
+  "task_idn": "w1s2_confirm_slots_task",
+  "receiver_worker_idn": "MagicWorker",
+  "receiver_task_idn": "w1s3_reserve_table_task",
+  "second_receiver_worker_idn": "NO_WORKER",
+  "second_receiver_task_idn": "NO_TASK",
+  "task_description": "Here CW confirms the slots with User and sends them to MW to book in Opentable",
+  "owner_send_due": "ASAP",
+  "owner_task_start_user_message": " ",
+  "owner_task_send_user_message": " ",
+  "info": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "task_idn": {
+          "type": "string",
+          "enum": ["w1s2_confirm_slots_task"],
+          "description": "AF, always set this field to w1s2_confirm_slots_task"
+        },
+        "reservation_date": {
+          "type": "string",
+          "description": "If the user says Tomorrow or this/next Friday you must convert it into a calendar date YYYY-MM-DD considering the conversation.date and <Calendar>. Or use the date reconfirmed by the ConvoAgent."
+        },
+        "reservation_time": {
+          "type": "string",
+          "description": "Put only last approved by user time in 12-hour format. Example: 6:00 PM, 9: AM"
+        },
+        "reservation_datetime": {
+          "type": "string",
+          "description": "You must convert the reservation_date and the reservation_time into ISO 8601 (ex: 2024-05-28T18:30:00.000-07:00) considering the conversation.timezone"
+        },
+        "number_of_guests": {
+          "type": "string",
+          "description": "Number of guests for the reservation."
+        },
+        "user_reservation_comments": {
+          "type": "string",
+          "description": "Preferred setting outdoor, indoor, special occasion, etc."
+        },
+        "user_phone": {
+          "type": "string",
+          "description": "User's phone number number in the \"E.164\" format (without \"+\", with country code). Default country code is {{voice_phone_country_code}} but it may be different."
+        },
+        "user_name": {
+          "type": "string",
+          "description": "User's full name. Required to fill in first and last name. If the user does not provide a last name, put the first name twice."
+        },
+        "user_confirmation": {
+          "type": "boolean",
+          "description": "Set true only when you see in the **conversation** that ConvoAgent has asked the user if he can proceed with the booking, and the user has given permission. Otherwise, set it to false."
+        },
+        "required_fields_missing": {
+          "type": "boolean",
+          "description": "If all required fields in your object are filled, set this field to false. Set this to true if based on the provided information sections you cannot fill any required field."
+        },
+        "details_to_reconfirm": {
+          "type": "string",
+          "description": "If any required fields are missing, provide their names in a human-readable format, separated by commas. For example: User Phone, User Confirmation. Otherwise set to No missing fields"
+        }
+      },
+      "required": [
+        "task_idn",
+        "reservation_date",
+        "reservation_time",
+        "reservation_datetime",
+        "number_of_guests",
+        "user_phone",
+        "user_name",
+        "user_confirmation",
+        "required_fields_missing"
+      ]
+    }
+  }
+}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

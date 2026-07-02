@@ -1,0 +1,41 @@
+{% set schema = {
+  "type": "object",
+  "properties": {
+    "explanation": {
+      "type": "string",
+      "description": "A brief explanation referencing the relevant part of the conversation that supports the decision."
+    },
+    "sms_opt_in_status": {
+      "type": "string",
+      "enum": ["agreed", "rejected", "unclear"],
+      "description": "Indicates the user's stance on receiving SMS messages: 'agreed' if explicitly consented, 'rejected' if explicitly declined, 'unclear' if not obvious or it's not discussed and agent should request permission."
+    }
+  },
+  "required": ["explanation", "sms_opt_in_status"]
+} %}
+
+{% system %}
+Your task is to analyze the conversation and determine the user's stance on receiving SMS messages.
+
+Instructions:
+- Carefully read through the entire conversation history between the user and the agent.
+- Identify whether the user has explicitly agreed to receive SMS messages, explicitly rejected them, or has not made their preference clear.
+- Only base your conclusion on **explicit statements** or confirmations from the user.
+- Do not infer intent — vague or indirect language should be treated as unclear.
+- If the agent reads a phone number and the user confirms it will be used for SMS, that counts as agreement.
+- If the user says they do not want texts, or not to use their number for SMS, that counts as rejection.
+- If SMS is not mentioned or the user's preference is ambiguous, return `"unclear"`.
+
+<Conversation>
+{{memory}}
+ConvoAgent: {{agentAnswer}}
+</Conversation>
+
+{% end %}
+{% set result_json = json.loads(Gen(jsonSchema=schema, validateSchema=True, temperature=0.65, topP=0, skipFilter=True, thinkingBudget=1020)) %}
+
+{% if result_json.sms_opt_in_status == "agreed" %}
+    {{Return(val="true")}}
+{% else %}
+    {{Return(val="false")}}
+{% endif %}

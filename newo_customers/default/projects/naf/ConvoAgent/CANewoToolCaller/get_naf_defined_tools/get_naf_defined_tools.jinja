@@ -1,0 +1,271 @@
+{% set tools_object = {"tools": {}} %}
+
+{% set check_availability_enabled = GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_enabled") %}
+{% if check_availability_enabled == "True" %}
+    {{tools_object.tools.update({
+        "check_availability_tool": {
+            "description": "This tool checks availability in the booking system.",
+            "conflictPolicy": {
+                "tag": "availability"
+            },
+            "conditions": {
+                "agentPromised": {
+                    "type": "boolean",
+                    "description": "The agent clearly states they are going to **start a new search** for available slots or look up **new** availability exactly in their latest message (enclosed in <LatestConvoAgentAnswer>)"
+                }
+            },
+            "useConversationHistory": false
+        }
+    })}}
+{% endif %}
+
+{% set booking_enabled = GetCustomerAttribute(field="project_attributes_setting_booking_enabled") %}
+{% if booking_enabled == "True" %}
+    {{tools_object.tools.update({
+        "create_booking_tool": {
+            "description": "This tool creates a reservation in the booking system.",
+            "conditions": {
+                "agentPromised": {
+                    "type": "boolean",
+                    "description": "The agent clearly states that they are going to **submit a booking** or **make a reservation** right now. So their <LatestConvoAgentAnswer> should contain something like: \"I'm submitting your booking now...\", \"I will make your reservation now...\", \"I will submit your booking in a moment...\", etc."
+                }
+            },
+            "useConversationHistory": false
+        }
+    })}}
+    {{tools_object.tools.update({
+        "search_booking_tool": {
+            "description": "This tool searches the user's bookings created via the agent.",
+            "conditions": {
+                "agentPromised": {
+                    "type": "boolean",
+                    "description": "The agent clearly states that they are going to check user's existing reservations right now. So their <LatestConvoAgentAnswer> should contain something like: \"Give me a moment to search your previous bookings, I will get back to you shortly...\" or \"Let me search your bookings...\", etc."
+                }
+            },
+            "useConversationHistory": false
+        }
+    })}}
+    {% set cancellation_enabled = GetCustomerAttribute(field="project_attributes_setting_booking_cancellation_enabled") %}
+    {% set cancellation_type = GetCustomerAttribute(field="project_attributes_setting_booking_cancellation_type") %}
+
+    {% if cancellation_enabled == "True" %}
+        {% if cancellation_type in ['endpoint', 'project'] %}
+            {{tools_object.tools.update({
+                "cancel_booking_tool": {
+                    "description": "This tool cancels the existing reservation in the booking system.",
+                    "conditions": {
+                        "agentPromised": {
+                            "type": "boolean",
+                            "description": "The agent clearly states that they are going to cancel an existing booking right now. So their <LatestConvoAgentAnswer> should contain something like: \"Give me a moment to cancel your booking...\" or \"Let me cancel your booking...\", etc."
+                        },
+                        "bookingExist": {
+                            "type": "boolean",
+                            "description": "During the conversation the agent actually checked existing user's bookings and found the exact one it is going to cancel now."
+                        }
+                    },
+                    "useConversationHistory": true
+                }
+            })}}
+        {% endif %}
+    {% endif %}
+    {% if cancellation_enabled == "False" or cancellation_type == "default" %}
+        {{tools_object.tools.update({
+            "send_manage_booking_url_tool": {
+                "description": "This tool sends an SMS URL to the user with the link to manage their previously made booking.",
+                "conflictPolicy": {
+                    "tag": "sms",
+                },
+                "conditions": {
+                    "agentPromised": {
+                        "type": "boolean",
+                        "description": "<LatestConvoAgentAnswer> includes a clear statement that the agent is going to send an SMS with a link for the user to manage a specific existing booking right now. For example: \"I will send you an SMS with the link to cancel this booking.\", \"I will send you an SMS with the link to manage this booking.\""
+                    },
+                    "bookingExist": {
+                        "type": "boolean",
+                        "description": "The agent has already checked the user's existing bookings and identified the exact booking for which the manage-link SMS will be sent."
+                    }
+                },
+                "useConversationHistory": true
+            }
+        })}}
+    {% endif %}
+{% endif %}
+
+{% set calendar_event_integration = GetCustomerAttribute(field="project_attributes_setting_calendar_event_integration") %}
+{% if calendar_event_integration == "google_integration" %}
+    {% set setup_alternative_phrase = GetCustomerAttribute(field="project_attributes_setting_meeting_setup_phrase") %}
+    {% set phrase = '' %}
+    {% if setup_alternative_phrase.strip() %}
+        {% set phrase = "The agent clearly states that they are going to create a meeting right now. So their <LatestConvoAgentAnswer> should contain something like: \"Give me a moment, I will set up the meeting...\", \"I will create a meeting right now...\", \"I will send the calendar invite right now...\" or \"" ~ setup_alternative_phrase ~ "\", etc." %}
+    {% else %}
+        {% set phrase = "The agent clearly states that they are going to create a meeting right now. So their <LatestConvoAgentAnswer> should contain something like: \"Give me a moment, I will set up the meeting...\", \"I will create a meeting right now...\" or \"I will send the calendar invite right now...\", etc." %}
+    {% endif %}
+    {{tools_object.tools.update({
+        "create_meeting_tool": {
+            "description": "This tool creates a meeting in the calendar or in the integration",
+            "conditions": {
+                "agentPromised": {
+                    "type": "boolean",
+                    "description": phrase
+                }
+            },
+            "useConversationHistory": false
+        }
+    })}}
+{% endif %}
+
+{% if conversation_channel == "phone" %}
+    {% set transfer_call_enabled = GetCustomerAttribute(field="project_attributes_setting_transfer_call_enabled") %}
+    {% if transfer_call_enabled == "True" %}
+        {% set additional_transfer_call_statement = GetCustomerAttribute(field="project_attributes_setting_transfer_call_additional_statement") %}
+        {% set phrase = '' %}
+        {% if additional_transfer_call_statement.strip() %}
+            {% set phrase = "The agent clearly states that right now they are going to exactly **connect**, **transfer**, **forward**, or **put you through** or they are **connecting**, **forwarding**, **transferring** the call. So their <LatestConvoAgentAnswer> should contain something like: \"I will connect you with a manager right away...\", \"I will connect you with a co-worker right away...\", \"I will transfer you to our voicemail...\", \"I am transferring you to...\", \"I will put you through to...\", \"" ~ additional_transfer_call_statement ~ "\", etc." %}
+        {% else %}
+            {% set phrase = "The agent clearly states that right now they are going to exactly **connect**, **transfer**, **forward**, or **put you through** or they are **connecting**, **forwarding**, **transferring** the call. So their <LatestConvoAgentAnswer> should contain something like: \"I will connect you with a manager right away...\", \"I will connect you with a co-worker right away...\", \"I will transfer you to our voicemail...\", \"I am transferring you to...\", \"I will put you through to...\", etc." %}
+        {% endif %}
+        {{tools_object.tools.update({
+            "transfer_call_tool": {
+                "description": "This tool attempts to transfer the call to the human representative.",
+                "conflictPolicy": {
+                    "tag": "conversation_termination"
+                },
+                "conditions": {
+                    "agentPromised": {
+                        "type": "boolean",
+                        "description": phrase
+                    },
+                    "notRelayingMessage": {
+                        "type": "boolean",
+                        "description": "DO NOT trigger if the agent is only relaying info or arranging follow-up, such as: 'I can pass / relay your information to the manager', 'I'll let the manager know', 'The manager can reach out', 'They will contact you later', 'Someone will follow up'."
+                    }
+                },
+                "useConversationHistory": false
+            }
+        })}}
+    {% endif %}
+{% endif %}
+
+{{tools_object.tools.update({
+    "end_conversation_tool": {
+        "description": "This tool ends the conversation from the agent side as concluded and finished.",
+        "conflictPolicy": {
+            "tag": "conversation_termination"
+        },
+        "conditions": {
+            "mutualGoodbye": {
+                "type": "boolean",
+                "description": "The agent and the User said goodbye to each other based on <Conversation>, the dialogue contains explicit farewell phrases from both sides OR the user expresses an intention to end the conversation and the agent acknowledges it (e.g., \"You're welcome, feel free to reach out\", \"Have a great day\")."
+            },
+            "noMoreQuestions": {
+                "type": "boolean",
+                "description": "The agent and the user have no outstanding questions or unresolved topics in <Conversation>, and both parties are ready to conclude the conversation. Note: In voicemail scenarios, a request for a callback (e.g., \"Please call me back\") is considered a closing instruction, not an unresolved topic."
+            },
+            "agentFarewell": {
+                "type": "boolean",
+                "description": "<LatestConvoAgentAnswer> includes a clear farewell or closing phrase (e.g., \"Goodbye\", \"Have a great day\") with no interrogative sentences."
+            },
+            "explicitConversationEnd": {
+                "type": "boolean",
+                "description": "In some cases the agent explicitly says that they are going to end the conversation right now."
+            },
+            "scheduledCallbackPause": {
+                "type": "boolean",
+                "description": "The agent explicitly promised to call the user back at a later time to continue the conversation. A specific time is NOT required (e.g., \"I will call you back to confirm\" is sufficient). Does NOT apply to: immediate transfers, questions or suggestions about callbacks (e.g., \"Would you like a callback?\", \"We could call you back\"), or promises that a human, manager, or team member will call back (e.g., \"Someone will reach out to you\")."
+            },
+            "voicemailHandling": {
+                "type": "boolean",
+                "description": "ConvoAgent reaches a voicemail system (e.g., “leave a message,” “after the tone,” “beep,” “not available”), successfully leaves a voicemail message, and explicitly says goodbye (e.g., “… . Goodbye”), in this case, the conversation is considered completed. Note: Do not consider call screening as voicemail unless a clear voicemail announcement is present."
+            }
+        },
+        "useConversationHistory": true
+    }
+})}}
+
+{% set email_enabled = GetCustomerAttribute(field="project_attributes_setting_email_send_information_enabled") %}
+{% if email_enabled == "True" %}
+    {{tools_object.tools.update({
+        "send_email_tool": {
+            "description": "This tool sends an email to the User",
+            "conditions": {
+                "agentPromised": {
+                    "type": "boolean",
+                    "description": "The agent clearly states that they are going to send an email. So their <LatestConvoAgentAnswer> should contain the explicit keyword \"email\", e.g.: \"I will send you an email shortly...\", \"Give me a moment, I will send you an email...\", \"I will send an email with the appointment request details.\", \"I'm sending an email...\", \"Let me try sending it (considering email) again...\", \"I will resend an email...\", etc."
+                }
+            },
+            "useConversationHistory": false
+        }
+    })}}
+{% endif %}
+
+{% set sms_enabled = GetCustomerAttribute(field="project_attributes_setting_sms_send_information_enabled") %}
+{% if sms_enabled == "True" %}
+    {{tools_object.tools.update({
+        "send_sms_tool": {
+            "description": "This tool sends an SMS to the User",
+            "conflictPolicy": {
+                "tag": "sms",
+            },
+            "conditions": {
+                "agentPromised": {
+                    "type": "boolean",
+                    "description": "The agent clearly states that they are going to send an SMS. So their <LatestConvoAgentAnswer> should contain the explicit keywords \"SMS\" or \"text message\", e.g.: \"I will send you an SMS / text message shortly...\", \"Give me a moment, I will send you an SMS / text message...\", \"I will send an SMS / text message with the appointment request details.\", \"I'm sending a text message / SMS...\", \"Let me try sending it (considering SMS or text message) again...\", \"I will resend an SMS / text message...\", etc."
+                }
+            },
+            "useConversationHistory": false
+        }
+    })}}
+    {% if tools_object.tools.send_manage_booking_url_tool %}
+        {{tools_object.tools.send_sms_tool.conditions.update({
+            "notRelatedToExistingBooking": {
+                "type": "boolean",
+                "description": "The SMS the agent wants to send is not related to cancelling / managing of existing reservation. Otherwise, this tool should not be used as such case is handled separately."
+            }
+        })}}
+    {% endif %}
+{% endif %}
+
+{% set zip_code_check_enabled = GetCustomerAttribute(field="project_attributes_setting_products_and_services_background_check_location_enabled") %}
+{% if zip_code_check_enabled == "True" %}
+    {{tools_object.tools.update({
+        "check_zip_code_served_tool": {
+            "description": "This tool allows agent to double check if user's provided zip code is served by the business",
+            "conditions": {
+                "agentPromised": {
+                    "type": "boolean",
+                    "description": "The agent states that they are going to check / double-check if user's zip code is served. The agent asks for wait while the agent checks."
+                }
+            },
+            "useConversationHistory": true
+        }
+    })}}
+{% endif %}
+
+{% set service_availability_check_enabled = GetCustomerAttribute(field="project_attributes_setting_products_and_services_background_check_availability_enabled") %}
+{% if service_availability_check_enabled == "True" %}
+    {{tools_object.tools.update({
+        "check_product_or_service_availability": {
+            "description": "This tool allows agent to double check if requested service or product is served / sold by the business",
+            "conflictPolicy": {
+                "tag": "availability"
+            },
+            "conditions": {
+                "agentPromised": {
+                    "type": "boolean",
+                    "description": "The agent states that they are going to check / double-check if user's requested product or service is available. The agent asks for wait while the agent checks."
+                },
+                "productOrServiceProvided": {
+                    "type": "boolean",
+                    "description": "The user inquired about some product or service they want to purchase."
+                },
+                "notTimeAvailabilityRequest": {
+                    "type": "boolean",
+                    "description": "This tool must not be called if the agent checks availability in terms of open time slots, only about the product or service itself."
+                }
+            },
+            "useConversationHistory": true
+        }
+    })}}
+{% endif %}
+
+{{Return(val=json.dumps(tools_object, ensure_ascii=False, indent=2))}}

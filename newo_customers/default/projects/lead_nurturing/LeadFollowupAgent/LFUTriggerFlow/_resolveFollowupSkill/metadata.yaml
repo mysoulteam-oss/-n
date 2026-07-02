@@ -1,0 +1,18 @@
+id: 019f2274-f549-7587-8e35-bfe5301a0891
+idn: _resolveFollowupSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f549-7587-8e35-bfe5301a088e
+    name: userId
+    default_value: ""
+  - id: 019f2274-f549-7587-8e35-bfe5301a088f
+    name: memory
+    default_value: " "
+  - id: 019f2274-f549-7587-8e35-bfe5301a0890
+    name: user_tasks
+    default_value: "[]"
+path: ""

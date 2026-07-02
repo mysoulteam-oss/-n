@@ -1,0 +1,7 @@
+{{Set(name="recording_urls", value=recordingUrls.replace('["', " "))}}
+{{Set(name="recording_urls", value=recording_urls.replace('"]', " "))}}
+{{Set(name="recording_urls", value=recording_urls.replace('", "', ", "))}}
+{{Set(name="recording_urls", value=recording_urls.replace('"', " "))}}
+{{Set(name="recording_urls", value=Stringify(recording_urls))}}
+
+{{Return(val=recording_urls)}}

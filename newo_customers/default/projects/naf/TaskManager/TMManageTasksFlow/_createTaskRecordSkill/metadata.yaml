@@ -1,0 +1,27 @@
+id: 019f2274-fa44-78af-b703-62c4056922e2
+idn: _createTaskRecordSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa44-78af-b703-62c4056922e1
+    name: comment
+    default_value: " "
+  - id: 019f2274-fa44-78af-b703-62c4056922dc
+    name: arguments
+    default_value: " "
+  - id: 019f2274-fa44-78af-b703-62c4056922dd
+    name: userId
+    default_value: " "
+  - id: 019f2274-fa44-78af-b703-62c4056922de
+    name: taskType
+    default_value: " "
+  - id: 019f2274-fa44-78af-b703-62c4056922df
+    name: status
+    default_value: " "
+  - id: 019f2274-fa44-78af-b703-62c4056922e0
+    name: content
+    default_value: " "
+path: ""

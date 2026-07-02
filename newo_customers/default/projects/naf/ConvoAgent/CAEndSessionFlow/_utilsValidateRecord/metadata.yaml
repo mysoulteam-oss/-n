@@ -1,0 +1,15 @@
+id: 019f2274-f6ef-7b06-8ded-f3372851562d
+idn: _utilsValidateRecord
+title: _utilsValidateRecord
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ef-7b06-8ded-f3372851562b
+    name: commonValues
+    default_value: " "
+  - id: 019f2274-f6ef-7b06-8ded-f3372851562c
+    name: requestCategory
+    default_value: " "
+path: ""

@@ -1,0 +1,5 @@
+{% if GetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_set_turn_message_type") == "user" %}
+    {{v2v_send_command_genai_user(command=command, user_id=user_id, last_convo_actor_id=last_convo_actor_id)}}
+{% else %}
+    {{v2v_send_command_genai_assistant(command=command, user_id=user_id, last_convo_actor_id=last_convo_actor_id)}}
+{% endif %}

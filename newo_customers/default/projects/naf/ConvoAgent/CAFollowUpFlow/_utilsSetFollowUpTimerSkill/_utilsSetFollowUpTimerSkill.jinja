@@ -1,0 +1,29 @@
+{# If `interval == -1`, it means that timer is disabled #}
+{% if interval == "-1" %}
+    {% set enabled = "False" %}
+{% else %}
+    {% set enabled = "True" %}
+{% endif %}
+
+{# If `interval` is not set, specify default value depending on conversation channel #}
+{% if not interval.strip() %}
+    {% set conversation_channel = session_get_conversation_channel(user_id=personaId) %}
+    {% if conversation_channel in ("phone", "webcall") %}
+        {% set interval = "25" %}
+    {% else %}
+        {% set interval = "75" %}
+    {% endif %}
+{% endif %}
+
+{{SendCommand(
+    commandIdn="set_timer",
+    integrationIdn="program_timer",
+    connectorIdn="message_followup",
+    eventIdn="follow_up_message",
+    timerName="follow_up_timer",
+    personaId=personaId,
+    interval=interval,
+    enabled=enabled
+)}}
+
+{{Return(val=interval)}}

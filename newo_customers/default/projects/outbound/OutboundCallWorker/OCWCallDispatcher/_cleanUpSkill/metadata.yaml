@@ -1,0 +1,15 @@
+id: 019f2274-f529-790a-b01f-720a5d07e8a8
+idn: _cleanUpSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f529-790a-b01f-720a5d07e8a7
+    name: userId
+    default_value: " "
+  - id: 019f2274-f529-790a-b01f-720a5d07e8a6
+    name: taskId
+    default_value: ""
+path: ""

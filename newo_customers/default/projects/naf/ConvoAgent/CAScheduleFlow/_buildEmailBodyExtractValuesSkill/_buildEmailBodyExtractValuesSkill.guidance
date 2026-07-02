@@ -1,0 +1,17 @@
+{{#system~}}
+Your goal is to extract values mentioned in provided JSON object and generate rows as in the example.
+
+# JSON:
+{{payload}}
+
+# Format
+<strong>key</strong> value<br>
+
+# Example:
+<strong>Requested date:</strong> 2024.03.04<br>
+<strong>Requested time:</strong> 3 PM<br>
+
+{{~/system}}
+{{Set(name="custom_values", value=Gen(temperature=0.2, topP=0, skipFilter=True, thinkingBudget=1020))}}
+
+{{Return(val=Concat(custom_values, "<br>"))}}

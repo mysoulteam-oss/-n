@@ -1,0 +1,25 @@
+{% set conversation_channel = session_get_conversation_channel(user_id=userId) %}
+{% if conversation_channel in ("phone", "webcall") %}
+    {% set base_interval = GetCustomerAttribute(field="project_attributes_setting_follow_up_timer_voice_interval_user_speech_ended") %}
+{% else %}
+    {% set base_interval = GetCustomerAttribute(field="project_attributes_setting_follow_up_timer_chat_interval_base") %}
+{% endif %}
+
+{% if base_interval == "-1" %}
+    {{Return(val="-1")}}
+{% endif %}
+
+{% set base_interval = base_interval | int %}
+{% set words_array_length = agentAnswer.split() | length %}
+
+{# Previously it was constant 0.5 and max default base was 60. Let's say that multiplier (x) then: 60 / x = 0.5; x = 120; #}
+{% set min_multiplier = 0.5 %}
+{% set multiplier = base_interval / 120 %}
+{% if multiplier < min_multiplier %}
+    {% set multiplier = min_multiplier %}
+{% endif %}
+
+{% set interval_seconds = words_array_length * multiplier + base_interval %}
+{% set interval_seconds = interval_seconds | int | string %}
+
+{{Return(val=interval_seconds)}}

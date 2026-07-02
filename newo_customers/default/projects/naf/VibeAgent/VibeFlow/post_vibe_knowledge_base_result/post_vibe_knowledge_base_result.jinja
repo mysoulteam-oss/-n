@@ -1,0 +1,20 @@
+{% set act = GetTriggeredAct() %}
+{% set result = act.arguments.result %}
+{% set user_id = GetUser().id | string %}
+{% set actor_id = GetActor().id | string %}
+{% set agent_persona_id = GetAgentPersona().id | string %}
+
+{% set actor_id_normalized = actor_id.replace('-', '') %}
+{% set memory_persona_field = "memory_backup_" ~ actor_id_normalized %}
+{% set already_taken_actions_persona_field = "already_taken_actions_backup_" ~ actor_id_normalized %}
+
+{% set memory = GetPersonaAttribute(id=user_id, field=memory_persona_field) %}
+{% set already_taken_actions = json.loads(GetPersonaAttribute(id=user_id, field=already_taken_actions_persona_field) | default("[]", true)) %}
+
+{{DeletePersonaAttribute(id=user_id, field=memory_persona_field)}}
+{{DeletePersonaAttribute(id=user_id, field=already_taken_actions_persona_field)}}
+
+{{SendMessage(message='<thinking>\nI have just received a response from the knowledge base:\n```\n' ~ result ~ '```\n</thinking>', actorIds=[actor_id], useFilter=False)}}
+{{already_taken_actions.append('I have just received a response from the knowledge base:\n```\n' ~ result)}}
+
+{{main(memory=memory, already_taken_actions=already_taken_actions)}}

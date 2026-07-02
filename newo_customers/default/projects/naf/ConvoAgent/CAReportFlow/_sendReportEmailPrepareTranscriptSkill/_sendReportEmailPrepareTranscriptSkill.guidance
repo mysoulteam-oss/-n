@@ -1,0 +1,4 @@
+{{Set(name="prepared_transcript", value=transcript.replace("
+", "<br>"))}}
+
+{{Return(val=Concat("<br><br>***<br>TRANSCRIPT:<br>", prepared_transcript))}}

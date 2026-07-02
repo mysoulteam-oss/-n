@@ -1,0 +1,6 @@
+id: 019f2274-f6ad-71f3-9a5f-27d4a2f0c232
+idn: TestAgent
+title: TestAgent
+description: >-
+  Provides a sandbox-only shortcut board for internal testing, debugging, and
+  maintenance flows.

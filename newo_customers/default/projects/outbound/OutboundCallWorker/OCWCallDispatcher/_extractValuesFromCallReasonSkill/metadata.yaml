@@ -1,0 +1,15 @@
+id: 019f2274-f529-790a-b01f-720a5d07e8ae
+idn: _extractValuesFromCallReasonSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f529-790a-b01f-720a5d07e8ad
+    name: callReason
+    default_value: " "
+  - id: 019f2274-f529-790a-b01f-720a5d07e8ac
+    name: schema
+    default_value: " "
+path: ""

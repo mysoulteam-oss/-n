@@ -1,0 +1,7 @@
+{{SendCommand(
+   commandIdn="update_library",
+   integrationIdn="newo_chat",
+   connectorIdn="workflow_builder",
+   user_actor_id=GetActor().id|string,
+   body=GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas_library")
+)}}

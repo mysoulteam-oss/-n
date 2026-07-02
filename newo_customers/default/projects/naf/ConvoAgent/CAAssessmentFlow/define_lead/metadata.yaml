@@ -1,0 +1,18 @@
+id: 019f2274-f6ee-7e87-a894-58d91cb67fc2
+idn: define_lead
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ee-7e87-a894-58d91cb67fc0
+    name: intent_name
+    default_value: ""
+  - id: 019f2274-f6ee-7e87-a894-58d91cb67fc1
+    name: session
+    default_value: ""
+  - id: 019f2274-f6ee-7e87-a894-58d91cb67fbf
+    name: industry
+    default_value: ""
+path: ""

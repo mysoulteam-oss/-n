@@ -1,0 +1,12 @@
+id: 019f2274-f6ec-752f-b893-a9fb76edd933
+idn: check_valid_bookings
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd932
+    name: bookings
+    default_value: ""
+path: ""

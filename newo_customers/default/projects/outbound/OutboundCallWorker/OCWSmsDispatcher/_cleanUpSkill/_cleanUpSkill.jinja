@@ -1,0 +1,17 @@
+{% set actor_id = GetActors(personaId=userId)[0].id | string %}
+
+{{SendSystemEvent(
+    eventIdn="remove_prompt_custom_section",
+    connectorIdn="system",
+    actorIds=[actor_id],
+    sectionName="OutboundSMSContext"
+)}}
+
+{{SetPersonaAttribute(id=userId, field="outbound_sms", value="False")}}
+
+{{SendSystemEvent(
+    eventIdn="convoagent_remove_custom_user_data",
+    connectorIdn="system",
+    actorIds=[actor_id],
+    sectionName="UserData OSC"
+)}}

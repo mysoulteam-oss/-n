@@ -1,0 +1,12 @@
+id: 019f2274-fa23-72a2-a066-1f549da39a6d
+idn: _sendWorkerMessageSkill
+title: _sendWorkerMessageSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa23-72a2-a066-1f549da39a6c
+    name: taskObject
+    default_value: " "
+path: ""

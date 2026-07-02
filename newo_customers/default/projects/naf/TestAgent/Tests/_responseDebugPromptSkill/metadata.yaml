@@ -1,0 +1,9 @@
+id: 019f2274-fa5f-7e30-b039-fcdb56fffc5d
+idn: _responseDebugPromptSkill
+title: _responseDebugPromptSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

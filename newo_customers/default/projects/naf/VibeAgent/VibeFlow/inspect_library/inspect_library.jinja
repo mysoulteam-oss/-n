@@ -1,0 +1,48 @@
+{% set user_id = GetUser().id | string %}
+{% set agent_persona_id = GetAgentPersona().id | string %}
+{% set actor_id = GetActor().id | string %}
+{% set actor_id_normalized = actor_id.replace('-', '') %}
+{% set inspected_library_types_field = "inspected_library_types_" ~ actor_id_normalized %}
+
+{% set parameters_parsed = json.loads(parameters) %}
+{% set idn = '' %}
+{% if parameters_parsed | length > 1 %}
+    {% set idn = parameters_parsed[1] %}
+{% endif %}
+{% set instruction_type = parameters_parsed[0] %}
+{% set inspected_library_types_raw = GetPersonaAttribute(id=user_id, field=inspected_library_types_field).strip() %}
+{% set inspected_library_types = json.loads(inspected_library_types_raw) if inspected_library_types_raw else [] %}
+{% if instruction_type and instruction_type not in inspected_library_types %}
+    {{inspected_library_types.append(instruction_type)}}
+    {{SetPersonaAttribute(
+        id=user_id,
+        field=inspected_library_types_field,
+        value=json.dumps(inspected_library_types, ensure_ascii=False, indent=2)
+    )}}
+{% endif %}
+
+{% set canvas = json.loads(GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas_library")) %}
+{% set found_instruction = {} %}
+{% for type in canvas %}
+    {% if type.idn == instruction_type %}
+        {% if not idn %}
+            {% set found_instruction = type %}
+        {% else %}
+            {% for item in type["items"] %}
+                {% if item.idn == idn %}
+                    {% set found_instruction = item %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{% if not found_instruction %}
+    {{SendMessage(message='<thinking>\nI did not find any instruction for my query: ' ~ parameters ~ '\n</thinking>', actorIds=[actor_id], useFilter=False)}}
+    {{already_taken_actions.append('I did not find any instruction for my query: ' ~ parameters)}}
+{% else %}
+    {{SendMessage(message='<thinking>\nI have found the following instruction(s) in the canvas library for my query ' ~ parameters ~ ':\n' ~ json.dumps(found_instruction, ensure_ascii=False, indent=2) ~ '\nThese results are from the library, not from the AI Employee\'s current canvas. If I want to use one of these items, I must add it with `add_canvas_item`.\n</thinking>', actorIds=[actor_id], useFilter=False)}}
+    {{already_taken_actions.append('I have found the following instruction(s) in the canvas library for my query ' ~ parameters ~ ':\n' ~ json.dumps(found_instruction, ensure_ascii=False, indent=2) ~ '\nThese results are from the library, not from the AI Employee\'s current canvas. If I want to use one of these items, I must add it with `add_canvas_item`.')}}
+{% endif %}
+
+{{main(memory=memory, already_taken_actions=already_taken_actions)}}

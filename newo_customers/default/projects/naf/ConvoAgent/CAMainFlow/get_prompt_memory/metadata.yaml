@@ -1,0 +1,24 @@
+id: 019f2274-f6ea-7d44-89d3-e603c29ce105
+idn: get_prompt_memory
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce103
+    name: count
+    default_value: "80"
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce104
+    name: user_id
+    default_value: ""
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce100
+    name: to_date
+    default_value: ""
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce101
+    name: include_summary
+    default_value: "True"
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce102
+    name: only_before_call_ended
+    default_value: ""
+path: ""

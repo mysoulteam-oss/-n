@@ -1,0 +1,7 @@
+id: 019f2274-f628-73db-8c91-dc86e4e23b23
+idn: ConvoAgent
+title: ConvoAgent
+description: >-
+  Runs the main end-user conversation loop across voice, chat, messaging, API,
+  and sandbox channels, then delegates side effects to worker and integration
+  Flows.

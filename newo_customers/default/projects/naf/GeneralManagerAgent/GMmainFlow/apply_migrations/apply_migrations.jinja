@@ -1,0 +1,162 @@
+{# 0. Check `previous_version` and `current_version` presence #}
+{% if (not previous_version) or (not current_version) %}
+    {{Return()}}
+{% endif %}
+{% if (not previous_version.strip()) or (not current_version.strip()) %}
+    {{Return()}}
+{% endif %}
+
+{# 1. Define the master list of all available migration skills in chronological order #}
+{# TODO: `_migration_2_5_118_itm` and `_migration_2_6_0_regenerate_rag_from_text` were removed - see their content #}
+{% set all_migration_skills = [
+    "_migration_2_5_39",
+    "_migration_2_5_40",
+    "_migration_2_5_48",
+    "_migration_2_5_49",
+    "_migration_2_5_50",
+    "_migration_2_5_52",
+    "_migration_2_5_53",
+    "_migration_2_5_54",
+    "_migration_2_5_55",
+    "_migration_2_5_56",
+    "_migration_2_5_59",
+    "_migration_2_5_61",
+    "_migration_2_5_63",
+    "_migration_2_5_65",
+    "_migration_2_5_66",
+    "_migration_2_5_69",
+    "_migration_2_5_72",
+    "_migration_2_5_78",
+    "_migration_2_5_79",
+    "_migration_2_5_81",
+    "_migration_2_5_82",
+    "_migration_2_5_85",
+    "_migration_2_5_89",
+    "_migration_2_5_91",
+    "_migration_2_5_92",
+    "_migration_2_5_93",
+    "_migration_2_5_94",
+    "_migration_2_5_96",
+    "_migration_2_5_97",
+    "_migration_2_5_98",
+    "_migration_2_5_99",
+    "_migration_2_5_102",
+    "_migration_2_5_103",
+    "_migration_2_5_104",
+    "_migration_2_5_105",
+    "_migration_2_5_107",
+    "_migration_2_5_108",
+    "_migration_2_5_109",
+    "_migration_2_5_110",
+    "_migration_2_5_111",
+    "_migration_2_5_112",
+    "_migration_2_5_114",
+    "_migration_2_5_118_catering",
+    "_migration_2_5_118_general",
+    "_migration_2_5_118_reports",
+    "_migration_2_5_120_greeting",
+    "_migration_2_5_120",
+    "_migration_2_5_122_home_service",
+    "_migration_2_5_122_menu",
+    "_migration_2_5_124_asr",
+    "_migration_2_5_124_session_timeout",
+    "_migration_2_5_125_restaurant_attributes",
+    "_migration_2_5_125_rag",
+    "_migration_2_5_126_attributes_metadata",
+    "_migration_2_5_126_cleaning_tool",
+    "_migration_2_5_128_restaurant_schema",
+    "_migration_2_5_128_switch_to_v2v",
+    "_migration_2_5_128_sales_sms_content",
+    "_migration_2_5_129_v2v_voices",
+    "_migration_2_5_129_bypass_attribute",
+    "_migration_2_5_129_v2v_switch_to_genai",
+    "_migration_2_5_129_delete_attribute_categories_mapping",
+    "_migration_2_6_0_connectors",
+    "_migration_2_6_2_voice_integration_service",
+    "_migration_2_6_7_call_transfer_phone",
+    "_migration_2_6_7_spam",
+    "_migration_2_6_9_session_timer_duration",
+    "_migration_2_6_9_attribute_metadata",
+    "_migration_2_6_9_switch_to_openai",
+    "_migration_2_6_10_switch_to_gemini",
+    "_migration_2_6_12_language",
+    "_migration_2_6_12_shared_phone_numbers_from_attribute_to_connector",
+    "_migration_3_0_0",
+    "_migration_3_0_2_tools",
+    "_migration_3_0_3_blocked_phones_clean",
+    "_migration_3_0_4_workflow_builder",
+    "_migration_3_0_6_persona_id_attributes",
+    "_migration_3_0_6_spam_attribute_rename",
+    "_migration_3_0_6_calendar_integration",
+    "_migration_3_0_6_v2v_model_and_voices",
+    "_migration_3_0_6_reset_bypass_phone",
+    "_migration_3_0_6_phone_number_country_code_attributes",
+    "_migration_3_0_6_tool_description",
+    "_migration_3_0_10_workflow_builder_connector",
+    "_migration_3_0_11_google_stt_model",
+    "_migration_3_0_11_old_restaurant_attributes_values",
+    "_migration_3_0_11_remove_deprecated_akb_topics",
+    "_migration_3_0_11_sms_via_sip",
+    "_migration_3_2_0_timezone_tool",
+    "_migration_3_3_0_check_availability_default_schema",
+    "_migration_3_3_0_agent_style_and_languages",
+    "_migration_3_3_0_timezone_tool",
+    "_migration_3_3_4_timezone_tool",
+    "_migration_3_4_0_chat_voice_agent_style",
+    "_migration_3_6_0_rag_append",
+    "_migration_3_6_0_v2v_genai_model",
+    "_migration_3_6_0_webhook_auth_header_attr",
+    "_migration_3_6_1_gemini_v2v_with_user_role",
+    "_migration_3_8_0_mock_connector",
+    "_migration_3_8_0_providing_prices_ec",
+    "_migration_3_8_0_remove_long_operation_follow_up",
+    "_migration_3_8_0_removing_language_procedure",
+    "_migration_3_10_0_sales_sms_content",
+    "_migration_3_10_1_calculation_tool_description",
+    "_migration_3_10_1_openai_v2v_new_default_model",
+    "_migration_3_10_1_remove_additional_languages",
+    "_migration_3_10_1_remove_sip_sms_option",
+    "_migration_4_0_1_follow_up_timer_defaults",
+    "_migration_4_0_1_v2v_native_transcription",
+    "_migration_4_2_0_timezone_tool",
+    "_migration_4_3_0_remove_vibe_builder_feature_flag",
+    "_migration_4_4_0_legacy_timezones",
+    "_migration_4_5_1_remove_vertex_enabled",
+    "_migration_4_5_1_general_email_send_information_enabled",
+    "_migration_4_5_1_gathering_phone_procedure",
+    "_migration_4_5_2_v2v_genai_tools_defaults",
+] %}
+
+{# 2. Parse previous_version and current_version into comparable tuples #}
+{% set p_parts = previous_version.split('-')[0].split('.') | default(['0','0','0']) %}
+{% set p_version_tuple = (p_parts[0] | int, p_parts[1] | int, p_parts[2] | int) %}
+
+{% set c_parts = current_version.split('-')[0].split('.') | default(['999','999','999']) %}
+{% set c_version_tuple = (c_parts[0] | int, c_parts[1] | int, c_parts[2] | int) %}
+
+{# 3. Loop through the master skill list #}
+{% for migration_skill_name in all_migration_skills %}
+    {# a. Parse the version from the skill name string #}
+    {% set name_parts = migration_skill_name.split('_') %}
+    {# e.g., "_migration_3_4_0" -> ["", "migration", "3", "4", "0"] #}
+    {% set m_version_tuple = (name_parts[2] | int, name_parts[3] | int, name_parts[4] | int) %}
+
+    {# b. Check if the migration is within the required upgrade range #}
+    {% if m_version_tuple > p_version_tuple and m_version_tuple <= c_version_tuple %}
+        {# Handle special cases with extra conditions #}
+        {% if migration_skill_name == "_migration_3_0_0" %}
+            {% if not GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas").strip() %}
+                {{Do(actionName=migration_skill_name)}}
+                {{ProjectImportSkill()}}
+                {{Sleep(duration=30, interruptible="n")}}
+            {% endif %}
+        {% elif migration_skill_name == "_migration_3_0_4" %}
+            {% if GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas").strip() %}
+                {{Do(actionName=migration_skill_name)}}
+            {% endif %}
+        {% else %}
+            {# c. For all other standard migrations, just call them #}
+            {{Do(actionName=migration_skill_name)}}
+        {% endif %}
+    {% endif %}
+{% endfor %}

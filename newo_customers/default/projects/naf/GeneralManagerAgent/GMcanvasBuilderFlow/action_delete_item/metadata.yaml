@@ -1,0 +1,15 @@
+id: 019f2274-f87e-76e7-a6f1-f04c56cb6108
+idn: action_delete_item
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f87e-76e7-a6f1-f04c56cb6107
+    name: type_idn
+    default_value: ""
+  - id: 019f2274-f87e-76e7-a6f1-f04c56cb6106
+    name: item_idn
+    default_value: ""
+path: ""

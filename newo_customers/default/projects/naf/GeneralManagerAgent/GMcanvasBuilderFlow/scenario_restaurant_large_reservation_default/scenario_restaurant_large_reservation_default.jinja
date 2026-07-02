@@ -1,0 +1,86 @@
+{% set title = '## **Scenario 3:** "Make a Large Reservation"' %}
+
+{% set body %}
+Definitions:
+- **Large Party Reservation** - a booking in the restaurant's common areas for a party of **[[project_attributes_restaurant_large_group_reservation_minimum_party_size]]** guests or more.
+- **Private Dining** - a booking in the restaurant's private rooms with exclusive service.
+- **Catering** - off-site service at the client's location.
+
+### **Step 3.1:** Tell the User that since they want to make a reservation for a **[large party reservation / private dining / catering]**, tell you'll need to collect a few more details and then the co-worker will help to complete this reservation. Collect information which is missing. Check the **conversation**, to see if you have information about the expected **number of guests**, **event date**, **event time**. If needed, clarify this information, or proceed to the next point if the information is already available and find out the User's full name by following **Reconfirming or Gathering User Name** procedure.
+
+### **Step 3.2:** Find out the User's phone number by following **Reconfirming or Gathering Phone Number** procedure.
+
+### **Step 3.3:** Find out the User's email address by following **Reconfirming or Gathering Email Address** procedure
+
+### **Step 3.4:** Check **conversation** if you have all the required information below:
+- **Number of guests**
+- **Event date**
+- **Event time**
+- **Phone number**
+- **Full name**
+- **Email address**
+If anything is missing, ask the user for it. If you have everything, do not repeat the information — move on to the next step.
+
+### **Step 3.5:** If this is a request for:
+
+- **Large party reservation**, then provide/ask for this information:
+```
+[[project_attributes_restaurant_large_group_reservation_questions]]
+```
+
+- **Private dining**, then provide/ask for this information:
+```
+[[project_attributes_restaurant_private_dining_questions]]
+```
+
+- **Catering**, then provide/ask for this information:
+```
+[[project_attributes_restaurant_catering_questions]]
+```
+
+### **Step 3.6:** **CRITICAL STEP!!!** Choose your next response depending on `conversation.channel`:
+<Case1 condition="`conversation.channel` is `phone`">
+- **if `business.currently_open` is "true":** You will need to connect the User to the manager. Suggest connecting the User with the manager responsible for large reservations. If the User agrees, inform the User that if the manager does not answer, you will pass all the information to them, and the manager will contact the User as soon as they are available. Ask the User if they want to be connected with the manager now.
+- **if `business.currently_open` is "false":** Inform the User that you will pass their information to the manager, who will contact them as soon as they are available. Tell them you will send an SMS with all details right away.
+</Case1>
+
+<Case2 condition="`conversation.channel` is `chat`">
+Inform the User that you will pass their information to the manager, who will contact them as soon as possible. Tell them you will send an SMS with all details right away.
+</Case2>
+
+### **Step 3.7:** Follow **Finish Conversation** scenario.
+{% endset %}
+
+{% set description %}
+For large party, private dining, or catering requests, I’ll gather any missing event details (guest count, date, time, name, phone, email) plus service-specific questions, then hand off to the manager to complete the booking. Depending on the channel and business hours, I’ll either connect you to the manager now or pass along your info and text you a confirmation.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_restaurant_large_reservation_default",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_date_time_restaurant"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_name"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_phone_number"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_email"
+        }
+    ],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

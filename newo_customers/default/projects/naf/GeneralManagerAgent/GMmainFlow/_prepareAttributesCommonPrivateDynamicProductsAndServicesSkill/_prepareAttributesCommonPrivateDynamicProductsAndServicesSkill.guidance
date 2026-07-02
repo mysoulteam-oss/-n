@@ -1,0 +1,98 @@
+{{Set(name="current_products_and_services", value=GetCustomerAttribute(field="project_attributes_products_and_services"))}}
+{{Set(name="current_products_and_services_not_offering", value=GetCustomerAttribute(field="project_attributes_products_and_services_not_offering"))}}
+
+{{!-- Exit if `Products and Services` and `Products and Services Not Offering` are empty --}}
+{{#if IsEmpty(text=current_products_and_services)}}
+  {{#if IsEmpty(text=current_products_and_services_not_offering)}}
+    {{SetCustomerAttribute(field="project_attributes_private_dynamic_products_and_services", value=" ")}}
+    {{Return()}}
+  {{/if}}
+{{/if}}
+
+
+{{Set(name="previous_products_and_services", value=GetState(name="previous_products_and_services"))}}
+{{Set(name="previous_products_and_services_not_offering", value=GetState(name="previous_products_and_services_not_offering"))}}
+{{Set(name="previous_products_and_services_structured_representation_enabled", value=GetState(name="previous_products_and_services_structured_representation_enabled"))}}
+
+{{Set(name="current_products_and_services_structured_representation_enabled", value=GetCustomerAttribute(field="project_attributes_setting_products_and_services_structured_representation_enabled"))}}
+{{Set(name="current_dynamic_products_and_services", value=GetCustomerAttribute(field="project_attributes_private_dynamic_products_and_services"))}}
+
+{{!-- Exit if `Products and Services`, `Products and Services Not Offering`, `Products and Services Structured Representation` were not changed and `Dynamic` representation is not empty --}}
+{{#if current_products_and_services == previous_products_and_services}}
+  {{#if current_products_and_services_not_offering == previous_products_and_services_not_offering}}
+    {{#if current_products_and_services_structured_representation_enabled == previous_products_and_services_structured_representation_enabled}}
+      {{#if not IsEmpty(text=current_dynamic_products_and_services)}}
+        {{Return()}}
+      {{/if}}
+    {{/if}}
+  {{/if}}
+{{/if}}
+
+
+{{!-- `Structured Products and Services` --}}
+{{#if current_products_and_services_structured_representation_enabled == "True"}}
+
+  {{!-- Validate, transform and set `Structured Products and Services` --}}
+  {{Set(name="schema", value=_prepareAttributesCommonPrivateDynamicProductsAndServicesSchemaSkill())}}
+
+{{#system~}}
+Parse the ENTIRE **Products and Services** items list specified in <ProductsAndServices> block and **not offering** items specified in <ProductsAndServicesNotOffering> block according to <ExplicitConstraints> and <OutputFormat> rules.
+
+---
+
+<ExplicitConstraints alt="explicit constraints">
+- Do not explain or comment.
+- Do not stop mid-way. Convert the products/services items specified in <ProductsAndServices> block.
+- Try to determine a single currency based on <ProductsAndServices> block.
+- Split product/service item into multiple if needed.
+- Set price for product/service item only if price was provided.
+</ExplicitConstraints>
+
+---
+
+<OutputFormat alt="rules regarding output format">
+- The output must be a valid JSON object generated according to provided schema.
+- If the information in <ProductsAndServices> and <ProductsAndServicesNotOffering> blocks is not sufficient (e.g. empty), do not hallucinate, provide empty JSON object instead.
+- The output must contain EXACTLY each item.
+</OutputFormat>
+
+---
+
+<ProductsAndServices alt="products and services items" role="context">
+{{current_products_and_services}}
+</ProductsAndServices>
+
+<ProductsAndServicesNotOffering alt="products and services - not offering items" role="context">
+{{current_products_and_services_not_offering}}
+</ProductsAndServicesNotOffering>
+
+---
+
+JSON object: {{~/system}}{{#assistant~}}{{Set(name="new_dynamic_products_and_services", value=Gen(jsonSchema=schema, validateSchema=True, temperature=0.1, topP=0, skipFilter=True, thinkingBudget=1020))}}{{~/assistant}}
+
+{{!-- `Non-structured Products and Services` --}}
+{{else}}
+
+{{#system~}}
+- **Offering (available / provided):**
+```
+{{#if not IsEmpty(text=current_products_and_services)}}{{current_products_and_services}}{{else}}null{{/if}}
+```
+- **Not offering (not available / not provided):**
+```
+{{#if not IsEmpty(text=current_products_and_services_not_offering)}}{{current_products_and_services_not_offering}}{{else}}null{{/if}}
+```
+{{~/system}}
+
+  {{Set(name="new_dynamic_products_and_services", value=GetCurrentPrompt())}}
+
+{{/if}}
+
+{{SetCustomerAttribute(
+  field="project_attributes_private_dynamic_products_and_services",
+  value=new_dynamic_products_and_services
+)}}
+
+{{SetState(name="previous_products_and_services", value=current_products_and_services)}}
+{{SetState(name="previous_products_and_services_not_offering", value=current_products_and_services_not_offering)}}
+{{SetState(name="previous_products_and_services_structured_representation_enabled", value=current_products_and_services_structured_representation_enabled)}}

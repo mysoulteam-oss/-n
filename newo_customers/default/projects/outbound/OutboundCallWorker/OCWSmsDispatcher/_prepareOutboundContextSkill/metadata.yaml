@@ -1,0 +1,18 @@
+id: 019f2274-f52a-7362-a472-d0a666526b61
+idn: _prepareOutboundContextSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f52a-7362-a472-d0a666526b5e
+    name: messageReason
+    default_value: ""
+  - id: 019f2274-f52a-7362-a472-d0a666526b5f
+    name: actorId
+    default_value: ""
+  - id: 019f2274-f52a-7362-a472-d0a666526b60
+    name: userId
+    default_value: ""
+path: ""

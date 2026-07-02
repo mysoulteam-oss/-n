@@ -1,0 +1,12 @@
+{% set voice_greeting_phrase = GetCustomerAttribute(field="project_representative_agent_voice_greeting_phrase") %}
+
+{# Retrieve phonetic business name representation #}
+{% set business_name_phonetic = GetCustomerAttribute(field="project_business_name_phonetic") %}
+{# Check if business name phonetic was set #}
+{% if business_name_phonetic.strip() %}
+    {# Retrieve regular business name #}
+    {% set business_name_regular = GetCustomerAttribute(field="project_business_name") %}
+    {% set voice_greeting_phrase = voice_greeting_phrase.replace(business_name_regular, business_name_phonetic) %}
+{% endif %}
+
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_voice_greeting_phrase", value=GetCustomerAttribute(field="project_representative_agent_voice_disclaimer_phrase")~ " " ~ voice_greeting_phrase)}}

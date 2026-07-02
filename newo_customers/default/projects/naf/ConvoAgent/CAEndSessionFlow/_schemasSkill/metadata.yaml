@@ -1,0 +1,15 @@
+id: 019f2274-f6ef-7b06-8ded-f33728515622
+idn: _schemasSkill
+title: _schemasSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ef-7b06-8ded-f33728515620
+    name: reportDisaster
+    default_value: "False"
+  - id: 019f2274-f6ef-7b06-8ded-f33728515621
+    name: conversationCategory
+    default_value: "False"
+path: ""

@@ -1,0 +1,15 @@
+id: 019f2274-f6e9-7bd5-b967-34e3b9abbd8e
+idn: _utilsSetFollowUpTimerSkill
+title: _utilsSetFollowUpTimerSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6e9-7bd5-b967-34e3b9abbd8c
+    name: interval
+    default_value: ""
+  - id: 019f2274-f6e9-7bd5-b967-34e3b9abbd8d
+    name: personaId
+    default_value: ""
+path: ""

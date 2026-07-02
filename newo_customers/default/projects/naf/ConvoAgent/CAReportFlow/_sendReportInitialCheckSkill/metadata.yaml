@@ -1,0 +1,18 @@
+id: 019f2274-f6ec-752f-b893-a9fb76edd88f
+idn: _sendReportInitialCheckSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd88c
+    name: userId
+    default_value: " "
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd88d
+    name: transcript
+    default_value: " "
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd88e
+    name: agentAnswer
+    default_value: " "
+path: ""

@@ -1,0 +1,36 @@
+{{!-- All `representative agent` common Customer Attributes must be specified here with default values --}}
+{{!-- (must be sorted alphabetically) --}}
+
+{{Set(name="business_name", value=GetCustomerAttribute(field="project_business_name"))}}
+{{Set(name="agent_name", value=GetCustomerAttribute(field="project_representative_agent_name"))}}
+
+{{Set(name="language_primary", value=GetCustomerAttribute(field="project_business_language_primary"))}}
+
+{{utils_customer_attribute_set_if_empty_depending_on_language(
+    attribute_idn="project_representative_agent_chat_greeting_phrase",
+    input_text=Concat(
+        "Hi! I'm ",
+        agent_name,
+        " from ",
+        business_name,
+        ". Would you like to schedule a cleaning service, or can I assist you with something else?"
+    ),
+    input_text_language="English",
+    target_language=language_primary
+)}}
+
+{{utils_customer_attribute_set_if_empty_depending_on_language(
+    attribute_idn="project_representative_agent_voice_greeting_phrase",
+    input_text=Concat(
+        "Hi! I'm ",
+        agent_name,
+        " from ",
+        business_name,
+        ". Would you like to schedule a cleaning service, or can I assist you with something else?"
+    ),
+    input_text_language="English",
+    target_language=language_primary
+)}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_title", value="AI Representative")}}
+{{set_customer_attribute_if_first_init_and_empty(field="project_representative_agent_providing_prices_explicit_constraint", value="- Always mention that actual prices might differ whenever you provide prices, and only the manager can confirm the total price.")}}

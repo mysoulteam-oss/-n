@@ -1,0 +1,63 @@
+{{#system~}}
+An AI agent was assigned a task. The task is identified by its name specified in <TaskName>.
+
+Each task has specific criteria for successful completion based on the nature of the task and the response provided by the agent.
+Criteria for successful completion are specified in <TaskExecutionSuccessCriteria>.
+
+Based on the provided response specified in <TaskExecutionResult>, determine whether the task was successfully completed according to the success criteria.
+
+
+<TaskName alt="task name">
+{{GetState(name="task_idn")}}
+</TaskName>
+
+
+<TaskExecutionSuccessCriteria alt="task execution success criteria">
+**General Criteria**:
+- Regardless of the task type, the response must **not**:
+    - Indicate an error
+    - Indicate inability to perform the task
+    - Contain phrases such as:
+        - "I cannot do this"
+        - "Please try something else"
+        - "Could not complete"
+        - "Try again"
+
+
+In case of **General Criteria** violation, do not proceed and classify the task as unsuccessful.
+
+
+**Task-Specific Criteria** based on the <TaskName>:
+
+- For `w1s3_reserve_table_task`:
+  The task is considered successful if the response contains booking details such as:
+    - Information about reservation details
+    - Or a clear indication that reservation was confirmed successfully
+
+- For `w1s1_get_available_slots_task`:
+  The task is considered successful if the response includes:
+    - Information about available time slots
+    - Or a clear indication that no available slots exist
+</TaskSuccessCriteria>
+
+
+<TaskExecutionResult alt="task execution result">
+{{response}}
+</TaskExecutionResult>
+
+
+<OutputFormat alt="rules regarding output format">
+- Reply `true` if yes
+- Reply `false` if no
+- Avoid using markdown and any formatting
+- Omit any explanations or comments
+</OutputFormat>
+
+
+---
+
+
+**Q**: Does the <TaskExecutionResult> indicate that the task is successfully completed?
+**A**: {{~/system}}{{#assistant~}}{{Set(name="validation_result", value=Gen(temperature=0.1, topP=0, skipFilter=True, thinkingBudget=1020))}}{{~/assistant}}
+
+{{Return(val=validation_result)}}

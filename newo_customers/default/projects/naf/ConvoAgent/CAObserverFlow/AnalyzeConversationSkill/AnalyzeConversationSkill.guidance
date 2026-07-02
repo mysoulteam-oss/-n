@@ -1,0 +1,18 @@
+{{Set(name="user_id", value=GetUser(field="id"))}}
+
+{{Set(name="memory", value=GetTriggeredAct(fields=["memory"]))}}
+
+{{Set(name="is_outbound_call", value=_utilsPersonaAttributeGetWithDefaultsSkill(id=user_id, field="outbound_call", defaultValue="False"))}}
+{{_extractUserInformationDuringConversationSkill(userId=user_id, memory=memory, isOutboundCall=is_outbound_call)}}
+
+{{Set(name="conversation_channel", value=GetTriggeredAct(fields=["conversationChannel"]))}}
+
+{{#if conversation_channel == "phone"}}
+  {{_evaluateConversationQualitySkill(userId=user_id, memory=memory, conversation_channel=conversation_channel)}}
+  {{Return()}}
+{{/if}}
+
+{{#if conversation_channel == "webcall"}}
+  {{_evaluateConversationQualitySkill(userId=user_id, memory=memory, conversation_channel=conversation_channel)}}
+  {{Return()}}
+{{/if}}

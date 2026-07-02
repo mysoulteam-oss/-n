@@ -1,0 +1,20 @@
+{# Handle case where `label` is empty #}
+{% if not label.strip() %}
+    {{Return()}}
+{% endif %}
+
+{# Delete all AKB topics with corresponding label #}
+{% set persona_id = GetAgentPersona().id %}
+{% set found_topics = SearchFuzzyAkb(
+    query="",
+    searchFields=["name"],
+    numberTopics=99999,
+    labels=[label],
+    filterByPersonaIds=[persona_id],
+    scoreThreshold=0.0
+) %}
+{% set topic_ids = [] %}
+{% for topic in found_topics %}
+    {% set _ = topic_ids.append(topic.topicId) %}
+{% endfor %}
+{{DeleteAkb(ids=topic_ids)}}

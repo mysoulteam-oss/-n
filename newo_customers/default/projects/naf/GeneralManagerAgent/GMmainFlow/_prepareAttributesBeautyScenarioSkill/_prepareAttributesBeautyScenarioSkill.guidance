@@ -1,0 +1,1 @@
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_scenario", value="Default Scenario")}}

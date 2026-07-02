@@ -1,0 +1,2 @@
+{% set arguments = GetTriggeredAct().arguments %}
+{{_utilsSendSystemLogSkill(message="Test mode: SMS sending was mocked. Evaluated payload: " ~ json.dumps(arguments, ensure_ascii=False, indent=2))}}

@@ -1,0 +1,71 @@
+{% set parameters_parsed = json.loads(parameters) if parameters and parameters.strip() else [] %}
+{% set attribute_idn = parameters_parsed[0].strip() if parameters_parsed else "" %}
+{% set actor_id = GetActor().id | string %}
+{% set tenant = GetCustomerInfo().tenant | string %}
+{% set is_newo_tenant = not tenant or tenant == "newo" %}
+
+{% if not attribute_idn %}
+    {% set thoughts = "I could not fetch an attribute because no attribute idn was provided." %}
+{% else %}
+    {% set attribute_metadata = GetCustomerMetadataAttribute(idn=attribute_idn) %}
+    {% if attribute_metadata %}
+        {% set attribute_metadata = attribute_metadata.model_dump() %}
+        {% set attribute = {
+            "idn": attribute_idn,
+            "value": attribute_metadata.value if attribute_metadata.value is not none else "",
+            "title": attribute_metadata.title,
+            "description": attribute_metadata.description,
+            "group": attribute_metadata.group,
+            "is_hidden": attribute_metadata.isHidden,
+            "possible_values": attribute_metadata.possibleValues,
+            "value_type": attribute_metadata.valueType
+        } %}
+    {% else %}
+        {% set attribute = {
+            "idn": attribute_idn,
+            "value": GetCustomerAttribute(field=attribute_idn)
+        } %}
+    {% endif %}
+
+    {% set branding_check_text = json.dumps(attribute, indent=2, ensure_ascii=False).lower() %}
+    {% if not is_newo_tenant and "newo" in branding_check_text %}
+        {% set thoughts = "I could not fetch an attribute for the requested idn." %}
+    {% else %}
+        {% set attribute_value = attribute.value %}
+        {% if attribute_value is none or not (attribute_value | string).strip() %}
+            {% set attribute_value = "[No value]" %}
+        {% endif %}
+
+        {% set thoughts = "I have fetched the full attribute value and metadata:\n\n" %}
+        {% set thoughts = thoughts ~ "**IDN:** `" ~ attribute.idn ~ "`\n**Current value:** " ~ (attribute_value | string) ~ "\n" %}
+
+        {% if attribute.title and attribute.title.strip() %}
+            {% set thoughts = thoughts ~ "**Title:** " ~ attribute.title.strip() ~ "\n" %}
+        {% endif %}
+
+        {% if attribute.description and attribute.description.strip() %}
+            {% set thoughts = thoughts ~ "**Description:** " ~ attribute.description.strip() ~ "\n" %}
+        {% endif %}
+
+        {% if attribute.group and attribute.group.strip() %}
+            {% set thoughts = thoughts ~ "**Group:** " ~ attribute.group.strip() ~ "\n" %}
+        {% endif %}
+
+        {% if attribute.is_hidden is not none %}
+            {% set thoughts = thoughts ~ "**Is Hidden:** " ~ attribute.is_hidden | string ~ "\n" %}
+        {% endif %}
+
+        {% if attribute.possible_values %}
+            {% set thoughts = thoughts ~ "**Possible Values:** " ~ json.dumps(attribute.possible_values, ensure_ascii=False, indent=2) ~ "\n" %}
+        {% endif %}
+
+        {% if attribute.value_type and attribute.value_type.strip() %}
+            {% set thoughts = thoughts ~ "**Value Type:** " ~ attribute.value_type.strip() ~ "\n" %}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+{{SendMessage(message="<thinking>\n" ~ thoughts ~ "\n</thinking>", actorIds=[actor_id], useFilter=False)}}
+{{already_taken_actions.append(thoughts)}}
+
+{{main(memory=memory, already_taken_actions=already_taken_actions)}}

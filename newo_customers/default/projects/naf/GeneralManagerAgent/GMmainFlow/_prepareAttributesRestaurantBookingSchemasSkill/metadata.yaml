@@ -1,0 +1,21 @@
+id: 019f2274-f880-7a8d-8da4-a8606199998d
+idn: _prepareAttributesRestaurantBookingSchemasSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f87f-7799-9270-cc6dbf4945a2
+    name: checkAvailabilityValidation
+    default_value: "False"
+  - id: 019f2274-f87f-7799-9270-cc6dbf49459f
+    name: checkAvailabilityPayload
+    default_value: "False"
+  - id: 019f2274-f87f-7799-9270-cc6dbf4945a0
+    name: bookSlotMetaFields
+    default_value: "False"
+  - id: 019f2274-f87f-7799-9270-cc6dbf4945a1
+    name: bookSlotPayload
+    default_value: "False"
+path: ""

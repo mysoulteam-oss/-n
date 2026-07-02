@@ -1,0 +1,63 @@
+{% set library_types = GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas_library") %}
+
+{# If library types data is empty, return #}
+{% if not library_types.strip() %}
+    {{Return(val="")}}
+{% endif %}
+
+{% set current_canvas = GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas") %}
+
+{# If current canvas data is empty, return #}
+{% if not current_canvas.strip() %}
+    {{Return(val="")}}
+{% endif %}
+
+{% set library_types = json.loads(library_types) %}
+{% set current_canvas = json.loads(current_canvas) %}
+{# Extract all types from the current canvas #}
+{% set current_canvas_types = current_canvas.types %}
+
+{# Loop through each library type in the library data #}
+{% for library_type in library_types %}
+    {# Find the index of the matching type in the current canvas by IDN #}
+    {% set current_canvas_type_index = utils_get_object_index_by_key_value(obj=current_canvas_types, value=library_type.idn, key="idn") | int %}
+    {# Retrieve the corresponding canvas type object #}
+    {% set current_canvas_type = current_canvas_types[current_canvas_type_index] %}
+    {# Loop through each item within the current library type #}
+    {% for library_item in library_type["items"] %}
+        {# Find the index of the matching item in the current canvas type by title #}
+        {% set current_canvas_item_index = utils_get_object_index_by_key_value(obj=current_canvas_type["items"], value=library_item["title"], key="title") %}
+        {# If a matching item exists in the current canvas type #}
+        {% if current_canvas_item_index.strip() %}
+            {# Retrieve the list of items from the current canvas type #}
+            {% set current_canvas_type_items = current_canvas_type["items"] %}
+            {# Get the current canvas item object that matches the library item #}
+            {% set current_canvas_item = current_canvas_type_items[current_canvas_item_index | int] %}
+
+            {% if current_canvas_item.body.strip() == library_item.body.strip() %}
+                {# If both items have the same body content, update directly from library item #}
+                {{current_canvas_item.update(library_item)}}
+            {% else %}
+                {# Otherwise, update the item with origin and description for migration compatibility #}
+                {# Set the origin ID and generate description from the body content #}
+                {# ! TODO: Revert later #}
+                {# {{current_canvas_item.update({"origin_idn" : library_item.idn, "description": _migration_3_0_0_helper_get_description(body=current_canvas_item.body)})}} #}
+                {{current_canvas_item.update({"origin_idn" : library_item.idn, "description": ""})}}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+
+{# ! TODO: Uncomment later #}
+{# Loop through all types in the current canvas #}
+{# {% for canvas_type in current_canvas_types %} #}
+    {# Loop through all items in each canvas type #}
+    {# {% for canvas_item in canvas_type["items"] %} #}
+        {# If an item has no description, generate one from its body content #}
+        {# {% if (not canvas_item.get("description", None)) or (not canvas_item.description.strip()) %} #}
+            {# {{canvas_item.update({"description": _migration_3_0_0_helper_get_description(body=canvas_item.body)})}} #}
+        {# {% endif %} #}
+    {# {% endfor %} #}
+{# {% endfor %} #}
+
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas", value=json.dumps(current_canvas, ensure_ascii=False, indent=2))}}

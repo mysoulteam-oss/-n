@@ -1,0 +1,18 @@
+id: 019f2274-f6eb-762d-82e0-3f503afe741b
+idn: generate_text_by_instruction
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6eb-762d-82e0-3f503afe7418
+    name: input
+    default_value: ""
+  - id: 019f2274-f6eb-762d-82e0-3f503afe7419
+    name: instruction
+    default_value: ""
+  - id: 019f2274-f6eb-762d-82e0-3f503afe741a
+    name: user_id
+    default_value: ""
+path: ""

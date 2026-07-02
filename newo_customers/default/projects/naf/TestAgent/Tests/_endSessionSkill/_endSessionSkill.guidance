@@ -1,0 +1,18 @@
+{{! Use this Skill if you need to end the Session for the user without waiting for a timeout }}
+
+{{! Type Persona ID here }}
+{{Set(name="user_id", value=" ")}}
+
+{{#if IsEmpty(text=user_id)}}
+    {{Return()}}
+{{/if}}
+
+{{SendCommand(
+    commandIdn="set_timer",
+    integrationIdn="program_timer",
+    connectorIdn="session_timer",
+    personaId=user_id,
+    timerName="session_timer",
+    interval="10",
+    eventIdn="end_session"
+)}}

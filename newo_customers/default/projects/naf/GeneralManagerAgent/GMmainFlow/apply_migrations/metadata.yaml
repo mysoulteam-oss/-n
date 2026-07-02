@@ -1,0 +1,15 @@
+id: 019f2274-f87f-7799-9270-cc6dbf494525
+idn: apply_migrations
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f87f-7799-9270-cc6dbf494524
+    name: current_version
+    default_value: ""
+  - id: 019f2274-f87f-7799-9270-cc6dbf494523
+    name: previous_version
+    default_value: ""
+path: ""

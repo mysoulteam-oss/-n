@@ -1,0 +1,33 @@
+id: 019f2274-f87d-7f17-94bf-be01ea4e1783
+idn: GMPrepareITMFlow
+title: GMPrepareITMFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 019f2274-f87e-76e7-a6f1-f04c56cb60cb
+    description: null
+    idn: gm_clear_itm
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: clear_itm
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-f87e-76e7-a6f1-f04c56cb60cc
+    description: null
+    idn: gm_prepare_itm
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: prepare_itm
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields:
+  - id: 019f2274-f87e-76e7-a6f1-f04c56cb60cd
+    title: ""
+    idn: itm_cached
+    default_value: ""
+    scope: agent

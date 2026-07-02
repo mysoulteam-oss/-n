@@ -1,0 +1,93 @@
+{# utils_session_is_open.nsl
+   Soft-fallback contract: empty/missing-tz/non-IANA TZ → Return() without value
+   (caller uses legacy path). Never assert "false" on transient bad data.
+   Schema `required` guarantees 7 day keys — no runtime check.
+   Deterministic hot path (no Gen/GenStream).
+#}
+
+{% set raw = GetCustomerAttribute(field="project_attributes_private_dynamic_schedule_compiled").strip() %}
+{% if not raw %}
+    {{ Return() }}
+{% endif %}
+
+{% set wh = json.loads(raw) %}
+
+{% set tz_str = GetCustomerAttribute(field="project_business_time_zone").strip() %}
+
+{% set regular = wh.get("regular", {}) if wh else {} %}
+{% set exceptions = wh.get("exceptions", []) if wh else [] %}
+{% if not tz_str or not regular %}
+    {{ Return() }}
+{% endif %}
+
+{% if not re.match("^[A-Za-z_]+/[A-Za-z_/+\\-0-9]+$", tz_str) %}
+    {{ Return() }}
+{% endif %}
+
+{% set dow_names = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] %}
+
+{% set tz = zoneinfo.ZoneInfo(tz_str) %}
+{% set now = datetime.datetime.now(tz) %}
+{% set today_iso = now.strftime("%Y-%m-%d") %}
+{% set today_dow = dow_names[now.weekday()] %}
+{% set now_hm = now.strftime("%H:%M") %}
+
+{% set ns = namespace(is_open=False) %}
+{% set ns_intervals = namespace(items=[]) %}
+{% set ns_today = namespace(exception_matched=False) %}
+{% for exc in exceptions %}
+    {% if exc.get("date", "") == today_iso %}
+        {% set ns_intervals.items = exc.get("intervals", []) %}
+        {% set ns_today.exception_matched = True %}
+    {% endif %}
+{% endfor %}
+
+{% if not ns_today.exception_matched %}
+    {% set ns_intervals.items = regular[today_dow] %}
+{% endif %}
+
+{% for interval in ns_intervals.items %}
+    {% set open_hm = interval.get("open", "") %}
+    {% set close_hm = interval.get("close", "") %}
+    {% if open_hm and close_hm %}
+        {% if open_hm <= close_hm %}
+            {% if open_hm == "00:00" and close_hm == "23:59" %}
+                {% set ns.is_open = True %}
+            {% elif open_hm <= now_hm and now_hm < close_hm %}
+                {% set ns.is_open = True %}
+            {% endif %}
+        {% else %}
+            {% if open_hm <= now_hm %}
+                {% set ns.is_open = True %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{% if not ns.is_open and not ns_today.exception_matched %}
+    {% set yesterday = now - datetime.timedelta(days=1) %}
+    {% set yesterday_iso = yesterday.strftime("%Y-%m-%d") %}
+    {% set yesterday_dow = dow_names[yesterday.weekday()] %}
+    {% set ns_y = namespace(exception_matched=False) %}
+    {% set ns_y_intervals = namespace(items=[]) %}
+    {% for exc in exceptions %}
+        {% if exc.get("date", "") == yesterday_iso %}
+            {% set ns_y_intervals.items = exc.get("intervals", []) %}
+            {% set ns_y.exception_matched = True %}
+        {% endif %}
+    {% endfor %}
+    {% if not ns_y.exception_matched %}
+        {% set ns_y_intervals.items = regular[yesterday_dow] %}
+    {% endif %}
+    {% for interval in ns_y_intervals.items %}
+        {% set open_hm = interval.get("open", "") %}
+        {% set close_hm = interval.get("close", "") %}
+        {% if open_hm and close_hm and open_hm > close_hm %}
+            {% if now_hm < close_hm %}
+                {% set ns.is_open = True %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{{ Return(val="true" if ns.is_open else "false") }}

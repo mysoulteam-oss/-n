@@ -1,0 +1,19 @@
+{% set agent_creator_callback_must_be_sent = GetState(name="agent_creator_callback_must_be_sent") %}
+
+{% if force_agent_creator_callback == "True" %}
+    {% set agent_creator_callback_must_be_sent = "True" %}
+{% endif %}
+
+{% if force_agent_creator_callback == "False" %}
+    {% set agent_creator_callback_must_be_sent = "False" %}
+{% endif %}
+
+{% if agent_creator_callback_must_be_sent == "True" %}
+    {{SendSystemEvent(
+        eventIdn="agent_creator_callback",
+        connectorIdn="system",
+        global="True",
+        skip_init=skip_init
+    )}}
+    {{SetState(name="agent_creator_callback_must_be_sent", value="False")}}
+{% endif %}

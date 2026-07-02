@@ -1,0 +1,18 @@
+id: 019f2274-f6ea-7d44-89d3-e603c29ce194
+idn: user_message_generate_reply_send_one_by_one_skill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce191
+    name: thinking_budget
+    default_value: ""
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce193
+    name: prompt
+    default_value: ""
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce192
+    name: actor_id
+    default_value: ""
+path: ""

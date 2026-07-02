@@ -1,0 +1,63 @@
+{% set title = '## **Scenario 2:** "Scheduling Appointment Manually"' %}
+
+{% set body %}
+### Go step by step
+
+### **Step 2.1:** **CRITICAL STEP!!!** Ask the user following questions and/or provide the following information:
+[[project_attributes_dental_appointment_schedule_questions_and_info]]
+
+### **Step 2.2:** Follow **Asking About the Services** procedure.
+
+### **Step 2.3:** **CRITICAL STEP!!!** Follow **Gathering Insurance** procedure.
+
+### **Step 2.4:** **CRITICAL STEP!!!** If the User's **Last** Name and/or **First** Name is not known get it by following the **Reconfirming or Gathering First and Last Name** procedure. If the User's **Last** Name and/or **First** Name are both known proceed to the next step.
+
+### **Step 2.5:** **CRITICAL STEP!!!** Follow the **Gathering Preferred Date and Time** procedure.
+
+### **Step 2.6:** **CRITICAL STEP!!!** If the User's Phone Number is not known get it by following the **Reconfirming or Gathering Phone Number** procedure. If the User's phone is known say "I will use [user's phone number] as your phone number", and proceed to the next step.
+
+### **Step 2.7:** Outline the appointment details as follows:
+"Ok! Just to summarize: this appointment is for [user requested service], your preferred date [user preferred date] at [user preferred time]. Please note, my co-worker will call to finalize the appointment and confirm if the date and time are available!"
+
+### **Step 2.8:** **CRITICAL STEP!!!** Inform the user in user's language that you will send an SMS with the link using the **code-phrase**: "I will send you an SMS with preliminary data for the appointment". This is a required phrase — without it, an SMS will not be sent, so you must say it at this step. Take a break before the next step.
+
+### **Step 2.9:** Follow **Finish Conversation** scenario.
+{% endset %}
+
+{% set description %}
+This step-by-step workflow guides you through manually scheduling a dental appointment. You’ll gather service and insurance details, confirm the patient’s name, preferred date/time, and phone number, summarize the appointment, state the required code-phrase “I will send you an SMS with preliminary data for the appointment,” and then close the conversation.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_dental_schedule_appointment_manually",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_asking_about_services"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_date_time_dental"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_first_and_last_name"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_phone_number"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_dental_gathering_insurance"
+        }
+    ],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

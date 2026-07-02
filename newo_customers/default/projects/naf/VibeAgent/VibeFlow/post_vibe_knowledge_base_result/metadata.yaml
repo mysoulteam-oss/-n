@@ -1,0 +1,15 @@
+id: 019f2274-fa70-7a5a-b5a0-b8dd89935711
+idn: post_vibe_knowledge_base_result
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa70-7a5a-b5a0-b8dd89935710
+    name: memory
+    default_value: ""
+  - id: 019f2274-fa70-7a5a-b5a0-b8dd8993570f
+    name: already_taken_actions
+    default_value: ""
+path: ""

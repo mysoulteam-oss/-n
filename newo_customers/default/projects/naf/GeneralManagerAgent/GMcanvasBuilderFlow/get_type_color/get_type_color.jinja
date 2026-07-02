@@ -1,0 +1,15 @@
+{% if canvas_type == "introduction" %}
+    {{Return(val="#45556C")}}
+{% elif canvas_type == "intent_types" %}
+    {{Return(val="#E60076")}}
+{% elif canvas_type == "scenarios" %}
+    {{Return(val="#009966")}}
+{% elif canvas_type == "procedures" %}
+    {{Return(val="#155DFC")}}
+{% elif canvas_type == "csv_outbound" %}
+    {{Return(val="#a9049eff")}}
+{% elif canvas_type == "csv_outbound_sms" %}
+    {{Return(val="#a9049eff")}}
+{% else %}
+    {{Return(val="#a90404ff")}}
+{% endif %}

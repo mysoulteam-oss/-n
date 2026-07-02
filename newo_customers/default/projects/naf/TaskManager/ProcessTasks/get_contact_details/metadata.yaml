@@ -1,0 +1,15 @@
+id: 019f2274-fa44-78af-b703-62c4056922d5
+idn: get_contact_details
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa44-78af-b703-62c4056922d3
+    name: headers
+    default_value: ""
+  - id: 019f2274-fa44-78af-b703-62c4056922d4
+    name: row
+    default_value: ""
+path: ""

@@ -1,0 +1,4 @@
+{# Fix incorrectly set value - could be set if someone changed it on UI (`possible values` and actual values mismatch) #}
+{% if GetCustomerAttribute(field="project_attributes_setting_voice_integration_service") == "Voice Integration" %}
+    {{SetCustomerAttribute(field="project_attributes_setting_voice_integration_service", value="NEWO Voice Integration")}}
+{% endif %}

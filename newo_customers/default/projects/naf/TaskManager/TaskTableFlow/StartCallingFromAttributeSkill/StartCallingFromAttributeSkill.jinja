@@ -1,0 +1,31 @@
+{% set task_type = GetTriggeredAct().arguments.task_type %}
+
+{% set rows = get_rows(task_type=task_type) %}
+
+{% if not rows %}
+    {{Return()}}
+{% endif %}
+
+{% set rows = json.loads(rows) %}
+{% set ns = namespace(headers=[], batch=[]) %}
+
+{% set potential_headers = rows[0] %}
+{% set is_header = check_for_headers_llm(row=potential_headers) %}
+
+{% if is_header == "true" %}
+    {% set ns.headers = rows.pop(0) %}
+{% endif %}
+
+{% for row in rows %}
+    {# Splitting sending tasks on batches to make it more robust. So if one generation for getting contact details is failed, we continue working with other batches #}
+    {% if ns.batch | length == 50 %}
+        {{SendSystemEvent(eventIdn="start_tasks_batch", connectorIdn="system", headers=json.dumps(ns.headers, ensure_ascii=False, indent=2), rows=json.dumps(ns.batch, ensure_ascii=False, indent=2), task_type=task_type, global="True")}}
+        {% set ns.batch = [row] %}
+    {% else %}
+        {{ns.batch.append(row)}}
+    {% endif %}
+{% endfor %}
+
+{% if ns.batch %}
+    {{SendSystemEvent(eventIdn="start_tasks_batch", connectorIdn="system", headers=json.dumps(ns.headers, ensure_ascii=False, indent=2), rows=json.dumps(ns.batch, ensure_ascii=False, indent=2), task_type=task_type, global="True")}}
+{% endif %}

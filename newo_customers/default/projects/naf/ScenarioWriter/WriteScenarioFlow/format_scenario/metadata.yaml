@@ -1,0 +1,15 @@
+id: 019f2274-fa12-7403-a9fe-971388cebae4
+idn: format_scenario
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa12-7403-a9fe-971388cebae2
+    name: draft
+    default_value: ""
+  - id: 019f2274-fa12-7403-a9fe-971388cebae3
+    name: request
+    default_value: ""
+path: ""

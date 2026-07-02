@@ -1,0 +1,15 @@
+id: 019f2274-f6ef-7b06-8ded-f33728515604
+idn: summarize_memories_skill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ef-7b06-8ded-f33728515603
+    name: user_id
+    default_value: ""
+  - id: 019f2274-f6ef-7b06-8ded-f33728515602
+    name: memory
+    default_value: ""
+path: ""

@@ -1,0 +1,62 @@
+{% set current_canvas = GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas").strip() %}
+{% if not current_canvas %}
+    {{Return()}}
+{% endif %}
+{% set library_json = json.loads(GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas_library")) %}
+
+{% set current_canvas = json.loads(current_canvas) %}
+
+{% set updated_canvas = {
+    "title": "Workflow Builder",
+    "types": []
+} %}
+
+{% for canvas_type in current_canvas.types %}
+    {% set updated_canvas_type = {
+        "idn": canvas_type.idn,
+        "title": get_type_title(canvas_type=canvas_type.idn),
+        "description": get_type_description(canvas_type=canvas_type.idn),
+        "color": get_type_color(canvas_type=canvas_type.idn),
+        "items": []
+    } %}
+    {% for item in canvas_type["items"] %}
+        {# Check if item from library and if it is check if it was edited #}
+        {% if item.is_from_library %}
+            {% set library_items = json.loads(utils_find_object_by_key_value(value=canvas_type.idn, obj=library_json, key="idn"))["items"] %}
+
+            {% set library_item = utils_find_object_by_key_value(value=item.idn, obj=library_items, key="idn") %}
+
+            {% if not library_item %}
+                {{updated_canvas_type["items"].append(item)}}
+            {% else %}
+                {{updated_canvas_type["items"].append(json.loads(library_item))}}
+            {% endif %}
+        {% else %}
+            {# In case the item is not from library or from library but not updated, add it as is #}
+            {{updated_canvas_type["items"].append(item)}}
+        {% endif %}
+    {% endfor %}
+    {{updated_canvas.types.append(updated_canvas_type)}}
+{% endfor %}
+
+{% if not utils_get_object_index_by_key_value(obj=updated_canvas.types, key="idn", value="csv_outbound").strip() %}
+    {{updated_canvas.types.append({
+        "idn": "csv_outbound",
+        "title": get_type_title(canvas_type="csv_outbound"),
+        "description": get_type_description(canvas_type="csv_outbound"),
+        "color": get_type_color(canvas_type="csv_outbound"),
+        "items": []
+    })}}
+{% endif %}
+
+{% if not utils_get_object_index_by_key_value(obj=updated_canvas.types, key="idn", value="csv_outbound_sms").strip() %}
+    {{updated_canvas.types.append({
+        "idn": "csv_outbound_sms",
+        "title": get_type_title(canvas_type="csv_outbound_sms"),
+        "description": get_type_description(canvas_type="csv_outbound_sms"),
+        "color": get_type_color(canvas_type="csv_outbound_sms"),
+        "items": []
+    })}}
+{% endif %}
+
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas", value=json.dumps(updated_canvas, ensure_ascii=False, indent=2))}}

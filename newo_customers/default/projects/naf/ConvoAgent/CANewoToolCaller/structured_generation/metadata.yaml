@@ -1,0 +1,15 @@
+id: 019f2274-f6eb-762d-82e0-3f503afe7466
+idn: structured_generation
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6eb-762d-82e0-3f503afe7464
+    name: prompt
+    default_value: ""
+  - id: 019f2274-f6eb-762d-82e0-3f503afe7465
+    name: schema
+    default_value: ""
+path: ""

@@ -1,0 +1,10 @@
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_sms_send_information_enabled", value="True")}}
+
+{# Default information that can be sent via SMS #}
+
+{% set common_allowed_content = "- Link to make an appointment: 'Please use this link to make an appointment: [appointment_url]'" %}
+
+{% set common_allowed_content_items = "- Link to make an appointment" %}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_sms_send_information_allowed_content", value=common_allowed_content)}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_sms_send_information_allowed_content_items", value=common_allowed_content_items)}}

@@ -1,0 +1,43 @@
+{% set retry_count = GetState(name="retry_count") | int + 1 %}
+{% set last_payload_meta = json.loads(lastPayloadMeta) %}
+
+{% if retry_count > 1 %}
+    {% set booking_details = _utilsGatherDetailsSkill(memory=last_payload_meta.memory, agentAnswer=last_payload_meta.agentAnswer, userId=userId, industry=industry, schema=_schemasSkill(submittingBookingRestaurantSchema="True")) %}
+    {{__bookRestaurantSkill(bookingDetails=booking_details, userId=userId)}}
+    {{SetState(name="retry_count", value="0")}}
+    {{Return()}}
+{% else %}
+    {% set booking_details = last_payload_meta.bookingDetails %}
+
+    {# The error can occur either because the email is blocked by the booking system or the phone number is invalid, possibly due to incorrect collection by the agent. #}
+    {# For the email address, we handle it by adding the phone number. #}
+    {# For the phone number, we try to retrieve it from phone actors (if available) and replace the one collected by the agent. #}
+    {% set phone_actors = GetActors(personaId=userId, integrationIdn="newo_voice", connectorIdn="newo_voice_connector") %}
+    {% if phone_actors %}
+        {% set phone_actor = phone_actors[0] %}
+        {# If call was from common phone number, external id is uuid, so we do not use it #}
+        {% set phone_regex = re.compile("^[1-9]\\d{7,14}$") %}
+        {% set possible_phone_number = phone_actor.externalId | string %}
+        {% if phone_regex.match(possible_phone_number) %}
+            {{booking_details.update({"phoneNumber": "+" ~ possible_phone_number})}}
+        {% endif %}
+    {% endif %}
+
+    {{booking_details.update({"email": _utilsGetBookingEmailSkill(retry="True", phoneNumber=booking_details.phoneNumber)})}}
+
+    {{SendCommand(
+        commandIdn="book_restaurant_slot",
+        integrationIdn="magic_browser",
+        connectorIdn="magic_browser_connector",
+        persona_id=userId,
+        persona_name=GetUser().name,
+        session_name=userId ~ "_" ~ _utilsGetRandomPostfixSkill() ~ "_" ~ _utilsGetRandomPostfixSkill(),
+        payload=json.dumps(booking_details, ensure_ascii=False, indent=2),
+        targetAction="book_slot"
+    )}}
+
+{% endif %}
+
+
+
+{{SetState(name="retry_count", value=retry_count | string)}}

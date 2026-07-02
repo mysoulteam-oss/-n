@@ -1,0 +1,10 @@
+{% set itm = GetCustomerAttribute(field="project_attributes_itm") %}
+
+{% if itm.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_itm", value=itm.replace(
+            'The caller attempted to sell something or provided irrelevant information.
+ConvoAgent responds with something like: *"I\'m afraid I can\'t assist you with that"* and then starts the scenario: **"Finish Conversation"**',
+            'The caller attempted to sell something or provided irrelevant information.
+ConvoAgent responds with something like: *"I\'m afraid I can\'t assist you with that"* and informs that it ends the conversation now.'
+        ))}}
+{% endif %}

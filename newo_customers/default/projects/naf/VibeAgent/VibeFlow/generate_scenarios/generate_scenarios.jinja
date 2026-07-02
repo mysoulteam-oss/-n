@@ -1,0 +1,272 @@
+{% set source_item = {} %}
+{% if source and source.strip() %}
+    {% set source_item = json.loads(source) %}
+{% endif %}
+{% set mode = "update" if source_item else "create" %}
+{% set tenant = GetCustomerInfo().tenant | string %}
+{% set builder_branding = "NEWO AI Employee workflow builder" if not tenant or tenant == "newo" else "AI Employee workflow builder" %}
+
+{% set canvas_raw = GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas").strip() %}
+{% set canvas = json.loads(canvas_raw) if canvas_raw else {"types": []} %}
+{% set canvas_library_raw = GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas_library").strip() %}
+{% set canvas_library = json.loads(canvas_library_raw) if canvas_library_raw else [] %}
+
+{% set scenario_reference_catalog = [] %}
+{% set valid_scenario_idns = [] %}
+{% set procedure_reference_catalog = [] %}
+{% set valid_procedure_idns = [] %}
+{% for type in canvas.types %}
+    {% if type.idn == "scenarios" %}
+        {% for item in type["items"] %}
+            {% set reference_name = item.title | string %}
+            {% set reference_match = re.search('"([^"]+)"', reference_name) %}
+            {% if reference_match %}
+                {% set reference_name = reference_match.group(1).strip() %}
+            {% endif %}
+            {% if item.idn and item.idn not in valid_scenario_idns %}
+                {{valid_scenario_idns.append(item.idn)}}
+                {{scenario_reference_catalog.append({
+                    "idn": item.idn,
+                    "title": item.title,
+                    "reference_name": reference_name,
+                    "source": "canvas"
+                })}}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    {% if type.idn == "procedures" %}
+        {% for item in type["items"] %}
+            {% set reference_name = item.title | string %}
+            {% set reference_name = re.sub("^##\\s*", "", reference_name).strip() %}
+            {% if item.idn and item.idn not in valid_procedure_idns %}
+                {{valid_procedure_idns.append(item.idn)}}
+                {{procedure_reference_catalog.append({
+                    "idn": item.idn,
+                    "title": item.title,
+                    "reference_name": reference_name,
+                    "source": "canvas"
+                })}}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+{% for type in canvas_library %}
+    {% if type.idn == "scenarios" %}
+        {% for item in type["items"] %}
+            {% set reference_name = item.title | string %}
+            {% set reference_match = re.search('"([^"]+)"', reference_name) %}
+            {% if reference_match %}
+                {% set reference_name = reference_match.group(1).strip() %}
+            {% endif %}
+            {% if item.idn and item.idn not in valid_scenario_idns %}
+                {{valid_scenario_idns.append(item.idn)}}
+                {{scenario_reference_catalog.append({
+                    "idn": item.idn,
+                    "title": item.title,
+                    "reference_name": reference_name,
+                    "source": "library"
+                })}}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    {% if type.idn == "procedures" %}
+        {% for item in type["items"] %}
+            {% set reference_name = item.title | string %}
+            {% set reference_name = re.sub("^##\\s*", "", reference_name).strip() %}
+            {% if item.idn and item.idn not in valid_procedure_idns %}
+                {{valid_procedure_idns.append(item.idn)}}
+                {{procedure_reference_catalog.append({
+                    "idn": item.idn,
+                    "title": item.title,
+                    "reference_name": reference_name,
+                    "source": "library"
+                })}}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+
+{% set source_scenario_number = "" %}
+{% if source_item and source_item.title %}
+    {% set source_number_match = re.search("Scenario\\s+(\\d+)", source_item.title) %}
+    {% if source_number_match %}
+        {% set source_scenario_number = source_number_match.group(1) %}
+    {% endif %}
+{% endif %}
+
+{% set prompt %}
+You are generating one `scenarios` canvas item for {{builder_branding}}.
+
+<TaskMode>{{mode}}</TaskMode>
+<UserRequest>
+{{query}}
+</UserRequest>
+{% if source_item %}
+<CurrentItem role="source_of_truth_for_update">
+{{json.dumps(source_item, ensure_ascii=False, indent=2)}}
+</CurrentItem>
+{% endif %}
+{% if source_scenario_number %}
+<CurrentScenarioNumber>{{source_scenario_number}}</CurrentScenarioNumber>
+{% endif %}
+<ScenarioReferenceCatalog>
+{{json.dumps(scenario_reference_catalog, ensure_ascii=False, indent=2)}}
+</ScenarioReferenceCatalog>
+<ProcedureReferenceCatalog>
+{{json.dumps(procedure_reference_catalog, ensure_ascii=False, indent=2)}}
+</ProcedureReferenceCatalog>
+
+Language rules:
+1. Write title, body, and description in English by default.
+2. Use another language only if <UserRequest> explicitly asks for it.
+3. Do not switch language only because <UserRequest> itself is written in another language.
+
+Formatting and content requirements:
+1. Output exactly one scenario item.
+2. Title must use strict format: `## **Scenario <number>:** "<Scenario Title>"`
+3. Body must use strict step format in every step: `### **Step X.Y:** ...`
+4. Step numbering rules:
+   - X must equal scenario number from the title.
+   - Y must start from 1 and increase sequentially without gaps.
+5. Each step must describe one logical conversational action.
+6. There must be exactly one empty line between step blocks, matching GM examples. In practice, every new `### **Step X.Y:**` heading must be preceded by a blank line.
+7. Include branching using bullets only when decision logic is needed.
+8. When referring to an existing procedure, use the exact procedure display name from <ProcedureReferenceCatalog> in GM style, for example:
+   - `following the **Reconfirming or Gathering User Name** procedure.`
+9. When referring to another scenario, use the exact scenario display name from <ScenarioReferenceCatalog> in GM style, for example:
+   - `Proceed with the **"Finish Conversation"** scenario.`
+10. Prefer reusing existing procedures from <ProcedureReferenceCatalog> instead of duplicating reusable gathering/validation logic inside the scenario body.
+11. Every referenced procedure or scenario must be present in `mentions` with the exact `item_idn` from the corresponding catalog.
+12. Do not include items in `mentions` if the body does not reference them.
+13. You may reference attributes using `[[attribute_idn]]`.
+14. Do not output code fences, notes, or extra fields.
+
+Runtime-triggering phrase requirements:
+1. If a step is meant to trigger a platform/runtime action, mark it as `**CRITICAL STEP!!!**` and instruct ConvoAgent to say a special **code-phrase** before the action is completed.
+2. Runtime-triggering actions include sending an SMS/email/link/menu/details, checking availability/service area/price, submitting/creating/updating/cancelling a booking/reservation/appointment/calendar invite, searching booking records, or relaying request details through the system.
+3. The trigger phrase must use pre-action or in-progress wording, for example:
+   - `Give me a moment, I will send you the menu link via email.`
+   - `Give me a moment. I will send you an SMS with the link to schedule an appointment.`
+   - `I'm submitting your booking right now. Please give me a moment, and I'll get back to you shortly.`
+4. Never use completed-action wording as the trigger phrase for a runtime action, for example `I've just sent...`, `I've sent...`, `I emailed...`, or `I submitted...`. Those phrases imply the action already happened and can prevent the runtime action from being initiated.
+5. For each runtime-triggering code phrase, explicitly state that it is required and that the action will not happen unless the phrase is said, matching GM library style: `This is a required phrase - without it, [the action] will not go through / will not be sent, so you must say it at this step.`
+6. When the next step depends on platform results, tell ConvoAgent to remain on that step until the relevant evidence appears, such as `<ActionsStates>` for booking/update/cancel results or `<AvailabilityForTheUserRequestedDateTime>` for availability checks.
+7. Only use completed-action wording after the scenario has explicitly received system evidence or user confirmation that the action succeeded.
+
+Update-mode rules:
+- Preserve useful existing logic from <CurrentItem>.
+- Keep current scenario number unless <UserRequest> clearly asks to change it.
+- Apply only requested modifications.
+- Preserve valid existing references unless the flow change requires different links.
+- If the requested update touches a runtime-triggering action, replace any unsafe completed-action trigger phrase with a required pre-action/in-progress code phrase.
+
+Description requirements:
+- 1-3 concise sentences describing what this scenario handles and how it ends or transitions.
+{% endset %}
+
+{% set schema = {
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Scenario title in strict Scenario <number> format."
+    },
+    "body": {
+      "type": "string",
+      "description": "Scenario body with strict Step X.Y format."
+    },
+    "description": {
+      "type": "string",
+      "description": "Short business-friendly summary."
+    },
+    "mentions": {
+      "type": "array",
+      "description": "Procedure and scenario references used by the scenario body.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["scenarios", "procedures"]
+          },
+          "item_idn": {
+            "type": "string"
+          }
+        },
+        "required": ["type", "item_idn"]
+      }
+    }
+  },
+  "required": ["title", "body", "description", "mentions"]
+} %}
+
+{% set generated_item = json.loads(structured_generation(prompt=prompt, schema=schema, thinking_budget=1020)) %}
+
+{% set raw_title = re.sub("[\\u201c\\u201d]", '"', generated_item.title.strip()) %}
+{% set body = re.sub("[\\u201c\\u201d]", '"', generated_item.body.strip()) %}
+{% set body = re.sub("\\n{3,}", "\n\n", body).strip() %}
+{% set body = re.sub("\\n*###\\s*\\*\\*Step", "\n\n### **Step", body).strip() %}
+{% set description = generated_item.description.strip() %}
+
+{% set scenario_number = source_scenario_number %}
+{% if not scenario_number %}
+    {% set title_number_match = re.search("Scenario\\s+(\\d+)", raw_title) %}
+    {% if title_number_match %}
+        {% set scenario_number = title_number_match.group(1) %}
+    {% endif %}
+{% endif %}
+{% if not scenario_number %}
+    {# Fallback: pick the next-available number from existing scenarios so the title is never malformed. #}
+    {% set existing_numbers = [] %}
+    {% for catalog_item in scenario_reference_catalog %}
+        {% set existing_match = re.search("Scenario\\s+(\\d+)", catalog_item.title) %}
+        {% if existing_match %}
+            {{existing_numbers.append(existing_match.group(1) | int)}}
+        {% endif %}
+    {% endfor %}
+    {% set scenario_number = ((existing_numbers | max + 1) if existing_numbers else 1) | string %}
+{% endif %}
+
+{% set scenario_name = "" %}
+{% set title_name_match = re.search('"([^"]+)"', raw_title) %}
+{% if title_name_match %}
+    {% set scenario_name = title_name_match.group(1).strip() %}
+{% endif %}
+
+{% if body %}
+    {% set body = re.sub("###\\s*\\*\\*Step\\s*\\d+\\.(\\d+):\\*\\*", "### **Step " ~ scenario_number ~ ".\\1:**", body) %}
+{% endif %}
+
+{% set title = '## **Scenario ' ~ scenario_number ~ ':** "' ~ scenario_name ~ '"' %}
+
+{% set mentions = [] %}
+{% set mention_keys = [] %}
+{% set candidate_mentions = generated_item.mentions if generated_item.mentions is defined else [] %}
+{% for mention in candidate_mentions %}
+    {% set mention_type = mention.get("type", "") %}
+    {% set mention_item_idn = mention.get("item_idn", "").strip() %}
+    {% set mention_key = mention_type ~ "::" ~ mention_item_idn %}
+    {% if mention_type == "scenarios" and mention_item_idn in valid_scenario_idns and mention_key not in mention_keys %}
+        {{mention_keys.append(mention_key)}}
+        {{mentions.append({
+            "type": "scenarios",
+            "item_idn": mention_item_idn
+        })}}
+    {% endif %}
+    {% if mention_type == "procedures" and mention_item_idn in valid_procedure_idns and mention_key not in mention_keys %}
+        {{mention_keys.append(mention_key)}}
+        {{mentions.append({
+            "type": "procedures",
+            "item_idn": mention_item_idn
+        })}}
+    {% endif %}
+{% endfor %}
+
+{% set item = {
+    "title": title.strip(),
+    "body": body.strip(),
+    "description": description.strip(),
+    "mentions": mentions
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

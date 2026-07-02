@@ -1,0 +1,21 @@
+id: 019f2274-fa23-72a2-a066-1f549da39a52
+idn: _bakeSkill
+title: _bakeSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa23-72a2-a066-1f549da39a51
+    name: supervisor_advice
+    default_value: " "
+  - id: 019f2274-fa23-72a2-a066-1f549da39a4e
+    name: isRetriable
+    default_value: "True"
+  - id: 019f2274-fa23-72a2-a066-1f549da39a50
+    name: taskContext
+    default_value: " "
+  - id: 019f2274-fa23-72a2-a066-1f549da39a4f
+    name: taskIdn
+    default_value: " "
+path: ""

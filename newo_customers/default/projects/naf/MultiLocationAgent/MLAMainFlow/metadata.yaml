@@ -1,0 +1,19 @@
+id: 019f2274-fa05-79a0-b1c1-3965aff3fe7e
+idn: MLAMainFlow
+title: MLAMainFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 019f2274-fa05-79a0-b1c1-3965aff3fe85
+    description: null
+    idn: broadcast_analyze_conversation
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: AnalyzeConversationSkill
+    state_idn: null
+    integration_idn: null
+    connector_idn: null
+state_fields: []

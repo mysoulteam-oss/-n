@@ -1,0 +1,6 @@
+{{!-- Original AMI prompt to be refactored --}}
+{{#system~}}
+
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

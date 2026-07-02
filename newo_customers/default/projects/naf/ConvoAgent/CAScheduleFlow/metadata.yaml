@@ -1,0 +1,105 @@
+id: 019f2274-f6ec-752f-b893-a9fb76edd8bb
+idn: CAScheduleFlow
+title: CAScheduleFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd924
+    description: null
+    idn: create_booking_tool
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: CreateBookingToolSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd925
+    description: null
+    idn: create_event_error
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: GoogleMeetingCreationErrorSkill
+    state_idn: null
+    integration_idn: google_calendar
+    connector_idn: calendar
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd926
+    description: null
+    idn: create_event_success
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: GoogleMeetingCreatedSkill
+    state_idn: null
+    integration_idn: google_calendar
+    connector_idn: calendar
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd927
+    description: null
+    idn: create_event_success_mock
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: GoogleMeetingCreatedSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd928
+    description: null
+    idn: create_meeting_tool
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: CreateMeetingToolSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd929
+    description: null
+    idn: result_error
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveBookingErrorSkill
+    state_idn: null
+    integration_idn: magic_browser
+    connector_idn: magic_browser_connector
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd92a
+    description: null
+    idn: result_success
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveBookingResultSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd92b
+    description: null
+    idn: result_success
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveBookingResultSkill
+    state_idn: null
+    integration_idn: http
+    connector_idn: http_connector
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd92c
+    description: null
+    idn: result_success
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveBookingResultSkill
+    state_idn: null
+    integration_idn: magic_browser
+    connector_idn: magic_browser_connector
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd92d
+    description: null
+    idn: result_success
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveBookingResultSkill
+    state_idn: null
+    integration_idn: api
+    connector_idn: connection
+state_fields:
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd92e
+    title: ""
+    idn: retry_count
+    default_value: "0"
+    scope: user

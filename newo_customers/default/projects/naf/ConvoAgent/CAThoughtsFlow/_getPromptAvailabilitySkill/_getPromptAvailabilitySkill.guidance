@@ -1,0 +1,21 @@
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_enabled") == "True"}}
+
+  {{Set(name="booking_slots_availability_result", value=GetPersonaAttribute(id=userId, field="booking_slots_availability_result"))}}
+  {{#if not IsEmpty(text=booking_slots_availability_result)}}
+    {{Set(name="slots_availability_response_block", value=Concat("# Slots availability response
+", booking_slots_availability_result))}}
+  {{else}}
+    {{Set(name="slots_availability_response_block", value=" ")}}
+  {{/if}}
+
+{{#system~}}
+<AvailabilityForTheUserRequestedDateTime>
+# Slots availability request
+{{_utilsPersonaAttributeGetWithDefaultsSkill(id=userId, field="booking_slots_availability_checking_status_details", defaultValue="The agent has not requested available slots from the booking system yet. The booking is not yet confirmed by the booking system; it has not taken place!")}}
+
+{{slots_availability_response_block}}
+</AvailabilityForTheUserRequestedDateTime>
+{{~/system}}
+  {{Return(val=GetCurrentPrompt())}}
+
+{{/if}}

@@ -1,0 +1,27 @@
+{% set prompt %}You are given the first row of a CSV file. Your task is to decide whether this row represents column headers or actual data.
+
+When deciding, consider factors such as:
+	•	Whether the values look like descriptive column names (e.g., “name”, “age”, “email”, “price”).
+	•	Whether the values appear to be actual data entries (e.g., numbers, dates, full names).
+	•	Whether the row contains mixed data types that are unlikely for headers.
+	•	Whether the row contains special characters or formatting typical of data rather than headers.
+
+First row:
+{{row}}{% endset %}
+
+{% set schema = {
+  "type": "object",
+  "properties": {
+  	"analysis": {
+      "type": "string",
+      "description": "Short explanation detailing why the row is considered a header or not."
+    },
+    "is_header": {
+      "type": "boolean",
+      "description": "Indicates whether the first row is a header row."
+    }
+  },
+  "required": ["analysis", "is_header"]
+} %}
+
+{{Return(val="true" if json.loads(structured_generation(schema=schema, prompt=prompt)).is_header else "false")}}

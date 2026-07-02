@@ -1,0 +1,24 @@
+id: 019f2274-f529-790a-b01f-720a5d07e8a2
+idn: _analyzeConversationSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f529-790a-b01f-720a5d07e8a1
+    name: recording
+    default_value: ""
+  - id: 019f2274-f529-790a-b01f-720a5d07e89d
+    name: conversation
+    default_value: " "
+  - id: 019f2274-f529-790a-b01f-720a5d07e89e
+    name: call_ended_reason
+    default_value: ""
+  - id: 019f2274-f529-790a-b01f-720a5d07e89f
+    name: userId
+    default_value: " "
+  - id: 019f2274-f529-790a-b01f-720a5d07e8a0
+    name: taskId
+    default_value: " "
+path: ""

@@ -1,0 +1,14 @@
+{% set email = GetCustomerAttribute(field="project_attributes_setting_booking_email") %}
+{% if not email.strip() or not re.match("^[\\w.+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$", email) %}
+    {# TODO: white-label support: NEWO mention must be removed #}
+    {% set email = "bookings@newo.ai" %}
+{% endif %}
+
+{% set local_part, domain_part = email.split("@") %}
+{% if retry == "False" %}
+    {% set booking_email = local_part ~ phoneNumber ~ "@" ~ domain_part %}
+{% else %}
+    {% set booking_email = local_part ~ phoneNumber ~ _utilsGetRandomPostfixSkill() ~ "@" ~ domain_part %}
+{% endif %}
+
+{{Return(val=booking_email)}}

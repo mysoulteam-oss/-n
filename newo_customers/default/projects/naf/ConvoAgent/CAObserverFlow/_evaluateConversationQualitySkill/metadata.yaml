@@ -1,0 +1,18 @@
+id: 019f2274-f6eb-762d-82e0-3f503afe7486
+idn: _evaluateConversationQualitySkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6eb-762d-82e0-3f503afe7483
+    name: memory
+    default_value: " "
+  - id: 019f2274-f6eb-762d-82e0-3f503afe7484
+    name: userId
+    default_value: " "
+  - id: 019f2274-f6eb-762d-82e0-3f503afe7485
+    name: conversation_channel
+    default_value: ""
+path: ""

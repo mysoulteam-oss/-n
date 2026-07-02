@@ -1,0 +1,118 @@
+id: 019f2274-f6ee-7e87-a894-58d91cb68048
+idn: CACheckingAvailabilityFlow
+title: CACheckingAvailabilityFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 019f2274-f6ef-7b06-8ded-f33728515572
+    description: null
+    idn: check_availability_tool
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: CheckAvailabilityToolSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-f6ef-7b06-8ded-f33728515573
+    description: null
+    idn: receive_available_slots
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveAvailableSlotsSystemSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-f6ef-7b06-8ded-f33728515574
+    description: null
+    idn: result_error
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveAvailableSlotsDefaultErrorSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-f6ef-7b06-8ded-f33728515575
+    description: null
+    idn: result_error
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveAvailableSlotsDefaultErrorSkill
+    state_idn: null
+    integration_idn: customer_intercom
+    connector_idn: connection
+  - id: 019f2274-f6ef-7b06-8ded-f33728515576
+    description: null
+    idn: result_error
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveAvailableSlotsDefaultErrorSkill
+    state_idn: null
+    integration_idn: http
+    connector_idn: http_connector
+  - id: 019f2274-f6ef-7b06-8ded-f33728515577
+    description: null
+    idn: result_error
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveAvailableSlotsDefaultErrorSkill
+    state_idn: null
+    integration_idn: api
+    connector_idn: connection
+  - id: 019f2274-f6ef-7b06-8ded-f33728515578
+    description: null
+    idn: result_error
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveAvailableSlotsDefaultErrorSkill
+    state_idn: null
+    integration_idn: magic_browser
+    connector_idn: magic_browser_connector
+  - id: 019f2274-f6ef-7b06-8ded-f33728515579
+    description: null
+    idn: result_success
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveAvailableSlotsDefaultSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-f6ef-7b06-8ded-f3372851557a
+    description: null
+    idn: result_success
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveAvailableSlotsDefaultSkill
+    state_idn: null
+    integration_idn: http
+    connector_idn: http_connector
+  - id: 019f2274-f6ef-7b06-8ded-f3372851557b
+    description: null
+    idn: result_success
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveAvailableSlotsDefaultSkill
+    state_idn: null
+    integration_idn: magic_browser
+    connector_idn: magic_browser_connector
+  - id: 019f2274-f6ef-7b06-8ded-f3372851557c
+    description: null
+    idn: result_success
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveAvailableSlotsDefaultSkill
+    state_idn: null
+    integration_idn: api
+    connector_idn: connection
+  - id: 019f2274-f6ef-7b06-8ded-f3372851557d
+    description: null
+    idn: result_success
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ResultSuccessIntercomSkill
+    state_idn: null
+    integration_idn: customer_intercom
+    connector_idn: connection
+state_fields: []

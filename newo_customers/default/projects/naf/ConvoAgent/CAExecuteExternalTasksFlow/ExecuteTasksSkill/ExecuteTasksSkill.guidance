@@ -1,0 +1,66 @@
+{{Set(name="user_id", value=GetUser(field="id"))}}
+{{Set(name="tasks_to_execute", value=GetTriggeredAct(fields="tasksToExecute"))}}
+{{Set(name="input_tasks", value=GetTriggeredAct(fields="inputTasks"))}}
+
+{{#if not IsEmpty(text=GetIndexesOfItemsArrayJSON(array=tasks_to_execute, filterPath=Concat("$[?(@=='", "send_email", "')]")))}}
+    {{Set(name="send_email_task_values", value=_getValuesSkill(inputTasks=input_tasks, schema=_schemasSkill(sendEmail="True")))}}
+    {{Set(name="email", value=Stringify(GetValueJSON(obj=send_email_task_values, key="email_address")))}}
+    {{SendSystemEvent(
+        eventIdn="email_worker_send_email",
+        connectorIdn="system",
+        email=email,
+        cc=" ",
+        subject=Stringify(GetValueJSON(obj=send_email_task_values, key="subject")),
+        body=_emailBodySkill(emailContent=Stringify(GetValueJSON(obj=send_email_task_values, key="email_text"))),
+        include_reply_to="true"
+    )}}
+    {{SetPersonaAttribute(id=user_id, field="email", value=email)}}
+    {{SendSystemEvent(
+        eventIdn="analyze_conversation",
+        connectorIdn="system",
+        conversationChannel="chat"
+    )}}
+{{/if}}
+
+{{#if not IsEmpty(text=GetIndexesOfItemsArrayJSON(array=tasks_to_execute, filterPath=Concat("$[?(@=='", "create_meeting", "')]")))}}
+    {{Set(name="create_meeting_task_values", value=_getValuesSkill(inputTasks=input_tasks, schema=_schemasSkill(createMeeting="True")))}}
+    {{Set(name="user_email", value=Stringify(GetValueJSON(obj=create_meeting_task_values, key="user_email")))}}
+
+    {{!-- TODO: Get event duration from task? --}}
+    {{Set(name="event_duration", value=GetCustomerAttribute(field="project_attributes_setting_meeting_duration"))}}
+    {{#if IsEmpty(text=event_duration)}}
+        {{Set(name="event_duration", value="60")}}
+    {{/if}}
+
+    {{Set(name="random_postfix_1", value=_getRandomPostfixSkill())}}
+    {{Set(name="random_postfix_2", value=_getRandomPostfixSkill())}}
+
+    {{Set(name="manager_email", value=GetCustomerAttribute(field="project_business_manager_email"))}}
+    {{SetPersonaAttribute(id=user_id, field="email", value=user_email)}}
+    {{SendSystemEvent(
+        eventIdn="analyze_conversation",
+        connectorIdn="system",
+        conversationChannel="chat"
+    )}}
+
+    {{SendCommand(
+        commandIdn="create_event",
+        integrationIdn="google_calendar",
+        connectorIdn="calendar",
+        eventId=Concat(user_email, "_", user_id, "_", random_postfix_1, "_", random_postfix_2),
+        userPersonaId=user_id,
+        startTime=Stringify(GetValueJSON(obj=create_meeting_task_values, key="datetime")),
+        eventDurationMinutes=event_duration,
+        title=Concat("Meeting with ", GetCustomerAttribute(field="project_business_name")),
+        description=Stringify(GetValueJSON(obj=create_meeting_task_values, key="summary")),
+        attendees=Concat('["', user_email, '", "', manager_email, '"]')
+    )}}
+
+    {{SetPersonaAttribute(id=user_id, field="email", value=user_email)}}
+{{/if}}
+
+{{!-- Send `extend_session` event --}}
+{{SendSystemEvent(
+    eventIdn="extend_session",
+    connectorIdn="system"
+)}}

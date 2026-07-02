@@ -1,0 +1,19 @@
+{% set conversation_source = GetPersonaAttribute(id=user_id, field="conversation_source") %}
+
+{% if conversation_source.strip() %}
+    {{Return(val=conversation_source)}}
+{% endif %}
+
+{% set conversation_source_map = GetCustomerAttribute(field="project_attributes_setting_conversation_sources_map") %}
+
+{% if (not conversation_source_map.strip()) or conversation_source_map == "{}" %}
+    {% set conversation_source = "" %}
+{% else %}
+    {% set current_connector = GetTriggeredAct().connectorIdn %}
+    {# Once "label" feature is introduced for connectors, use GetConnectorInfo instead #}
+    {% set conversation_source = json.loads(conversation_source_map).get(current_connector, "") %}
+{% endif %}
+
+{{ SetPersonaAttribute(id=user_id, field="conversation_source", value=conversation_source) }}
+
+{{Return(val=conversation_source or session_get_conversation_channel(user_id=user_id))}}

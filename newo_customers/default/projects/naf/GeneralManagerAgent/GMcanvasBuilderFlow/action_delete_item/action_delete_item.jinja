@@ -1,0 +1,13 @@
+{% set current_canvas = json.loads(GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas")) %}
+{% set current_canvas_types = current_canvas["types"] %}
+
+{% set type_index = utils_get_object_index_by_key_value(obj=current_canvas_types, key="idn", value=type_idn).strip() %}
+
+{% set items = current_canvas_types[type_index | int]["items"] %}
+{% set old_item_index = utils_get_object_index_by_key_value(obj=items, key="idn", value=item_idn).strip() %}
+
+{% if old_item_index %}
+    {{items.pop(old_item_index | int)}}
+{% endif %}
+
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas", value=json.dumps(current_canvas, ensure_ascii=False, indent=2))}}

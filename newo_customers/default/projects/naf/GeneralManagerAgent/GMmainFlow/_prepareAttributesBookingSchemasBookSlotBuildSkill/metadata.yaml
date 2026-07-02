@@ -1,0 +1,15 @@
+id: 019f2274-f87f-7799-9270-cc6dbf49458a
+idn: _prepareAttributesBookingSchemasBookSlotBuildSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f87f-7799-9270-cc6dbf494588
+    name: MetaFieldsSchema
+    default_value: " "
+  - id: 019f2274-f87f-7799-9270-cc6dbf494589
+    name: payloadSchema
+    default_value: " "
+path: ""

@@ -1,0 +1,34 @@
+id: 019f2274-fa12-7403-a9fe-971388cebadd
+idn: WriteScenarioFlow
+title: WriteScenarioFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 019f2274-fa12-7403-a9fe-971388cebaf2
+    description: null
+    idn: user_message
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: start
+    state_idn: null
+    integration_idn: sandbox
+    connector_idn: scenario_writer
+state_fields:
+  - id: 019f2274-fa12-7403-a9fe-971388cebaf3
+    title: ""
+    idn: fixed_scenario
+    default_value: ""
+    scope: user
+  - id: 019f2274-fa12-7403-a9fe-971388cebaf4
+    title: ""
+    idn: mode
+    default_value: ""
+    scope: user
+  - id: 019f2274-fa12-7403-a9fe-971388cebaf5
+    title: ""
+    idn: original_scenario
+    default_value: ""
+    scope: user

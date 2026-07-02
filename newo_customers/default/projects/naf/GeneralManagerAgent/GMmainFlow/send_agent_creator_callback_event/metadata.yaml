@@ -1,0 +1,15 @@
+id: 019f2274-f881-76e7-9c26-b420cae23681
+idn: send_agent_creator_callback_event
+title: send_agent_creator_callback_event
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f881-76e7-9c26-b420cae23680
+    name: skip_init
+    default_value: "False"
+  - id: 019f2274-f881-76e7-9c26-b420cae2367f
+    name: force_agent_creator_callback
+    default_value: ""
+path: ""

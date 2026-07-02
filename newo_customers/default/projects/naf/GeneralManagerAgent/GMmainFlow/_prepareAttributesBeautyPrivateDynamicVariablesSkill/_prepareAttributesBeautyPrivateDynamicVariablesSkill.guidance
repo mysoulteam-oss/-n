@@ -1,0 +1,4 @@
+{{#system~}}
+{{GetCustomerAttribute(field="project_business_working_hours")}}
+{{~/system}}
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_variables", value=GetCurrentPrompt())}}

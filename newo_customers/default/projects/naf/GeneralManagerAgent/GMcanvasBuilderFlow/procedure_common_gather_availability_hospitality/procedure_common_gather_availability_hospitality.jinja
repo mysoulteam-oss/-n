@@ -1,0 +1,30 @@
+{% set title = "## **Gathering Availability Information** procedure" %}
+
+{% set body %}
+Eventually, the slots will appear in `<AvailabilityForTheUserRequestedDateTime>`, inform the user about the available slots for the user's requested date and proceed to the next step if the user has agreed to continue.
+
+- **Do not proceed with the reservation until the information about availability for the user-requested slot is present in <AvailabilityForTheUserRequestedDateTime>** and you have informed the user about the availability.
+- **If the User asks anything while you are in the process of checking availability:** say something like: "Please wait a moment, I will get back to you shortly."
+- **If you find any mistake in the User's request:** get new check-in and check-out dates and start with reconfirmation again.
+- **If you need to check availability, tell exactly this:** "Give me a moment to check available slots. I'll get back to you shortly."
+- **If you need to clarify something during the process, do that and then tell exactly this:** "Give me a moment to check available slots. I'll get back to you shortly."
+- **If the user indicates a change in preference, changes their mind, or finds that no available slots suit them after you've listed the options**, suggest checking slots for other check-in and check-out days.
+- **Whenever you need to check availability again**, you need to know the user's new preferred check-in and check-out dates and once the user provides new desired check-in and check-out dates, say something: "Thank you for providing the new dates. Let me check the availability for those dates and get back to you shortly!"
+- **Reject the reservation for no available slots.**
+{% endset %}
+
+{% set description %}
+A guided availability-check flow: confirm the user’s requested date/time, then say "Give me a moment to check available slots. I'll get back to you shortly." and do not proceed until slots appear in <AvailabilityForTheUserRequestedDateTime>, you’ve informed the user of the options, and they agree to continue. If interrupted, ask them to wait; fix and reconfirm any errors; offer and recheck alternative dates/times (thanking them when they provide a new time), and reject the reservation if no suitable slots are available.
+{% endset %}
+
+{% set item = {
+    "idn": "procedure_common_gather_availability_hospitality",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

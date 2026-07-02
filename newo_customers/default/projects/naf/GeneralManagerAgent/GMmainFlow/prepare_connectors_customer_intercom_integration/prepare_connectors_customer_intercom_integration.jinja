@@ -1,0 +1,14 @@
+{% set agent_creator_api_key = GetCustomerAttribute(field="agent_creator_api_key") %}
+{% if agent_creator_api_key.strip() %}
+    {{utils_connector_create_if_not_exists(
+        integrationIdn = "customer_intercom",
+        connectorIdn = "agent_creator",
+        title = "agent_creator",
+        settings = {
+            "api_key_of_customer": agent_creator_api_key
+        },
+        start = True
+    )}}
+{% else %}
+    {{DUMMY("Skipping Customer Intercom Connector creation: API Key is missing")}}
+{% endif %}

@@ -1,0 +1,6 @@
+id: 019f2274-f543-7870-9bda-2faa8cb7dbfc
+idn: LeadFollowupAgent
+title: LeadFollowupAgent
+description: >-
+  Reviews ended sessions and current user tasks to schedule the next
+  lead-nurturing follow-up when needed.

@@ -1,0 +1,24 @@
+{% if not baseLocations.strip() %}
+  {{SetCustomerAttribute(field="project_attributes_private_dynamic_business_locations_indexes", value=" ")}}
+  {{SetCustomerAttribute(field="project_attributes_private_dynamic_business_locations_object", value=" ")}}
+  {{Return()}}
+{% endif %}
+
+{% system %}
+Your task is to proceed the list of locations from <Locations> section and convert it into a JSON object using <Rules>
+
+<Rules>
+- Location index is a descriptive, semantic and unique name consisting of ASCII lower case characters and optionally underscore.
+- First location in the list must have index 'default'. Other locations' indexes must be semantic.
+- Location list must include all locations listed in <Locations>
+</Rules>
+
+<Locations>
+{{baseLocations}}
+</Locations>
+{% end %}
+{% set location_indexes = Gen(jsonSchema=_prepareMultiLocationLocationsAttributesSchemasSkill(), validateSchema=True, temperature=0, topP=0, skipFilter=True, thinkingBudget=425) %}
+{% set indexes = json.loads(location_indexes).list %}
+{% set location_object = Gen(jsonSchema=_prepareMultiLocationLocationsObjectSchemaSkill(indexes=json.dumps(indexes, ensure_ascii=False, indent=2)), validateSchema=True, temperature=0, topP=0, skipFilter=True, thinkingBudget=425) %}
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_business_locations_indexes", value=json.dumps(indexes, ensure_ascii=False, indent=2))}}
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_business_locations_object", value=location_object)}}

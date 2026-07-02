@@ -1,0 +1,55 @@
+id: 019f2274-f6ed-7657-859b-c462f0a92abd
+idn: CAUserManagementFlow
+title: CAUserManagementFlow
+description: ""
+default_runner_type: nsl
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 019f2274-f6ed-7657-859b-c462f0a92aca
+    description: null
+    idn: convoagent_remove_custom_user_data
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: RemoveCustomUserDataSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-f6ed-7657-859b-c462f0a92acb
+    description: null
+    idn: convoagent_update_custom_user_data
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: UpdateCustomUserDataSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-f6ed-7657-859b-c462f0a92acc
+    description: null
+    idn: convoagent_update_user_memories
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: update_user_memories
+    state_idn: null
+    integration_idn: null
+    connector_idn: null
+  - id: 019f2274-f6ed-7657-859b-c462f0a92acd
+    description: null
+    idn: convoagent_update_user_session_field
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: update_session_field
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-f6ed-7657-859b-c462f0a92ace
+    description: null
+    idn: convoagent_update_user_session_field_batch
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: update_session_field_batch
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

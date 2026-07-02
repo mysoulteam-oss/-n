@@ -1,0 +1,18 @@
+id: 019f2274-f6eb-762d-82e0-3f503afe73dc
+idn: _utilsPersonaAttributeGetWithDefaultsSkill
+title: _utilsPersonaAttributeGetWithDefaultsSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6eb-762d-82e0-3f503afe73d9
+    name: defaultValue
+    default_value: "null"
+  - id: 019f2274-f6eb-762d-82e0-3f503afe73da
+    name: id
+    default_value: " "
+  - id: 019f2274-f6eb-762d-82e0-3f503afe73db
+    name: field
+    default_value: " "
+path: ""

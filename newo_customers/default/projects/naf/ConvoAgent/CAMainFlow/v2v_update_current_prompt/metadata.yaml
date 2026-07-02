@@ -1,0 +1,18 @@
+id: 019f2274-f6eb-762d-82e0-3f503afe73b3
+idn: v2v_update_current_prompt
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6eb-762d-82e0-3f503afe73b1
+    name: user_id
+    default_value: ""
+  - id: 019f2274-f6eb-762d-82e0-3f503afe73b0
+    name: footer_instruction
+    default_value: ""
+  - id: 019f2274-f6eb-762d-82e0-3f503afe73b2
+    name: inject_thoughts
+    default_value: ""
+path: ""

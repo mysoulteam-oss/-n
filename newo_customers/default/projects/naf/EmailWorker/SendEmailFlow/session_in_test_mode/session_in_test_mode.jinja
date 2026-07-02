@@ -1,0 +1,46 @@
+{% set user_id = userId %}
+{% if not user_id.strip() %}
+    {% set user_id = GetUser().id | string %}
+{% endif %}
+
+{% set configured_test_mode = GetCustomerAttribute(field="project_attributes_setting_test_mode") %}
+{% if configured_test_mode == "True" %}
+    {{Return(val="True")}}
+{% endif %}
+
+{% set last_convo_actor_id = GetPersonaAttribute(id=user_id, field="last_convo_actor_id").strip() %}
+{% if not last_convo_actor_id or last_convo_actor_id == "null" %}
+    {{Return(val="False")}}
+{% endif %}
+
+{% set actor = GetActor(id=last_convo_actor_id) %}
+
+{% set last_convo_connector_idn = actor.connectorIdn %}
+{% if last_convo_connector_idn != "newo_voice_connector" %}
+    {{Return(val="False")}}
+{% endif %}
+
+{% set current_phone_number = actor.externalId %}
+{% if not current_phone_number or current_phone_number == "null" %}
+    {{Return(val="False")}}
+{% endif %}
+
+{% set configured_customer_test_numbers = json.loads(GetCustomerAttribute(field="project_attributes_setting_test_mode_phone_numbers").strip() or "[]") %}
+{% set configured_static_test_numbers = json.loads(GetProjectAttribute(field="project_attributes_setting_test_mode_phone_numbers_static").strip() or "[]") %}
+{% set normalized_current_phone_number = current_phone_number | string | trim | replace(" ", "") %}
+{% set normalized_current_phone_number = normalized_current_phone_number.lstrip("+") %}
+{% set configured_test_numbers = namespace(normalized=[]) %}
+
+{% for configured_test_number in configured_customer_test_numbers + configured_static_test_numbers %}
+    {% set normalized_configured_test_number = configured_test_number | string | trim | replace(" ", "") %}
+    {% set normalized_configured_test_number = normalized_configured_test_number.lstrip("+") %}
+    {% if normalized_configured_test_number and normalized_configured_test_number not in configured_test_numbers.normalized %}
+        {{configured_test_numbers.normalized.append(normalized_configured_test_number)}}
+    {% endif %}
+{% endfor %}
+
+{% if normalized_current_phone_number in configured_test_numbers.normalized %}
+    {{Return(val="True")}}
+{% endif %}
+
+{{Return(val="False")}}

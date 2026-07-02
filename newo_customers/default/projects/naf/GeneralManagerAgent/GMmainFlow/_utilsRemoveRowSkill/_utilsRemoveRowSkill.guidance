@@ -1,0 +1,6 @@
+{{Set(name="new_line", value="
+")}}
+
+{{Set(name="formatted_string", value=_utilsStringReplaceSkill(stringToReplace=rows, oldValue=Concat(new_line, rowToRemove), newValue=" "))}}
+
+{{Return(val=formatted_string)}}

@@ -1,0 +1,110 @@
+{% set schema = {
+  "type": "object",
+  "properties": {
+    "agent_contradicting_phrases": {
+      "type": "boolean",
+      "description": "Set to `true` if the agent produced contradicting phrases or statements within the same conversation."
+    },
+    "agent_contradicting_phrases_examples": {
+      "type": "array",
+      "description": "Examples of contradicting phrases or statements produced by the agent.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "agent_declines_capability": {
+      "type": "boolean",
+      "description": "Set to `true` if the agent says it cannot perform a specific requested action (e.g. cannot change data, cannot transfer, cannot access information)."
+    },
+    "agent_declines_capability_examples": {
+      "type": "array",
+      "description": "Examples of agent phrases stating that it cannot perform a specific requested action.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "agent_not_replying": {
+      "type": "boolean",
+      "description": "Set to `true` if the agent goes silent or fails to respond. Indicators: consecutive user messages without agent reply, user asking 'hello?'/'are you there?', user repeating themselves, or explicit silence/pause markers in transcript."
+    },
+    "agent_not_replying_examples": {
+      "type": "array",
+      "description": "Examples of user messages and the lack of appropriate agent replies.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "agent_looping_detected": {
+      "type": "boolean",
+      "description": "Set to `true` only if agent repeats the same question or response 3+ times consecutively without progressing. Minor greeting repetitions do not qualify."
+    },
+    "agent_looping_examples": {
+      "type": "array",
+      "description": "Examples of agent phrases or turns that illustrate looping behavior.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "agent_asks_already_answered_questions_count": {
+      "type": "integer",
+      "description": "Number of questions from the agent that request information the user has already clearly provided."
+    },
+    "agent_asks_already_answered_questions_examples": {
+      "type": "array",
+      "description": "Examples of agent questions that request information already provided by the user.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "agent_reports_technical_issue": {
+      "type": "boolean",
+      "description": "Set to `true` ONLY if the AGENT tells the user about a technical problem (system error, service down, can't access data). Must be the AGENT speaking. Do NOT set true if the USER mentions an error or technical issue — that's user-reported, not agent-reported."
+    },
+    "agent_technical_issue_category": {
+      "type": "string",
+      "enum": [
+        "sms",
+        "email",
+        "transfer call",
+        "booking",
+        "availability check",
+        "other",
+        "none"
+      ],
+      "description": "Category of the technical issue reported by the agent, if any."
+    },
+    "language_switching_behavior": {
+      "type": "boolean",
+      "description": "Set to `true` ONLY if the user or agent deliberately switches to a different language to communicate. Must be intentional speech, not background noise, TV/radio audio, or common loanwords (café, pizza, etc.). Example: conversation starts in English, then user continues in Russian."
+    },
+    "agent_fails_to_switch_language": {
+      "type": "boolean",
+      "description": "Set to `true` if the agent does not switch language after the user has asked or clearly started speaking another language."
+    },
+    "languages_used": {
+      "type": "array",
+      "description": "List of languages that appear in the conversation (by user or agent), represented by language codes or names.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "agent_checks_users_presence": {
+      "type": "boolean",
+      "description": "Set to `true` if the agent asks whether the user is still there or responsive."
+    }
+  }
+} %}
+
+{% set prompt %}
+
+You are a QA analyst. Your goal is to evaluate conversation between ConvoAgent and {{GetUser().name}} (enclosed in <Conversation>...</Conversation>). In this session {{session_short_description}}.
+
+<Conversation>
+{{transcript}}
+</Conversation>
+
+{% endset %}
+
+{% set result_json = structured_generation(schema=schema, prompt=prompt.strip()) %}
+
+{{Return(val=result_json)}}

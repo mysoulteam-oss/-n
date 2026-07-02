@@ -1,0 +1,18 @@
+id: 019f2274-f6ee-7e87-a894-58d91cb68015
+idn: cancel_booking
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68012
+    name: booking_id
+    default_value: ""
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68013
+    name: user_bookings
+    default_value: ""
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68014
+    name: notes
+    default_value: ""
+path: ""

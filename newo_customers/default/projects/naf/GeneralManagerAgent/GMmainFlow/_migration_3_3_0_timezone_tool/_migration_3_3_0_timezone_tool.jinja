@@ -1,0 +1,15 @@
+{# Migrate check_timezone_tool conditions #}
+{% set newo_tools = GetCustomerAttribute(field="project_attributes_settings_newo_tools").strip() %}
+
+{% if "timeZoneQuestioning" not in newo_tools and "check_timezone_tool" in newo_tools %}
+    {% set updated_newo_tools = newo_tools.replace("timeZoneDiscussion", "timeZoneQuestioning") %}
+    {% set updated_newo_tools = updated_newo_tools.replace("userInterestAboutTimeActive", "userInterestAboutTimeDifferenceActive") %}
+
+    {% set updated_newo_tools = updated_newo_tools.replace("The agent and user are discussing in the latest conversational turns time with different time zones (it means that `tool` must be called to double-check whether Agent provided valid date and time conversion).", "The user's last message is **questioning** time **zone** / time **difference** (not just stating time/timezone). (it means that `tool` must be called to double-check whether Agent provided valid date and time conversion).") %}
+
+    {% set updated_newo_tools = updated_newo_tools.replace("The user's last message explicitly references time, date, timezone by asking question **exactly about time**. If the user’s last message **changes topic**, **confirms understanding**, or **asks about something else**, this flag becomes `false`.", "If the user’s last message **changes topic**, **confirms understanding**, or **asks about something else**, this flag becomes `false`.") %}
+
+    {% set updated_newo_tools = updated_newo_tools.replace("If there are **two or more Agent messages** in `<Conversation>` and `<LatestConvoAgentAnswer>` that mention **related time** or **related timezones**, then this flag becomes **false** — because the clarification from Agent was already given. This flag is true only when there is no repeated clarification, meaning the latest messages introduces a new or first-time timezone reference.", "If there are **one or more Agent messages** in `<Conversation>` and `<LatestConvoAgentAnswer>` that mention **related time** or **related timezones**, this flag becomes **`false`** — because the clarification from Agent was already given. This flag is `true` only when there is no repeated clarification, meaning the latest messages introduces a new or first-time timezone reference.") %}
+
+    {{SetCustomerAttribute(field="project_attributes_settings_newo_tools", value=updated_newo_tools)}}
+{% endif %}

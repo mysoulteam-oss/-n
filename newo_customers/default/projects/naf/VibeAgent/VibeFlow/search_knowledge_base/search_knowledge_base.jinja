@@ -1,0 +1,40 @@
+{% set query = json.loads(parameters)[0] %}
+{% set user_id = GetUser().id | string %}
+{% set knowledge_base_search_url = GetProjectAttribute(field="project_attributes_setting_vibe_knowledge_base_search_url").strip() %}
+
+{% set actor_id = GetActor().id | string %}
+{% set actor_id_normalized = actor_id.replace('-', '') %}
+{% set memory_persona_field = "memory_backup_" ~ actor_id_normalized %}
+{% set already_taken_actions_persona_field = "already_taken_actions_backup_" ~ actor_id_normalized %}
+
+{{SetPersonaAttribute(id=user_id, field=memory_persona_field, value=memory)}}
+{{SetPersonaAttribute(id=user_id, field=already_taken_actions_persona_field, value=json.dumps(already_taken_actions, ensure_ascii=False, indent=2))}}
+
+{% if not knowledge_base_search_url %}
+    {% set knowledge_base_search_url = "https://hooks.internal.newoai.org/uNbeOY9LUeO9Q90aP52tRA" %}
+{% endif %}
+
+{{SendCommand(
+    commandIdn="send_request",
+    integrationIdn="http",
+    connectorIdn="http_connector",
+    userPersonaId=user_id,
+    method="POST",
+    url=knowledge_base_search_url,
+    headers=json.dumps({
+        "Content-Type": "application/json"
+    }, ensure_ascii=False, indent=2),
+    body=json.dumps({
+        "arguments": [{
+            "name": "query",
+            "value": query
+        }, {
+            "name": "feedback_url",
+            "value": GetWebhook(webhookIdn="vibe_knowledge_base_result", webhookType="incoming").url | string
+        }, {
+            "name": "actor_id",
+            "value": GetActor().id | string
+        }]
+    }, ensure_ascii=False, indent=2),
+    targetAction="rag_request"
+)}}

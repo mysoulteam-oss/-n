@@ -1,0 +1,15 @@
+id: 019f2274-f6ed-7657-859b-c462f0a92a75
+idn: _getExplicitConstraintsPhoneSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ed-7657-859b-c462f0a92a74
+    name: conversation_channel
+    default_value: ""
+  - id: 019f2274-f6ed-7657-859b-c462f0a92a73
+    name: userId
+    default_value: " "
+path: ""

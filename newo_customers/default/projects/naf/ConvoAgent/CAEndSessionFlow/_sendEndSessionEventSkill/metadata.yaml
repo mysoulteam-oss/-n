@@ -1,0 +1,27 @@
+id: 019f2274-f6ef-7b06-8ded-f337285155e5
+idn: _sendEndSessionEventSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ef-7b06-8ded-f337285155e1
+    name: metrics
+    default_value: " "
+  - id: 019f2274-f6ef-7b06-8ded-f337285155e3
+    name: transcript
+    default_value: " "
+  - id: 019f2274-f6ef-7b06-8ded-f337285155e2
+    name: quality_metrics
+    default_value: "{}"
+  - id: 019f2274-f6ef-7b06-8ded-f337285155e0
+    name: conversationValues
+    default_value: " "
+  - id: 019f2274-f6ef-7b06-8ded-f337285155df
+    name: semaphore
+    default_value: " "
+  - id: 019f2274-f6ef-7b06-8ded-f337285155e4
+    name: userId
+    default_value: " "
+path: ""

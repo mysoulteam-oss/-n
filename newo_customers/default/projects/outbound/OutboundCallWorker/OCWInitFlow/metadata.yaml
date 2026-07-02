@@ -1,0 +1,19 @@
+id: 019f2274-f52a-7362-a472-d0a666526b4f
+idn: OCWInitFlow
+title: OCWInitFlow
+description: ""
+default_runner_type: nsl
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 019f2274-f52a-7362-a472-d0a666526b53
+    description: null
+    idn: project_publish_finish
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ProjectPublishSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: project
+state_fields: []

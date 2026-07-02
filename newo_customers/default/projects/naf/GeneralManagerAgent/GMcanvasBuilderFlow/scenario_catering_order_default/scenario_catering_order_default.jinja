@@ -1,0 +1,64 @@
+{% set title = '## **Scenario 2:** "Order a Catering Service"' %}
+
+{% set body %}
+### **Step 2.1** Follow the **Reconfirming or Gathering User Name** procedure
+
+### **Step 2.2** **CRITICAL STEP!!!** Clarify the occasion for the event from the User. If the occasion is known proceed to the next step.
+
+### **Step 2.3** **CRITICAL STEP!!!** Ask for the event date and time following the **Gathering Preferred Date and Time** procedure.
+
+### **Step 2.4** Determining the possibility of service:
+If the **Date** is earlier than [[project_attributes_catering_order_minimum_days_in_advance]] days
+- **During Working Hours:** Say that to clarify the possibility of ordering in less than [[project_attributes_catering_order_minimum_days_in_advance]] days, you need to connect them with our manager and start the **"Regular Transfer"** scenario.
+- **During Non-working Hours:** Say that the possibility of ordering in less than [[project_attributes_catering_order_minimum_days_in_advance]] days should be clarified, and that you'll pass a corresponding message to the manager and start the **"Relaying Message to the Manager"** scenario.
+
+### **Step 2.5** **CRITICAL STEP!!!** Ask for the anticipated number of guests
+- If the **Number of Guests** is less than or equal to [[project_attributes_catering_deposit_covered_number_of_people]]
+Say that our event minimum is [[project_attributes_catering_deposit]] dollars, that covers up to [[project_attributes_catering_deposit_covered_number_of_people]] people. If the guest count is below [[project_attributes_catering_deposit_covered_number_of_people]] people, the minimum mentioned above will still apply. Ask will it work for them.
+- If the **Number of Guests** is more than [[project_attributes_catering_deposit_covered_number_of_people]]
+Say that our event minimum is [[project_attributes_catering_deposit]] dollars, that covers up to [[project_attributes_catering_deposit_covered_number_of_people]] people. Any additional guests will have an additional cost of [[project_attributes_catering_bill_per_person_exceeding_deposit]] dollars per person. Ask will it work for them.
+
+### **Step 2.6** **CRITICAL STEP!!!** Clarify the event address following the **Gathering Physical Address** procedure
+
+### **Step 2.7** **CRITICAL STEP!!!** If the user's zip code is not known, gather it by following the **Reconfirming or Gathering ZIP code** procedure. If the user's zip code is already known, say: "I'll use [ZIP code] as your ZIP code.". Then proceed to the next step.
+
+### **Step 2.8:** **CRITICAL STEP!!!** Checking whether user's zip code is served. Say the special **code-phrase** in user's language: **"Give me a moment to double-check if we serve your area. I will get back to you shortly."** if the user has provided their zip code (this is a required phrase — without it, checking user's zip code will not go through, so you must say it at this step). Otherwise, gently ask them to provide it.
+
+### **Step 2.9** Express excitement and tell them that we truly appreciate their order and can’t wait to serve them. Tell them that the information about their catering order and event details will be passed to the manager, and inform them that the team member will be reaching out shortly to finalize on the menu. Ask if there are any questions so far.
+
+### **Step 2.10** Follow the **Finish Conversation** scenario.
+{% endset %}
+
+{% set description %}
+This scenario guides you to smoothly gather key catering details—confirming the user’s name, occasion, date/time, guest count (with deposit and per-person pricing), event address, and ZIP—then verify service availability with the required code-phrase and assess feasibility based on lead time and business hours. You’ll close by expressing enthusiasm, notifying them that a manager will follow up to finalize the menu, and finishing the conversation.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_catering_order_default",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_date_time_catering"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_name"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_physical_address"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_zip_code"
+        }
+    ],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

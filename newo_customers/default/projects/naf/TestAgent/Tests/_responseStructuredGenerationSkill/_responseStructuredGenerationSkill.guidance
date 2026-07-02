@@ -1,0 +1,18 @@
+{{Set(name="schema", value=_responseStructuredGenerationSchemaSkill())}}
+
+{{#if IsEmpty(text=schema)}}{{#if schema == "{}"}}{{Return()}}{{/if}}{{/if}}
+
+{{! Type LLM Prompt for structured generation here }}
+{{#system~}}
+
+{{~/system}}
+
+{{#if IsEmpty(text=GetCurrentPrompt())}}
+    {{Return()}}
+{{/if}}
+
+{{#assistant~}}{{Set(name="response", value=Gen(jsonSchema=schema, validateSchema=True, temperature=0.2, topP=0, skipFilter=True, thinkingBudget=145))}}{{~/assistant}}
+{{#if interactive == "True"}}
+    {{SendMessage(message=response)}}
+{{/if}}
+{{Return(val=response)}}

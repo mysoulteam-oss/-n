@@ -1,0 +1,36 @@
+id: 019f2274-f6ec-752f-b893-a9fb76edd88b
+idn: _sendReportEmailSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd882
+    name: subject
+    default_value: " "
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd883
+    name: cc
+    default_value: " "
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd884
+    name: customSection
+    default_value: " "
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd885
+    name: email
+    default_value: " "
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd886
+    name: fieldsToExtract
+    default_value: " "
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd887
+    name: reportType
+    default_value: " "
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd888
+    name: transcript
+    default_value: " "
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd889
+    name: userId
+    default_value: " "
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd88a
+    name: workingHourStatus
+    default_value: " "
+path: ""

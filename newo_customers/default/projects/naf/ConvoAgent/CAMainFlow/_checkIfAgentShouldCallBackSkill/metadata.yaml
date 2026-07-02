@@ -1,0 +1,21 @@
+id: 019f2274-f6ea-7d44-89d3-e603c29ce0e3
+idn: _checkIfAgentShouldCallBackSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce0e0
+    name: conversationStartedTime
+    default_value: " "
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce0e2
+    name: userId
+    default_value: " "
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce0e1
+    name: callEndReason
+    default_value: " "
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce0df
+    name: conversationEndedTime
+    default_value: " "
+path: ""

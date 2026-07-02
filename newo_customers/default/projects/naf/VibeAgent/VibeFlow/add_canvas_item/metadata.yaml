@@ -1,0 +1,21 @@
+id: 019f2274-fa70-7a5a-b5a0-b8dd899356bf
+idn: add_canvas_item
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa70-7a5a-b5a0-b8dd899356be
+    name: transaction_id
+    default_value: ""
+  - id: 019f2274-fa70-7a5a-b5a0-b8dd899356bb
+    name: already_taken_actions
+    default_value: ""
+  - id: 019f2274-fa70-7a5a-b5a0-b8dd899356bc
+    name: memory
+    default_value: ""
+  - id: 019f2274-fa70-7a5a-b5a0-b8dd899356bd
+    name: parameters
+    default_value: ""
+path: ""

@@ -1,0 +1,24 @@
+id: 019f2274-f52a-7362-a472-d0a666526b37
+idn: _updateCallTableSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f52a-7362-a472-d0a666526b33
+    name: userId
+    default_value: ""
+  - id: 019f2274-f52a-7362-a472-d0a666526b35
+    name: summary
+    default_value: ""
+  - id: 019f2274-f52a-7362-a472-d0a666526b36
+    name: recording
+    default_value: ""
+  - id: 019f2274-f52a-7362-a472-d0a666526b32
+    name: reason
+    default_value: ""
+  - id: 019f2274-f52a-7362-a472-d0a666526b34
+    name: taskId
+    default_value: ""
+path: ""

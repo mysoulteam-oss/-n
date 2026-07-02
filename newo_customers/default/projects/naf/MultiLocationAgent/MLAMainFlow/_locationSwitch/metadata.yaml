@@ -1,0 +1,15 @@
+id: 019f2274-fa05-79a0-b1c1-3965aff3fe83
+idn: _locationSwitch
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa05-79a0-b1c1-3965aff3fe81
+    name: location
+    default_value: " "
+  - id: 019f2274-fa05-79a0-b1c1-3965aff3fe82
+    name: userId
+    default_value: " "
+path: ""

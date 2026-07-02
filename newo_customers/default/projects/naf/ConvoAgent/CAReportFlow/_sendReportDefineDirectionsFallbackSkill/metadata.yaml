@@ -1,0 +1,27 @@
+id: 019f2274-f6ec-752f-b893-a9fb76edd869
+idn: _sendReportDefineDirectionsFallbackSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd868
+    name: transcript
+    default_value: ""
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd863
+    name: custom_sms_section
+    default_value: ""
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd864
+    name: dynamic_variables
+    default_value: ""
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd866
+    name: provided_phone_number_with_country_code
+    default_value: ""
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd865
+    name: intent_type
+    default_value: ""
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd867
+    name: report_criteria
+    default_value: ""
+path: ""

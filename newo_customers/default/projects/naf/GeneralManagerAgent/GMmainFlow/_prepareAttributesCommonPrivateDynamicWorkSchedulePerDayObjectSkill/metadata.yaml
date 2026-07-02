@@ -1,0 +1,15 @@
+id: 019f2274-f87f-7799-9270-cc6dbf49459c
+idn: _prepareAttributesCommonPrivateDynamicWorkSchedulePerDayObjectSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f87f-7799-9270-cc6dbf49459a
+    name: schema
+    default_value: " "
+  - id: 019f2274-f87f-7799-9270-cc6dbf49459b
+    name: dayOfWeek
+    default_value: " "
+path: ""

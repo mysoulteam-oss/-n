@@ -1,0 +1,12 @@
+id: 019f2274-f87f-7799-9270-cc6dbf494507
+idn: utils_fix_intent_type_title_llm
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f87f-7799-9270-cc6dbf494506
+    name: title
+    default_value: ""
+path: ""

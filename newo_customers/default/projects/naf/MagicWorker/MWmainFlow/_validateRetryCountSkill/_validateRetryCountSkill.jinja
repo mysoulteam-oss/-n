@@ -1,0 +1,10 @@
+{% set attempt_number = GetState(name="attempt_number") | int(default=0) %}
+
+{% if attempt_number >= 3 %}
+    {{ SetState(name="attempt_number", value="0") }}
+    {{ Return(val="true") }}
+{% else %}
+    {% set attempt_number = attempt_number + 1 %}
+    {{ SetState(name="attempt_number", value=attempt_number | string) }}
+    {{ Return(val="false") }}
+{% endif %}

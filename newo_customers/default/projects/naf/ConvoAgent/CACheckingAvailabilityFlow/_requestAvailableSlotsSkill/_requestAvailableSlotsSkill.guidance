@@ -1,0 +1,167 @@
+{{Set(name="request_method", value=GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_request_http_method"))}}
+
+{{Set(name="schema", value=_schemasSkill(availabilitySchema="True", userId=userId, requestMethod=request_method))}}
+
+{{#system~}}
+Your goal is to build JSON object based on the information provided in the sections below. Since the user may change their preferences during the conversation regarding date, time, number of guests, service, location, etc., all fields must be filled strictly based on the information provided in the sections below and always using the **most recent** information from the <Conversation>. Do not input any random values into any field.
+
+{{_utilsGetConversationMetaSkill(userId=userId)}}
+
+{{_getWorkingHoursStatusBlockWrapper()}}
+
+<Calendar>
+{{GetCustomerAttribute(field="project_attributes_private_dynamic_prompt_calendar")}}
+</Calendar>
+
+<Conversation>
+**Beginning of the conversation**
+
+{{memory}}
+Last ConvoAgent reply: {{agentAnswer}}
+
+**End of the conversation**
+</Conversation>
+{{~/system}}
+
+{{Set(name="payload_object", value=Gen(jsonSchema=schema, validateSchema=True, temperature=0.4, topP=0, thinkingBudget=425), expose="True")}}
+
+{{_utilsSendSystemLogSkill(message=Concat("Payload to check availability: ", payload_object))}}
+
+{{Set(name="additional_validation_object", value=GetValueJSON(obj=payload_object, key="additionalValidation"))}}
+
+{{Set(name="required_info_missing", value=GetValueJSON(obj=additional_validation_object, key="requiredFieldsMissing"))}}
+
+{{#if required_info_missing == "true"}}
+    {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction=Concat("Apologize the user for the inconvenience and tell that you noticed that some details are missing and you need to reconfirm them before proceeding the booking. Ask the user to provide these details: ", Stringify(GetValueJSON(obj=additional_validation_object, key="detailsToReconfirm"))), uninterruptible="True")}}
+    {{Return()}}
+{{/if}}
+
+{{#if GetValueJSON(obj=additional_validation_object, key="isWithinBookingWindow") == "false"}}
+    {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction=Concat("Apologize the user for the inconvenience and tell that booking system allows bookings in ", GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_max_days_in_advance"), " days in advance. Suggest to choose different day or follow `# CALL TRANSFERRING` rule from **<ExplicitConstraints>** section."), uninterruptible="True")}}
+    {{Return()}}
+{{/if}}
+
+
+{{Set(name="requested_day_of_week", value=Stringify(GetValueJSON(obj=additional_validation_object, key="requestedDayOfWeek")))}}
+{{Set(name="requested_time_formatted", value=Stringify(GetValueJSON(obj=additional_validation_object, key="requestedTimeFormatted")))}}
+
+{{Set(name="check_working_hour_status", value=GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_working_hours_status"))}}
+
+{{#if check_working_hour_status == "True"}}
+    {{Set(name="working_hour_status", value=_utilsGetWorkingStatusSkill(dayOfWeek=requested_day_of_week, time=requested_time_formatted))}}
+
+    {{#if working_hour_status == "non_working_day"}}
+        {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction="Apologize the user for the inconvenience and tell that you noticed that they chose non working day. Shortly name working days and ask to choose different day.", uninterruptible="True")}}
+        {{Return()}}
+    {{/if}}
+
+    {{#if working_hour_status == "non_working_hours"}}
+        {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction="Apologize the user for the inconvenience and tell that you noticed that they chose non working hour. Shortly name working hours for the requested day and ask to choose different time.", uninterruptible="True")}}
+        {{Return()}}
+    {{/if}}
+
+{{/if}}
+
+
+{{Set(name="validation_recap", value=GetValueJSON(obj=payload_object, key="validationRecap"))}}
+{{#if not IsEmpty(text=validation_recap)}}
+    {{Set(name="valid", value=GetValueJSON(obj=validation_recap, key="valid"))}}
+
+    {{#if valid == "false"}}
+        {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction=Concat("Apologize the user for the inconvenience and use the following hint to continue your reply: ", Stringify(GetValueJSON(obj=validation_recap, key="advice"))), uninterruptible="True")}}
+        {{Return()}}
+    {{/if}}
+{{/if}}
+
+{{Set(name="payload", value=GetValueJSON(obj=payload_object, key="payload"))}}
+
+{{Set(name="previous_payload", value=GetPersonaAttribute(id=userId, field="last_availability_payload"))}}
+{{#if not IsEmpty(text=previous_payload)}}
+    {{#if payload == previous_payload}}
+        {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction="Tell the user that you have already checked slots for the requested date and time before and briefly describe available slots in **<AvailabilityForTheUserRequestedDateTime>** block.", uninterruptible="True")}}
+        {{Return()}}
+    {{/if}}
+{{/if}}
+
+{{SetPersonaAttribute(id=userId, field="last_availability_payload", value=payload)}}
+
+{{! TODO: Refactor requested day of week, date, time storage in the future to remove redundant assignments }}
+{{SetPersonaAttribute(id=userId, field="requested_day_of_week", value=requested_day_of_week)}}
+{{SetPersonaAttribute(id=userId, field="requested_date", value=Stringify(GetValueJSON(obj=additional_validation_object, key="requestedDate")))}}
+{{SetPersonaAttribute(id=userId, field="requested_time_formatted", value=requested_time_formatted)}}
+
+{{SetPersonaAttribute(id=userId, field="last_availability_requested_datetime", value=Concat(requested_day_of_week, " (", Stringify(GetValueJSON(obj=additional_validation_object, key="requestedDate")), " ", Stringify(GetValueJSON(obj=additional_validation_object, key="requestedTime")), ")"))}}
+
+{{Set(name="request_sent", value="False")}}
+
+{{#if GetCustomerAttribute(field="project_business_industry") == "restaurant_industry"}}
+    {{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_type") == "default"}}
+        {{#if _utilsFeatureFlagIsActiveSkill(featureFlagName="booking_use_new_restaurant_availability_check_approach")}}
+            {{SendCommand(
+                commandIdn="get_restaurant_availability",
+                integrationIdn="magic_browser",
+                connectorIdn="magic_browser_connector",
+                persona_id=userId,
+                persona_name=GetUser(field="name"),
+                session_name=Concat(userId, "_", _utilsGetRandomPostfixSkill(), "_", _utilsGetRandomPostfixSkill()),
+                payload=payload,
+                targetAction="check_availability"
+            )}}
+            {{Set(name="request_sent", value="True")}}
+        {{/if}}
+    {{/if}}
+{{/if}}
+
+{{#if request_sent == "False"}}
+    {{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_type") == "intercom"}}
+        {{Set(name="intercom_actor", value=GetPersonaAttribute(id=userId, field="intercom_actor"))}}
+        {{Set(name="payload", value=UpdateValueJSON(obj=payload, key="clientActorId", value=AsStringJSON(val=GetPersonaAttribute(id=userId, field="intercom_client_actor_id"))))}}
+        {{SendCommand(
+            commandIdn="send_actor_event",
+            integrationIdn="customer_intercom",
+            connectorIdn="connection",
+            userPersonaId=userId,
+            toActorId=intercom_actor,
+            eventIdn="get_booking_windows",
+            eventArguments=payload
+        )}}
+    {{else}}
+        {{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_type") == "project"}}
+            {{SendSystemEvent(eventIdn="get_available_slots", connectorIdn="system", payload=payload)}}
+        {{else}}
+            {{#if request_method == "GET"}}
+                {{Set(name="url", value=Concat(GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_url"), "?", Stringify(GetValueJSON(obj=payload_object, key="queryParams"))))}}
+                {{SendCommand(
+                    commandIdn="send_request",
+                    integrationIdn="http",
+                    connectorIdn="http_connector",
+                    userPersonaId=GetUser(field="id"),
+                    method=request_method,
+                    headers=GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_request_headers"),
+                    url=url,
+                    targetAction="check_availability"
+                )}}
+            {{else}}
+                {{SendCommand(
+                    commandIdn="send_request",
+                    integrationIdn="http",
+                    connectorIdn="http_connector",
+                    userPersonaId=GetUser(field="id"),
+                    method=request_method,
+                    headers=GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_request_headers"),
+                    url=GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_url"),
+                    body=payload,
+                    targetAction="check_availability"
+                )}}
+            {{/if}}
+        {{/if}}
+    {{/if}}
+{{/if}}
+
+{{!-- ! TODO: Design proper solution with `FastPrompt` - currently, it will be observed only user message (on the next turn) --}}
+{{!-- Also, design fallback when Agent checks slots for too much time --}}
+{{SetPersonaAttribute(id=userId, field="booking_slots_availability_checking_status", value="True")}}
+{{SetPersonaAttribute(id=userId, field="booking_slots_availability_checking_status_details", value="The agent has requested available slots from the booking system, but has not yet received a response. The booking is still not confirmed by the booking system and has not taken place!")}}
+{{SetPersonaAttribute(id=userId, field="action_state_booking_submitting", value="You are currently checking availability and you can not submit booking right now.")}}
+
+{{_utilsSendSystemLogSkill(message=Concat("System log : Request to get available slots is sent with the following payload: ", payload))}}

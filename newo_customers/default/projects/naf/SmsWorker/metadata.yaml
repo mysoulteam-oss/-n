@@ -1,0 +1,6 @@
+id: 019f2274-f685-73e0-b816-c6b6fa1b2fda
+idn: SmsWorker
+title: SmsWorker
+description: >-
+  Validates and sends outbound SMS, including opt-out handling, actor creation,
+  logging, and mock delivery in test mode.

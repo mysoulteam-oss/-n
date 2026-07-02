@@ -1,0 +1,27 @@
+id: 019f2274-f6ec-752f-b893-a9fb76edd8da
+idn: get_mock_data
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd8d6
+    name: reservation_date
+    default_value: ""
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd8d4
+    name: user_phone
+    default_value: ""
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd8d5
+    name: type
+    default_value: ""
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd8d7
+    name: number_of_guests
+    default_value: ""
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd8d8
+    name: user_name
+    default_value: ""
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd8d9
+    name: reservation_time
+    default_value: ""
+path: ""

@@ -1,0 +1,12 @@
+id: 019f2274-f6ea-7d44-89d3-e603c29ce10f
+idn: _memoryCorrection
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce10e
+    name: userId
+    default_value: " "
+path: ""

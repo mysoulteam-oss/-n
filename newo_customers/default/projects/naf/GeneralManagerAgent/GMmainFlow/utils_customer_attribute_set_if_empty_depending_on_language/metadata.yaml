@@ -1,0 +1,21 @@
+id: 019f2274-f880-7a8d-8da4-a860619999b8
+idn: utils_customer_attribute_set_if_empty_depending_on_language
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f880-7a8d-8da4-a860619999b7
+    name: input_text
+    default_value: ""
+  - id: 019f2274-f880-7a8d-8da4-a860619999b5
+    name: input_text_language
+    default_value: English
+  - id: 019f2274-f880-7a8d-8da4-a860619999b4
+    name: attribute_idn
+    default_value: ""
+  - id: 019f2274-f880-7a8d-8da4-a860619999b6
+    name: target_language
+    default_value: ""
+path: ""

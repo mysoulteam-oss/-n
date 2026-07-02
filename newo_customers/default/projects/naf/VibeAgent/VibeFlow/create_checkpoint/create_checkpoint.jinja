@@ -1,0 +1,27 @@
+{% set user_id = GetUser().id | string %}
+{% set checkpoint_key = checkpoint_id.replace('-', '').strip() %}
+{% set checkpoint_sequence_value = checkpoint_sequence.strip() | int(default=0) %}
+{% if not checkpoint_key %}
+    {{Return()}}
+{% endif %}
+
+{% set checkpoint_attribute_idns = json.loads(get_searchable_attribute_idns()) + json.loads(get_canvas_attribute_idns()) %}
+{% set snapshot = {} %}
+{% for attribute_idn in checkpoint_attribute_idns %}
+    {% if attribute_idn not in snapshot %}
+        {{snapshot.update({
+            attribute_idn: GetCustomerAttribute(field=attribute_idn)
+        })}}
+    {% endif %}
+{% endfor %}
+
+{% set checkpoint_payload = {
+    "checkpoint_id": checkpoint_key,
+    "sequence": checkpoint_sequence_value,
+    "attributes": snapshot
+} %}
+{{SetPersonaAttribute(
+    id=user_id,
+    field="checkpoint_" ~ checkpoint_key,
+    value=json.dumps(checkpoint_payload, ensure_ascii=False, indent=2)
+)}}

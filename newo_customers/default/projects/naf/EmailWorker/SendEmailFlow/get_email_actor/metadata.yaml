@@ -1,0 +1,15 @@
+id: 019f2274-f871-7124-b6c7-799ceb294ddd
+idn: get_email_actor
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f871-7124-b6c7-799ceb294ddb
+    name: email
+    default_value: ""
+  - id: 019f2274-f871-7124-b6c7-799ceb294ddc
+    name: user_id
+    default_value: ""
+path: ""

@@ -1,0 +1,78 @@
+{{#if promiseEmailSchema == "True"}}
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "promised": {
+      "type": "boolean",
+      "description": "Set to `true` if the agent explicitly states they themselves will send an email. Otherwise, set to `false`."
+    }
+  },
+  "required": ["promised"]
+}
+{{~/system}}
+  {{Return(val=GetCurrentPrompt())}}
+{{/if}}
+
+{{#if sendEmailInformationSchema == "True"}}
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "user_email_presence": {
+      "type": "boolean",
+      "description": "Must be `true` if the User's email address is present either in <ConversationHistory> or under <UserInformation> at **user.email**."
+    },
+    "user_correctness_agreement": {
+      "type": "boolean",
+      "description": "Must be `true` if the User has explicitly stated in <ConversationHistory> that the email is correct by telling something like: \"Yes, you can use it, it's correct\", etc."
+    },
+    "convo_agent_promise": {
+      "type": "boolean",
+      "description": "Must be `true` if the ConvoAgent has explicitly stated that they will send or are sending an email."
+    },
+    "information_is_allowed_to_be_sent": {
+      "type": "boolean",
+      "description": "Indicates whether the content is explicitly listed in <EmailInformationAllowedToBeSent>."
+    },
+    "is_exception": {
+      "type": "string",
+      "description": "Must explain which exception is applicable, or be set to \"no exceptions\" if there are none."
+    },
+    "email_subject": {
+      "type": "string",
+      "description": "Email subject based on <EmailInformationAllowedToBeSent>. Translate to the language of the most recent message from ConvoAgent."
+    },
+    "email_body": {
+      "type": "string",
+      "description": "Email body based on <EmailInformationAllowedToBeSent> in HTML format. Translate to the language of the most recent message from ConvoAgent."
+    },
+    "is_duplicate": {
+      "type": "boolean",
+      "description": "Must be `true` only if <AlreadySentInformation> already contains the same message that was promised to be sent recently."
+    },
+    "explanation": {
+      "type": "string",
+      "description": "Here you need to explain your decision."
+    },
+    "agent_must_send_email": {
+      "type": "boolean",
+      "description": "Indicates whether the email must be sent."
+    }
+  },
+  "required": [
+    "user_email_presence",
+    "user_correctness_agreement",
+    "convo_agent_promise",
+    "information_is_allowed_to_be_sent",
+    "is_exception",
+    "email_subject",
+    "email_body",
+    "is_duplicate",
+    "explanation",
+    "agent_must_send_email"
+  ]
+}
+{{~/system}}
+  {{Return(val=GetCurrentPrompt())}}
+{{/if}}

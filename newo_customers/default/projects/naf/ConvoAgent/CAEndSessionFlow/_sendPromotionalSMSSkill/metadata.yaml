@@ -1,0 +1,12 @@
+id: 019f2274-f6ef-7b06-8ded-f337285155f6
+idn: _sendPromotionalSMSSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ef-7b06-8ded-f337285155f5
+    name: userId
+    default_value: " "
+path: ""

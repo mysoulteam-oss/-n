@@ -1,0 +1,73 @@
+id: 019f2274-fa44-78af-b703-62c4056922db
+idn: TMManageTasksFlow
+title: TMAssignTaskFlow
+description: ""
+default_runner_type: nsl
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 019f2274-fa45-7bd6-abef-98c6b0309e3f
+    description: null
+    idn: external_request
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveTasksSkill
+    state_idn: null
+    integration_idn: api
+    connector_idn: webhook
+  - id: 019f2274-fa45-7bd6-abef-98c6b0309e40
+    description: null
+    idn: task_manager_execute_task
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveTaskExecutionRequestSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-fa45-7bd6-abef-98c6b0309e41
+    description: null
+    idn: task_manager_get_task
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: GetTaskSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-fa45-7bd6-abef-98c6b0309e42
+    description: null
+    idn: task_manager_get_user_tasks
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: GetUserTasks
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-fa45-7bd6-abef-98c6b0309e43
+    description: null
+    idn: task_manager_schedule_tasks
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ReceiveTasksSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f2274-fa45-7bd6-abef-98c6b0309e44
+    description: null
+    idn: task_manager_trigger_task
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: TriggerTaskSkill
+    state_idn: null
+    integration_idn: program_timer
+    connector_idn: session_timer
+  - id: 019f2274-fa45-7bd6-abef-98c6b0309e45
+    description: null
+    idn: task_manager_update_task_status
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: UpdateTaskStatusSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

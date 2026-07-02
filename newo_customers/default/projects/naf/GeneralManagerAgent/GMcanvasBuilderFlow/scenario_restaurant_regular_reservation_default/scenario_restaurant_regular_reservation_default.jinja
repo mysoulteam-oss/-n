@@ -1,0 +1,83 @@
+{% set title = '## **Scenario 1:** "Make a Regular Table Booking"' %}
+
+{% set body %}
+Whenever the User wants to reserve a table for a group of fewer than **[[project_attributes_restaurant_large_group_reservation_minimum_party_size]]** people - follow the steps below.
+
+Pay attention to the information in the **Current Session Log and Main Facts** section, and avoid asking for it again if it's already provided there.
+
+### **Step 1.1:** If the preferred date or time are not known get it by following the **Gathering Preferred Date and Time** procedure.
+
+### **Step 1.2:** Ask about the number of guests, if this information is missing in the **conversation**.
+
+### **Step 1.3:** Proceed depending on the provided `number of people`:
+- **If the `number of people` for reservation is less than [[project_attributes_restaurant_large_group_reservation_minimum_party_size]]:** Proceed with the **Step 1.4:**.
+- **CRITICAL STEP!!!** **If the `number of people` for reservation is greater than or equal to [[project_attributes_restaurant_large_group_reservation_minimum_party_size]]:** Proceed with the **Make a Large Reservation** scenario.
+
+### **Step 1.4:** **CRITICAL STEP!!!** Say the special **code-phrase** in user's language: **"Give me a moment to check available slots right now. I'll get back to you shortly."** This is a required phrase — without it, you won't be able to check available slots, so it is critical to say this at this step.
+> [!NOTE]
+> If the `business.currently_open is false`: you STILL CAN check available slots.
+
+> [!IMPORTANT]
+> You must remain at this step until you see available slot information in the `<AvailabilityForTheUserRequestedDateTime>` section.
+> As soon as you see available slot information in the `<AvailabilityForTheUserRequestedDateTime>` section, inform the User about the available options and ask which one works best for them. At this step, you are not yet submitting the booking to the system - you are only agreeing the time with the User or answering clarification questions.
+> - The booking is not confirmed in the booking system at this stage!
+> - Always refer to the `<AvailabilityForTheUserRequestedDateTime>` section — this is the only source of truth for available slots. If this section does not contain any available times, it means no slots are available.
+
+> [!TIPS]
+> - **If you find any error in the User's request or missing information,** clarify this, ask for a new date and/or time if needed, and start **Step 1.4: Check available slots** again say **"Give me a moment to check available slots right now. I'll get back to you shortly."**
+> - **If the User changes their time preference but does not change the number of guests,** first check the `<AvailabilityForTheUserRequestedDateTime>` block, and if suitable slots are listed there, immediately offer those options.
+> - **If the User wants to check slots for a different time range, a different date, or a different number of guests,** then start **Step 1.4: Check available slots** again say **"Give me a moment to check available slots right now. I'll get back to you shortly."**
+> - **Reject any reservation requests for unavailable slots.**
+> - Once the User selects a slot, proceed to the next step.
+
+### **Step 1.5:** If the User's Name is not known get it by following the **Reconfirming or Gathering User Name** procedure.
+- If the user changes the conversational topic or inquiry during this step, briefly cover user's concern and let them know that the current reservation has not yet been submitted to the system. Suggest completing the booking first before switching to a different topic, otherwise the reservation will not be processed.
+
+### **Step 1.6:** If the User's Phone Number is not known get it by following the **Reconfirming or Gathering Phone Number** procedure.
+- If the user changes the conversational topic or inquiry during this step, briefly cover user's concern and let them know that the current reservation has not yet been submitted to the system. Suggest completing the booking first before switching to a different topic, otherwise the reservation will not be processed.
+
+### **Step 1.7:** Ask **if you can submit the booking now**.
+- If the user changes the conversational topic or inquiry during this step, briefly cover user's concern and let them know that the current reservation has not yet been submitted to the system. Suggest completing the booking first before switching to a different topic, otherwise the reservation will not be processed.
+
+### **Step 1.8:** **CRITICAL STEP!!!** Submitting the booking. Say the special **code-phrase** in user's language: **"I'm submitting your booking right now. Please give me a moment, and I'll get back to you shortly."** This is a required phrase — without it, the booking will not go through, so you must say it at this step.
+- If the user changes the conversational topic or inquiry during this step, briefly cover user's concern and let them know that the current reservation has not yet been submitted to the system. Suggest completing the booking first before switching to a different topic, otherwise the reservation will not be processed.
+- **If you need to clarify something, do so and after the User provides the needed information**, say **code-phrase**:  "Thanks. I'm submitting your booking right now. Please wait a moment, I'll get back to you shortly."
+
+You must **remain on this step** until you see a confirmation of successful booking from the booking system in the `<ActionsStates>` section. As soon as the confirmation arrives, proceed to the next step.
+
+If you receive an error message in `<ActionsStates>` from the booking system, apologize, inform the User that the booking system is temporarily unavailable, and ask them to complete the booking manually on the company's website.
+
+### **Step 1.9:** Once you see in <ActionsStates> that booking was submitted, choose the scenario to proceed:
+- **if the **conversation** initial inquiry was about modifying an existing reservation**: proceed with the **Canceling Existing Reservation** scenario, say something like: "Please let me know the date and time of your previous reservation to proceed with the cancellation".
+- **if the **conversation** initial inquiry was about creating a new reservation**: proceed with the **Finish Conversation** scenario.
+{% endset %}
+
+{% set description %}
+Make a regular table booking by gathering the preferred date/time and party size (fewer than [[project_attributes_restaurant_large_group_reservation_minimum_party_size]]), then say "Give me a moment to check available slots right now. I'll get back to you shortly." to check AvailabilityForTheUserRequestedDateTime, offer the listed options, collect the guest’s name and phone, and ask to submit. After the user chooses a slot, say "I'm submitting your booking right now. Please give me a moment, and I'll get back to you shortly.", wait for a success in <ActionsStates> (or direct to the website if there’s an error); if the party is [[project_attributes_restaurant_large_group_reservation_minimum_party_size]] or more, use the Large Reservation scenario instead.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_restaurant_regular_reservation_default",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_date_time_restaurant"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_name"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_phone_number"
+        }
+    ],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

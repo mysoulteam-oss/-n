@@ -1,0 +1,12 @@
+id: 019f2274-f52a-7362-a472-d0a666526b23
+idn: _setupCallSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f52a-7362-a472-d0a666526b22
+    name: task
+    default_value: " "
+path: ""

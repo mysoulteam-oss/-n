@@ -1,0 +1,30 @@
+id: 019f2274-f6ee-7e87-a894-58d91cb68039
+idn: get_memory
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68032
+    name: to_date
+    default_value: ""
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68033
+    name: user_id
+    default_value: ""
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68034
+    name: actors
+    default_value: ""
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68035
+    name: count
+    default_value: "100"
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68036
+    name: from_date
+    default_value: ""
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68037
+    name: include_system
+    default_value: "False"
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68038
+    name: include_thoughts
+    default_value: "False"
+path: ""

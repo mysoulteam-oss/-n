@@ -1,0 +1,12 @@
+id: 019f2274-fa24-7a7b-ba38-2e6cfea2a66b
+idn: _validatePhoneNumberSkill
+title: _validatePhoneNumberSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa24-7a7b-ba38-2e6cfea2a66a
+    name: phoneNumber
+    default_value: " "
+path: ""

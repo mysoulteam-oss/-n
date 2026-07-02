@@ -1,0 +1,9 @@
+id: 019f2274-fa3a-7567-bcc9-a19cd980f706
+idn: GetProjectMetadata
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

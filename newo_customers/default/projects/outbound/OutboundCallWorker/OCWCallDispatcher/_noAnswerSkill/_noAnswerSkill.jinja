@@ -1,0 +1,45 @@
+{% set payload = {"phone_number": GetPersonaAttribute(id=userId, field="outbound_original_phone_number"), "status": "failed", "task_id": taskId, "user_id": userId} %}
+
+{{SendCommand(
+    commandIdn="set_timer",
+    integrationIdn="program_timer",
+    connectorIdn="outbound_timer",
+    eventIdn="call_deadline_exceeded",
+    timerName="deadline_timer_" ~ taskId,
+    personaId=userId,
+    interval="1",
+    enabled="False"
+)}}
+
+{{_sendWebhookResultSkill(taskId=taskId, userId=userId, payload=json.dumps(payload, ensure_ascii=False, indent=2))}}
+{{_updateCallTableSkill(recording="-", userId=userId, summary="The maximum number of attempts to reach the user has been reached. Finishing current task.", reason=reason, taskId=taskId)}}
+
+{% set actor_id = GetActors(personaId=userId)[0].id | string %}
+{% set outbound_call_context = GetPersonaAttribute(id=userId, field="outbound_call_context") %}
+{% if outbound_call_context.strip() %}
+    {% set task = json.loads(outbound_call_context).get(taskId) %}
+    {% if task is mapping %}
+        {% set current_datetime = GetDateTime(format="datetime", timezone=GetCustomerAttribute(field="project_business_time_zone"), weekday=True) %}
+        {% set summary = "The call failed when the agent attempted to make a call. The main goal of the call was: " ~ task.content %}
+        {{SendSystemEvent(
+            eventIdn="convoagent_update_user_memories",
+            connectorIdn="system",
+            actorIds=[actor_id],
+            latest_interaction=json.dumps({"date_added": current_datetime, "content": summary}, ensure_ascii=False, indent=2)
+        )}}
+    {% endif %}
+{% endif %}
+
+{{SendSystemEvent(
+    eventIdn="convoagent_clear_cached_prompt",
+    connectorIdn="system",
+    actorIds=[actor_id],
+    reset_session="True"
+)}}
+
+{# Remove active call from AKB if it exists (in case call was started but not properly finished) #}
+{{remove_active_call_from_akb(task_id=taskId)}}
+
+{{_cleanUpSkill(userId=userId, taskId=taskId)}}
+
+{{try_start_scheduled_call()}}

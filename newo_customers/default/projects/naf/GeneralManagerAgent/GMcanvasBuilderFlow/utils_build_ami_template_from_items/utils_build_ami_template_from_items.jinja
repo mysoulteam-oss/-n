@@ -1,0 +1,65 @@
+{% set allow_default_introduction = allow_default_introduction or "True" %}
+{% set ensure_language_switch_procedure = ensure_language_switch_procedure or "True" %}
+
+{% set compiled_procedure_items = [] %}
+{% for procedure in procedure_items or [] %}
+    {{compiled_procedure_items.append(procedure)}}
+{% endfor %}
+
+{# TODO: This can most likely be refined and uncommented later. #}
+{# {% if ensure_language_switch_procedure == "True" %}
+    {% set ns = namespace(has_language_switch_procedure=False) %}
+    {% for procedure in compiled_procedure_items %}
+        {% if procedure.idn == "procedure_common_gather_language" or procedure.get("origin_idn", "") == "procedure_common_gather_language" %}
+            {% set ns.has_language_switch_procedure = True %}
+        {% endif %}
+    {% endfor %}
+    {% if not ns.has_language_switch_procedure %}
+        {{compiled_procedure_items.append(json.loads(procedure_common_gather_language()))}}
+    {% endif %}
+{% endif %} #}
+
+{% if introduction_items %}
+    {% set introduction = introduction_items[0] %}
+{% elif allow_default_introduction == "True" %}
+    {% set introduction = {
+        "title": '## **Scenario 0:** "Introduction"',
+        "body": "### **Step 0.1:** Know the user's needs and move directly to the scenario that matches the user's request per the `<IntentTypeMap>`."
+    } %}
+{% else %}
+    {% set introduction = {} %}
+{% endif %}
+
+{% set ami_header %}**ConvoAgent** starts conversation from **Introduction** scenario.
+
+ConvoAgent MUST skip any step that requires gathering information that was already provided by the User in **conversation**. For example, if the user has provided the number of guests, don't ask for it again.{% endset %}
+
+{% set ami %}{{ami_header}}
+
+---
+
+# **Procedures**
+{% for procedure in compiled_procedure_items %}
+{{procedure.title}}
+
+{{procedure.body}}
+
+---
+{% endfor %}
+# **Scenarios**{% if introduction %}
+
+{{introduction.title}}
+
+{{introduction.body}}
+
+---
+{% endif %}{% for scenario in scenario_items or [] %}
+{{scenario.title}}
+
+{{scenario.body}}
+
+---
+{% endfor %}
+{% endset %}
+
+{{Return(val=remove_mentions(text=ami.strip().removesuffix('---').rstrip()))}}

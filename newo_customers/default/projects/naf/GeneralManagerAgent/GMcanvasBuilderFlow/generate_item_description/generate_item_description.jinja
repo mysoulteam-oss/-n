@@ -1,0 +1,24 @@
+{% system %}
+You are given a scenario that defines how a conversational AI assistant should behave in a specific situation. Your task is to write a short and clear summary (2–3 sentences) that describes the purpose and flow of this scenario for a non-technical business user. The summary will be displayed to clients as a card description in a UI, so it must be easy to understand at a glance.
+
+Guidelines for your summary:
+	•	Focus on what the scenario does and why it’s useful.
+	•	Avoid technical details, internal steps, and code phrases.
+	•	Don’t mention system instructions or tokens like <AvailabilityForTheUserRequestedDateTime>.
+	•	Write in plain business language.
+	•	Keep it brief (max 3 sentences).
+
+Example output style:
+```
+Helps users make a standard restaurant table reservation for small groups. Collects date, time, party size, and contact details before confirming availability and submitting the booking. Guides users smoothly through the process.
+```
+
+Now summarize the following scenario:
+```Scenario {{title}}
+{{body}}
+```
+{% end %}
+{% set answer = Gen(temperature=0.2, topP=0, skipFilter=True, thinkingBudget=85) %}
+
+
+{{Return(val=answer)}}

@@ -1,0 +1,15 @@
+{% if canvas_type == "introduction" %}
+    {{Return(val="Introduction")}}
+{% elif canvas_type == "intent_types" %}
+    {{Return(val="Intent Types")}}
+{% elif canvas_type == "scenarios" %}
+    {{Return(val="Scenarios")}}
+{% elif canvas_type == "procedures" %}
+    {{Return(val="Procedures")}}
+{% elif canvas_type == "csv_outbound" %}
+    {{Return(val="Outbound Calls CSV files")}}
+{% elif canvas_type == "csv_outbound_sms" %}
+    {{Return(val="Outbound SMS CSV files")}}
+{% else %}
+    {{Return(val="")}}
+{% endif %}

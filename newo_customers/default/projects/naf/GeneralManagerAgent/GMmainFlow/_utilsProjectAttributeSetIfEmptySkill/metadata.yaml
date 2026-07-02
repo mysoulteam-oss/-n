@@ -1,0 +1,15 @@
+id: 019f2274-f881-76e7-9c26-b420cae236a5
+idn: _utilsProjectAttributeSetIfEmptySkill
+title: _utilsProjectAttributeSetIfEmptySkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f881-76e7-9c26-b420cae236a3
+    name: field
+    default_value: " "
+  - id: 019f2274-f881-76e7-9c26-b420cae236a4
+    name: value
+    default_value: " "
+path: ""

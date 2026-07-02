@@ -1,0 +1,57 @@
+{{Set(name="user_id", value=GetUser(field="id"))}}
+{{SetPersonaAttribute(id=user_id, field="booking_slots_availability_checking_status", value="False")}}
+
+{{Set(name="footnote_actor_id", value=_utilsSendSystemLogSkill(message=Concat("The following slots availability result has been received: ", output)))}}
+
+{{Set(name="availability", value=Stringify(GetValueJSON(obj=output, key="availability")))}}
+{{Set(name="time_range",  value=Stringify(GetValueJSON(obj=output, key="range")))}}
+
+{{Set(name="last_availability_payload", value=GetPersonaAttribute(id=user_id, field="last_availability_payload"))}}
+{{Set(name="party_size", value=Stringify(GetValueJSON(obj=last_availability_payload, key="partySize")))}}
+
+{{SetPersonaAttribute(id=user_id, field="availability_booking_urls", value=Stringify(GetValueJSON(obj=output, key="bookingUrls")))}}
+{{SetPersonaAttribute(id=user_id, field="availability", value=availability)}}
+
+{{#if IsSimilar(val1="[]", val2=availability, strategy="hamming", threshold=0.7)}}
+  {{_receiveAvailableSlotsBuildAvailabilityContextDefaultSkill(timeRange=time_range, slotsOutput=output, userId=user_id, partySize=party_size)}}
+
+  {{Set(name="connection_with_the_manager_phrase", value=" ")}}
+
+  {{#if GetCustomerAttribute(field="project_attributes_setting_transfer_call_enabled") == "True"}}
+    {{#if GetCustomerAttribute(field="project_attributes_setting_connect_with_the_manager_in_case_of_unhandled_issues") == "True"}}
+      {{#if GetCustomerAttribute(field="project_attributes_setting_define_conversation_is_during_working_hours_enabled") == "True"}}
+          {{#if GetPersonaAttribute(id=user_id, field="working_hours_status") == "false"}}
+              {{Set(name="connection_with_the_manager_phrase", value=" If this is already the second attempt to check availability, advise the user to call during business hours and inform them that a manager will be able to assist them when they call.")}}
+          {{else}}
+              {{Set(name="connection_with_the_manager_phrase", value=" If it's already second attempt to get availability, suggest the user to be connected with the manager who may be able to find something for them.")}}
+          {{/if}}
+      {{/if}}
+    {{/if}}
+  {{/if}}
+
+  {{Set(name="agent_instruction", value=Concat("Tell the user that you have checked and unfortunately, there are no any available slots for ", party_size, " ", time_range, ". Ask if they would like you to check a different time or another day.", connection_with_the_manager_phrase))}}
+
+{{else}}
+
+  {{Set(name="slot_available_instruction", value=_receiveAvailableSlotsCheckAvailabilitySkill(availability=availability, userId=user_id))}}
+
+  {{#if not IsEmpty(text=party_size)}}
+    {{Set(name="party_size_instruction", value=Concat(", for party of ", party_size))}}
+  {{else}}
+    {{Set(name="party_size_instruction", value=" ")}}
+  {{/if}}
+
+  {{Set(name="agent_instruction", value=Concat("You have just received available slots for the user requested date and time, and ", time_range, party_size_instruction, ", ", slot_available_instruction, " Always provide the time in a ", GetCustomerAttribute(field="project_attributes_setting_time_format"), ". Avoid mentioning year in the date."))}}
+
+  {{_receiveAvailableSlotsBuildAvailabilityContextDefaultSkill(timeRange=time_range, slotsOutput=output, userId=user_id, partySize=party_size)}}
+{{/if}}
+
+{{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction=agent_instruction, uninterruptible="True")}}
+
+{{#if IsSimilar(val1="[]", val2=availability, strategy="hamming", threshold=0.7)}}
+  {{Return()}}
+{{/if}}
+
+{{#if GetCustomerAttribute(field="project_business_industry") == "restaurant_industry"}}
+    {{_restaurantReceiveAvailableSlotsUpdateSeatingOptionsSkill(inputJson=availability, userId=user_id)}}
+{{/if}}

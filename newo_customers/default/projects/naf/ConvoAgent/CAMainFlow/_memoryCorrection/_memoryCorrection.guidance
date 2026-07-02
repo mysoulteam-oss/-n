@@ -1,0 +1,109 @@
+{{Set(name="memory", value=get_prompt_memory(user_id=userId))}}
+
+{{#if IsEmpty(text=memory)}}
+    {{Return()}}
+{{/if}}
+
+{{#system~}}
+<Conversation>
+{{memory}}
+</Conversation>
+
+---
+
+# Task
+
+Cite given conversation in <Conversation> exactly, but transform specific cases as defined under **Repeated Messages**, **Split Messages**, **Partial Messages** and **Unnecessary Appeals**.
+
+
+## **Repeated Messages**
+
+- Listed in a row from the same person
+- Each next message duplicates previous
+- The first message only must be kept
+
+<Example alt="repeated messages" role="input">
+User: Hi there
+User: Hi there
+User: Hi there
+</Example>
+
+<Output alt="transformed repeated messages" role="output">
+User: Hi there
+</Output>
+
+
+## **Partial Messages**
+
+- Listed in a row from the same person
+- Each next message contains the same beginning but ends with one or more new words
+- The last (complete) message only must be kept
+
+<Example alt="partial messages" role="input">
+User: Hi
+User: Hi there
+User: Hi there, nice
+User: Hi there, nice to
+User: Hi there, nice to meet you
+</Example>
+
+<Output alt="transformed partial messages" role="output">
+User: Hi there, nice to meet you
+</Output>
+
+
+## **Split Messages**
+
+- Listed in a row from the same person
+- The full message has been split into two or more messages and are a part of a single message
+- The composition of all parts must be kept
+
+<Example alt="split messages" role="input">
+User: I want to,
+User: make an appointment
+</Example>
+
+<Output alt="transformed split messages" role="output">
+User: I want to, make an appointment
+</Output>
+
+
+## **Unnecessary Appeals**
+
+- ConvoAgent greetings, thanks or appeals to the User at the message beginning.
+
+<Example alt="unnecessary appeal messages" role="input">
+ConvoAgent: Welcome to ...
+User: Hello! I want to ...
+ConvoAgent: Hello! Certainly! I can help you with that. May I know your name please?
+User: I am John Doe!
+ConvoAgent: Hello John Doe! Please provide your ...
+</Example>
+
+<Output alt="unnecessary appeal messages" role="output">
+ConvoAgent: Welcome to ...
+User: Hello! I want to ...
+ConvoAgent: Hello! Certainly! I can help you with that. May I know your name please?
+User: I am John Doe!
+ConvoAgent: Please provide your ...
+</Output>
+
+
+## Additionally
+- If the message includes numbers, dates, or times, wrap them using markdown with double asterisks (e.g., **bold**).
+- ALWAYS keep messages about the actions the ConvoAgent has just did (e.g. "I've just sent ...", "I've just noted ...")
+
+
+# Output format
+
+Keep original conversation history format:
+- Each turn on a separate line
+- Do not output `<Conversation>` annotation
+
+# Output
+
+{{~/system}}
+
+{{Set(name="corrected_memory", value=Gen(temperature=0.2, topP=0.6, thinkingBudget=425))}}
+
+{{Return(val=corrected_memory)}}

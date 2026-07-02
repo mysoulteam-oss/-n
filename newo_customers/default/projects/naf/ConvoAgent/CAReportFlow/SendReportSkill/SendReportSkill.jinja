@@ -1,0 +1,33 @@
+{{_utilsSendSystemLogSkill(message="Session ended.")}}
+
+{% set user_id = GetUser().id | string %}
+
+{% set last_session_date_time = GetPersonaAttribute(id=user_id, field="last_session_ended_datetime_utc") %}
+{% set transcript = get_memory(user_id=user_id, count=300, from_date=last_session_date_time) %}
+
+{# Check transcript is not empty and contain user's turns #}
+{% if not transcript.strip() or (not GetUser().name ~ ":" in transcript) %}
+    {{_utilsSendSystemLogSkill(message="Memory is empty or doesn't contain user's turns, skipping sending report.")}}
+    {{SendSystemEvent(eventIdn="assess_session", connectorIdn="system", transcript="")}}
+    {{Return()}}
+{% endif %}
+
+{% set working_hours_status = GetPersonaAttribute(id=user_id, field="working_hours_status").strip() %}
+{% if working_hours_status == "true" %}
+    {% set intent_type_map = GetCustomerAttribute(field="project_attributes_private_dynamic_itm_working_hours_compiled") %}
+{% else %}
+    {% set intent_type_map = GetCustomerAttribute(field="project_attributes_private_dynamic_itm_non_working_hours_compiled") %}
+{% endif %}
+
+{% set pre_analysis = json.loads(_defineIntentSkill(transcript=transcript, intent_type_map=intent_type_map)) %}
+
+{{_utilsSendSystemLogSkill(message="Send report is executed on session ended.")}}
+{% set report_is_sent = _sendReportSkill(transcript=transcript, userId=user_id, intentType=pre_analysis.general_intent_name) %}
+
+{{SendSystemEvent(
+    eventIdn="assess_session",
+    connectorIdn="system",
+    preAnalysis=json.dumps(pre_analysis, ensure_ascii=False, indent=2),
+    transcript=transcript,
+    reportIsSent=report_is_sent
+)}}

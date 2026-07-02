@@ -1,0 +1,125 @@
+{# Set default industry-specific value #}
+{% if GetCustomerAttribute(field="project_attributes_setting_session_ended_report_criteria_template").strip() %}
+    {{Return()}}
+{% endif %}
+
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+
+{% if industry == "catering_industry" %}
+    {% set report_criteria %}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is a Catering Order, Reschedule or Modification, Cancellation, Guest Support, Contractor Support, Manager or Human Request send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+- **Both during working hours and non-working hours:**
+  - If it is a Catering Order, Reschedule or Modification, Cancellation, Guest Support, Contractor Support, Manager or Human Request send an email to [[project_business_manager_email]]
+    {% endset %}
+
+{% elif industry == "cleaning_industry" %}
+    {% set report_criteria %}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is an Approximate AI Estimate, In-person Estimate, Remote-Virtual Estimate, Schedule Cleaning, Reschedule or Modification, Cancellation, Confirmation of Appointment, Client Support, Contractor Support, Manager or Human Request send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+- **Both during working hours and non-working hours:**
+  - If it is an Approximate AI Estimate, In-person Estimate, Remote-Virtual Estimate, Schedule Cleaning, Reschedule or Modification, Cancellation, Confirmation of Appointment, Client Support, Contractor Support, Manager or Human Request send an email to [[project_business_manager_email]]
+    {% endset %}
+
+{% elif industry == "dental_industry" %}
+    {% set report_criteria %}
+**Criteria for SMS Report:**
+- **During working hours:**
+  Never send SMS
+- **Outside working hours:**
+  Never send SMS
+---
+**Criteria for Email Report:**
+- **Both during working hours and non-working hours:**
+  - If it is a New Patient Appointment, Existing Patient Appointment, Emergency Call, Reschedule or Modification, Cancellation, Patient Support, Contractor Support, Manager or Human Request send an email to [[project_business_manager_email]]
+    {% endset %}
+
+{% elif industry == "home_service_industry" %}
+    {% set report_criteria %}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is an Appointment Scheduling, Other Services Request, Reschedule or Modification, Cancellation, Client Support, Complaints, Emergency, Contractor Support, Manager or Human Request send an SMS to [[project_business_working_hour_escalation_phone]]
+- **Outside working hours:**
+  - If it is an Emergency, send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+- **Both during working hours and non-working hours:**
+  - If it is an Appointment Scheduling, Other Services Request, Reschedule or Modification, Cancellation, Client Support, Complaints, Emergency, Contractor Support, Manager or Human Request send an email to [[project_business_manager_email]]
+    {% endset %}
+
+{% elif industry == "hospitality_industry" %}
+    {% set report_criteria %}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is a Large Group Reservation, Regular Reservation, Reschedule or Modification, Cancellation, Guest Support, Contractor Support, Manager or Human Request send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+- **Both during working hours and non-working hours:**
+  - If it is a Large Group Reservation, Regular Reservation, Reschedule or Modification, Cancellation, Guest Support, Contractor Support, Manager or Human Request send an email to [[project_business_manager_email]]
+    {% endset %}
+
+{% elif industry == "restaurant_industry" %}
+    {% set report_criteria %}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is a Large Reservation, Catering Order, Private Dining, Reschedule or Modification, Cancellation, Guest Support, Contractor Support, Manager or Human Request send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+- **Both during working hours and non-working hours:**
+  - If it is a Large Reservation, Catering Order, Private Dining, Reschedule or Modification, Cancellation, Guest Support, Contractor Support, Manager or Human Request send an email to [[project_business_manager_email]]
+    {% endset %}
+
+{% elif industry == "sales_industry" %}
+    {% set report_criteria %}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is a Sale to a Client, Sale to a Partner, Closing via Appointment, Closing via Product Link send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+- **Both during working hours and non-working hours:**
+  - If it is a Sale to a Client, Sale to a Partner, Closing via Appointment, Closing via Product Link send an email to [[project_business_manager_email]]
+    {% endset %}
+
+{% elif industry == "beauty_industry" %}
+    {% set report_criteria %}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is an Emergency Call or Client Support, Contractor Support, Manager or Human Request send an SMS to [[project_business_working_hour_escalation_phone]]
+  - If it is a New Client Appointment, Existing Client Appointment, Sale to a Client or Cancellation, send an SMS to the [[project_business_working_hour_escalation_phone]]
+- **Outside working hours:**
+  - If it is an Emergency Call, send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+  - If it is an Emergency Call, Reschedule or Modification, Cancellation or Client Support, Contractor Support, Manager or Human Request, send an email to [[project_business_manager_email]]
+  - If it is a New Client Appointment, Existing Client Appointment, Sale to a Client or Cancellation, send an email to [[project_business_manager_email]]
+    {% endset %}
+
+{% elif industry == "general_industry" %}
+    {% set report_criteria %}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is a User Inquiry, Booking via Link, Purchase via Link, Manager or Human Request send an SMS to [[project_business_working_hour_escalation_phone]]
+- **Outside working hours:**
+  - If it is an Emergency, send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+- **Both during working hours and non-working hours:**
+  - If it is a User Inquiry, Booking via Link, Purchase via Link, Manager or Human Request send an email to [[project_business_manager_email]]
+    {% endset %}
+{% else %}
+    {% set report_criteria = "" %}
+{% endif %}
+
+{% if report_criteria.strip() %}
+    {{utils_customer_attribute_set_if_empty(field="project_attributes_setting_session_ended_report_criteria_template", value=report_criteria.strip())}}
+    {{utils_customer_attribute_set_if_empty(field="project_attributes_setting_session_ended_report_enabled", value="True")}}
+{% else %}
+    {{utils_customer_attribute_set_if_empty(field="project_attributes_setting_session_ended_report_criteria_template", value="")}}
+    {{utils_customer_attribute_set_if_empty(field="project_attributes_setting_session_ended_report_enabled", value="False")}}
+{% endif %}

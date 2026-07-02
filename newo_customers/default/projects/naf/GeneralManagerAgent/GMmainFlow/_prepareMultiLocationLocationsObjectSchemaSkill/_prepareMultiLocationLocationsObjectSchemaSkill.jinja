@@ -1,0 +1,9 @@
+{% set indexes = json.loads(indexes) %}
+
+{% set schema_template = {"type": "object", "properties": {}, "required": []} %}
+{% for idx in indexes %}
+    {{schema_template["properties"].update({idx: {"type": "string", "description": "Human readable description of the location"}})}}
+    {{schema_template["required"].append(idx)}}
+{% endfor %}
+
+{{Return(val=json.dumps(schema_template, ensure_ascii=False, indent=2))}}

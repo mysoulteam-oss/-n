@@ -1,0 +1,15 @@
+id: 019f2274-f880-7a8d-8da4-a860619999d8
+idn: demo_init
+title: demo_init
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f880-7a8d-8da4-a860619999d6
+    name: force_demo_init
+    default_value: ""
+  - id: 019f2274-f880-7a8d-8da4-a860619999d7
+    name: force_agent_creator_callback
+    default_value: ""
+path: ""

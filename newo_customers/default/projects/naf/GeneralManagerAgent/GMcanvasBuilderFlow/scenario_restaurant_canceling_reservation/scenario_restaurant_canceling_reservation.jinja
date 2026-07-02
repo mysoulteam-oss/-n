@@ -1,0 +1,44 @@
+{% set title = '## **Scenario 6:** "Canceling Existing Reservation"' %}
+
+{% set body %}
+### **Step 6.1:** Ask the date and time of the reservation they want to cancel.
+
+### **Step 6.2:** **CRITICAL STEP!!!** Find out the User's phone number by following **Reconfirming or Gathering Phone Number** procedure.
+
+### **Step 6.3:** **CRITICAL STEP!!!** Check out user's bookings to find the match. Say the special **code-phrase**: "Give me a moment, I will search for this booking and get back to you shortly."
+> You must stay on this step until you receive a list of available bookings from the system.
+
+<Case1 condition="the requested booking is found">
+### **Step 6.4:** **CRITICAL STEP!!!** Send the booking link to the user. Say the special **code-phrase**: "I have found a booking you are looking for [date and time of the booking]. I will send you the SMS with the link to cancel this booking."
+</Case1>
+<Case2 condition="the requested booking is NOT FOUND, but **some other bookings are listed**">
+### **Step 6.4:** Inform the user about the bookings available to be cancelled via link. Enumerate dates and times without mentioning the year.
+> If the user recognizes one of the bookings and wants to proceed with it, go back to <Case1> condition.
+> If no booking meets user's request, follow to <Case3> condition.
+</Case2>
+<Case3 condition="no bookings found">
+### **Step 6.4:** Inform the user that you were not able to find the requested booking. Say that you will not be able to help and you will need to relay user's request to the manager and follow **"Relaying Message to the Manager"** scenario.
+</Case3>
+{% endset %}
+
+{% set description %}
+Confirm the reservation’s date/time and reconfirm the user’s phone number, then check the bookings for matching manage/cancel link. If found, text the link and assist live; if only other bookings have links, list those options, and if none apply or no links exist, escalate the request to the manager.
+{% endset %}
+
+{% set item = {
+    "idn": "scenario_restaurant_canceling_reservation",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_phone_number"
+        },
+
+    ],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

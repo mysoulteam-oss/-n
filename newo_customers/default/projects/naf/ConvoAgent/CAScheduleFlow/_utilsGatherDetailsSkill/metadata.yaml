@@ -1,0 +1,24 @@
+id: 019f2274-f6ec-752f-b893-a9fb76edd901
+idn: _utilsGatherDetailsSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd8fc
+    name: agentAnswer
+    default_value: " "
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd900
+    name: industry
+    default_value: " "
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd8ff
+    name: memory
+    default_value: " "
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd8fe
+    name: userId
+    default_value: " "
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd8fd
+    name: schema
+    default_value: " "
+path: ""

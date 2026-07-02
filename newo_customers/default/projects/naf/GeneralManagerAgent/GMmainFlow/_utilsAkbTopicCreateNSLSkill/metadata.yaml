@@ -1,0 +1,33 @@
+id: 019f2274-f880-7a8d-8da4-a860619999aa
+idn: _utilsAkbTopicCreateNSLSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f880-7a8d-8da4-a860619999a6
+    name: overwrite
+    default_value: "False"
+  - id: 019f2274-f880-7a8d-8da4-a860619999a5
+    name: personaId
+    default_value: ""
+  - id: 019f2274-f880-7a8d-8da4-a860619999a4
+    name: source
+    default_value: ""
+  - id: 019f2274-f880-7a8d-8da4-a860619999a3
+    name: summary
+    default_value: ""
+  - id: 019f2274-f880-7a8d-8da4-a860619999a2
+    name: labels
+    default_value: ""
+  - id: 019f2274-f880-7a8d-8da4-a860619999a8
+    name: confidence
+    default_value: "100"
+  - id: 019f2274-f880-7a8d-8da4-a860619999a9
+    name: facts
+    default_value: ""
+  - id: 019f2274-f880-7a8d-8da4-a860619999a7
+    name: name
+    default_value: ""
+path: ""

@@ -1,0 +1,4 @@
+{% set task_id = GetState(name="task_id") %}
+
+{{_updateTaskManagerStatusSkill(taskId=task_id, status="failed", comment="Failed to call " ~ GetTriggeredAct().arguments.type ~ ". For more information please look for newo_voice/newo_voice_connector/server_message_error event.")}}
+{{_noAnswerSkill(taskId=task_id, userId=GetUser().id | string, reason="error")}}

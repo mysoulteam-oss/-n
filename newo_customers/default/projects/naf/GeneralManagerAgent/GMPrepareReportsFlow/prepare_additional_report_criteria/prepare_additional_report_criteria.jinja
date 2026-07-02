@@ -1,0 +1,47 @@
+{% set arguments = GetTriggeredAct().arguments %}
+
+{% set schema = arguments.schema %}
+{% set criteria = arguments.criteria %}
+{% set title = arguments.report_title %}
+{% set event_idn = arguments.event_idn %}
+{% set criteria_key = re.sub('^_+|_+$', '', re.sub('[^a-z]+', '_', title|lower)) %}
+
+{% set prepared_schema = json.loads(prepare_additional_report_schema(schema=schema, title=title, criteria_key=criteria_key)) %}
+{% set current_additional_schemas = GetCustomerAttribute(field="project_attributes_setting_session_ended_report_additional_schema").strip() %}
+
+{% if (not current_additional_schemas) or (current_additional_schemas == "{}") %}
+    {% set current_additional_schemas = {} %}
+{% else %}
+    {% set current_additional_schemas = json.loads(current_additional_schemas) %}
+{% endif %}
+
+{{current_additional_schemas.update(prepared_schema)}}
+
+{{SetCustomerAttribute(field="project_attributes_setting_session_ended_report_additional_schema", value=json.dumps(current_additional_schemas, ensure_ascii=False, indent=2))}}
+
+
+{% set external_report_event_map = GetCustomerAttribute(field="project_attributes_setting_session_ended_report_event_map").strip() %}
+
+{% if (not external_report_event_map) or (external_report_event_map == "{}") %}
+    {% set external_report_event_map_loaded = {} %}
+{% else %}
+    {% set external_report_event_map_loaded = json.loads(external_report_event_map) %}
+{% endif %}
+
+{{external_report_event_map_loaded.update({criteria_key: event_idn})}}
+
+{{SetCustomerAttribute(field="project_attributes_setting_session_ended_report_event_map", value=json.dumps(external_report_event_map_loaded, ensure_ascii=False, indent=2 ))}}
+
+{% set additional_criteria = GetCustomerAttribute(field="project_attributes_setting_session_ended_report_additional_criteria").strip() %}
+
+{% if (not additional_criteria) or (additional_criteria == "{}") %}
+    {% set additional_criteria_loaded = {} %}
+{% else %}
+    {% set additional_criteria_loaded = json.loads(additional_criteria) %}
+{% endif %}
+
+{{additional_criteria_loaded.update({criteria_key: criteria})}}
+
+{{SetCustomerAttribute(field="project_attributes_setting_session_ended_report_additional_criteria", value=json.dumps(additional_criteria_loaded, ensure_ascii=False, indent=2 ))}}
+
+{{prepare_reports()}}

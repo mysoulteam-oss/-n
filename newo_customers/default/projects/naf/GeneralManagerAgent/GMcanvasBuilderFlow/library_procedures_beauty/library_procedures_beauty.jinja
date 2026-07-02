@@ -1,0 +1,15 @@
+{% set library_items = [
+    json.loads(procedure_beauty_pricing()),
+    json.loads(procedure_common_asking_about_services()),
+    json.loads(procedure_common_gather_availability_default()),
+    json.loads(procedure_common_gather_date_of_birth()),
+    json.loads(procedure_common_gather_date_time_beauty()),
+    json.loads(procedure_common_gather_email()),
+    json.loads(procedure_common_gather_first_and_last_name()),
+    json.loads(procedure_common_gather_name()),
+    json.loads(procedure_common_gather_phone_number()),
+    json.loads(procedure_common_gather_physical_address()),
+    json.loads(procedure_common_gather_zip_code()),
+] %}
+
+{{Return(val=json.dumps(library_items, ensure_ascii=False, indent=2))}}

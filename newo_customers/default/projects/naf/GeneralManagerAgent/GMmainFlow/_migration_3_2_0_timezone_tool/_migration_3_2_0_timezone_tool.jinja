@@ -1,0 +1,19 @@
+{% set old_check_timezone_tool = '"The agent and user are discussing in the latest conversational turns time with different time zones (it means that `tool` must be called to double-check whether Agent provided valid date and time conversion)."' %}
+
+{% set new_check_timezone_tool %}"The agent and user are discussing in the latest conversational turns time with different time zones (it means that `tool` must be called to double-check whether Agent provided valid date and time conversion)."
+        },
+        "userInterestAboutTimeActive": {
+            "type": "boolean",
+            "description": "The user's last message explicitly references time, date, timezone by asking question **exactly about time**. If the user’s last message **changes topic**, **confirms understanding**, or **asks about something else**, this flag becomes `false`."
+        },
+        "redundantTimeClarificationsAbsent": {
+            "type": "boolean",
+            "description": "If there are **two or more Agent messages** in `<Conversation>` and `<LatestConvoAgentAnswer>` that mention **related time** or **related timezones**, then this flag becomes **false** — because the clarification from Agent was already given. This flag is true only when there is no repeated clarification, meaning the latest messages introduces a new or first-time timezone reference."{% endset %}
+
+{# Migrate check_timezone_tool conditions #}
+{% set newo_tools = GetCustomerAttribute(field="project_attributes_settings_newo_tools").strip() %}
+
+{% if "redundantTimeClarificationsAbsent" not in newo_tools %}
+    {% set updated_newo_tools = newo_tools.replace(old_check_timezone_tool, new_check_timezone_tool) %}
+    {{SetCustomerAttribute(field="project_attributes_settings_newo_tools", value=updated_newo_tools)}}
+{% endif %}

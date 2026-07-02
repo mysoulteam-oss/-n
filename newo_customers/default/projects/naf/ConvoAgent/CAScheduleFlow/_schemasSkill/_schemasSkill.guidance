@@ -1,0 +1,198 @@
+{{#if promisedMeetingSchema == "True"}}
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "promised": {
+      "type": "boolean",
+      "description": "Set the field to true if the agent promised to set up the meeting. Otherwise set to false"
+    }
+  },
+  "required": [
+    "promised"
+  ]
+}
+{{~/system}}
+    {{Return(val=GetCurrentPrompt())}}
+{{/if}}
+
+{{#if createMeetingSchema == "True"}}
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "datetime": {
+      "type": "string",
+      "description": "User's preferred datetime in ISO 8601 format. Timezone is required. Example: 2024-10-23T14:00:00+04:00. A specific time of day (e.g., 'at 2pm', '14:30') must be explicitly mentioned in the conversation. Vague references such as 'morning', 'afternoon', 'evening', or 'any time' are not sufficient. If a specific time is not provided, leave this field empty and set `required_fields_missing` to `true`."
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user. If not available from any of the provided information sections, leave this field empty and set `required_fields_missing` to `true`."
+    },
+    "conversation_summary": {
+      "type": "string",
+      "description": "Include in this field a 100-word summary of the conversation. This summary should include the date and time of the conversation, the user's full name, all available contact information found in the conversation, the conversation topic, and the key facts discussed."
+    },
+    "required_fields_missing": {
+      "type": "boolean",
+      "description": "If all required fields in your object are filled, set this field to `false`. Set this field to `true` if, based on the provided information sections, you cannot fill at least one required field."
+    },
+    "details_to_reconfirm": {
+      "type": "string",
+      "description": "If any required fields are missing, provide their names in a human-readable format, separated by commas. For example: User Phone, User Confirmation. Otherwise set to \"No missing fields\""
+    },
+    "requestedDayOfWeek": {
+      "type": "string",
+      "description": "Name of the requested day of the week. Example: Monday"
+    },
+    "requestedDate": {
+      "type": "string",
+      "description": "Requested date in the following format: YYYY-MM-DD"
+    },
+    "requestedTime": {
+      "type": "string",
+      "description": "Requested time in 12-hour format (hh:mm A) format. Example: 03:00 PM / 15:00."
+    },
+    "requestedTimeFormatted": {
+      "type": "string",
+      "description": "Requested time in 24-hour format \"HH:MM\". Example: 15:00."
+    }
+  },
+  "required": [
+    "datetime",
+    "user_email",
+    "conversation_summary",
+    "required_fields_missing",
+    "details_to_reconfirm",
+    "requestedDayOfWeek",
+    "requestedDate",
+    "requestedTime",
+    "requestedTimeFormatted"
+  ]
+}
+{{~/system}}
+    {{Return(val=GetCurrentPrompt())}}
+{{/if}}
+
+{{#if promisedBookSchema == "True"}}
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "promised": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "promised"
+  ]
+}
+{{~/system}}
+    {{Return(val=GetCurrentPrompt())}}
+{{/if}}
+
+{{#if submittingBookingSchema == "True"}}
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "dateTime": {
+      "type": "string",
+      "description": "User's date and time for the reservation in format YYYY-MM-DD HH:MM. Example: 2024-09-28 20:00"
+    },
+    "requiredFieldsMissing": {
+      "type": "boolean",
+      "description": "If all required fields in the payload object are filled, set this field to false. Set this to true if based on the provided information sections you cannot fill any required field in the payload."
+    },
+    "detailsToReconfirm": {
+      "type": "string",
+      "description": "If any required fields in the payload are missing, provide their names in a human-readable format, separated by commas. For example: User Phone, User Confirmation. Otherwise set to `No missing fields.`"
+    }
+  },
+  "required": [
+    "dateTime",
+    "requiredFieldsMissing"
+  ]
+}
+{{~/system}}
+    {{Set(name="industry", value=GetCustomerAttribute(field="project_business_industry"))}}
+    {{Set(name="missing_schema", value=GetCurrentPrompt())}}
+
+    {{Set(name="booking_schema", value=GetCustomerAttribute(field="project_attributes_private_dynamic_booking_schema_compiled"))}}
+
+    {{#if _utilsFeatureFlagIsActiveSkill(featureFlagName="multi_location")}}
+      {{Set(name="current_location", value=GetPersonaAttribute(id=userId, field="multi_location_current_location"))}}
+      {{Set(name="booking_schema_specific", value=GetValueJSON(obj=booking_schema, key=current_location))}}
+      {{#if IsEmpty(text=booking_schema_specific)}}
+        {{Set(name="booking_schema_specific", value=GetValueJSON(obj=booking_schema, key="default"))}}
+      {{/if}}
+      {{Set(name="booking_schema", value=booking_schema_specific)}}
+    {{/if}}
+    {{Set(name="properties", value=GetValueJSON(obj=booking_schema, key="properties"))}}
+
+    {{Set(name="modified_properties", value=UpdateValueJSON(obj=properties, key="additionalValidation", value=missing_schema))}}
+
+    {{Set(name="modified_booking_schema", value=UpdateValueJSON(obj=booking_schema, key="properties", value=modified_properties))}}
+
+    {{Set(name="modified_required", value=AppendItemsArrayJSON(array=GetValueJSON(obj=booking_schema, key="required"), items=AsStringJSON(val="additionalValidation")))}}
+
+    {{Set(name="modified_booking_schema", value=UpdateValueJSON(obj=modified_booking_schema, key="required", value=modified_required))}}
+
+    {{Set(name="modified_booking_schema", value=_resolveSchemaDynamicProperties(schema=modified_booking_schema, userId=userId, industry=industry))}}
+    {{Return(val=modified_booking_schema)}}
+
+{{/if}}
+
+
+{{#if submittingBookingRestaurantSchema == "True"}}
+
+    {{Set(name="convo_agent_persona", value=GetAgent(idn="ConvoAgent", field="personaId"))}}
+    {{Set(name="industry", value=GetCustomerAttribute(field="project_business_industry"))}}
+    {{Set(name="scenario", value=GetCustomerAttribute(field="project_attributes_scenario"))}}
+
+    {{Set(
+        name="task_object_format",
+        value=SearchFuzzyAkb(
+        query="w1s2_confirm_slots_task",
+        searchFields=["name"],
+        numberTopics=1,
+        fields=["summary"],
+        scoreThreshold=0.9,
+        filterByPersonaIds=convo_agent_persona,
+        labels=CreateArray("task_object_format", industry, scenario)
+        )
+    )}}
+
+    {{Set(name="schema", value=GetValueJSON(obj=GetValueJSON(obj=task_object_format, key="info"), key="schema"))}}
+
+    {{Return(val=schema)}}
+{{/if}}
+
+{{#if workingHoursSchema == "True"}}
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "time": {
+      "type": "string",
+      "description": "The time in 12-hour \"hh:mm A\" format."
+    },
+    "recap": {
+      "type": "string",
+      "description": "Short explanation based on your analysis."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["non_working_day", "non_working_hours", "working_hours"],
+      "description": "Indicates if the provided day/time is a non-working day, non-working hours, or working hours."
+    }
+  },
+  "required": ["time", "recap", "status"]
+}
+{{~/system}}
+
+    {{Return(val=GetCurrentPrompt())}}
+
+{{/if}}
+
+{{DUMMY("NO SCHEMA REQUESTED")}}

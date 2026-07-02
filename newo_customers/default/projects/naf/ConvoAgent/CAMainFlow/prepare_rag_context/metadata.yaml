@@ -1,0 +1,15 @@
+id: 019f2274-f6ea-7d44-89d3-e603c29ce112
+idn: prepare_rag_context
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce111
+    name: memory
+    default_value: ""
+  - id: 019f2274-f6ea-7d44-89d3-e603c29ce110
+    name: user_id
+    default_value: ""
+path: ""

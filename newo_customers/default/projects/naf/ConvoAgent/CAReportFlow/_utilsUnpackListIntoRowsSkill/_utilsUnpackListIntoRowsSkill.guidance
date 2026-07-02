@@ -1,0 +1,8 @@
+{{Set(name="without_brackets", value=valuesList.replace('["', " "))}}
+{{Set(name="without_brackets", value=without_brackets.replace('"]', " "))}}
+
+{{Set(name="unpacked_list", value=without_brackets.replace('","', "
+"))}}
+{{Set(name="unpacked_list", value=without_brackets.replace('", "', "
+"))}}
+{{Return(val=unpacked_list)}}

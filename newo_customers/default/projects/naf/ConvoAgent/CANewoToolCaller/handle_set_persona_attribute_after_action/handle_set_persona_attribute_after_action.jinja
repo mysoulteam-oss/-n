@@ -1,0 +1,15 @@
+{% set after_action_options = {
+    'llm_process_instructions': '',
+} %}
+{% if not after_action.options or not after_action.options.attribute_name %}
+    {{utils_send_system_log(message="`set_persona_attribute` after-action cannot be executed without `options.attribute_name`")}}
+    {{Return()}}
+{% endif %}
+{{after_action_options.update(after_action.options)}}
+{% if after_action_options.llm_process_instruction %}
+    {% set input = generate_text_by_instruction(user_id=user_id, instruction=after_action_options.llm_process_instruction, input=input) %}
+{% endif %}
+{{SetPersonaAttribute(id=user_id, field=after_action_options.attribute_name, value=input)}}
+{{utils_send_system_log(message="```
+" ~ input ~ "
+``` was set to `" ~ after_action_options.attribute_name ~ " user's persona attribute")}}

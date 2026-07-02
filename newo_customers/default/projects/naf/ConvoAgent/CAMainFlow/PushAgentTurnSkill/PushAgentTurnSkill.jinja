@@ -1,0 +1,53 @@
+{{SetState(name="waiting_mode_active", value="False")}}
+{{SetState(name="waiting_mode_footer_instruction", value="")}}
+
+{% set act = GetTriggeredAct() %}
+{% set user_id = GetUser().id | string %}
+{% set last_convo_actor = session_get_and_set_last_convo_actor_id(user_id=user_id) %}
+{% if not last_convo_actor.strip() %}
+    {{Return()}}
+{% endif %}
+
+{% set integration_idn = session_utils.session_get_current_integration_idn(user_id=user_id) %}
+
+{% set external_event = "False" %}
+{% if integration_idn == "api" %}
+    {% set external_event = "True" %}
+{% endif %}
+
+{% set restricted_languages_list = GetCustomerAttribute(field="project_business_language_restricted_list") %}
+
+{% set restricted_languages = (json.loads(restricted_languages_list) | join(", ")) if restricted_languages_list.strip() and restricted_languages_list != "[]" else "" %}
+
+{% set language_restriction_instruction = ( "[!Caution] If the user's language is one of the prohibited languages (" ~ restricted_languages ~ "), do not respond in that language.\n" ) if restricted_languages else "" %}
+
+{% set base_instruction %}{{act.arguments.baseInstruction}}
+
+ALWAYS RESPOND IN USER'S LANGUAGE. YOU MUST RESPOND UNMISTAKABLY IN USER'S LANGUAGE. YOU MUST RESPOND UNMISTAKABLY IN USER'S LANGUAGE.
+
+{{language_restriction_instruction}}{% endset %}
+
+{% set base_instruction = base_instruction.strip() %}
+
+{% set update_session = act.arguments.updateSession %}
+
+{% set voice_mode = GetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_mode") %}
+{% if integration_idn == "newo_voice" and voice_mode in ("voice-to-voice", "speech-to-speech") %}
+    {{v2v_add_context(turn=base_instruction, user_id=user_id)}}
+
+    {% if update_session == "True" %}
+        {{v2v_update_current_prompt(user_id=user_id, inject_thoughts="False")}}
+    {% endif %}
+
+    {{v2v_send_command(command=base_instruction)}}
+    {{Return()}}
+{% endif %}
+
+{{_userMessageFastReplySkill(
+    base_instruction=base_instruction,
+    call_analyze_conversation=act.arguments.callAnalyzeConversationSkill,
+    inject_thoughts=act.arguments.injectThoughts,
+    external_event=external_event,
+    user_id=user_id,
+    integration_idn=integration_idn
+)}}

@@ -1,0 +1,15 @@
+id: 019f2274-f87f-7799-9270-cc6dbf494591
+idn: _prepareAttributesBookingSchemasSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f87f-7799-9270-cc6dbf49458f
+    name: payloadSchema
+    default_value: " "
+  - id: 019f2274-f87f-7799-9270-cc6dbf494590
+    name: validationSchema
+    default_value: " "
+path: ""

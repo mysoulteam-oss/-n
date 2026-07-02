@@ -1,0 +1,21 @@
+{% set arguments = GetTriggeredAct().arguments %}
+
+{% if arguments.requesterIdn != GetAgentPersona().name %}
+    {{Return()}}
+{% endif %}
+
+{% set call_back_arguments = json.loads(arguments.callbackArguments) %}
+
+{% set task_id = call_back_arguments.task_id %}
+{% set attempt_number = call_back_arguments.attempt_number %}
+{% set user_id = call_back_arguments.user_id %}
+{% set recording = call_back_arguments.recording %}
+{% set call_ended_reason = call_back_arguments.call_ended_reason %}
+
+{% set conversation = arguments.conversation %}
+
+{% if not conversation %}
+    {{_setupRetrySkill(comment="Conversation analysis failed. Empty conversation. Will retry", attemptNumber=attempt_number, taskId=task_id, userId=user_id, recording=recording)}}
+{% else %}
+    {{_analyzeConversationSkill(conversation=conversation, taskId=task_id, userId=user_id, recording=recording, call_ended_reason=call_ended_reason)}}
+{% endif %}

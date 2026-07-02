@@ -1,0 +1,24 @@
+{# To avoid a dumb agent, we set follow up here #}
+{# Setting follow up timer in case the first generation was not triggered #}
+
+{# Applied only for V2V mode #}
+{% set voice_mode = GetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_mode") %}
+{% if voice_mode not in ("voice-to-voice", "speech-to-speech") %}
+    {{Return()}}
+{% endif %}
+
+{% set user_id = GetUser().id | string %}
+{% set is_outbound_session = GetPersonaAttribute(id=user_id, field="outbound_session") == "True" %}
+{% if is_outbound_session %}
+    {% set interval = GetCustomerAttribute(field="project_attributes_setting_follow_up_timer_voice_interval_conversation_started_outbound") %}
+{% else %}
+    {% set interval = GetCustomerAttribute(field="project_attributes_setting_follow_up_timer_voice_interval_conversation_started_inbound") %}
+{% endif %}
+
+{{SendSystemEvent(
+    eventIdn="convoagent_update_followup",
+    connectorIdn="system",
+    interval=interval,
+    personaId=user_id,
+    reason="conversation started"
+)}}

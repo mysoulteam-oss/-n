@@ -1,0 +1,2 @@
+{{Set(name="footnote_actor_id", value=_utilsGetFootnoteSkill(userId=GetUser(field="id"), system="True"))}}
+{{SendMessage(message=Concat("System log: ", message), actorIds=footnote_actor_id)}}

@@ -1,0 +1,11 @@
+{% set bookings = json.loads(bookings) %}
+
+{% set valid_bookings = [] %}
+
+{% for booking in bookings %}
+    {% if booking.meta.booking_id != booking_id %}
+        {{ valid_bookings.append(booking) }}
+    {% endif %}
+{% endfor %}
+
+{{SetPersonaAttribute(id=user_id, field="bookings", value=json.dumps(valid_bookings, ensure_ascii=False, indent=2))}}

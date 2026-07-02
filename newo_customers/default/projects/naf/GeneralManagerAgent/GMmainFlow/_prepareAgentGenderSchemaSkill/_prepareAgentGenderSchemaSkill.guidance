@@ -1,0 +1,17 @@
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "gender": {
+      "type": "string",
+      "enum": ["auto", "female", "male"],
+      "description": "Choose a gender that matches provided agent name."
+    }
+  },
+  "required": [
+    "gender"
+  ]
+}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

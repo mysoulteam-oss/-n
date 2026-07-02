@@ -1,0 +1,15 @@
+id: 019f2274-f6ec-752f-b893-a9fb76edd904
+idn: _utilsGetBookingEmailSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd902
+    name: retry
+    default_value: "False"
+  - id: 019f2274-f6ec-752f-b893-a9fb76edd903
+    name: phoneNumber
+    default_value: ""
+path: ""

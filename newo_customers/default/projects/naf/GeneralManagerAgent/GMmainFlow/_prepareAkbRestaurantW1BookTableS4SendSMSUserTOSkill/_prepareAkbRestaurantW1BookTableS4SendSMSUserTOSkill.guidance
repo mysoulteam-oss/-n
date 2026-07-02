@@ -1,0 +1,33 @@
+{{#system~}}
+{
+  "task_idn": "w1s4_send_sms_user_task",
+  "receiver_worker_idn": "NO_WORKER",
+  "receiver_task_idn": "NO_TASK",
+  "second_receiver_worker_idn": "NO_WORKER",
+  "second_receiver_task_idn": "NO_TASK",
+  "task_description": "SW is sending this SMS to the User",
+  "owner_send_due": "ASAP",
+  "owner_task_start_user_message": " ",
+  "owner_task_send_user_message": " ",
+  "info": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "task_idn": {
+          "type": "string",
+          "enum": ["w1s4_send_sms_user_task"],
+          "description": "AF, Always set it to w1s4_send_sms_user_task"
+        }
+      },
+      "required": []
+    }
+  },
+  "required": [
+    "task_idn",
+    "receiver_worker_idn",
+    "info"
+  ]
+}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

@@ -1,0 +1,158 @@
+{{!-- TODO: Refactor all skills related to `Send Report` feature --}}
+
+{{!-- Set default industry-specific value --}}
+
+{{Set(name="industry", value=GetCustomerAttribute(field="project_business_industry"))}}
+
+{{#if industry == "catering_industry"}}
+{{#system~}}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is an EMERGENCY or COMPLAINT send an SMS to [[project_business_working_hour_escalation_phone]]
+  - If it is a NEW LEAD, CATERING ORDER, send an SMS to the [[project_business_working_hour_escalation_phone]]
+  - If it is a CLIENT MESSAGE, send an SMS to [[project_business_working_hour_escalation_phone]]
+- **Outside working hours:**
+  - If it is an EMERGENCY, send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+  - If it is an EMERGENCY or COMPLAINT, send an email to [[project_business_manager_email]]
+  - If it is a NEW LEAD, CATERING ORDER, send an email to [[project_business_manager_email]]
+  - If it is a CLIENT MESSAGE, send an email to [[project_business_manager_email]]
+{{~/system}}
+{{/if}}
+
+{{#if industry == "cleaning_industry"}}
+{{#system~}}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is an EMERGENCY or COMPLAINT send an SMS to [[project_business_working_hour_escalation_phone]]
+  - If it is a NEW LEAD, CHANGE or CANCEL RESERVATION, send an SMS to the [[project_business_working_hour_escalation_phone]]
+  - If it is a CLIENT MESSAGE, send an SMS to [[project_business_working_hour_escalation_phone]]
+- **Outside working hours:**
+  - If it is an EMERGENCY, send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+  - If it is an EMERGENCY or COMPLAINT, send an email to [[project_business_manager_email]]
+  - If it is a NEW LEAD, CHANGE or CANCEL APPOINTMENT, send an email to [[project_business_manager_email]]
+  - If it is a CLIENT MESSAGE, send an email to [[project_business_manager_email]]
+{{~/system}}
+{{/if}}
+
+{{#if industry == "dental_industry"}}
+{{#system~}}
+**Criteria for SMS Report:**
+- **During working hours:**
+  Never send SMS
+- **Outside working hours:**
+  Never send SMS
+---
+**Criteria for Email Report:**
+  - If it is an EMERGENCY, RESCHEDULING, CANCELLATION or COMPLAINT, send an email to [[project_business_manager_email]]
+  - If it is a NEW PATIENT, EXISTING PATIENT or CANCEL RESERVATION, send an email to [[project_business_manager_email]]
+  - If it is a CLIENT MESSAGE, send an email to [[project_business_manager_email]]
+{{~/system}}
+{{/if}}
+
+{{#if industry == "home_service_industry"}}
+{{#system~}}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is an EMERGENCY or COMPLAINT send an SMS to [[project_business_working_hour_escalation_phone]]
+  - If it is a NEW LEAD, RESCHEDULE, MODIFICATION, CANCELLATION, send an SMS to the [[project_business_working_hour_escalation_phone]]
+  - If it is a CLIENT MESSAGE, send an SMS to [[project_business_working_hour_escalation_phone]]
+- **Outside working hours:**
+  - If it is an EMERGENCY, send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+  - If it is an EMERGENCY or COMPLAINT, send an email to [[project_business_manager_email]]
+  - If it is a NEW LEAD, RESCHEDULE, MODIFICATION, CANCELLATION, send an email to [[project_business_manager_email]]
+  - If it is a CLIENT MESSAGE, send an email to [[project_business_manager_email]]
+{{~/system}}
+{{/if}}
+
+{{#if industry == "hospitality_industry"}}
+{{#system~}}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is an EMERGENCY or COMPLAINT send an SMS to [[project_business_working_hour_escalation_phone]]
+  - If it is a LARGE GROUP RESERVATION, REGULAR RESERVATION or CANCEL RESERVATION, send an SMS to the [[project_business_working_hour_escalation_phone]]
+  - If it is a CLIENT MESSAGE, send an SMS to [[project_business_working_hour_escalation_phone]]
+- **Outside working hours:**
+  - If it is an EMERGENCY, send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+  - If it is an EMERGENCY or COMPLAINT, send an email to [[project_business_manager_email]]
+  - If it is a LARGE GROUP RESERVATION, REGULAR RESERVATION or CANCEL RESERVATION, send an email to [[project_business_manager_email]]
+  - If it is a CLIENT MESSAGE, send an email to [[project_business_manager_email]]
+{{~/system}}
+{{/if}}
+
+{{#if industry == "restaurant_industry"}}
+{{#system~}}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is an EMERGENCY or COMPLAINT send an SMS to [[project_business_working_hour_escalation_phone]]
+  - If it is a NEW LEAD, LARGE GROUP RESERVATION, CATERING RESERVATION, PRIVATE DINING or CANCEL RESERVATION, send an SMS to the [[project_business_working_hour_escalation_phone]]
+  - If it is a CLIENT MESSAGE, send an SMS to [[project_business_working_hour_escalation_phone]]
+- **Outside working hours:**
+  - If it is an EMERGENCY, send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+  - If it is an EMERGENCY or COMPLAINT, send an email to [[project_business_manager_email]]
+  - If it is a NEW LEAD, LARGE GROUP RESERVATION, CATERING RESERVATION, PRIVATE DINING or CANCEL RESERVATION, send an email to [[project_business_manager_email]]
+  - If it is a CLIENT MESSAGE, send an email to [[project_business_manager_email]]
+{{~/system}}
+{{/if}}
+
+{{#if industry == "sales_industry"}}
+{{#system~}}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is an EMERGENCY or COMPLAINT send an SMS to [[project_business_working_hour_escalation_phone]]
+  - If it is a NEW LEAD send an SMS to the [[project_business_working_hour_escalation_phone]]
+  - If it is a CLIENT MESSAGE, send an SMS to [[project_business_working_hour_escalation_phone]]
+- **Outside working hours:**
+  - If it is an EMERGENCY, send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+  - If it is an EMERGENCY or COMPLAINT, send an email to [[project_business_manager_email]]
+  - If it is a NEW LEAD, LARGE GROUP RESERVATION or CANCEL RESERVATION, send an email to [[project_business_manager_email]]
+  - If it is a CLIENT MESSAGE, send an email to [[project_business_manager_email]]
+{{~/system}}
+{{/if}}
+
+{{#if industry == "spa_industry"}}
+{{#system~}}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is an EMERGENCY or COMPLAINT send an SMS to [[project_business_working_hour_escalation_phone]]
+  - If it is a NEW LEAD, LARGE GROUP RESERVATION or CANCEL RESERVATION, send an SMS to the [[project_business_working_hour_escalation_phone]]
+  - If it is a CLIENT MESSAGE, send an SMS to [[project_business_working_hour_escalation_phone]]
+- **Outside working hours:**
+  - If it is an EMERGENCY, send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+  - If it is an EMERGENCY or COMPLAINT, send an email to [[project_business_manager_email]]
+  - If it is a NEW LEAD, LARGE GROUP RESERVATION or CANCEL RESERVATION, send an email to [[project_business_manager_email]]
+  - If it is a CLIENT MESSAGE, send an email to [[project_business_manager_email]]
+{{~/system}}
+{{/if}}
+
+{{#if industry == "general_industry"}}
+{{#system~}}
+**Criteria for SMS Report:**
+- **During working hours:**
+  - If it is an EMERGENCY or COMPLAINT send an SMS to [[project_business_working_hour_escalation_phone]]
+  - If it is a NEW LEAD, LARGE GROUP RESERVATION or CANCEL RESERVATION, send an SMS to the [[project_business_working_hour_escalation_phone]]
+  - If it is a CLIENT MESSAGE, send an SMS to [[project_business_working_hour_escalation_phone]]
+- **Outside working hours:**
+  - If it is an EMERGENCY, send an SMS to [[project_business_working_hour_escalation_phone]]
+---
+**Criteria for Email Report:**
+  - If it is an EMERGENCY or COMPLAINT, send an email to [[project_business_manager_email]]
+  - If it is a NEW LEAD, LARGE GROUP RESERVATION or CANCEL RESERVATION, send an email to [[project_business_manager_email]]
+  - If it is a CLIENT MESSAGE, send an email to [[project_business_manager_email]]
+{{~/system}}
+{{/if}}
+
+{{Return(val=GetCurrentPrompt())}}

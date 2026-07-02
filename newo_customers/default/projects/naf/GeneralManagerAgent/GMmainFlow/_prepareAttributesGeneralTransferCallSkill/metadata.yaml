@@ -1,0 +1,9 @@
+id: 019f2274-f880-7a8d-8da4-a86061999a7d
+idn: _prepareAttributesGeneralTransferCallSkill
+title: _prepareAttributesGeneralTransferCallSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

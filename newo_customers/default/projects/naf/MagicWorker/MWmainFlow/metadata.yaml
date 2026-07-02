@@ -1,0 +1,53 @@
+id: 019f2274-f9f0-753c-bb7b-8dcf8a3766a3
+idn: MWmainFlow
+title: MWmainFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 019f2274-f9f1-7631-9a40-bf9faab1eed6
+    description: null
+    idn: magic_browser_response
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: MWreceiveResponseSkill
+    state_idn: null
+    integration_idn: magic_browser
+    connector_idn: magic_browser_connector
+  - id: 019f2274-f9f1-7631-9a40-bf9faab1eed7
+    description: null
+    idn: worker_message
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: MWworkerMessageInboxSkill
+    state_idn: null
+    integration_idn: null
+    connector_idn: null
+state_fields:
+  - id: 019f2274-f9f1-7631-9a40-bf9faab1eed8
+    title: attempt_number
+    idn: attempt_number
+    default_value: "0"
+    scope: user
+  - id: 019f2274-f9f1-7631-9a40-bf9faab1eed9
+    title: Bot response
+    idn: bot_response
+    default_value: ""
+    scope: user
+  - id: 019f2274-f9f1-7631-9a40-bf9faab1eeda
+    title: ""
+    idn: current_schema
+    default_value: ""
+    scope: user
+  - id: 019f2274-f9f1-7631-9a40-bf9faab1eedb
+    title: task_context
+    idn: task_context
+    default_value: ""
+    scope: user
+  - id: 019f2274-f9f1-7631-9a40-bf9faab1eedc
+    title: task_idn
+    idn: task_idn
+    default_value: ""
+    scope: user

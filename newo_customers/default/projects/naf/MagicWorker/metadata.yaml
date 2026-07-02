@@ -1,0 +1,6 @@
+id: 019f2274-f65a-743a-95e4-44bcfa1230a8
+idn: MagicWorker
+title: MagicWorker
+description: >-
+  Executes browser-based worker tasks through Magic Browser, including retries,
+  alerts, and result handoff.

@@ -1,0 +1,15 @@
+id: 019f2274-f6ed-7657-859b-c462f0a92a53
+idn: check_service_area_by_zip
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ed-7657-859b-c462f0a92a51
+    name: served_zip_codes
+    default_value: ""
+  - id: 019f2274-f6ed-7657-859b-c462f0a92a52
+    name: zip_code
+    default_value: ""
+path: ""

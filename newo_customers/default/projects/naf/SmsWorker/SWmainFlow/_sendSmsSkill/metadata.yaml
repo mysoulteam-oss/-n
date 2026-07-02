@@ -1,0 +1,21 @@
+id: 019f2274-fa23-72a2-a066-1f549da39a6b
+idn: _sendSmsSkill
+title: _sendSmsSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa23-72a2-a066-1f549da39a6a
+    name: sms_text
+    default_value: " "
+  - id: 019f2274-fa23-72a2-a066-1f549da39a67
+    name: targetNumber
+    default_value: " "
+  - id: 019f2274-fa23-72a2-a066-1f549da39a68
+    name: target_number
+    default_value: " "
+  - id: 019f2274-fa23-72a2-a066-1f549da39a69
+    name: smsText
+    default_value: " "
+path: ""

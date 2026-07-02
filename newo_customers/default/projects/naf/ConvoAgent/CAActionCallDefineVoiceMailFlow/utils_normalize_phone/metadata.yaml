@@ -1,0 +1,27 @@
+id: 019f2274-f6ed-7657-859b-c462f0a92ae2
+idn: utils_normalize_phone
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ed-7657-859b-c462f0a92adc
+    name: value
+    default_value: ""
+  - id: 019f2274-f6ed-7657-859b-c462f0a92add
+    name: characters_to_keep
+    default_value: ""
+  - id: 019f2274-f6ed-7657-859b-c462f0a92ade
+    name: characters_to_remove
+    default_value: ""
+  - id: 019f2274-f6ed-7657-859b-c462f0a92adf
+    name: input_type
+    default_value: string
+  - id: 019f2274-f6ed-7657-859b-c462f0a92ae0
+    name: replacement
+    default_value: ""
+  - id: 019f2274-f6ed-7657-859b-c462f0a92ae1
+    name: substrings_to_remove_json
+    default_value: "[]"
+path: ""

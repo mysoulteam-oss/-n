@@ -1,0 +1,8 @@
+{% set conversation_channel = session_get_conversation_channel(user_id=user_id) %}
+{{SendCommand(
+    commandIdn="generate_response",
+    integrationIdn="newo_voice",
+    connectorIdn="newo_voice_connector" if conversation_channel == "phone" else "newo_voice_connector_web",
+    actorId=last_convo_actor_id or utils_get_and_set_last_convo_actor_id(user_id=user_id),
+    instruction="COMMAND: Now you need to follow this instruction strictly - '" ~ command ~ "'. Generate response using provided hint, don't come up with any different response."
+)}}

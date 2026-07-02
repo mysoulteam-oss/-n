@@ -1,0 +1,10 @@
+{% set act_arguments = GetTriggeredAct().arguments %}
+{% set tool_name = act_arguments.name %}
+{% set tool_parameters = act_arguments.parameters %}
+{% set tool_parameters_loaded = json.loads(act_arguments.parameters) %}
+
+{% set message %}Tool called - {{tool_name}}
+Tool parameters:
+{{json.dumps(tool_parameters_loaded, ensure_ascii=False, indent=2)}}{% endset %}
+
+{{system_utils.send_system_log(message=message)}}

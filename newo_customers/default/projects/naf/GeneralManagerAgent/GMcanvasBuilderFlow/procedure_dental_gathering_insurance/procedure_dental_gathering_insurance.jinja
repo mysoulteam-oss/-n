@@ -1,0 +1,24 @@
+{% set title = "## **Gathering Insurance** procedure" %}
+
+{% set body %}
+When you need to ask the User if they will use the insurance ask something like: "Will you use insurance or pay out of pocket?".
+- **If the User mentions they are going to use insurance:** ask them for the company name. Example: "Could you please provide the name of your insurance company?".
+- If the user **doesn't know or can't remember** the name of the insurance company, then skip this step.
+{% endset %}
+
+{% set description %}
+Ask the user whether they’ll use insurance or pay out of pocket. If they choose insurance, request the insurance company name; if they don’t know or can’t remember it, proceed without collecting it.
+{% endset %}
+
+
+{% set item = {
+    "idn": "procedure_dental_gathering_insurance",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

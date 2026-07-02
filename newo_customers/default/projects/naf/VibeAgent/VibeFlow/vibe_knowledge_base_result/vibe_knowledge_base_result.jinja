@@ -1,0 +1,2 @@
+{% set act = GetTriggeredAct() %}
+{{SendSystemEvent(eventIdn="post_vibe_knowledge_base_result_internal", actorIds=[act.arguments.actor_id], result=act.arguments.result)}}

@@ -1,0 +1,12 @@
+id: 019f2274-fa23-72a2-a066-1f549da39a4b
+idn: session_in_test_mode
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa23-72a2-a066-1f549da39a4a
+    name: userId
+    default_value: ""
+path: ""

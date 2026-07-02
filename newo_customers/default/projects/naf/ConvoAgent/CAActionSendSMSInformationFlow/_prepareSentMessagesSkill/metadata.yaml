@@ -1,0 +1,15 @@
+id: 019f2274-f6ed-7657-859b-c462f0a92b3a
+idn: _prepareSentMessagesSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ed-7657-859b-c462f0a92b38
+    name: oldMessages
+    default_value: " "
+  - id: 019f2274-f6ed-7657-859b-c462f0a92b39
+    name: newMessage
+    default_value: " "
+path: ""

@@ -1,0 +1,3 @@
+{{Set(name="formatted_string", value=stringToReplace.replace(oldValue, newValue))}}
+
+{{Return(val=formatted_string)}}

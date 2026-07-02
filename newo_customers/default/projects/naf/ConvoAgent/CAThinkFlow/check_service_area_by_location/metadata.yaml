@@ -1,0 +1,15 @@
+id: 019f2274-f6ed-7657-859b-c462f0a92a50
+idn: check_service_area_by_location
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ed-7657-859b-c462f0a92a4e
+    name: memory_conversation
+    default_value: ""
+  - id: 019f2274-f6ed-7657-859b-c462f0a92a4f
+    name: served_area
+    default_value: ""
+path: ""

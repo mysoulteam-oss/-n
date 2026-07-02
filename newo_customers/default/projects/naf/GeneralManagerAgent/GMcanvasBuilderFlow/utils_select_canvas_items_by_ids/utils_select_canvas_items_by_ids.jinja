@@ -1,0 +1,16 @@
+{% set selected_items = [] %}
+
+{% if not selected_idns.strip() %}
+    {% for item in items or [] %}
+        {{selected_items.append(item)}}
+    {% endfor %}
+{% else %}
+    {% set selected_idns_array = json.loads(selected_idns) %}
+    {% for item in items or [] %}
+        {% if item.idn in selected_idns_array %}
+            {{selected_items.append(item)}}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{{Return(val=json.dumps(selected_items, ensure_ascii=False, indent=2))}}

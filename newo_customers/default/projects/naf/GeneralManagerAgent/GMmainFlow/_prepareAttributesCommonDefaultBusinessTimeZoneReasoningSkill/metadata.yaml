@@ -1,0 +1,12 @@
+id: 019f2274-f880-7a8d-8da4-a86061999a3f
+idn: _prepareAttributesCommonDefaultBusinessTimeZoneReasoningSkill
+title: _prepareAttributesCommonDefaultBusinessTimeZoneReasoningSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f880-7a8d-8da4-a86061999a3e
+    name: time_zone
+    default_value: ""
+path: ""

@@ -1,0 +1,56 @@
+{% set user_id = GetUser().id | string %}
+{% set act = GetTriggeredAct() %}
+{% set user_bookings = check_user_bookings(user_id=user_id) %}
+{% set user_bookings_json = json.loads(user_bookings) %}
+{% set date_times = ["null"] %}
+{% for booking in user_bookings_json %}
+    {% if booking.meta.manage_booking_url %}
+        {{date_times.append(booking.datetime)}}
+    {% endif %}
+{% endfor %}
+{% set schema = {
+    "type": "object",
+    "properties": {
+        "datetime": {
+            "type": "string",
+            "description": "The booking user wants to manage",
+            "enum": date_times
+        }
+    },
+    "required": [
+        "datetime"
+    ]
+} %}
+{% set booking_datetime = json.loads(select_booking(user_id=user_id, memory=act.arguments.memory, schema=schema)).datetime %}
+{% if booking_datetime == "null" %}
+    {{SendSystemEvent(
+        eventIdn="urgent_message",
+        connectorIdn="system",
+        baseInstruction="Inform the user that you don't have the url to manage mentioned booking and act according to your instructions.",
+        uninterruptible="True"
+    )}}
+{% else %}
+    {% set selected_booking = {} %}
+    {% for booking in user_bookings_json %}
+        {% if booking.datetime == booking_datetime %}
+            {% set selected_booking = booking %}
+        {% endif %}
+    {% endfor %}
+    {% if selected_booking %}
+        {% set user_phone = GetPersonaAttribute(id=user_id, field="provided_phone_number_with_country_code") %}
+        {{SendSystemEvent(
+            eventIdn="sms_worker_send_sms",
+            connectorIdn="system",
+            sms_text="The URL to manage your booking (" ~ booking_datetime ~ "): " ~ selected_booking.meta.manage_booking_url,
+            phone_number=user_phone,
+            notify="true"
+        )}}
+    {% else %}
+        {{SendSystemEvent(
+            eventIdn="urgent_message",
+            connectorIdn="system",
+            baseInstruction="Inform the user that you don't have the url to manage mentioned booking and act according to your instructions.",
+            uninterruptible="True"
+        )}}
+    {% endif %}
+{% endif %}

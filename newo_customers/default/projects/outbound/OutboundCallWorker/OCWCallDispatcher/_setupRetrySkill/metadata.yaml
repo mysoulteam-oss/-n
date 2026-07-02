@@ -1,0 +1,27 @@
+id: 019f2274-f52a-7362-a472-d0a666526b2a
+idn: _setupRetrySkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f52a-7362-a472-d0a666526b26
+    name: taskId
+    default_value: " "
+  - id: 019f2274-f52a-7362-a472-d0a666526b24
+    name: reason
+    default_value: ""
+  - id: 019f2274-f52a-7362-a472-d0a666526b25
+    name: recording
+    default_value: " "
+  - id: 019f2274-f52a-7362-a472-d0a666526b27
+    name: userId
+    default_value: " "
+  - id: 019f2274-f52a-7362-a472-d0a666526b28
+    name: attemptNumber
+    default_value: " "
+  - id: 019f2274-f52a-7362-a472-d0a666526b29
+    name: comment
+    default_value: " "
+path: ""

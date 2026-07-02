@@ -1,0 +1,63 @@
+{# Still possible due to race conditions or misuse `hang up`-like reasons #}
+{% set event_block = GetState(name="event_block") %}
+{% if event_block == "True" %}
+    {# {{_utilsSendDebugLogSkill(
+        message="Follow-up destroyed due to event block (conversation is not active)"
+    )}} #}
+    {{Return()}}
+{% endif %}
+
+{% set chat_cycle_state = GetState(name="chat_lifecycle_state") %}
+{% if chat_cycle_state == "Silence" %}
+    {% set follow_up_counter = (GetState(name="followup_counter") | int) + 1 %}
+    {% if follow_up_counter > 5 %}
+        {{SetState(name="followup_counter", value="0")}}
+        {{SendSystemEvent(
+            eventIdn="push_agent_turn",
+            integrationIdn="system",
+            connectorIdn="system",
+            baseInstruction="Your goal is to warn the user that you haven't heard from the user after multiple attempts and will end the call. Suggest to call back if needed.",
+            callAnalyzeConversationSkill="False",
+            callManageTaskSkill="False",
+            updateSession="False",
+            injectThoughts="False"
+        )}}
+    {% else %}
+        {{SetState(name="followup_counter", value=follow_up_counter | string)}}
+        {%- set follow_up_instruction %}
+This is a **follow-up check-in** turn. Your sole goal is to verify the user is still connected and available.
+
+**DO**
+
+- Keep the user engaged with a brief check-in question (e.g., "Are you still there?").
+- If the user asks for an action (e.g., resend a link), **offer or promise** to request it, but **do not claim it has already happened**.
+- Stay in the same conversational step; keep the focus on presence/availability and acknowledgment.
+
+**DON'T**
+
+- Don't proceed with operational steps (e.g., don't move the booking forward, don't execute external actions).
+- Don't assert actions as completed or underway (e.g., avoid "I've (re)sent the link," "It's done," "I just did that.").
+- Don't invent capabilities or facts (you cannot directly send SMS or see delivery status).
+
+**Response templates (use as-is or adapt minimally):**
+
+- Pure check-in: "Are you still there?"
+- If they request an action: "Understood. I'll stay with you at this step - please tell me when you're ready to continue. Are you still there?"
+- After they consent: "Okay. I'll keep the line open and wait for your 'ready' - are you still with me?"
+        {%- endset %}
+        {{SendSystemEvent(eventIdn="push_agent_turn",
+            integrationIdn="system",
+            connectorIdn="system",
+            baseInstruction=follow_up_instruction,
+            callAnalyzeConversationSkill="False",
+            callManageTaskSkill="False",
+            updateSession="False",
+            injectThoughts="False"
+        )}}
+    {% endif %}
+{% else %}
+    {{SetState(name="followup_counter", value="0")}}
+    {# {{_utilsSendDebugLogSkill(
+        message="Follow-up destroyed due to `" ~ chat_cycle_state ~ "` chat lifecycle state."
+    )}} #}
+{% endif %}

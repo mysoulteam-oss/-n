@@ -1,0 +1,22 @@
+{{Set(name="schema", value=_schemasSkill(workingHoursSchema="True"))}}
+
+{{#system~}}
+You are given a working schedule in the <WorkingSchedule>.
+
+Using the information from this schedule, please evaluate the following inputs:
+1. A day of the week: {{dayOfWeek}}.
+2. A time in 24-hour format: {{time}}.
+
+Determine whether the provided day/time falls under:
+- "non_working_day" (if the day itself is not a working day),
+- "non_working_hours" (if the day is a working day but the time falls outside normal working hours),
+- "working_hours" (if the day is a working day and the time falls within normal working hours).
+
+{{_getWorkingHoursStatusBlockWrapper()}}
+
+Result:
+{{~/system}}
+
+{{Set(name="status_object", value=Gen(jsonSchema=schema, validateSchema=True, temperature=0.2, topP=0, thinkingBudget=425))}}
+
+{{Return(val=Stringify(GetValueJSON(obj=status_object, key="status")))}}

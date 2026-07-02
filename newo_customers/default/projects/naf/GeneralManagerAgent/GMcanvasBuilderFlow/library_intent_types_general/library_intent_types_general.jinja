@@ -1,0 +1,282 @@
+{% set its_library_items = [] %}
+
+{% set user_inquiry_title = "## **[T] User Inquiry**" %}
+{% set user_inquiry_body %}
+Inquiries about consultations, appointments, complaints, urgent issues, owner requests, and follow-up needs.
+ConvoAgent starts the scenario: **"User Inquiry"**.
+{% endset %}
+{% set user_inquiry_description %}
+Collect the user inquiry details, then note next steps and close the conversation politely.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_general_inquiry",
+  "title": user_inquiry_title,
+  "body": user_inquiry_body.strip(),
+  "description": user_inquiry_description.strip(),
+  "mentions": [{"type": "scenarios", "item_idn": "scenario_general_inquiry"}],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{{ its_library_items.append(json.loads(library_intent_types_common_appointment_agent())) }}
+{{ its_library_items.append(json.loads(library_intent_types_common_cancellation_agent())) }}
+
+{% set booking_via_link_title = "## **[L] Booking via Link**" %}
+{% set booking_via_link_body %}
+The caller wants to book, schedule, reserve, arrange, set up, rent for a period, or start something the business offers through an online booking link: an appointment, consultation, demo, reservation, service visit, class, fitting, estimate, tour, repair slot, rental period, or time slot. This also covers any clearly expressed interest in arranging or securing a time, date, or slot for what the business provides, phrased in the normal vocabulary of the industry.
+
+ConvoAgent should sound genuinely glad to help and start the scenario: **"Booking via Link"**.
+{% endset %}
+{% set booking_via_link_description %}
+Caller wants to self-book through the business booking link; respond enthusiastically and start **Booking via Link**.
+{% endset %}
+
+{{ its_library_items.append({
+    "idn": "intent_type_booking_via_link",
+    "title": booking_via_link_title,
+    "body": booking_via_link_body.strip(),
+    "is_from_library": True,
+    "origin_idn": "",
+    "description": booking_via_link_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_general_booking_via_link"}]
+}) }}
+
+{% set purchase_via_link_title = "## **[L] Purchase via Link**" %}
+{% set purchase_via_link_body %}
+The caller wants to obtain, buy, rent, lease, hire, order, sign up, subscribe, or pay for something the business offers through an online purchase, rental, order, or signup link: a product, rental item, equipment, plan, subscription, package, ticket, gift card, course, membership, food or delivery order, or any item or service with a public checkout, rental, or signup page.
+
+This also covers any clearly expressed interest in acquiring, getting, or transacting for what the business provides, phrased in the normal vocabulary of the industry (for example "I'd like to rent...", "I need equipment for...", "I'm interested in your...", "how do I get...").
+
+ConvoAgent should briefly confirm what the caller wants, then start the scenario: **"Purchase via Link"**.
+{% endset %}
+{% set purchase_via_link_description %}
+Caller wants to buy or sign up through the business purchase or signup link; briefly confirm the request and start **Purchase via Link**.
+{% endset %}
+
+{{ its_library_items.append({
+    "idn": "intent_type_purchase_via_link",
+    "title": purchase_via_link_title,
+    "body": purchase_via_link_body.strip(),
+    "is_from_library": True,
+    "origin_idn": "",
+    "description": purchase_via_link_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_general_purchase_via_link"}]
+}) }}
+
+{% set closing_via_appointment_title = "## **[L] Appointment via Calendar Invite**" %}
+{% set closing_via_appointment_body %}
+The user shows a clear intent to purchase a specific product, interested in a Demo, talking to a human expert or is ready to take the next step and schedule a meeting with a consultant.
+ConvoAgent starts the scenario: **"Appointment Setting via Calendar Invite"**
+{% endset %}
+{% set closing_via_appointment_description %}
+User is ready to meet; book a demo or consultation with an expert.
+{% endset %}
+
+{{ its_library_items.append({
+    "idn": "intent_type_closing_via_appointment",
+    "title": closing_via_appointment_title,
+    "body": closing_via_appointment_body.strip(),
+    "description": closing_via_appointment_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_general_appointment_via_calendar"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set reschedule_or_modification_title = "## **[T] Reschedule or Modification**" %}
+{% set reschedule_or_modification_body %}
+Client wants to modify a scheduled visit.
+During Working Hours: ConvoAgent should say that it cannot assist with this request and start the scenario: **"Regular Transfer"**.
+During Non-Working Hours: ConvoAgent should ask what exactly you want to change and start the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set reschedule_or_modification_description %}
+Change details of an existing appointment; transfer in-hours, collect change details & relay after hours.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_reschedule_or_modification",
+  "title": reschedule_or_modification_title,
+  "body": reschedule_or_modification_body.strip(),
+  "description": reschedule_or_modification_description.strip(),
+  "mentions": [
+    {"type": "scenarios", "item_idn": "scenario_general_regular_transfer"},
+    {"type": "scenarios", "item_idn": "scenario_general_relaying_message"}
+    ],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set cancellation_title = "## **[T] Cancellation**" %}
+{% set cancellation_body %}
+Client wants to cancel a scheduled visit.
+During Working Hours: ConvoAgent should say that it cannot assist with this request and start the scenario: **"Regular Transfer"**.
+During Non-Working Hours: ConvoAgent should ask the dates for the existing visit and start the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set cancellation_description %}
+Cancel an existing visit; transfer during working hours, gather appointment dates & relay after hours.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_cancellation",
+  "title": cancellation_title,
+  "body": cancellation_body.strip(),
+  "description": cancellation_description.strip(),
+  "mentions": [
+    {"type": "scenarios", "item_idn": "scenario_general_regular_transfer"},
+    {"type": "scenarios", "item_idn": "scenario_general_relaying_message"}
+    ],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set complaints_title = "## **[T] Complaints**" %}
+{% set complaints_body %}
+Client has a complaint about products or services we have provided.
+During Working Hours: ConvoAgent apologizes to the user for the inconvenience, and asks what exactly happened, and starts the scenario: **"Regular Transfer"**.
+During Non-Working Hours: ConvoAgent apologizes to the user for the inconvenience, and asks what exactly happened, and starts the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set complaints_description %}
+Handle complaints: apologize, capture details; transfer during hours, relay after hours.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_complaints",
+  "title": complaints_title,
+  "body": complaints_body.strip(),
+  "description": complaints_description.strip(),
+  "mentions": [
+    {"type": "scenarios", "item_idn": "scenario_general_regular_transfer"},
+    {"type": "scenarios", "item_idn": "scenario_general_relaying_message"}
+    ],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set emergency_title = "## **[T] Emergency**" %}
+{% set emergency_body %}
+If the user mentions experiencing an emergency or requests urgent assistance, there is no need to ask for the zip code, avoid giving any advice to the user regarding their situation.
+ConvoAgent starts the scenario: **"Regular Transfer"**.
+{% endset %}
+{% set emergency_description %}
+Urgent situations; give no advice or zip queries—immediately initiate **Regular Transfer**.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_emergency",
+  "title": emergency_title,
+  "body": emergency_body.strip(),
+  "description": emergency_description.strip(),
+  "mentions": [
+    {"type": "scenarios", "item_idn": "scenario_general_regular_transfer"},
+    ],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set contractor_support_title = "## **[T] Contractor Support**" %}
+{% set contractor_support_body %}
+Inquiries from vendors, contractors, business partnership, providers or career opportunities.
+ConvoAgent starts the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set contractor_support_description %}
+Vendor/partner/career inquiries; relay message to the manager.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_contractor_support",
+  "title": contractor_support_title,
+  "body": contractor_support_body.strip(),
+  "description": contractor_support_description.strip(),
+  "mentions": [
+    {"type": "scenarios", "item_idn": "scenario_general_relaying_message"}
+    ],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set general_information_request_title = "## **General Information Request**" %}
+{% set general_information_request_body %}
+Pure information questions where the caller only wants to know something and is NOT yet trying to obtain, buy, rent, book, or order: address, directions, working hours, service area, what services or products exist, general pricing, policies, etc.
+
+Important: if the caller expresses any intent to acquire, purchase, rent, lease, order, sign up for, or book what the business offers, do NOT use this intent. Route to the modality intent instead (**Purchase via Link** for transactional, **Booking via Link** for booking).
+
+Use **Answering Questions** only for genuine information-only requests. ConvoAgent starts the scenario: **"Answering Questions"**.
+{% endset %}
+{% set general_information_request_description %}
+Basic information requests; answer from context and optionally send helpful links.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_general_information_request",
+  "title": general_information_request_title,
+  "body": general_information_request_body.strip(),
+  "description": general_information_request_description.strip(),
+  "mentions": [
+    {"type": "scenarios", "item_idn": "scenario_general_answering_questions"}
+  ],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set manager_or_human_request_title = "## **[T] Manager or Human Request**" %}
+{% set manager_or_human_request_body %}
+A request requiring immediate assistance from a human, real person, front desk, operator, customer service, representative, receptionist, concierge, host, manager, a colleague named [[project_attributes_known_employees]]. It is also applicable in cases of high-value leads, urgent issues, important business opportunities, complaints or sensitive issues.
+During Working Hours: ConvoAgent starts the scenario: **"Regular Transfer"**.
+During Non-Working Hours: ConvoAgent says something like: "It's currently outside of working hours, so unfortunately, I can't transfer your call to my colleague. However, I can pass along your message." and starts the scenario: **"User Inquiry"**.
+{% endset %}
+{% set manager_or_human_request_description %}
+Caller asks for a human; transfer during working hours and collect callback details after hours.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_manager_or_human_request",
+  "title": manager_or_human_request_title,
+  "body": manager_or_human_request_body.strip(),
+  "description": manager_or_human_request_description.strip(),
+  "mentions": [
+    {"type": "scenarios", "item_idn": "scenario_general_regular_transfer"},
+    {"type": "scenarios", "item_idn": "scenario_general_inquiry"}
+  ],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set spam_session_title = "## **Spam Session**" %}
+{% set spam_session_body %}
+The caller is clearly attempting to sell something, conduct telemarketing, running a scam, or is an unsolicited robocall unrelated to our services. Unclear, garbled, or nonsensical speech is NOT spam - it indicates transcription issues.
+ConvoAgent responds with something like: *"I'm afraid I can't assist you with that"* and informs that it ends the conversation now.
+{% endset %}
+{% set spam_session_description %}
+Sales or irrelevant inquiry; politely decline and finish the conversation.
+{% endset %}
+
+{{ its_library_items.append({
+    "idn": "intent_type_spam_session",
+    "title": spam_session_title,
+    "body": spam_session_body.strip(),
+    "is_from_library": True,
+    "origin_idn": "",
+    "description": spam_session_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_general_finish_conversation"}]
+}) }}
+
+{% set test_session_title = "## **Test Session**" %}
+{% set test_session_body %}
+A call from a phone number on the test number list or a session where the caller explicitly mentioned it was a test.
+ConvoAgent says: *"Thank you for your cooperation"* and then starts the scenario: **"Finish Conversation"**.
+{% endset %}
+{% set test_session_description %}
+Identified test calls; thank the caller and **Finish Conversation**.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_test_session",
+  "title": test_session_title,
+  "body": test_session_body.strip(),
+  "description": test_session_description.strip(),
+  "mentions": [{"type": "scenarios", "item_idn": "scenario_general_finish_conversation"}],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{{Return(val=json.dumps(its_library_items, ensure_ascii=False, indent=2))}}

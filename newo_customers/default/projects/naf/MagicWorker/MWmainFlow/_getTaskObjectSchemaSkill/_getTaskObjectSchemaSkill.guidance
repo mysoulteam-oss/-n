@@ -1,0 +1,19 @@
+{{Set(name="current_schema", value=GetState(name="current_schema"))}}
+
+{{#if IsEmpty(text=current_schema)}}
+    {{Set(name="task_object_format", value=SearchFuzzyAkb(
+                query=taskIdn,
+                searchFields=["name"],
+                numberTopics=1,
+                fields=["summary"],
+                scoreThreshold=0.9,
+                filterByPersonaIds=convoAgentPersonaId,
+                labels=CreateArray("task_object_format", industry, scenario)
+            ))}}
+
+    {{Set(name="schema", value=GetValueJSON(obj=GetValueJSON(obj=task_object_format, key="info"), key="schema"))}}
+    {{SetState(name="current_schema", value=schema)}}
+    {{Return(val=schema)}}
+{{else}}
+    {{Return(val=current_schema)}}
+{{/if}}

@@ -1,0 +1,12 @@
+id: 019f2274-f6ee-7e87-a894-58d91cb68051
+idn: _receiveAvailabilityProcessFormattedResponseSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ee-7e87-a894-58d91cb68050
+    name: output
+    default_value: " "
+path: ""

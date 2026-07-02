@@ -1,0 +1,16 @@
+{% set arguments = GetTriggeredAct().arguments %}
+
+{% set requester_idn = arguments.requesterIdn %}
+{% set task_id = arguments.taskId %}
+{% set callback_arguments = arguments.callbackArguments %}
+{% if not callback_arguments  %}
+    {% set callback_arguments = "" %}
+{% endif %}
+
+{% set tasks = SearchFuzzyAkb(query=task_id, searchFields=["name"], fromPerson="Agent", numberTopics=1) %}
+
+{% if tasks %}
+    {{SendSystemEvent(eventIdn="task_manager_get_task_success", connectorIdn="system", global="True", requesterIdn=requester_idn, task=tasks[0].source, callbackArguments=callback_arguments)}}
+{% else %}
+    {{SendSystemEvent(eventIdn="task_manager_get_task_error", connectorIdn="system", global="True", requesterIdn=requester_idn, reason="Task with ID " ~ task_id ~ " not found.", callbackArguments=callback_arguments)}}
+{% endif %}

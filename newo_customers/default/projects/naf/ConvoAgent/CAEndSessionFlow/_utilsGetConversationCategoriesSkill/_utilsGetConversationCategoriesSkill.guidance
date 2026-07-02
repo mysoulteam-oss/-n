@@ -1,0 +1,37 @@
+{{Set(name="industry", value=GetCustomerAttribute(field="project_business_industry"))}}
+
+{{#if industry == "restaurant_industry"}}
+  {{Return(val='["booking", "order", "large group reservation", "private dining", "catering", "cancel reservation", "change reservation", "running late", "manager request", "message relay", "career opportunities", "info", "spam"]')}}
+{{/if}}
+
+{{#if industry == "catering_industry"}}
+  {{Return(val='["catering order", "cancel catering order", "change catering order", "manager request", "message relay", "career opportunities", "info", "spam"]')}}
+{{/if}}
+
+{{#if industry == "cleaning_industry"}}
+  {{Return(val='["new client appointment", "new client phone estimate", "manager request", "message relay", "career opportunities", "info", "spam"]')}}
+{{/if}}
+
+{{#if industry == "dental_industry"}}
+  {{Return(val='["new patient booking", "existing patient booking", "new patient dentistry booking", "new pediatric dentistry booking", "existing patient dentistry booking", "financial transfer", "language switch", "cancellation", "running late", "change booking", "manager request", "message relay", "career opportunities", "info", "spam", "price request"]')}}
+{{/if}}
+
+{{#if industry == "home_service_industry"}}
+  {{Return(val='["appointment", "running late", "manager request", "message relay", "career opportunities", "info", "spam"]')}}
+{{/if}}
+
+{{#if industry == "hospitality_industry"}}
+  {{Return(val='["booking", "large group reservation", "cancel reservation", "change reservation", "running late", "manager request", "message relay", "career opportunities", "info", "spam"]')}}
+{{/if}}
+
+{{#if industry == "sales_industry"}}
+  {{Return(val='["purchase", "appointment", "manager request", "message relay", "career opportunities", "info", "spam"]')}}
+{{/if}}
+
+{{#if industry == "beauty_industry"}}
+  {{Return(val='["new client booking", "existing client booking", "financial transfer", "language switch", "cancellation", "running late", "change booking", "manager request", "message relay", "career opportunities", "info", "spam", "price request"]')}}
+{{/if}}
+
+{{#if industry == "general_industry"}}
+  {{Return(val='["user inquiry", "manager request", "info", "spam", "test session"]')}}
+{{/if}}

@@ -1,0 +1,95 @@
+{% if GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas").strip() %}
+    {{Return()}}
+{% endif %}
+
+{% set intent_types = GetCustomerAttribute(field="project_attributes_itm").strip().split("\n\n") %}
+{{DUMMY(intent_types)}}
+
+{% set intent_type_items = json.loads(_migration_3_0_0_helper_parse_intent_types(intent_types=intent_types)) %}
+{{DUMMY(intent_type_items)}}
+
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+{% set scenario = GetCustomerAttribute(field="project_attributes_scenario") %}
+{% set general_manager_agent_persona_id = GetAgent().persona_id  %}
+
+{% set agent_main_instructions = SearchFuzzyAkb(
+    query="AGENT_MAIN_INSTRUCTION",
+    searchFields=["name"],
+    scoreThreshold=0.9,
+    filterByPersonaIds=[general_manager_agent_persona_id],
+    labels=[industry, scenario]
+) | list %}
+
+{{ DUMMY(agent_main_instructions[0]) }}
+
+{% set agent_main_instructions = agent_main_instructions[0].summary %}
+
+{% set header_body = agent_main_instructions.split("# **Procedures**") %}
+
+
+{% if header_body|length > 1 %}
+
+    {% set body = header_body[1] %}
+    {% set procedures_scenarios = body.split("# **Scenarios**") %}
+
+    {% if procedures_scenarios|length > 0 %}
+
+        {% set procedures = procedures_scenarios[0] %}
+        {% set procedures = procedures.split("---") %}
+        {% set procedure_items = json.loads(_migration_3_0_0_helper_parse_instructions(instructions=procedures)) %}
+
+    {% endif %}
+
+    {% if procedures_scenarios|length > 1 %}
+
+        {% set scenarios = procedures_scenarios[1] %}
+        {% set scenarios = scenarios.split("---") %}
+        {% set items = json.loads(_migration_3_0_0_helper_parse_instructions(instructions=scenarios)) %}
+
+        {% set introduction_items = [items[0]] %}
+        {% set scenario_items= items[1:] %}
+
+    {% endif %}
+
+{% endif %}
+
+{# Set Canvas for Workflow Builder #}
+
+{% set canvas = {
+    "title": "Workflow Builder",
+    "types": [
+        {
+          "idn": "introduction",
+          "title": "Introduction",
+          "description": _migration_3_0_0_helper_get_type_description(canvas_type="introduction"),
+          "color": "#45556C",
+          "items": introduction_items
+        },
+        {
+          "idn": "intent_types",
+          "title": "Intent Types",
+          "description": _migration_3_0_0_helper_get_type_description(canvas_type="intent_types"),
+          "color": "#E60076",
+          "items": intent_type_items
+        },
+        {
+          "idn": "scenarios",
+          "title": "Scenarios",
+          "description": _migration_3_0_0_helper_get_type_description(canvas_type="scenarios"),
+          "color": "#009966",
+          "items": scenario_items
+        },
+        {
+          "idn": "procedures",
+          "title": "Procedures",
+          "description": _migration_3_0_0_helper_get_type_description(canvas_type="procedures"),
+          "color": "#155DFC",
+          "items": procedure_items
+        }
+    ]
+}%}
+
+{{SetCustomerAttribute(
+    field="project_attributes_private_dynamic_workflow_builder_canvas",
+    value=json.dumps(canvas, ensure_ascii=False, indent=2)
+)}}

@@ -1,0 +1,18 @@
+id: 019f2274-f6ef-7b06-8ded-f3372851556f
+idn: _utilsGetFootnoteSkill
+title: _utilsGetFootnoteSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6ef-7b06-8ded-f3372851556c
+    name: thoughts
+    default_value: "False"
+  - id: 019f2274-f6ef-7b06-8ded-f3372851556d
+    name: system
+    default_value: "False"
+  - id: 019f2274-f6ef-7b06-8ded-f3372851556e
+    name: userId
+    default_value: " "
+path: ""

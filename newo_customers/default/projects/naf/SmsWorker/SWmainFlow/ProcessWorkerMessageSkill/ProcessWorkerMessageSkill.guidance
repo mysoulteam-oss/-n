@@ -1,0 +1,13 @@
+{{Set(name="to_idn", value=Stringify(GetTriggeredAct(fields=["toIdn"])))}}
+
+{{#if to_idn != GetAgentPersona()}}
+
+    {{Return()}}
+
+{{/if}}
+
+{{Set(name="task_object", value=GetTriggeredAct(fields=["body"]))}}
+{{Set(name="task_context", value=GetValueJSON(obj=task_object, key="info"))}}
+{{Set(name="task_idn", value=Stringify(GetValueJSON(obj=task_object, key="receiver_task_idn")))}}
+
+{{_handleSkill(taskContext=task_context, taskIdn=task_idn)}}

@@ -1,0 +1,18 @@
+id: 019f2274-f880-7a8d-8da4-a860619999cc
+idn: _utilsStringReplaceSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f880-7a8d-8da4-a860619999c9
+    name: newValue
+    default_value: " "
+  - id: 019f2274-f880-7a8d-8da4-a860619999ca
+    name: stringToReplace
+    default_value: " "
+  - id: 019f2274-f880-7a8d-8da4-a860619999cb
+    name: oldValue
+    default_value: " "
+path: ""

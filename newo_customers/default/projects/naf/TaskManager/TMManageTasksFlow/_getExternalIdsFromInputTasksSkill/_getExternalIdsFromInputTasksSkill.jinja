@@ -1,0 +1,12 @@
+{% system %}
+Take a look at <InputTasks> and build JSON object based on provided schema using descriptions.
+
+<InputTasks>
+{{inputTasks}}
+</InputTasks>
+
+Result:
+{% end %}
+{% set result_json = Gen(jsonSchema=json.loads(_schemasSkill(externalIds="True")), validateSchema=True, temperature=0.2, topP=0, thinkingBudget=1020) %}
+
+{{Return(val=result_json)}}

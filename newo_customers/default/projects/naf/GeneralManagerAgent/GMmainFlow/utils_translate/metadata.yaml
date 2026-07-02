@@ -1,0 +1,15 @@
+id: 019f2274-f880-7a8d-8da4-a860619999d5
+idn: utils_translate
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f880-7a8d-8da4-a860619999d3
+    name: input_text
+    default_value: ""
+  - id: 019f2274-f880-7a8d-8da4-a860619999d4
+    name: target_language
+    default_value: ""
+path: ""

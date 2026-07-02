@@ -1,0 +1,12 @@
+id: 019f2274-fa45-7bd6-abef-98c6b0309e50
+idn: get_rows
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-fa45-7bd6-abef-98c6b0309e4f
+    name: task_type
+    default_value: ""
+path: ""

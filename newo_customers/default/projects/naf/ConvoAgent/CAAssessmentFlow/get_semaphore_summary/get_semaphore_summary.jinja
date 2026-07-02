@@ -1,0 +1,26 @@
+{% set semaphore_summary_schema = {
+  "type": "object",
+  "properties": {
+    "expected_result": {
+      "type": "string",
+      "description": "Based on <Report> cite exactly ALL expected scenario steps as bullet list with leading bullet point \"[STEP]\"."
+    },
+    "actual_result": {
+      "type": "string",
+      "description": "Compare <Report> scenario steps and <ConversationHistory>, outline the result for each expected step based on <ConversationHistory> in past perfect time and mark with leading \"[YES]\" if step is completed, and \"[NO]\" if it's not completed."
+    }
+  },
+  "required": ["actual_result", "expected_result"]
+} %}
+
+{{Return(val=semaphore_analyze(
+    scenarios=scenarios,
+    logs=logs,
+    main_scenario=main_scenario,
+    session_short_description=session_short_description,
+    working_hours_status_bool=working_hours_status_bool,
+    transcript=transcript,
+    conversation_channel=conversation_channel,
+    schema=semaphore_summary_schema,
+    intents=intents
+)) }}

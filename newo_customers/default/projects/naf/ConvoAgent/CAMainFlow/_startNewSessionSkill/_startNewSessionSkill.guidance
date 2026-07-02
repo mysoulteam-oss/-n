@@ -1,0 +1,38 @@
+{{StartNotInterruptibleBlock()}}
+
+{{#if GetPersonaAttribute(id=user_id, field="previous_session_ended") == "False"}}
+    {{Return()}}
+{{/if}}
+
+{{Set(name="agent_phone_number", value=GetCustomerAttribute(field="project_representative_agent_voice_phone_number"))}}
+{{#if IsEmpty(text=agent_phone_number)}}
+    {{Set(name="agent_phone_number", value=GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="ai_phone_number"))}}
+{{/if}}
+{{#if not IsEmpty(text=agent_phone_number)}}
+    {{add_phone_number_to_pool_wrapper(agent_phone_number=agent_phone_number)}}
+{{/if}}
+
+{{SetPersonaAttribute(id=user_id, field="previous_session_ended", value="False")}}
+{{SetPersonaAttribute(id=user_id, field="thoughts_new_session", value="True")}}
+{{Set(name="actor_id", value=GetActor(field="id"))}}
+
+{{UpdateConversationMetaSkill(userId=user_id)}}
+
+{{!-- Reset session state --}}
+{{_utilsResetSessionStateSkill(userId=user_id)}}
+
+{{!-- TODO: Remove when `GetMemory` aliasing will be available --}}
+{{SetPersonaAttribute(id=user_id, field="session_initial_integration_idn", value=GetActor(field="integrationIdn"))}}
+{{#if IsEmpty(text=GetPersonaAttribute(id=user_id, field="name_was_extracted"))}}
+    {{UpdateUser(name="name", value="User")}}
+{{/if}}
+
+{{#if GetCustomerAttribute(field="project_attributes_setting_session_ended_reset_persona_attributes") == "True"}}
+    {{UpdateUser(name="name", value="User")}}
+{{/if}}
+
+{{_utilsSendSystemLogSkill(message="New session started.")}}
+
+{{SetPersonaAttribute(id=user_id, field="convoagent_thoughts", value=GetCustomerAttribute(field="project_attributes_setting_initial_thoughts"))}}
+
+{{StopNotInterruptibleBlock()}}

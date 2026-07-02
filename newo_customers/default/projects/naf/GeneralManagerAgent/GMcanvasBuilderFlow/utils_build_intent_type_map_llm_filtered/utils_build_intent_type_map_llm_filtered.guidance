@@ -1,0 +1,17 @@
+{{#system~}}
+<Instruction>
+You have to transform <InputDocument> by removing only the information that explicitly matches the criteria in the <DocumentFilter>.
+Any general description text that appears directly after a heading must always be preserved.
+You must preserve the original format, structure, and headings for all remaining content.
+</Instruction>
+
+<InputDocument>
+{{base}}
+</InputDocument>
+
+<DocumentFilter>
+{{filter}}
+</DocumentFilter>
+{{~/system}}
+{{Set(name="filtered_document", value=Gen(temperature=0.1, topP=0, skipFilter=True, thinkingBudget=1020), expose="True")}}
+{{Return(val=filtered_document)}}

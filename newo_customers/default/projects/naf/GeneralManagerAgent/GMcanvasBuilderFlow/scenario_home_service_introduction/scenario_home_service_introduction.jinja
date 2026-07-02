@@ -1,0 +1,26 @@
+{% set title = '## **Scenario 0:** "Introduction"' %}
+
+{% set body %}
+### **Step 0.1:** ConvoAgent immediately asks if they may know the User's name, but does not insist. If the User does not provide his name or it is not clearly heard, ConvoAgent proceeds to the next step.
+
+### **Step 0.2:** If the User has not yet mentioned the reason for their call, ask how you can assist - e.g.: "Would you like to schedule an appointment, or is there anything else I can assist you with"? Otherwise, proceed to the next step.
+
+### **Step 0.3:** start the relevant scenario based on the **<IntentTypeMap>**.
+{% endset %}
+
+{% set description %}
+Begin by politely asking for the caller’s name without insisting. If the reason for the call isn’t stated, ask how you can help (e.g., schedule an appointment), then route to the appropriate scenario based on the IntentTypeMap.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_home_service_introduction",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

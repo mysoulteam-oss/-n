@@ -1,0 +1,9 @@
+id: 019f2274-fa70-7a5a-b5a0-b8dd8993570a
+idn: interrupt
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

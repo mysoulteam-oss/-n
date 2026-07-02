@@ -1,0 +1,9 @@
+id: 019f2274-f87e-76e7-a6f1-f04c56cb612b
+idn: library_intent_types_common_appointment_agent
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

@@ -1,0 +1,206 @@
+{% set its_library_items = [] %}
+
+{% set catering_order_title = "## **[L] Catering Order**" %}
+{% set catering_order_body %}
+A guest wants to make a catering service order.
+ConvoAgent should express excitement about an upcoming event and start the scenario: **"Order a Catering Service"**
+{% endset %}
+{% set catering_order_description %}
+A new catering inquiry. ConvoAgent greets enthusiastically and launches **"Order a Catering Service"**.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_catering_order",
+    "title": catering_order_title,
+    "body": catering_order_body.strip(),
+    "description": catering_order_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_catering_order_default"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{{ its_library_items.append(json.loads(library_intent_types_common_appointment_agent())) }}
+{{ its_library_items.append(json.loads(library_intent_types_common_cancellation_agent())) }}
+
+{% set reschedule_or_modification_title = "## **[T] Reschedule or Modification**" %}
+{% set reschedule_or_modification_body %}
+A guest wants to modify an existing order.
+ConvoAgent should very politely explain that, as an AI Assistant, they are not able to independently make modifications to an existing order.
+During Working Hours: ConvoAgent starts the scenario: **"Regular Transfer"**.
+During Non-Working Hours: ConvoAgent should ask the details of the order (name, time, date and phone number) the guest wants to modify. Then, ConvoAgent should start the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set reschedule_or_modification_description %}
+Change request for an existing order. ConvoAgent cannot edit directly—transfer via **"Regular Transfer"** in hours; otherwise collect details and start **"Relaying Message to the Manager"**.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_reschedule_or_modification",
+    "title": reschedule_or_modification_title,
+    "body": reschedule_or_modification_body.strip(),
+    "description": reschedule_or_modification_description.strip(),
+    "mentions": [
+        {"type": "scenarios", "item_idn": "scenario_catering_regular_transfer"},
+        {"type": "scenarios", "item_idn": "scenario_catering_relaying_message"}
+        ],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set cancellation_title = "## **[T] Cancellation**" %}
+{% set cancellation_body %}
+A guest wants to cancel an existing order.
+ConvoAgent should very politely explain that, as an AI Assistant, they are not able to independently cancel an order.
+During Working Hours: ConvoAgent starts the scenario: **"Regular Transfer"**.
+During Non-Working Hours: ConvoAgent should ask the details of the order (name, time, date and phone number) the guest wants to cancel. Then, ConvoAgent should start the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set cancellation_description %}
+Request to cancel an order. ConvoAgent cannot cancel—transfer via **"Regular Transfer"** in hours; off-hours gather details and start **"Relaying Message to the Manager"**.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_cancellation",
+    "title": cancellation_title,
+    "body": cancellation_body.strip(),
+    "description": cancellation_description.strip(),
+    "mentions": [
+        {"type": "scenarios", "item_idn": "scenario_catering_regular_transfer"},
+        {"type": "scenarios", "item_idn": "scenario_catering_relaying_message"}
+        ],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set guest_support_title = "## **[T] Guest Support**" %}
+{% set guest_support_body %}
+When the User wants to confirm an existing order, has questions related to previous and current reservation details, billing, previous order details, or anything else that ConvoAgent cannot retrieve from the <BusinessContext>.
+During Working Hours: ConvoAgent should say that it cannot assist with this request and start the scenario: **"Regular Transfer"**.
+During Non-Working Hours: ConvoAgent says something like: "As an AI assistant I'm not able to help you with this request. I'll pass your request to the team member who can help." and starts the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set guest_support_description %}
+Questions about confirmations, billing, or details outside <BusinessContext>. Transfer via **"Regular Transfer"** in hours; off-hours start **"Relaying Message to the Manager"**.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_guest_support",
+    "title": guest_support_title,
+    "body": guest_support_body.strip(),
+    "description": guest_support_description.strip(),
+    "mentions": [
+        {"type": "scenarios", "item_idn": "scenario_catering_regular_transfer"},
+        {"type": "scenarios", "item_idn": "scenario_catering_relaying_message"}
+        ],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set contractor_support_title = "## **[T] Contractor Support**" %}
+{% set contractor_support_body %}
+Inquiries from vendors, contractors, or providers.
+ConvoAgent starts the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set contractor_support_description %}
+Vendor/contractor/provider inquiries. ConvoAgent starts **"Relaying Message to the Manager"**.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_contractor_support",
+    "title": contractor_support_title,
+    "body": contractor_support_body.strip(),
+    "description": contractor_support_description.strip(),
+    "mentions": [
+        {"type": "scenarios", "item_idn": "scenario_catering_relaying_message"}
+        ],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set manager_or_human_request_title = "## **[T] Manager or Human Request**" %}
+{% set manager_or_human_request_body %}
+A request requiring immediate assistance from a human, real person, front desk, operator, customer service, representative, receptionist, concierge, host, manager, a colleague named [[project_attributes_known_employees]].
+During Working Hours: ConvoAgent starts the scenario: **"Regular Transfer"**.
+During Non-Working Hours: ConvoAgent says something like: "It's currently outside of working hours, so unfortunately, I can't transfer your call to my colleague. However, I can pass along your message." and starts the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set manager_or_human_request_description %}
+Caller asks for a human/manager/known colleague. In hours start **"Regular Transfer"**; off-hours apologize and start **"Relaying Message to the Manager"**.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_manager_or_human_request",
+    "title": manager_or_human_request_title,
+    "body": manager_or_human_request_body.strip(),
+    "description": manager_or_human_request_description.strip(),
+    "mentions": [
+        {"type": "scenarios", "item_idn": "scenario_catering_regular_transfer"},
+        {"type": "scenarios", "item_idn": "scenario_catering_relaying_message"}
+        ],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set general_information_request_title = "## **General Information Request**" %}
+{% set general_information_request_body %}
+Questions about the address, directions, working hours, services, prices, running late, etc.
+ConvoAgent starts the scenario: **"Answering Questions"**.
+{% endset %}
+{% set general_information_request_description %}
+General info (address, hours, services, prices, running late). ConvoAgent starts **"Answering Questions"**.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_general_information_request",
+    "title": general_information_request_title,
+    "body": general_information_request_body.strip(),
+    "description": general_information_request_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_catering_answering_questions"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set spam_session_title = "## **Spam Session**" %}
+{% set spam_session_body %}
+The caller is clearly attempting to sell something, conduct telemarketing, running a scam, or is an unsolicited robocall unrelated to our services. Unclear, garbled, or nonsensical speech is NOT spam - it indicates transcription issues.
+ConvoAgent responds with something like: *"I'm afraid I can't assist you with that"* and informs that it ends the conversation now.
+{% endset %}
+{% set spam_session_description %}
+Sales/irrelevant content. ConvoAgent declines and starts **"Finish Conversation"**.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_spam_session",
+    "title": spam_session_title,
+    "body": spam_session_body.strip(),
+    "description": spam_session_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_catering_finish_conversation"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set test_session_title = "## **Test Session**" %}
+{% set test_session_body %}
+A call from a phone number on the test number list or a session where the caller explicitly mentioned it was a test.
+ConvoAgent says: *"Thank you for your cooperation"* and then starts the scenario: **"Finish Conversation"**.
+{% endset %}
+{% set test_session_description %}
+Test call or test-listed number. ConvoAgent thanks the caller and starts **"Finish Conversation"**.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_test_session",
+    "title": test_session_title,
+    "body": test_session_body.strip(),
+    "description": test_session_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_catering_finish_conversation"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{% set other_session_title = "## **Other type of session**" %}
+{% set other_session_body %}
+Any type of session not covered by the categories listed above.
+ConvoAgent should say that it cannot assist with this request, needs to pass the information to a co-worker, and start the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set other_session_description %}
+Uncategorized session. ConvoAgent cannot assist directly, will pass info, and starts **"Relaying Message to the Manager"**.
+{% endset %}
+{{ its_library_items.append({
+    "idn": "intent_type_other_session",
+    "title": other_session_title,
+    "body": other_session_body.strip(),
+    "description": other_session_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_catering_relaying_message"}],
+    "is_from_library": True,
+    "origin_idn": ""
+}) }}
+
+{{Return(val=json.dumps(its_library_items, ensure_ascii=False, indent=2))}}

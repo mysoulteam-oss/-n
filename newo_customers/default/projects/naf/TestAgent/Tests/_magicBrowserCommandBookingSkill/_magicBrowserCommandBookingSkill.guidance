@@ -1,0 +1,31 @@
+{{!-- Type your payload here --}}
+{{#system~}}
+{
+  "reserveTableURL": "https://www.google.com/maps/reserve/v/dine/c/5tHzSy086ZM",
+  "dateTime": "2025-07-12 13:30",
+  "timeFormatted": "01:30 PM",
+  "partySize": 4,
+  "timeZone": "America/Los_Angeles",
+  "firstName": "TestName",
+  "lastName": "TestSurname",
+  "phoneNumber": "+1650XXXXXXX",
+  "concatenatedPhoneNumber": "1650XXXXXXXabcd",
+  "email": "bookings+1650XXXXXXXabcd@newo.ai",
+  "place": "Restaurant"
+}
+{{~/system}}
+{{Set(name="payload", value=" ")}}
+
+{{Set(name="user_id", value=GetUser(field="id"))}}
+{{Set(name="user_name", value=GetUser(field="name"))}}
+
+{{SendCommand(
+    commandIdn="book_restaurant_slot",
+    integrationIdn="magic_browser",
+    connectorIdn="magic_browser_connector",
+    persona_id=user_id,
+    persona_name=user_name,
+    session_name=Concat(user_id, "_", _utilsGetRandomPostfixSkill(), "_", _utilsGetRandomPostfixSkill()),
+    payload=payload,
+    targetAction="test_book_slot"
+)}}

@@ -1,0 +1,43 @@
+{% set act = GetTriggeredAct() %}
+{% set type = act.arguments.type %}
+{% if not type %}
+    {% set sms_enabled = GetCustomerAttribute(field="project_attributes_setting_sms_send_information_enabled") %}
+    {% if sms_enabled == "True" %}
+        {% set type = "sms" %}
+    {% else %}
+        {% set email_enabled = GetCustomerAttribute(field="project_attributes_setting_email_send_information_enabled") %}
+        {% if email_enabled == "True" %}
+            {% set type = "email" %}
+        {% else %}
+            {{utils_send_system_log(message="Message '" ~ act.arguments.message ~ "' could not be sent as there is no possible way to do (both email and sms are off)")}}
+            {{Return()}}
+        {% endif %}
+    {% endif %}
+{% endif %}
+{% set user_id = GetUser().id | string %}
+{% set phone_number = get_user_phone_number(user_id=user_id) %}
+{% set email = get_user_email(user_id=user_id) %}
+{% if type == "sms" and phone_number %}
+    {{SendSystemEvent(
+        eventIdn="sms_worker_send_sms",
+        connectorIdn="system",
+        sms_text=act.arguments.message,
+        phone_number=phone_number,
+        notify=act.arguments.notify
+    )}}
+    {{Return()}}
+{% endif %}
+{% if type == "email" and email %}
+    {{SendSystemEvent(
+        eventIdn="email_worker_send_email",
+        connectorIdn="system",
+        email=email,
+        cc=" ",
+        subject=act.arguments.subject or generate_text_by_instruction(user_id=user_id, input=act.arguments.message, instruction="Generate an email subject. In <Input> you will see the email body. Make it under 15 words."),
+        body=act.arguments.message,
+        include_reply_to="true",
+        notify=act.arguments.notify
+    )}}
+    {{Return()}}
+{% endif %}
+{{utils_send_system_log(message="Message '" ~ act.arguments.message ~ "' could not be sent as there is no possible way to do (both email and sms are off)")}}

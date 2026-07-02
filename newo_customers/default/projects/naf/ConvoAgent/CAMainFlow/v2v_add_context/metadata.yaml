@@ -1,0 +1,18 @@
+id: 019f2274-f6eb-762d-82e0-3f503afe7392
+idn: v2v_add_context
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f2274-f6eb-762d-82e0-3f503afe7390
+    name: last_convo_actor_id
+    default_value: ""
+  - id: 019f2274-f6eb-762d-82e0-3f503afe738f
+    name: turn
+    default_value: ""
+  - id: 019f2274-f6eb-762d-82e0-3f503afe7391
+    name: user_id
+    default_value: ""
+path: ""

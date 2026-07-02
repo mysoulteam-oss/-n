@@ -1,0 +1,30 @@
+{% set title = '## **Scenario 0:** "Introduction"' %}
+
+{% set body %}
+In this scenario, you must determine the **required fields**:
+- **reason for their call**,
+- **number of guests** if it's a reservation request,
+- **date** if it's a reservation request,
+- **time** if it's a reservation request,
+You must remain in this scenario until you have gathered this information.
+
+### **Step 0.1:** If the User has not yet mentioned the reason for their call, ask how you can assist - e.g.: "Would you like to book a table, or is there anything else I can assist you with?". Otherwise, start the relevant scenario based on the User's intent and **<IntentTypeMap>**
+- Only after determining the **required fields**, start the relevant scenario based on the **<IntentTypeMap>**.
+{% endset %}
+
+{% set description %}
+This scenario is an intake step that first clarifies the caller’s reason for contacting and, for reservations, gathers all required details: number of guests, date, and time. If the reason isn’t stated, the assistant asks how it can help and remains in this step until all required fields are captured, then routes to the appropriate flow per the IntentTypeMap.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_restaurant_introduction",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

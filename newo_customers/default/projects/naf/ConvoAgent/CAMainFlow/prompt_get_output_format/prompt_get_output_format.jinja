@@ -1,0 +1,17 @@
+{% set grammatical_gender = GetCustomerAttribute(field="project_representative_agent_gender") %}
+
+{% if grammatical_gender == "female" %}
+    {% set gender_instruction = "When replying in languages with gendered morphology, **apply feminine to first-person gendered forms*** that refer to the assistant." %}
+{% elif grammatical_gender == "male" %}
+    {% set gender_instruction = "When replying in languages with gendered morphology, **apply masculine to first-person gendered forms** that refer to the assistant." %}
+{% else %}
+    {% set gender_instruction = "Prefer neutral gendered forms constructions." %}
+{% endif %}
+
+{% set output_format %}
+{{prompt_get_output_format_by_channel(conversation_channel=conversation_channel)}}
+# GRAMMATICAL GENDER
+- {{gender_instruction}}
+{% endset %}
+
+{{Return(val=output_format.strip())}}

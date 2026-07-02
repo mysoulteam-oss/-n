@@ -1,0 +1,103 @@
+{{Set(name="is_first_init_done", value=GetCustomerAttribute(field="project_attributes_private_account_initialized_first_time"))}}
+{{!-- All `restaurant` Customer Attributes must be specified here with default values --}}
+{{!-- (must be sorted alphabetically) --}}
+
+{{!-- Is being set with value during `Initialization` process --}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_restaurant_google_restaurant_id", value=" ")}}
+
+{{!-- Is being set and updated during Agent execution --}}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_restaurant_google_restaurant_seating_options", value=" ")}}
+
+{{!-- Set of `restaurant` attributes from Agent Creator and BOQ defaults --}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_restaurant_catering_email",
+  ac_field="agent_creator_restaurant_catering_email",
+  default="[[project_business_manager_email]]"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_restaurant_catering_questions",
+  ac_field="agent_creator_restaurant_catering_questions",
+  default="*(No additional questions were provided.)*"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_restaurant_googlemaps_reservation_url", ac_field="agent_creator_restaurant_googlemaps_reservation_url")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_restaurant_googlemaps_url", ac_field="agent_creator_restaurant_googlemaps_url")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_restaurant_large_group_reservation_email",
+  ac_field="agent_creator_restaurant_large_group_reservation_email",
+  default="[[project_business_manager_email]]"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_restaurant_large_group_reservation_minimum_party_size",
+  ac_field="agent_creator_restaurant_large_group_reservation_minimum_party_size",
+  default="7"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_restaurant_large_group_reservation_questions",
+  ac_field="agent_creator_restaurant_large_group_reservation_questions",
+  default="Ask the following question but don't insist (it's an optional information): 'What is the occasion, any special accommodation requests?'"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_restaurant_menu", ac_field="agent_creator_restaurant_menu")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_restaurant_menu_overview", ac_field="agent_creator_restaurant_menu_overview")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_restaurant_menu_url", ac_field="agent_creator_restaurant_menu_url")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_restaurant_opentable_url", ac_field="agent_creator_restaurant_opentable_url")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_restaurant_order_email",
+  ac_field="agent_creator_restaurant_order_email",
+  default="[[project_business_manager_email]]"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_restaurant_order_url", ac_field="agent_creator_restaurant_order_url")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_restaurant_private_dining_email",
+  ac_field="agent_creator_restaurant_private_dining_email",
+  default="[[project_business_manager_email]]"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_restaurant_private_dining_questions",
+  ac_field="agent_creator_restaurant_private_dining_questions",
+  default="*(No additional questions were provided.)*"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_restaurant_regular_events_schedule", ac_field="agent_creator_restaurant_regular_events_schedule")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_restaurant_regular_events_schedule_url", ac_field="agent_creator_restaurant_regular_events_schedule_url")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_restaurant_regular_reservation_via_link_guidance_instruction",
+  ac_field="agent_creator_restaurant_regular_reservation_via_link_guidance_instruction",
+  default="*(No additional guidance was provided.)*"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_restaurant_signature_dishes", ac_field="agent_creator_restaurant_signature_dishes")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_restaurant_yelp_url", ac_field="agent_creator_restaurant_yelp_url")}}
+
+{{!-- TODO: Refactor --}}
+{{!-- One-time `Initialize` process operation --}}
+{{#if GetCustomerAttribute(field="project_attributes_private_account_initialized_first_time") == "False"}}
+  {{!-- project_attributes_restaurant_order_url --}}
+  {{_prepareAttributesRestaurantOrderURLSkill()}}
+{{/if}}
