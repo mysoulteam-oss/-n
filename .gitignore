@@ -2,6 +2,7 @@
 .env
 .newo/
 newo_customers/default/attributes.yaml
+newo_customers/default/projects/*/attributes.yaml
 
 # Dependencies
 node_modules/
