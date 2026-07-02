@@ -6,3 +6,7 @@ newo_customers/default/projects/*/attributes.yaml
 
 # Dependencies
 node_modules/
+
+# Client conversation logs (PII) — local only
+newo_customers/default/conversations.yaml
+newo_customers/default/conversations/
