@@ -1,7 +1,7 @@
 {
-  "name": "nevo-project",
+  "name": "klik",
   "version": "1.0.0",
-  "description": "Minimal client connecting to the Nevo AI project via the nevo-ai package",
+  "description": "Klik — connects to Nevo AI and a Zadarma SIP account",
   "type": "module",
   "main": "index.js",
   "scripts": {

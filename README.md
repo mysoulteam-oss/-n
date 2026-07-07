@@ -1,6 +1,6 @@
-# nevo-project
+# Клик
 
-A minimal project that connects to:
+A project that connects to:
 
 - the [Nevo AI](https://www.npmjs.com/package/nevo-ai) API (via the `nevo-ai` package), and
 - a **SIP account (Zadarma)** for telephony (via the `sip` package).
