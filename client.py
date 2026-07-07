@@ -141,3 +141,99 @@ class NewoClient:
             "base_url": self.base_url,
             "token_len": len(self._access_token or ""),
         }
+
+    # ------------------------------------------------ integrations/connectors ---
+    def list_integrations(self) -> list[dict[str, Any]]:
+        """Список интеграций аккаунта (newo_voice, twilio, telegram, ...)."""
+        resp = self._request("GET", "/integrations")
+        if resp.status_code != 200:
+            raise NewoError(f"Список интеграций не получен: HTTP {resp.status_code} — {resp.text[:200]}")
+        return resp.json()
+
+    def get_integration(self, idn: str) -> dict[str, Any]:
+        """Найти интеграцию по её idn (напр. 'newo_voice')."""
+        for integ in self.list_integrations():
+            if integ.get("idn") == idn:
+                return integ
+        raise NewoError(f"Интеграция '{idn}' не найдена в аккаунте.")
+
+    def create_connector(
+        self, integration_id: str, connector_idn: str, title: str, settings: dict[str, str]
+    ) -> dict[str, Any]:
+        """Создать коннектор интеграции. Коннектор создаётся ОСТАНОВЛЕННЫМ."""
+        body = {
+            "title": title,
+            "connector_idn": connector_idn,
+            "settings": [{"idn": k, "value": v} for k, v in settings.items()],
+        }
+        resp = self._request(
+            "POST",
+            f"/integrations/{integration_id}/connectors",
+            json=body,
+            headers={"Content-Type": "application/json"},
+        )
+        if resp.status_code not in (200, 201):
+            raise NewoError(f"Создание коннектора не удалось: HTTP {resp.status_code} — {resp.text[:300]}")
+        return resp.json()
+
+    def set_connector_settings(self, connector_id: str, settings: dict[str, str]) -> None:
+        """Обновить настройки существующего коннектора."""
+        body = {"settings": [{"idn": k, "value": v} for k, v in settings.items()]}
+        resp = self._request(
+            "POST",
+            f"/integrations/connectors/{connector_id}/settings",
+            json=body,
+            headers={"Content-Type": "application/json"},
+        )
+        if resp.status_code not in (200, 201, 204):
+            raise NewoError(f"Настройки коннектора не применены: HTTP {resp.status_code} — {resp.text[:300]}")
+
+    def run_connector(self, connector_id: str) -> None:
+        """Запустить (активировать) коннектор."""
+        resp = self._request("POST", f"/integrations/connectors/{connector_id}/run")
+        if resp.status_code not in (200, 201, 204):
+            raise NewoError(f"Запуск коннектора не удался: HTTP {resp.status_code} — {resp.text[:300]}")
+
+    def stop_connector(self, connector_id: str) -> None:
+        """Остановить коннектор."""
+        resp = self._request("POST", f"/integrations/connectors/{connector_id}/stop")
+        if resp.status_code not in (200, 201, 204):
+            raise NewoError(f"Остановка коннектора не удалась: HTTP {resp.status_code} — {resp.text[:300]}")
+
+    def setup_sip_connector(
+        self,
+        provider: str,
+        hostname: str,
+        username: str,
+        password: str,
+        caller_id: str,
+        connector_idn: str = "zadarma_sip",
+        title: str = "Zadarma SIP",
+        activate: bool = False,
+    ) -> dict[str, Any]:
+        """Создать и настроить SIP-коннектор в интеграции newo_voice.
+
+        При activate=True коннектор сразу запускается (боевой приём/исходящие звонки).
+        Возвращает словарь с id коннектора и статусом.
+        """
+        integ = self.get_integration("newo_voice")
+        settings = {
+            "provider": provider,
+            "sip_hostname": hostname,
+            "sip_username": username,
+            "sip_password": password,
+            "sip_caller_id": caller_id,
+        }
+        connector = self.create_connector(integ["id"], connector_idn, title, settings)
+        connector_id = connector.get("id")
+        activated = False
+        if activate and connector_id:
+            self.run_connector(connector_id)
+            activated = True
+        return {
+            "integration_id": integ["id"],
+            "connector_id": connector_id,
+            "connector_idn": connector_idn,
+            "provider": provider,
+            "activated": activated,
+        }

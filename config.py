@@ -30,3 +30,15 @@ NEWO_BASE_URL: str = os.getenv("NEWO_BASE_URL", "https://app.newo.ai/api/v1")
 # UUID актёра-пользователя (user_actor_id), с которым ведём диалог.
 # Необязателен для проверки авторизации; нужен для отправки/чтения сообщений.
 NEWO_USER_ACTOR_ID: str = os.getenv("NEWO_USER_ACTOR_ID", "")
+
+# --- Телефония: SIP-транк (интеграция newo_voice) -------------------------
+# provider: один из twilio | sip | custom_sip | csc-telecom | telnyx | webrtc.
+# Для внешнего SIP-транка (напр. Zadarma) — sip или custom_sip.
+NEWO_SIP_PROVIDER: str = os.getenv("NEWO_SIP_PROVIDER", "sip")
+NEWO_SIP_HOSTNAME: str = os.getenv("NEWO_SIP_HOSTNAME", "")
+NEWO_SIP_USERNAME: str = os.getenv("NEWO_SIP_USERNAME", "")
+NEWO_SIP_PASSWORD: str = os.getenv("NEWO_SIP_PASSWORD", "")
+# Caller id / номер агента в формате E.164 (напр. +380734496407)
+NEWO_SIP_CALLER_ID: str = os.getenv("NEWO_SIP_CALLER_ID", "")
+# Идентификатор коннектора внутри интеграции newo_voice (lowercase, underscores)
+NEWO_SIP_CONNECTOR_IDN: str = os.getenv("NEWO_SIP_CONNECTOR_IDN", "zadarma_sip")
