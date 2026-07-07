@@ -234,6 +234,14 @@ class NewoClient:
         if resp.status_code not in (200, 201, 204):
             raise NewoError(f"Остановка коннектора не удалась: HTTP {resp.status_code} — {resp.text[:300]}")
 
+    def restart_connector(self, connector_id: str) -> None:
+        """Перезапустить коннектор (stop -> run) — нужно для применения credentials."""
+        try:
+            self.stop_connector(connector_id)
+        except NewoError:
+            pass  # уже остановлен — не страшно
+        self.run_connector(connector_id)
+
     def setup_sip_connector(
         self,
         provider: str,
@@ -241,14 +249,15 @@ class NewoClient:
         username: str,
         password: str,
         caller_id: str,
-        connector_idn: str = "zadarma_sip",
-        title: str = "Zadarma SIP",
+        connector_idn: str = "newo_voice_connector",
+        title: str = "Newo Voice",
         activate: bool = False,
     ) -> dict[str, Any]:
-        """Создать и настроить SIP-коннектор в интеграции newo_voice.
+        """Настроить SIP на коннекторе интеграции newo_voice.
 
-        При activate=True коннектор сразу запускается (боевой приём/исходящие звонки).
-        Возвращает словарь с id коннектора и статусом.
+        Если коннектор с таким connector_idn уже есть (напр. основной
+        newo_voice_connector) — обновляет его настройки; иначе создаёт новый.
+        При activate=True перезапускает коннектор, чтобы применить credentials.
         """
         integ = self.get_integration("newo_voice")
         settings = {
@@ -258,20 +267,26 @@ class NewoClient:
             "sip_password": password,
             "sip_caller_id": caller_id,
         }
-        connector = self.create_connector(integ["id"], connector_idn, title, settings)
-        connector_id = connector.get("id")
-        if not connector_id:
-            raise NewoError("Не удалось определить id коннектора.")
-        # Применяем настройки и на случай уже существующего коннектора.
-        self.set_connector_settings(connector_id, settings)
+        existing = self.find_connector(integ["id"], connector_idn)
+        if existing:
+            connector_id = existing["id"]
+            self.set_connector_settings(connector_id, settings)
+        else:
+            connector = self.create_connector(integ["id"], connector_idn, title, settings)
+            connector_id = connector.get("id")
+            if not connector_id:
+                raise NewoError("Не удалось определить id коннектора.")
+            self.set_connector_settings(connector_id, settings)
+
         activated = False
         if activate:
-            self.run_connector(connector_id)
+            self.restart_connector(connector_id)
             activated = True
         return {
             "integration_id": integ["id"],
             "connector_id": connector_id,
             "connector_idn": connector_idn,
             "provider": provider,
+            "reused_existing": bool(existing),
             "activated": activated,
         }

@@ -40,5 +40,6 @@ NEWO_SIP_USERNAME: str = os.getenv("NEWO_SIP_USERNAME", "")
 NEWO_SIP_PASSWORD: str = os.getenv("NEWO_SIP_PASSWORD", "")
 # Caller id / номер агента в формате E.164 (напр. +380734496407)
 NEWO_SIP_CALLER_ID: str = os.getenv("NEWO_SIP_CALLER_ID", "")
-# Идентификатор коннектора внутри интеграции newo_voice (lowercase, underscores)
-NEWO_SIP_CONNECTOR_IDN: str = os.getenv("NEWO_SIP_CONNECTOR_IDN", "zadarma_sip")
+# Коннектор интеграции newo_voice, в котором настраиваем SIP.
+# По умолчанию — основной newo_voice_connector (тот, что привязан к агенту).
+NEWO_SIP_CONNECTOR_IDN: str = os.getenv("NEWO_SIP_CONNECTOR_IDN", "newo_voice_connector")
