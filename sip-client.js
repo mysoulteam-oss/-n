@@ -136,7 +136,23 @@ const isMain =
   process.argv[1] && import.meta.url === `file://${process.argv[1]}`;
 
 if (isMain) {
-  const handle = registerSip(config.sip);
+  const { number, username, domain } = config.sip;
+  console.log("=== Klik SIP ===");
+  console.log(`Number:  ${number || "(SIP_NUMBER not set)"}`);
+  console.log(`Account: ${username}@${domain}`);
+  console.log("================");
+
+  const handle = registerSip(config.sip, {
+    onStatus: (s) => {
+      if (s.registered) {
+        console.log(`✔ Number ${number} is connected (SIP registered).`);
+      } else {
+        console.error(
+          `x Number ${number} not connected: ${s.code || ""} ${s.reason || ""}`.trim()
+        );
+      }
+    },
+  });
   process.on("SIGINT", () => {
     console.log("\nStopping SIP client...");
     handle.stop();
