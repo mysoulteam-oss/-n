@@ -1,0 +1,15 @@
+{
+  "name": "nevo-project",
+  "version": "1.0.0",
+  "description": "Minimal client connecting to the Nevo AI project via the nevo-ai package",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "ask": "node index.js"
+  },
+  "dependencies": {
+    "nevo-ai": "^1.0.0"
+  },
+  "license": "MIT"
+}

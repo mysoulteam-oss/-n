@@ -1,0 +1,10 @@
+# Secrets — never commit real API keys
+.env
+.env.local
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
