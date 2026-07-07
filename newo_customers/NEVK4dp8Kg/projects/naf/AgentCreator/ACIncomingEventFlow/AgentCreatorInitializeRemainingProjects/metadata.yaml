@@ -1,9 +1,0 @@
-id: 019f3b06-3ab9-7872-89f5-8bbf3e6ecb27
-idn: AgentCreatorInitializeRemainingProjects
-title: AgentCreatorInitializeRemainingProjects
-runner_type: nsl
-model:
-  provider_idn: google
-  model_idn: gemini25_flash
-parameters: []
-path: ""

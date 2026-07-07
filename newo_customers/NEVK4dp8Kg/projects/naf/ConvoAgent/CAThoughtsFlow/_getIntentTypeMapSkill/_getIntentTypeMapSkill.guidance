@@ -1,9 +1,0 @@
-{{Set(name="user_id", value=GetUser(field="id"))}}
-{{Set(name="working_hours_status", value=_getWorkingHoursStatus(userId=user_id))}}
-{{#if working_hours_status.__contains__("true")}}
-    {{Set(name="intent_type_map", value=GetCustomerAttribute(field="project_attributes_private_dynamic_itm_working_hours_compiled"))}}
-{{else}}
-    {{Set(name="intent_type_map", value=GetCustomerAttribute(field="project_attributes_private_dynamic_itm_non_working_hours_compiled"))}}
-{{/if}}
-
-{{Return(val=intent_type_map)}}

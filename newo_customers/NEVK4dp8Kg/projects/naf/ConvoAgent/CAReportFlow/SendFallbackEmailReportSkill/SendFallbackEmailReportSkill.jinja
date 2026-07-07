@@ -1,9 +1,0 @@
-{% set arguments = GetTriggeredAct().arguments %}
-
-{{_sendReportSkill(
-    intentType=arguments.intentType,
-    transcript=arguments.transcript,
-    userId=GetUser().id | string,
-    customEmailSection=arguments.get("customEmailSection"),
-    customSmsSection=arguments.get("customSmsSection", "")
-)}}

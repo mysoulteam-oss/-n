@@ -1,9 +1,0 @@
-id: 019f3b06-3aee-7139-ab2b-5344c58d2647
-idn: AnalyzeConversation
-title: AnalyzeConversation
-runner_type: nsl
-model:
-  provider_idn: google
-  model_idn: gemini25_flash
-parameters: []
-path: ""

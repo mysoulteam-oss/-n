@@ -1,7 +1,0 @@
-{% set arguments = GetTriggeredAct().arguments %}
-
-{% set task_id = arguments.taskId %}
-{% set status = arguments.status %}
-{% set comment = arguments.comment %}
-
-{{_updateTaskStatusSkill(taskId=task_id, comment=comment, status=status)}}

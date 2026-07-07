@@ -1,5 +1,0 @@
-{% if conversationChannel in ("phone", "webcall") %}
-    {{Return(val=_getExplicitConstraintsPhoneSkill(userId=userId, conversation_channel=conversationChannel))}}
-{% else %}
-    {{Return(val=_getExplicitConstraintsChatSkill(userId=userId))}}
-{% endif %}

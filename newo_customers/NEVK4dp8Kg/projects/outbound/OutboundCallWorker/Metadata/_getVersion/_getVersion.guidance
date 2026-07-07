@@ -1,5 +1,0 @@
-{{#system~}}
-1.9.0
-{{~/system}}
-
-{{Return(val=GetCurrentPrompt())}}

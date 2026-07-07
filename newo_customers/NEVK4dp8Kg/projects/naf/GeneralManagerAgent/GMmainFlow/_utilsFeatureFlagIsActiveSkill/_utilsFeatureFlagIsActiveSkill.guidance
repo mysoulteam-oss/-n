@@ -1,7 +1,0 @@
-{{Set(name="feature_flag_enabled", value=GetCustomerAttribute(field=Concat("project_attributes_private_feature_flag_", featureFlagName)))}}
-
-{{#if feature_flag_enabled == "True"}}
-    {{Return(val="t")}}
-{{/if}}
-
-{{Return()}}

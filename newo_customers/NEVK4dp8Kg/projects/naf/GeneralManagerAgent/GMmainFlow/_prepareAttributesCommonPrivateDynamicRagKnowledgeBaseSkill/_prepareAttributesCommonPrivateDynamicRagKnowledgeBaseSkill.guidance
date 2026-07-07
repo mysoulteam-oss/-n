@@ -1,3 +1,0 @@
-{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_rag_knowledge_base_append_text_structured", value=" ")}}
-{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_rag_knowledge_base_append_websites_text", value=" ")}}
-{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_dynamic_rag_knowledge_base_append_websites_text_structured", value=" ")}}

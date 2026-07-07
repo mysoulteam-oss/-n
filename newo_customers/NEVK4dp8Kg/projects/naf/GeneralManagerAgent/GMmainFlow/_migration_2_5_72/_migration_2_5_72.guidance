@@ -1,2 +1,0 @@
-{{!-- Reset to new default value --}}
-{{SetCustomerAttribute(field="project_representative_agent_supported_languages", value=" ")}}

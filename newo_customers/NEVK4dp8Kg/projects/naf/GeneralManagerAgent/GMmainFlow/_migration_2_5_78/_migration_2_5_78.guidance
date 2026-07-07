@@ -1,6 +1,0 @@
-{{Set(name="booking_phrase_template_on_booking_submitting", value=GetCustomerAttribute(field="project_attributes_setting_booking_phrase_template_on_booking_submitting"))}}
-
-{{!-- Update default value --}}
-{{#if booking_phrase_template_on_booking_submitting == "Your booking has been successfully submitted."}}
-  {{SetCustomerAttribute(field="project_attributes_setting_booking_phrase_template_on_booking_submitting", value="Your booking request has been submitted.")}}
-{{/if}}

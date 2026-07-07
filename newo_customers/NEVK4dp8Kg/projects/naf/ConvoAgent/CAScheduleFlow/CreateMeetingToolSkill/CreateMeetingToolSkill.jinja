@@ -1,9 +1,0 @@
-{% set user_id = GetUser().id | string %}
-
-{{SendSystemEvent(
-    eventIdn="convoagent_activate_waiting_mode",
-    connectorIdn="system"
-)}}
-
-{% set act = GetTriggeredAct() %}
-{{_scheduleGoogleMeetingSkill(memory=act.arguments.memory_without_latest_agent_answer, agentAnswer=act.arguments.latest_agent_answer, userId=user_id)}}

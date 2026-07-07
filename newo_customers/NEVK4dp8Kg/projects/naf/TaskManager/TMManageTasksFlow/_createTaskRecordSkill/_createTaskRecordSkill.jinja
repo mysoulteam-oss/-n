@@ -1,7 +1,0 @@
-{% set task_id = uuid.uuid4() | string %}
-
-{% set task = json.dumps({"id": task_id, "user_id": userId, "task_type": taskType, "status": status, "arguments": json.loads(arguments)}, ensure_ascii=False, indent=2) %}
-
-{{SetManualAkb(personaId=GetAgentPersona().id | string, summary=content, facts=[comment ~ "\n---"], name=task_id, source=task, labels=[status])}}
-
-{{Return(val=task)}}

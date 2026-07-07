@@ -1,9 +1,0 @@
-{% if include_conversation_records == "False" %}
-    {{Return(val="")}}
-{% endif %}
-
-{% if portal_url %}
-    {{Return(val=portal_url ~ "/sessions/" ~ GetSessionInfo().id | string)}}
-{% else %}
-    {{Return(val="")}}
-{% endif %}

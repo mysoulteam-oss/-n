@@ -1,9 +1,0 @@
-id: 019f3b06-3f01-7864-872a-0defeda7f6e6
-idn: _playgroundNSLSkill
-title: _playgroundNSLSkill
-runner_type: nsl
-model:
-  provider_idn: google
-  model_idn: gemini25_flash
-parameters: []
-path: ""

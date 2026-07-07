@@ -1,6 +1,0 @@
-{% system %}
-{{prompt.strip()}}
-{% end %}
-{% set result = Gen(temperature=0.2, topP=0, skipFilter=True, thinkingBudget=145) %}
-
-{{Return(val=result)}}

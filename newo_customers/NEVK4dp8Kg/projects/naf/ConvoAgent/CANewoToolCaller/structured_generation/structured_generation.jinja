@@ -1,6 +1,0 @@
-{% system %}
-{{prompt.strip()}}
-{% end %}
-{% set result_json = Gen(jsonSchema=json.loads(schema), validateSchema=True, temperature=0.2, topP=0, skipFilter=True, thinkingBudget=145) %}
-
-{{Return(val=result_json)}}

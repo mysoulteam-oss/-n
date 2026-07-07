@@ -1,4 +1,0 @@
-{{!-- Returns cached working_hours_status BOOL ("true"/"false") or empty when
-     unset. Decision-point session_get_working_hours_status warms the cache. --}}
-
-{{Return(val=GetPersonaAttribute(id=userId, field="working_hours_status"))}}

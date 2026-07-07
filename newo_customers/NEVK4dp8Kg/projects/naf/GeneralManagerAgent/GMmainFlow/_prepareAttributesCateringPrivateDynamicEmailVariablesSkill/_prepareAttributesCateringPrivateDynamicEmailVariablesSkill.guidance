@@ -1,5 +1,0 @@
-{{#system~}}
-catering_email: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_catering_catering_email")}}
-manager_email: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_manager_email")}}
-{{~/system}}
-{{SetCustomerAttribute(field="project_attributes_private_dynamic_email_variables", value=GetCurrentPrompt())}}

@@ -1,5 +1,0 @@
-{{!-- All `private outbound calls` common Customer Attributes must be specified here with default values --}}
-{{!-- (must be sorted alphabetically) --}}
-
-{{!-- TODO: Define whether Attribute is related to `outbound calls` --}}
-{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_private_custom_schema_inbound_call_report", value=" ")}}

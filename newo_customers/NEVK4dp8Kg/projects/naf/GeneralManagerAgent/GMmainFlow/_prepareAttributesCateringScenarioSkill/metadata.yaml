@@ -1,9 +1,0 @@
-id: 019f3b06-3ca3-70bb-9518-bcc63f6195a4
-idn: _prepareAttributesCateringScenarioSkill
-title: _prepareAttributesCateringScenarioSkill
-runner_type: guidance
-model:
-  provider_idn: google
-  model_idn: gemini25_flash
-parameters: []
-path: ""

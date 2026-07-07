@@ -1,9 +1,0 @@
-id: 019f3b06-3aed-7514-8647-49415790495b
-idn: prompt_get_allowed_content_sms
-title: ""
-runner_type: nsl
-model:
-  provider_idn: google
-  model_idn: gemini25_flash
-parameters: []
-path: ""

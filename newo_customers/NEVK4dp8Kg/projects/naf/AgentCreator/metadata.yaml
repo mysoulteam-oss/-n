@@ -1,6 +1,0 @@
-id: 019f3b06-3aab-7dfa-a09f-a50f10126b01
-idn: AgentCreator
-title: AgentCreator
-description: >-
-  Resets customer-specific Attributes and AKB state from Agent Creator inputs,
-  then restarts Project initialization.

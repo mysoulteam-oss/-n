@@ -1,7 +1,0 @@
-{{#system~}}
-{{GetCustomerAttribute(field="project_business_working_hours")}}
-
-**Catering variables:**
-- catering.catering_order_minimum_days_in_advance: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_catering_order_minimum_days_in_advance")}}
-{{~/system}}
-{{SetCustomerAttribute(field="project_attributes_private_dynamic_variables", value=GetCurrentPrompt())}}

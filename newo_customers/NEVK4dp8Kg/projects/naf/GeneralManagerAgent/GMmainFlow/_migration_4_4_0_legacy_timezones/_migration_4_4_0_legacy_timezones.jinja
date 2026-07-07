@@ -1,7 +1,0 @@
-{% set project_business_time_zone = GetCustomerAttribute(field="project_business_time_zone").strip() %}
-
-{% if project_business_time_zone == "America/Kingston" %}
-    {{SetCustomerAttribute(field="project_business_time_zone", value="America/Panama")}}
-{% elif project_business_time_zone == "America/Quito" %}
-    {{SetCustomerAttribute(field="project_business_time_zone", value="America/Lima")}}
-{% endif %}

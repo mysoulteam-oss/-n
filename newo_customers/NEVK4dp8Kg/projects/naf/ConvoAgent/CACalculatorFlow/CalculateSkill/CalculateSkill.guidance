@@ -1,7 +1,0 @@
-{{Set(name="industry", value=GetCustomerAttribute(field="project_business_industry"))}}
-
-{{Set(name="memory", value=GetTriggeredAct(fields="memory"))}}
-
-{{!-- Generic Calculation --}}
-{{Set(name="thoughts", value=_reasonGenericPricingSkill(memory=memory))}}
-{{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction=thoughts, uninterruptible="True")}}

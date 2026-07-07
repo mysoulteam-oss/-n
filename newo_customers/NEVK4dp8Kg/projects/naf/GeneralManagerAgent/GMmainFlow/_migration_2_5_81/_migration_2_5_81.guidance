@@ -1,9 +1,0 @@
-{{!-- Rename `BOI` to `ITM` - migrate Customer Attribute value --}}
-
-{{Set(name="boi", value=GetCustomerAttribute(field="project_attributes_boi"))}}
-
-{{#if not IsEmpty(text=boi)}}
-  {{SetCustomerAttribute(field="project_attributes_itm", value=boi)}}
-{{/if}}
-
-{{DeleteCustomerAttribute(field="project_attributes_boi")}}

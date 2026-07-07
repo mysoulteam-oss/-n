@@ -1,6 +1,0 @@
-{# Cleanup disclaimer phrase as its content is set directly into connector during initial setup #}
-{% set disclaimer_phrase = GetCustomerAttribute(field="project_representative_agent_voice_disclaimer_phrase").strip() %}
-{% if disclaimer_phrase == "This call may be recorded." %}
-    {{SetCustomerAttribute(field="project_representative_agent_voice_disclaimer_phrase", value=" ")}}
-    {{Return()}}
-{% endif %}

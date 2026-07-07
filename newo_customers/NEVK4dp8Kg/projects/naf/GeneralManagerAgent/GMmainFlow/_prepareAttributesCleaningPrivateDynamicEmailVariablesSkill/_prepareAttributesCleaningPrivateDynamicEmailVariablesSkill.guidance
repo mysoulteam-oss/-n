@@ -1,4 +1,0 @@
-{{#system~}}
-manager_email: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_manager_email")}}
-{{~/system}}
-{{SetCustomerAttribute(field="project_attributes_private_dynamic_email_variables", value=GetCurrentPrompt())}}

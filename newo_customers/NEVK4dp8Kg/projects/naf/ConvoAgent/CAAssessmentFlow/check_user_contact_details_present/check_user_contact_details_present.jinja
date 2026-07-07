@@ -1,9 +1,0 @@
-{% set detected_phone_number_with_country_code = utils_persona_attribute_get_with_defaults(user_id=user_id, field="detected_phone_number_with_country_code") %}
-{% set provided_phone_number_with_country_code = utils_persona_attribute_get_with_defaults(user_id=user_id, field="provided_phone_number_with_country_code") %}
-{% set email = utils_persona_attribute_get_with_defaults(user_id=user_id, field="email") %}
-
-{% if detected_phone_number_with_country_code != "null" or provided_phone_number_with_country_code != "null" or email != "null" %}
-    {{Return(val="True")}}
-{% endif %}
-
-{{Return(val="False")}}

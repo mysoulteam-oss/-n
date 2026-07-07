@@ -1,6 +1,0 @@
-id: 019f3b11-46e6-79ef-a2b2-b6edef8e9a88
-idn: OutboundCallWorker
-title: OutboundCallWorker
-description: >-
-  Executes TaskManager-issued outbound call and SMS workflows, including
-  retries, deadlines, and status updates.

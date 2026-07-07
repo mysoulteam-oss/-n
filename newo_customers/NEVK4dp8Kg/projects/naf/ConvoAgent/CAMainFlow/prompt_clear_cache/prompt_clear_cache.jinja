@@ -1,8 +1,0 @@
-{{SetState(name="cached_base_prompt", value="")}}
-{{SetState(name="cached_base_prompt_override_version", value="")}}
-{{SetState(name="fast_prompt", value="")}}
-{{SetState(name="fast_prompt_override_version", value="")}}
-
-{% if GetTriggeredAct().arguments.get("reset_session", "False") == "True" %}
-    {{SetPersonaAttribute(id=GetUser().id | string, field="previous_session_ended", value="True")}}
-{% endif %}

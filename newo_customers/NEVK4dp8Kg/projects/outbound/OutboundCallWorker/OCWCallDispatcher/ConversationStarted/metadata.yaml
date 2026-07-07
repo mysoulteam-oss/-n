@@ -1,9 +1,0 @@
-id: 019f3b11-46e9-7163-a030-0b672c76f092
-idn: ConversationStarted
-title: ""
-runner_type: nsl
-model:
-  provider_idn: google
-  model_idn: gemini25_flash
-parameters: []
-path: ""

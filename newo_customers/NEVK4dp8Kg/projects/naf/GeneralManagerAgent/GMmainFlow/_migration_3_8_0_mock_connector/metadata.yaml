@@ -1,9 +1,0 @@
-id: 019f3b06-3ca2-71e8-9822-b576f556fde9
-idn: _migration_3_8_0_mock_connector
-title: ""
-runner_type: nsl
-model:
-  provider_idn: google
-  model_idn: gemini25_flash
-parameters: []
-path: ""

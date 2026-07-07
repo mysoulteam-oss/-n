@@ -1,2 +1,0 @@
-{{SetCustomerAttribute(field="project_attributes_private_dynamic_prompt_calendar", value=" ")}}
-{{SetCustomerAttribute(field="project_attributes_private_dynamic_prompt_calendar_created_at", value=" ")}}

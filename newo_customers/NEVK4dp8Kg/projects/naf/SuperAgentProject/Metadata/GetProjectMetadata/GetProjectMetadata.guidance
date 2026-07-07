@@ -1,7 +1,0 @@
-{{SendSystemEvent(
-    eventIdn="project_metadata",
-    connectorIdn="system",
-    version=_getVersion(),
-    readme=_getReadme(),
-    changeLog=_getChangeLog()
-)}}

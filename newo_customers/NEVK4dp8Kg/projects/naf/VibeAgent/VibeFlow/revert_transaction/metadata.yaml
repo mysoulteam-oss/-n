@@ -1,9 +1,0 @@
-id: 019f3b06-3f14-719e-a0ee-6e408677fcf8
-idn: revert_transaction
-title: ""
-runner_type: nsl
-model:
-  provider_idn: google
-  model_idn: gemini25_flash
-parameters: []
-path: ""

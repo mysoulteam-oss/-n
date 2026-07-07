@@ -1,6 +1,0 @@
-{{! Type LLM Prompt here (if presented) }}
-{{#system~}}
-
-{{~/system}}
-
-{{Return(val=GetCurrentPrompt())}}

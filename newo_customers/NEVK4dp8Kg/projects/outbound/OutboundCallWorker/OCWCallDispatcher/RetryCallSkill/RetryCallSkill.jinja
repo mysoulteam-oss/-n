@@ -1,4 +1,0 @@
-{% set actor = GetActor().externalId | string %}
-{% set task_id = actor.split("outbound_retry")[-1].strip() %}
-
-{{SendSystemEvent(eventIdn="task_manager_get_task", connectorIdn="system", taskId=task_id, global="True", callbackArguments="retry", requesterIdn=GetAgentPersona().name)}}

@@ -1,6 +1,0 @@
-{{! Type task object input data here }}
-{{#system~}}
-{"task_idn":"w1s2_confirm_slots_task","reservation_date":"2024-12-11","reservation_time":"5:00 PM","number_of_guests":"5","user_reservation_comments":"optional missing","reservation_datetime":"2024-12-11T17:00:00.000-08:00","user_phone":"+17812856567","user_name":"Test Test","user_email":"bookings+17812856567@newo.ai","user_confirmation":"got confirmation"}
-{{~/system}}
-
-{{Return(val=GetCurrentPrompt())}}

@@ -1,4 +1,0 @@
-{{!-- All `static` common Customer Attributes must be specified here with default values --}}
-{{!-- (must be sorted alphabetically) --}}
-
-{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_static_additional_business_context", value=" ")}}

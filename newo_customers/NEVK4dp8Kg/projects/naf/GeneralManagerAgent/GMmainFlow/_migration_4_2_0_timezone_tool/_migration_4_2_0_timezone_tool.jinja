@@ -1,7 +1,0 @@
-{% set current_newo_tools = GetCustomerAttribute(field="project_attributes_settings_newo_tools").strip() %}
-{% if current_newo_tools %}
-  {% set old_check_timezone_tool = "This flag is `true` only if the total count of agent messages in `<Conversation>` and `<LatestConvoAgentAnswer>` that mention **last** **related time** or **related timezones** is 0 or 1. If there are more than 1 mentions, tool must NOT be called." %}
-
-  {% set new_check_timezone_tool = "This condition is `true` only if, in `<Conversation>` & `<LatestConvoAgentAnswer>` together, the total count of agent messages that mention **last** **related time** or **related timezones** is no more than 1. If there are more than 1 mentions, the condition is NOT met and tool must NOT be called." %}
-  {{SetCustomerAttribute(field="project_attributes_settings_newo_tools", value=current_newo_tools.replace(old_check_timezone_tool, new_check_timezone_tool))}}
-{% endif %}

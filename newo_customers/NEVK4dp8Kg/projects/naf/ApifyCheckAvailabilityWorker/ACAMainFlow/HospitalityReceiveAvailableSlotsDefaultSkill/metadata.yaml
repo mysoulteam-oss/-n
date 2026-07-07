@@ -1,9 +1,0 @@
-id: 019f3b06-3ad8-7f58-96c9-599aea67ce13
-idn: HospitalityReceiveAvailableSlotsDefaultSkill
-title: ""
-runner_type: guidance
-model:
-  provider_idn: google
-  model_idn: gemini25_flash
-parameters: []
-path: ""

@@ -1,9 +1,0 @@
-id: 019f3b06-3e71-71df-8b9e-bf3284f153e6
-idn: MWworkerMessageInboxSkill
-title: ""
-runner_type: guidance
-model:
-  provider_idn: google
-  model_idn: gemini25_flash
-parameters: []
-path: ""

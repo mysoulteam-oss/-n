@@ -1,9 +1,0 @@
-{% set triggered_act = GetTriggeredAct() %}
-{% set output_raw = triggered_act["arguments"]["output"] %}
-{% set output = json.loads(output_raw) %}
-{% set target_action = output.targetAction %}
-{% if target_action != "cancel_booking" %}
-    {{Return()}}
-{% endif %}
-
-{{ _sendNotificationSkill(success = output.output.success) }}

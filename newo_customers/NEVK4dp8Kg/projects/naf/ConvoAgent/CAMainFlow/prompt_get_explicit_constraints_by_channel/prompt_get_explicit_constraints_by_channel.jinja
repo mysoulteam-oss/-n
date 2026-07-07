@@ -1,5 +1,0 @@
-{% if conversation_channel in ("phone", "webcall") %}
-    {{Return(val=prompt_get_explicit_constraints_voice(working_hours=working_hours, v2v_enabled=v2v_enabled, conversation_channel=conversation_channel))}}
-{% else %}
-    {{Return(val=prompt_get_explicit_constraints_text(working_hours=working_hours))}}
-{% endif %}

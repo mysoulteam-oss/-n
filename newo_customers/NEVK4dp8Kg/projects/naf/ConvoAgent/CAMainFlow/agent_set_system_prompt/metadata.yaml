@@ -1,9 +1,0 @@
-id: 019f3b06-3aec-7a79-bb1b-812bfca74a36
-idn: agent_set_system_prompt
-title: ""
-runner_type: nsl
-model:
-  provider_idn: google
-  model_idn: gemini25_flash
-parameters: []
-path: ""

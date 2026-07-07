@@ -1,8 +1,0 @@
-{# It was deleted in `_migration_3_7_0_sms_provider` but we delete it one more time to make sure it was deleted (potentially, previous migration was not called) #}
-{{DeleteCustomerAttribute(field="project_attributes_setting_voice_integration_service_send_sms_via_sip_enabled")}}
-
-{# Switch `sip` to `twilio_messenger` #}
-{% set setting_sms_provider = GetCustomerAttribute(field="project_attributes_setting_sms_provider") %}
-{% if setting_sms_provider == "sip" %}
-    {{SetCustomerAttribute(field="project_attributes_setting_sms_provider", value="twilio_messenger")}}
-{% endif %}

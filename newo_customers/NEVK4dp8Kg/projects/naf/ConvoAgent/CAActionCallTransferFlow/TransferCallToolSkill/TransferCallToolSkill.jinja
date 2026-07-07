@@ -1,4 +1,0 @@
-{% set act = GetTriggeredAct() %}
-{% set user_id = GetUser().id | string %}
-
-{{_transferCallSkill(userId=user_id, memory=act.arguments.memory)}}

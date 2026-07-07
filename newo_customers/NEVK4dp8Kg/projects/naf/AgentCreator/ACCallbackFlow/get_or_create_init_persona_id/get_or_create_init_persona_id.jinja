@@ -1,7 +1,0 @@
-{% set init_persona_id = GetState(name="init_persona_id") %}
-{% if init_persona_id.strip() == "" %}
-    {% set init_persona_id = CreatePersona(name="InitPersona")  | string %}
-    {{SetState(name="init_persona_id", value=init_persona_id)}}
-{% endif %}
-
-{{Return(val=init_persona_id)}}

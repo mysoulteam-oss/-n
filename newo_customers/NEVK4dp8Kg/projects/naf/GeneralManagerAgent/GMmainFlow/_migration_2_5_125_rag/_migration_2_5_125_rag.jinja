@@ -1,8 +1,0 @@
-{# Rename Attribute #}
-
-{% set rag_knowledge_base = GetCustomerAttribute(field="project_attributes_rag_knowledge_base") %}
-{% if rag_knowledge_base.strip() %}
-    {{SetCustomerAttribute(field="project_attributes_rag_knowledge_base_text", value=rag_knowledge_base)}}
-{% endif %}
-
-{{DeleteCustomerAttribute(field="project_attributes_rag_knowledge_base")}}

@@ -1,7 +1,0 @@
-{{#system~}}
-{{GetCustomerAttribute(field="project_business_working_hours")}}
-
-**Reservation variables:**
-- restaurant.large_group_reservation_minimum_party_size: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_restaurant_large_group_reservation_minimum_party_size")}}
-{{~/system}}
-{{SetCustomerAttribute(field="project_attributes_private_dynamic_variables", value=GetCurrentPrompt())}}

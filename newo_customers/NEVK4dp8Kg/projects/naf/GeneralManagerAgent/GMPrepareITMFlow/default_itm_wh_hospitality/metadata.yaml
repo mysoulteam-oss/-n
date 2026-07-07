@@ -1,9 +1,0 @@
-id: 019f3b06-3ca0-7efc-bce5-b2e839836eb6
-idn: default_itm_wh_hospitality
-title: ""
-runner_type: nsl
-model:
-  provider_idn: google
-  model_idn: gemini25_flash
-parameters: []
-path: ""

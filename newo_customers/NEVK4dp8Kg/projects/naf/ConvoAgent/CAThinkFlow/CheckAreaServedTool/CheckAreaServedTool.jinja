@@ -1,8 +1,0 @@
-{% set act = GetTriggeredAct() %}
-
-{% set memory_without_latest_agent_answer = act.arguments.memory_without_latest_agent_answer %}
-{% set latest_agent_answer = act.arguments.latest_agent_answer %}
-
-{{classify_user_location_input(
-    memory_conversation=memory_without_latest_agent_answer + "\nConvoAgent: " + latest_agent_answer
-)}}

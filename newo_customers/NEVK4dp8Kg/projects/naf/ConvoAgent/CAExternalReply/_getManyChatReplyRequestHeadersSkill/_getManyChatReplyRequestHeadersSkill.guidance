@@ -1,8 +1,0 @@
-{{#system~}}
-{
-  "Authorization": "Bearer {{GetCustomerAttribute(field='project_attributes_setting_manychat_api_token')}}",
-  "Content-Type": "application/json"
-}
-{{~/system}}
-
-{{Return(val=GetCurrentPrompt())}}

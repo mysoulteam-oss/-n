@@ -1,9 +1,0 @@
-id: 019f3b06-3ab8-7a94-8b73-f983926285f0
-idn: get_or_create_init_persona_id
-title: get_or_create_init_persona_id
-runner_type: nsl
-model:
-  provider_idn: google
-  model_idn: gemini25_flash
-parameters: []
-path: ""

@@ -1,9 +1,0 @@
-{% set user_id = user_id or GetUser().id | string %}
-
-{% set integration_type = v2v_get_current_provider(user_id=user_id) %}
-
-{% if integration_type == "genai" %}
-    {{v2v_send_command_genai(command=command, user_id=user_id, last_convo_actor_id=last_convo_actor_id)}}
-{% elif integration_type == "openai" or integration_type == "grok" %}
-    {{v2v_send_command_openai_grok(command=command, user_id=user_id, last_convo_actor_id=last_convo_actor_id)}}
-{% endif %}

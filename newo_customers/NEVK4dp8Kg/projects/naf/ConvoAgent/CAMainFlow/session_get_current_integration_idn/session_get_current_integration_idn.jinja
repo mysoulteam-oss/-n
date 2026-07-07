@@ -1,2 +1,0 @@
-{% set user_id = user_id or GetUser().id | string %}
-{{Return(val=session_utils.session_get_current_integration_idn(user_id=user_id, set_persona_attribute=set_persona_attribute))}}

@@ -1,9 +1,0 @@
-id: 019f3b06-3af1-7547-be24-f117810807d2
-idn: _getExplicitConstraintsChatSkill
-title: ""
-runner_type: guidance
-model:
-  provider_idn: google
-  model_idn: gemini25_flash
-parameters: []
-path: ""

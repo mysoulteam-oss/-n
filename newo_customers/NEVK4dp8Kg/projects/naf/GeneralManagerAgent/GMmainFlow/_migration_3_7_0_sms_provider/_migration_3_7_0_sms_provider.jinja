@@ -1,9 +1,0 @@
-{# Migrate from project_attributes_setting_voice_integration_service_send_sms_via_sip_enabled to project_attributes_setting_sms_provider #}
-
-{% set send_sms_via_sip_enabled = GetCustomerAttribute(field="project_attributes_setting_voice_integration_service_send_sms_via_sip_enabled") %}
-
-{% if send_sms_via_sip_enabled == "True" %}
-    {{SetCustomerAttribute(field="project_attributes_setting_sms_provider", value="sip")}}
-{% endif %}
-
-{{DeleteCustomerAttribute(field="project_attributes_setting_voice_integration_service_send_sms_via_sip_enabled")}}

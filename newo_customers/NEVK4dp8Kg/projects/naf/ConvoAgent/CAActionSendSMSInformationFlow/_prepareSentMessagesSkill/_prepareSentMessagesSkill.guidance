@@ -1,6 +1,0 @@
-{{#system~}}
-{{#if not IsEmpty(text=oldMessages)}}{{oldMessages}}{{else}}{{newMessage}};{{/if}}
-{{#if not IsEmpty(text=oldMessages)}}{{newMessage}};{{/if}}
-{{~/system}}
-
-{{Return(val=GetCurrentPrompt())}}

@@ -1,2 +1,0 @@
-{{!-- Reset to default value --}}
-{{SetCustomerAttribute(field="project_attributes_setting_booking_check_availability_window", value="12")}}

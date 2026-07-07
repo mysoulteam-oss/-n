@@ -1,5 +1,0 @@
-{{!-- Sets Persona Attribute by provided `value` if Persona Attribute is empty. Otherwise, does not do anything --}}
-
-{{#if IsEmpty(text=GetPersonaAttribute(id=id, field=field))}}
-    {{SetPersonaAttribute(id=id, field=field, value=value)}}
-{{/if}}

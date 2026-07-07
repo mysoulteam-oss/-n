@@ -1,7 +1,0 @@
-{# Alter the booking submitting phrase #}
-
-{% set submitting_phrase = GetCustomerAttribute(field="project_attributes_setting_booking_phrase_template_on_booking_submitting") %}
-
-{% if submitting_phrase == "Your booking request has been submitted." %}
-    {{SetCustomerAttribute(field="project_attributes_setting_booking_phrase_template_on_booking_submitting", value="Your booking request is being processed.")}}
-{% endif %}

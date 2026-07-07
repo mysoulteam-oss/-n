@@ -1,7 +1,0 @@
-{% set pattern = "^## \\*\\*.+\\*\\*$" %}
-
-{% if not re.match(pattern, title) %}
-    {{Return(val=utils_fix_intent_type_title_llm(title=title))}} 
-{% endif %}
-
-{{Return(val=title)}} 

@@ -1,7 +1,0 @@
-{% set itm %}{% for intent_type in intent_type_items or [] %}
-{{intent_type.title}}
-{{intent_type.body}}
-{% endfor %}
-{% endset %}
-
-{{Return(val=remove_mentions(text=itm.strip()))}}

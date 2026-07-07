@@ -1,7 +1,0 @@
-{{!-- Temporary handle call transfer for voice integration --}}
-
-{{Set(name="result_success_type", value=GetTriggeredAct(fields="referenceIdn"))}}
-{{#if result_success_type == "transfer_call"}}
-    {{SetPersonaAttribute(id=GetUser(field="id"), field="last_conversation_ended_reason", value="assistant-forwarded-call")}}
-    {{_utilsSendSystemLogSkill(message="The call ended because the agent forwarded the call.")}}
-{{/if}}

@@ -1,2 +1,0 @@
-{{SetCustomerAttribute(field="project_attributes_private_data_injection_retrieved_data", value=" ")}}
-{{SetCustomerAttribute(field="project_attributes_private_data_injection_is_timer_running", value="False")}}

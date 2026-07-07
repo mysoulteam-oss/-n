@@ -1,7 +1,0 @@
-{% if GetState(name="launched") == "True" %}
-    {{Return()}}
-{% endif %}
-
-{{SetState(name="launched", value="True")}}
-
-{{_getContactDetailsSkill()}}
