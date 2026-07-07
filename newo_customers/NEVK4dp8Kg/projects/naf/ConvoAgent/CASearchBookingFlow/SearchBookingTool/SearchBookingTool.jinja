@@ -1,0 +1,16 @@
+{% set user_id = GetUser().id | string %}
+
+{% set valid_bookings = json.loads(check_user_bookings(user_id=user_id)) %}
+
+{% set booking_dates = [] %}
+{% for booking in valid_bookings %}
+    {{booking_dates.append(booking.datetime)}}
+{% endfor %}
+
+{% if not booking_dates %}
+    {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction="You have just checked the user's bookings on file and did not find anything relevant. Inform the user about that and continue according to your instruction.", uninterruptible="True", callAnalyzeConversationSkill="True")}}
+{% else %}
+    {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction="You have just checked the user's bookings on file and found the following results:
+" ~ '\n'.join(booking_dates) ~ "
+Inform the user about the options and continue according to your instruction", uninterruptible="True", callAnalyzeConversationSkill="True")}}
+{% endif %}

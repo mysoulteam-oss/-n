@@ -1,0 +1,18 @@
+id: 019f3b06-3aeb-7129-b93b-1a813f29c633
+idn: _collectMetricsSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c632
+    name: userId
+    default_value: " "
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c630
+    name: semaphore
+    default_value: " "
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c631
+    name: transcript
+    default_value: ""
+path: ""

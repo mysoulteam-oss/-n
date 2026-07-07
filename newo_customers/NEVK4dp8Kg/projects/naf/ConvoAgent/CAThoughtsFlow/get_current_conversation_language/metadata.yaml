@@ -1,0 +1,12 @@
+id: 019f3b06-3af1-7547-be24-f117810807cf
+idn: get_current_conversation_language
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3af1-7547-be24-f117810807ce
+    name: user_id
+    default_value: ""
+path: ""

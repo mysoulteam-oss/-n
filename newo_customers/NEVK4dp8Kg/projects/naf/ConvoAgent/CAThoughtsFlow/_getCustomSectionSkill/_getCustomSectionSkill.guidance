@@ -1,0 +1,3 @@
+{{#system~}}{{GetPersonaAttribute(id=userId, field="custom_prompt_section")}}{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

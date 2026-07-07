@@ -1,0 +1,15 @@
+id: 019f3b06-3aee-7139-ab2b-5344c58d25ac
+idn: _getFollowUpIntervalSkill
+title: _getFollowUpIntervalSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d25aa
+    name: userId
+    default_value: " "
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d25ab
+    name: agentAnswer
+    default_value: " "
+path: ""

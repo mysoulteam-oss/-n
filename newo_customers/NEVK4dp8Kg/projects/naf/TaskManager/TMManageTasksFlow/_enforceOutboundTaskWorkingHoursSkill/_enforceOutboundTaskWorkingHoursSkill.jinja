@@ -1,0 +1,172 @@
+{% set outbound_task_types = ["make_call", "send_sms"] %}
+{% if taskType not in outbound_task_types %}
+    {{Return(val=executionTime)}}
+{% endif %}
+
+{% if GetCustomerAttribute(field="project_attributes_setting_outbound_tasks_working_hours_status") != "True" %}
+    {{Return(val=executionTime)}}
+{% endif %}
+
+{% set business_timezone_name = GetCustomerAttribute(field="project_business_time_zone").strip() %}
+{% set compiled_raw = GetCustomerAttribute(field="project_attributes_private_dynamic_schedule_compiled").strip() %}
+
+{% if not business_timezone_name %}
+    {{Return(val=executionTime)}}
+{% endif %}
+
+{% set business_tz = zoneinfo.ZoneInfo(business_timezone_name) %}
+{% set utc_tz = zoneinfo.ZoneInfo("UTC") %}
+
+{% set now_utc = datetime.datetime.fromisoformat(GetDateTime(format="datetime")) %}
+{% if now_utc.tzinfo is none %}
+    {% set now_utc = now_utc.replace(tzinfo=utc_tz) %}
+{% else %}
+    {% set now_utc = now_utc.astimezone(utc_tz) %}
+{% endif %}
+
+{% if executionTime == "asap" %}
+    {% set reference_datetime_utc = now_utc %}
+{% else %}
+    {% set reference_datetime_utc = datetime.datetime.fromisoformat(executionTime) %}
+    {% if reference_datetime_utc.tzinfo is none %}
+        {% set reference_datetime_utc = reference_datetime_utc.replace(tzinfo=utc_tz) %}
+    {% else %}
+        {% set reference_datetime_utc = reference_datetime_utc.astimezone(utc_tz) %}
+    {% endif %}
+{% endif %}
+
+{% set reference_datetime_local = reference_datetime_utc.astimezone(business_tz) %}
+
+{% set rounded_reference_datetime = reference_datetime_local.replace(second=0, microsecond=0) %}
+{% set rounded_minute = ((reference_datetime_local.minute + 9) // 10) * 10 %}
+{% if rounded_minute >= 60 %}
+    {% set rounded_reference_datetime = rounded_reference_datetime.replace(minute=0) + datetime.timedelta(hours=1) %}
+{% else %}
+    {% set rounded_reference_datetime = rounded_reference_datetime.replace(minute=rounded_minute) %}
+{% endif %}
+
+{% if compiled_raw and GetCustomerAttribute(field="project_attributes_setting_working_hours_structured_format_enabled").strip() != "False" %}
+    {% set working_hours_status = working_schedule_utils.working_schedule_get_status(
+        dayOfWeek=reference_datetime_local.strftime("%A"),
+        requestedDate=reference_datetime_local.date().isoformat(),
+        time=reference_datetime_local.strftime("%H:%M"),
+    ) %}
+
+    {% if working_hours_status == "working_hours" %}
+        {{Return(val=executionTime)}}
+    {% endif %}
+
+    {% set compiled_schedule = json.loads(compiled_raw) %}
+    {% set regular = compiled_schedule.get("regular", {}) if compiled_schedule else {} %}
+    {% set exceptions = compiled_schedule.get("exceptions", []) if compiled_schedule else [] %}
+
+    {% if not regular %}
+        {{Return(val=executionTime)}}
+    {% endif %}
+
+    {% set ordered_days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] %}
+    {% set next_execution_datetime_utc = none %}
+
+    {# Search upcoming working-hour interval starts in business local time and return the first one. #}
+    {% for day_offset in range(14) %}
+        {% if next_execution_datetime_utc is none %}
+            {% set candidate_date = (rounded_reference_datetime + datetime.timedelta(days=day_offset)).date() %}
+            {% set candidate_date_iso = candidate_date.isoformat() %}
+            {% set candidate_day_key = ordered_days[candidate_date.weekday()] %}
+            {% set candidate_intervals = regular.get(candidate_day_key, []) | sort(attribute="open") %}
+            {% set candidate_start_limit = rounded_reference_datetime if day_offset == 0 else datetime.datetime.combine(candidate_date, datetime.time(0, 0), tzinfo=business_tz) %}
+
+            {% for exception in exceptions %}
+                {% if exception.get("date", "") == candidate_date_iso %}
+                    {% set candidate_intervals = exception.get("intervals", []) | sort(attribute="open") %}
+                {% endif %}
+            {% endfor %}
+
+            {% for interval in candidate_intervals %}
+                {% if next_execution_datetime_utc is none %}
+                    {% set open_hm = interval.get("open", "") %}
+                    {% set close_hm = interval.get("close", "") %}
+
+                    {% if open_hm and close_hm %}
+                        {% set open_hour = open_hm[:2] | int %}
+                        {% set open_minute = open_hm[3:] | int %}
+                        {% set close_hour = close_hm[:2] | int %}
+                        {% set close_minute = close_hm[3:] | int %}
+
+                        {% set interval_start = datetime.datetime.combine(candidate_date, datetime.time(open_hour, open_minute), tzinfo=business_tz) %}
+                        {% set interval_end_date = candidate_date if open_hm <= close_hm else candidate_date + datetime.timedelta(days=1) %}
+                        {% set interval_end = datetime.datetime.combine(interval_end_date, datetime.time(close_hour, close_minute), tzinfo=business_tz) %}
+                        {% set next_start = interval_start if interval_start >= candidate_start_limit else candidate_start_limit %}
+
+                        {% if next_start < interval_end %}
+                            {% set next_execution_datetime_utc = next_start.astimezone(utc_tz) %}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+
+    {% if next_execution_datetime_utc is none %}
+        {{Return(val=executionTime)}}
+    {% endif %}
+
+    {{Return(val=next_execution_datetime_utc.isoformat())}}
+{% endif %}
+{# If we reach this point, it means that the structured working hours format is not enabled or the compiled working hours object is not available. In this case, we will fall back to the legacy working hours format. #}
+{% set working_hours_object_raw = GetCustomerAttribute(field="project_attributes_private_dynamic_schedule_working_hours_object").strip() %}
+{% if not working_hours_object_raw %}
+    {{Return(val=executionTime)}}
+{% endif %}
+
+{% set working_hours_object = json.loads(working_hours_object_raw) %}
+{% set current_day_object = working_hours_object.get(reference_datetime_local.strftime("%A")) %}
+
+{% if current_day_object is not mapping %}
+    {{Return(val=executionTime)}}
+{% endif %}
+
+{% set current_bucket = "{:02d}{}".format(reference_datetime_local.hour, reference_datetime_local.minute // 10) %}
+{% set is_in_working_hours = current_day_object.working_day and current_bucket in current_day_object.working_hours %}
+
+{% if is_in_working_hours %}
+    {{Return(val=executionTime)}}
+{% endif %}
+
+{% set next_execution_datetime_utc = none %}
+
+{# Search upcoming working-hour slots in business local time and return the first one. #}
+{% for day_offset in range(14) %}
+    {% if next_execution_datetime_utc is none %}
+        {% set candidate_datetime = rounded_reference_datetime + datetime.timedelta(days=day_offset) %}
+        {% set candidate_date = candidate_datetime.date() %}
+        {% set candidate_day_object = working_hours_object.get(candidate_date.strftime("%A")) %}
+
+        {% if candidate_day_object is mapping and candidate_day_object.working_day and candidate_day_object.working_hours %}
+            {% if day_offset == 0 %}
+                {% set minimum_minutes = candidate_datetime.hour * 60 + candidate_datetime.minute %}
+            {% else %}
+                {% set minimum_minutes = 0 %}
+            {% endif %}
+
+            {% for working_hour in candidate_day_object.working_hours %}
+                {% if next_execution_datetime_utc is none %}
+                    {% set slot_hour = working_hour[:2] | int %}
+                    {% set slot_minute = (working_hour[2] | int) * 10 %}
+                    {% set slot_total_minutes = slot_hour * 60 + slot_minute %}
+
+                    {% if slot_total_minutes >= minimum_minutes %}
+                        {% set next_execution_datetime_local = datetime.datetime.combine(candidate_date, datetime.time(slot_hour, slot_minute), tzinfo=business_tz) %}
+                        {% set next_execution_datetime_utc = next_execution_datetime_local.astimezone(utc_tz) %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{% if next_execution_datetime_utc is none %}
+    {{Return(val=executionTime)}}
+{% endif %}
+
+{{Return(val=next_execution_datetime_utc.isoformat())}}

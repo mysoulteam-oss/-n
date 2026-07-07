@@ -1,0 +1,87 @@
+{% set session_ended_report_enabled = GetCustomerAttribute(field="project_attributes_setting_session_ended_report_enabled") %}
+{% set transfer_call_enabled = GetCustomerAttribute(field="project_attributes_setting_transfer_call_enabled") %}
+{% set transfer_call_criteria = GetCustomerAttribute(field="project_attributes_setting_transfer_call_criteria") %}
+
+{# Define relay information and relay information criteria blocks #}
+{% set relay_information_block = "" %}
+{% set relay_information_additional_block = "" %}
+{% if session_ended_report_enabled == "True" %}
+    {% set relay_information_block = "However, I can relay your message to the team. What exactly would you like to convey?" %}
+    {% if transfer_call_criteria.strip() %}
+        {% set relay_information_additional_block = "- Suggest the User to relay a message also if the User wants to:
+```
+" + transfer_call_criteria + "
+```" %}
+    {% endif %}
+{% endif %}
+
+{# Define transfer call criteria block #}
+{% set transfer_call_criteria_block = "" %}
+{% if transfer_call_enabled == "True" %}
+    {% if transfer_call_criteria.strip() %}
+        {% set transfer_call_criteria_block = "You must suggest the User to be connected with the co-worker if the User wants to:
+```
+" + transfer_call_criteria + "
+```" %}
+    {% endif %}
+{% endif %}
+
+{# Prepare final blocks (being used conditionally) #}
+
+{# Case with transfer call enabled (call transfer) #}
+{% set transfer_call_confirmation_phrase = GetCustomerAttribute(field="project_attributes_setting_transfer_call_confirmation_phrase") %}
+{% set agent_language_instructions_v2_enabled = GetCustomerAttribute(field="project_attributes_private_feature_flag_agent_language_instructions_v2") == "True" %}
+{% set current_conversation_language_enabled = agent_language_instructions_v2_enabled and (GetCustomerAttribute(field="project_attributes_private_feature_flag_current_conversation_language") == "True") %}
+{% set code_phrase_language = "Current conversation language" if current_conversation_language_enabled else "the user's language" %}
+{% system %}
+- The ConvoAgent may encounter situations where the User requests to be transferred to a human co-worker. You are able to do it by asking for confirmation: "{{transfer_call_confirmation_phrase}}". Only if the User explicitly agrees to be connected, ConvoAgent must say the special code-phrase in {{code_phrase_language}}: **"I'll connect you right away. Please hold on for a moment."**. Without saying this phrase, the connection will not happen, so it's important to say it.
+{{transfer_call_criteria_block}}
+{% end %}
+{% set transfer_call_case = GetCurrentPrompt() %}
+
+{# Case with transfer call disabled, outside of working hours (relay information) #}
+{% set relay_information_outside_of_working_hours_case = '- The ConvoAgent may encounter situations where the User requests to be transferred to a human co-worker. You cannot transfer calls to the manager at the moment, as it is currently outside of working hours, so tell them: "We are closed right now... [continue according to **operating-phrase**]". '  + relay_information_block + ' ' + relay_information_additional_block %}
+
+{# Case with transfer call disabled, during working hours or when working hours status is not known (relay information) #}
+{% set relay_information_case = '- The ConvoAgent may encounter situations where the User requests to be transferred to a human co-worker. However, you are not able to transfer calls to the manager. Clearly state this and apologize to the User for the inconvenience. Tell them: "Unfortunately, I am not able to transfer calls to the manager. ' + relay_information_block + '".
+' + relay_information_additional_block %}
+
+{# Combine everything depending on conditions such as working hours status #}
+
+{# When transfer call is disabled #}
+{% if transfer_call_enabled == "False" or conversation_channel == "webcall" %}
+    {{Return(val=relay_information_case)}}
+{% endif %}
+
+{% set working_hour_escalation_phone = GetCustomerAttribute(field="project_business_working_hour_escalation_phone") %}
+{% set non_working_hour_escalation_phone = GetCustomerAttribute(field="project_business_non_working_hour_escalation_phone") %}
+{% set transfer_call_phone_numbers = GetCustomerAttribute(field="project_attributes_setting_transfer_call_phone_numbers") %}
+
+{# When working hours status is defined #}
+{% if GetCustomerAttribute(field="project_attributes_setting_define_conversation_is_during_working_hours_enabled") == "True" %}
+    {# Non-working hours case #}
+    {% if GetPersonaAttribute(id=userId, field="working_hours_status") == "false" %}
+        {% if non_working_hour_escalation_phone.strip() %}
+            {{Return(val=transfer_call_case.strip())}}
+        {% else %}
+            {{Return(val=relay_information_outside_of_working_hours_case.strip())}}
+        {% endif %}
+    {# Working hours case #}
+    {% else %}
+        {% if working_hour_escalation_phone.strip() or transfer_call_phone_numbers.strip() %}
+            {{Return(val=transfer_call_case.strip())}}
+        {% else %}
+            {{Return(val=relay_information_case.strip())}}
+        {% endif %}
+    {% endif %}
+{# When working hours status is NOT defined #}
+{% else %}
+    {% if working_hour_escalation_phone.strip() or non_working_hour_escalation_phone.strip() or transfer_call_phone_numbers.strip() %}
+        {{Return(val=transfer_call_case.strip())}}
+    {% else %}
+        {{Return(val=relay_information_case.strip())}}
+    {% endif %}
+{% endif %}
+
+{# Fallback (relay information) #}
+{{Return(val=relay_information_case.strip())}}

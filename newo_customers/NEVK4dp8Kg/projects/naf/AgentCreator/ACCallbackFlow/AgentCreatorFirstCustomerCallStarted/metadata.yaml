@@ -1,0 +1,9 @@
+id: 019f3b06-3ab8-7a94-8b73-f983926285ef
+idn: AgentCreatorFirstCustomerCallStarted
+title: AgentCreatorFirstCustomerCallStarted
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

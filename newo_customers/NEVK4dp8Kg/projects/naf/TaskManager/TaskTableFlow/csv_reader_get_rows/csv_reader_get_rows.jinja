@@ -1,0 +1,71 @@
+{% set calling_table = GetTriggeredAct().arguments.calling_table %}
+
+{% if not calling_table %}
+    {% if task_type == "make_call" %}
+      {% set calling_table = GetCustomerAttribute(field="project_attributes_outbound_call_table_csv") %}
+  {% else %}
+    {{Return(val="")}}
+  {% endif %}
+{% endif %}
+
+{% if not calling_table.strip() %}
+    {{Return(val="")}}
+{% endif %}
+
+{# --- normalize newlines --- #}
+{% set text = calling_table|replace('\r\n', '\n')|replace('\r', '\n') %}
+
+{# --- first: split into *logical* CSV records (respecting quoted newlines) --- #}
+{% set records_ns = namespace(records=[]) %}
+{% set current = '' %}
+
+{% for line in text.split('\n') %}
+  {% if current %}
+    {% set current = current ~ '\n' ~ line %}
+  {% else %}
+    {% set current = line %}
+  {% endif %}
+
+  {# if total quote count is even, we’re at the end of a logical record #}
+  {% if current.count('"') % 2 == 0 %}
+    {% if current|trim != '' %}
+      {% set records_ns.records = records_ns.records + [current] %}
+    {% endif %}
+    {% set current = '' %}
+  {% endif %}
+{% endfor %}
+
+{# leftover record (if file doesn't end with newline) #}
+{% if current|trim != '' %}
+  {% set records_ns.records = records_ns.records + [current] %}
+{% endif %}
+
+{# --- second: split each record into fields (quoted + unquoted) --- #}
+{# pattern: "quoted""field" or unquoted_field #}
+{% set pattern = '"((?:[^"]|"")*)"|([^,]*)' %}
+{% set parsed_ns = namespace(rows=[]) %}
+
+{% for rec in records_ns.records %}
+  {% set parts = re.split(',(?=(?:[^"]*"[^"]*")*[^"]*$)', rec) %}
+  {% set row = [] %}
+
+  {% for cell in parts %}
+    {% set c = cell %}
+
+    {# trim outer quotes if present, and unescape "" -> " #}
+    {% if c.startswith('"') and c.endswith('"') and (c|length >= 2) %}
+      {% set c = c[1:-1].replace('""', '"') %}
+    {% endif %}
+
+    {% set row = row + [c] %}
+  {% endfor %}
+
+  {% if row %}
+    {% set parsed_ns.rows = parsed_ns.rows + [row] %}
+  {% endif %}
+{% endfor %}
+
+{# Remove current table, so as not to launch calling again. #}
+{{SetCustomerAttribute(field="project_attributes_outbound_call_table_csv", value="")}}
+
+{{Return(val=json.dumps(parsed_ns.rows, ensure_ascii=False, indent=2))}}

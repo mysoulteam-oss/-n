@@ -1,0 +1,10 @@
+id: abda09d0-91aa-448d-9df4-3403ef571cdb
+idn: Metadata
+title: Metadata
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events: []
+state_fields: []

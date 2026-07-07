@@ -1,0 +1,15 @@
+id: 019f3b06-3aed-7514-8647-494157904929
+idn: evaluate_repeating_user_messages
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aed-7514-8647-494157904928
+    name: message_text
+    default_value: ""
+  - id: 019f3b06-3aed-7514-8647-494157904927
+    name: user_id
+    default_value: ""
+path: ""

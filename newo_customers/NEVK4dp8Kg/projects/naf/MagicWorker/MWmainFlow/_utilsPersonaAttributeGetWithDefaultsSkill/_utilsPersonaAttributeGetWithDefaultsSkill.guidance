@@ -1,0 +1,9 @@
+{{!-- Returns Persona Attribute by provided `field` if it's not empty. Otherwise, returns `defaultValue` --}}
+
+{{Set(name="attribute_value", value=GetPersonaAttribute(id=id, field=field))}}
+
+{{#if not IsEmpty(text=attribute_value)}}
+    {{Return(val=attribute_value)}}
+{{/if}}
+
+{{Return(val=defaultValue)}}

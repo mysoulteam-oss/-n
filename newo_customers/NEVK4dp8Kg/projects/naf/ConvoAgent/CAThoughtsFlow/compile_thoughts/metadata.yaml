@@ -1,0 +1,12 @@
+id: 019f3b06-3af0-77e7-b66a-c13b7444d147
+idn: compile_thoughts
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3af0-77e7-b66a-c13b7444d146
+    name: thoughts
+    default_value: ""
+path: ""

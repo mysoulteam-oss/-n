@@ -1,0 +1,15 @@
+id: 019f3b06-3f13-7127-bd06-37a9a9fb6cc4
+idn: add_applied_change
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3f13-7127-bd06-37a9a9fb6cc2
+    name: change
+    default_value: ""
+  - id: 019f3b06-3f13-7127-bd06-37a9a9fb6cc3
+    name: change_id
+    default_value: ""
+path: ""

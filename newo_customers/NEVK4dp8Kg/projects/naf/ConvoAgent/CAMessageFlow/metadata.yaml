@@ -1,0 +1,19 @@
+id: 019f3b06-3aee-7139-ab2b-5344c58d25f7
+idn: CAMessageFlow
+title: CAMessageFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d2605
+    description: null
+    idn: convoagent_send_notification_message
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: SendNotificationMessage
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

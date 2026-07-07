@@ -1,0 +1,12 @@
+{% set working_hours_status = working_schedule_utils.working_schedule_get_status(
+    dayOfWeek=dayOfWeek,
+    time=time,
+    requestedDate=requestedDate
+) %}
+
+{# Fallback to legacy LLM reasoning only when deterministic schedule data is unavailable. #}
+{% if not working_hours_status %}
+    {{ Return(val=_utilsGetWorkingStatusLLMSkill(dayOfWeek=dayOfWeek, time=time)) }}
+{% endif %}
+
+{{ Return(val=working_hours_status) }}

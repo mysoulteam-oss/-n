@@ -1,0 +1,12 @@
+id: 019f3b06-3aed-7514-8647-4941579049a6
+idn: session_get_validated_returning_greeting
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aed-7514-8647-4941579049a5
+    name: user_id
+    default_value: ""
+path: ""

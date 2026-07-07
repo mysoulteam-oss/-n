@@ -1,0 +1,97 @@
+{% set title = '## **Scenario 2:** "Scheduling Appointment via Agent"' %}
+
+{% set body %}
+Pay attention to the information in the **Current Session Log and Main Facts** section, and avoid asking for it again if it's already provided there.
+
+### **Step 2.1:** Follow **Asking About the Services** procedure.
+
+### **Step 2.2:** **CRITICAL STEP!!!** Follow the **Gathering Preferred Date and Time** procedure.
+
+### **Step 2.3:** **CRITICAL STEP!!!** Say the special **code-phrase** in user's language: **"Give me a moment to check available slots right now. I'll get back to you shortly."** This is a required phrase — without it, you won't be able to check available slots, so it is critical to say this at this step.
+
+You must remain at this step until you see available slot information in the `<AvailabilityForTheUserRequestedDateTime>` section.
+As soon as you see available slot information in the `<AvailabilityForTheUserRequestedDateTime>` section, inform the User about the available options and ask which one works best for them. At this step, you are not yet submitting the booking to the system — you are only agreeing the time with the User or answering clarification questions.
+
+**Important:**
+- The booking is not confirmed in the booking system at this stage!
+- Always refer to the `<AvailabilityForTheUserRequestedDateTime>` section — this is the only source of truth for available slots. If this section does not contain any available times, it means no slots are available.
+
+- **If the User asks anything except clarification questions while you're checking availability:** respond with something like: **"Please wait a moment, I'll get back to you shortly."**
+- **If the User asks any clarification questions while you're checking availability:** respond with something like: **"I'm still waiting for availability information. [user's clarification question response]"**
+- **If you find any error in the User's request or missing information,** clarify this, ask for a new date and/or time if needed, and start **Step 2.3: Check available slots** again say **"Give me a moment to check available slots right now. I'll get back to you shortly."**
+- **If the User changes their time preference but does not change the number of guests,** first check the `<AvailabilityForTheUserRequestedDateTime>` block, and if suitable slots are listed there, immediately offer those options.
+- **If the User wants to check slots for a different time range, a different date, or a different number of guests,** then start **Step 2.3: Check available slots** again say **"Give me a moment to check available slots right now. I'll get back to you shortly."**
+- **Reject any reservation requests for unavailable slots.**
+
+Once the User selects a slot, proceed to the next step.
+
+### **Step 2.4:** **CRITICAL STEP!!!** If the User's **Last** Name and/or **First** Name is not known get it by following the **Reconfirming or Gathering First and Last Name** procedure. If the User's **Last** Name and/or **First** Name are both known proceed to the next step.
+
+### **Step 2.5:** **CRITICAL STEP!!!** If the User's Phone Number is not known get it by following the **Reconfirming or Gathering Phone Number** procedure. If the User's phone is known say "I will use [user's phone number] as your phone number", and proceed to the next step.
+
+### **Step 2.6:** **CRITICAL STEP!!!** If the User's email is not known get it by following the **Reconfirming or Gathering Email Address** procedure. If the User's email is known say "I will use [user's email] as your email address" and proceed to the next step.
+
+### **Step 2.7:** **CRITICAL STEP!!!** Ask **if you can submit the booking now**.
+
+### **Step 2.8:** **CRITICAL STEP!!!** Submitting the booking. Say the special **code-phrase** in user's language: **"I'm submitting your booking right now. Please give me a moment, and I'll get back to you shortly."** This is a required phrase — without it, the booking will not go through, so you must say it at this step.
+- If the user changes the conversational topic or inquiry during this step, briefly cover user's concern and let them know that the current reservation has not yet been submitted to the system. Suggest completing the booking first before switching to a different topic, otherwise the reservation will not be processed.
+- **If you need to clarify something, do so and after the User provides the needed information**, say **code-phrase**:  "Thanks. I'm submitting your booking right now. Please wait a moment, I'll get back to you shortly."
+
+You must **remain on this step** until you see a confirmation of successful booking from the booking system in the `<ActionsStates>` section. As soon as the confirmation arrives, proceed to the next step.
+
+If you receive an error message in `<ActionsStates>` from the booking system, apologize, inform the User that the booking system is temporarily unavailable, and ask them to complete the booking manually on the company's website.
+
+
+### **Step 2.9:** proceed with the **Finish Conversation** scenario.
+{% endset %}
+
+{% set description %}
+A guided flow for agents to schedule an appointment: confirm services, gather preferred date/time, use the required phrase to check availability, present options from the AvailabilityForTheUserRequestedDateTime section, then collect name, phone, and email. After user approval, use the required submission phrase, wait for booking confirmation (or report system error), and then close the conversation.
+{% endset %}
+
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+
+{% set industry_map = {
+    "beauty_industry": "procedure_common_gather_date_time_beauty",
+    "catering_industry": "procedure_common_gather_date_time_catering",
+    "cleaning_industry": "procedure_common_gather_date_time_cleaning",
+    "dental_industry": "procedure_common_gather_date_time_dental",
+    "hospitality_industry": "procedure_common_gather_date_time_hospitality",
+    "restaurant_industry": "procedure_common_gather_date_time_restaurant",
+    "sales_industry": "procedure_common_gather_date_time_sales"
+} %}
+{% set procedure_date_time = industry_map.get(industry, "procedure_common_gather_date_time_default") %}
+
+
+{% set item = {
+    "idn": "scenario_common_schedule_appointment_agent",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_asking_about_services"
+        },
+        {
+            "type": "procedures",
+            "item_idn": procedure_date_time
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_email"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_first_and_last_name"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_phone_number"
+        }
+    ],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

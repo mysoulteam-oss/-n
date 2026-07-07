@@ -1,0 +1,15 @@
+{# ? TODO: Setup remaining settings #}
+
+{# `agent_creator_business_info_website_url` must not be empty, `project_business_website_url` is used as a fallback for existing old accounts #}
+{% set agent_creator_business_info_website_url = GetCustomerAttribute(field="agent_creator_business_info_website_url") %}
+{% set website_url = agent_creator_business_info_website_url if agent_creator_business_info_website_url.strip() else GetCustomerAttribute(field="project_business_website_url") %}
+
+{{utils_connector_create_if_not_exists(
+    integrationIdn = "newo_chat",
+    connectorIdn = "newo_chat",
+    title = "newo_chat",
+    settings = {
+        "client_website_url": website_url
+    },
+    start = True
+)}}

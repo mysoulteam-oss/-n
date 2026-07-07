@@ -1,0 +1,42 @@
+{{utils_connector_create_if_not_exists(
+    integrationIdn = "api",
+    connectorIdn = "vibe",
+    title = "vibe",
+    settings = {},
+    start = True
+)}}
+
+{% set vibe_knowledge_base_webhook = GetWebhook(webhookIdn="vibe_knowledge_base_result", webhookType="incoming") %}
+{% if not vibe_knowledge_base_webhook %}
+    {{CreateWebhook(
+        idn = "vibe_knowledge_base_result",
+        connectorIdn = "vibe",
+        webhookType = "incoming",
+        description = "VibeAgent - Knowledge Base Results",
+        allowedIps = [],
+        eventIdns = ["vibe_knowledge_base_result"]
+    )}}
+{% endif %}
+
+{{utils_connector_create_if_not_exists(
+    integrationIdn = "sandbox",
+    connectorIdn = "vibe_agent",
+    title = "vibe_agent",
+    settings = {},
+    start = True
+)}}
+
+{% set client_website_url = utils_get_platform_client_website_url() %}
+{% if not client_website_url.strip() %}
+    {% set client_website_url = "https://portal.newo.ai, https://portal-newo.stg.newo.ai" %}
+{% endif %}
+
+{{utils_connector_create_if_not_exists(
+    integrationIdn = "newo_chat",
+    connectorIdn = "vibe_agent",
+    title = "vibe_agent",
+    settings = {
+        "client_website_url": client_website_url
+    },
+    start = True
+)}}

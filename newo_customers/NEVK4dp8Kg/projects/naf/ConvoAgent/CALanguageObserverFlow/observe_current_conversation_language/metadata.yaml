@@ -1,0 +1,21 @@
+id: 019f3b06-3aec-7a79-bb1b-812bfca74a30
+idn: observe_current_conversation_language
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aec-7a79-bb1b-812bfca74a2c
+    name: conversation_channel
+    default_value: chat
+  - id: 019f3b06-3aec-7a79-bb1b-812bfca74a2d
+    name: conversation_memory
+    default_value: ""
+  - id: 019f3b06-3aec-7a79-bb1b-812bfca74a2e
+    name: user_id
+    default_value: ""
+  - id: 019f3b06-3aec-7a79-bb1b-812bfca74a2f
+    name: user_utterance
+    default_value: ""
+path: ""

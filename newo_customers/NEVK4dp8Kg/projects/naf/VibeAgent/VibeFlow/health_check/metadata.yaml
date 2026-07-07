@@ -1,0 +1,21 @@
+id: 019f3b06-3f14-719e-a0ee-6e408677fcdc
+idn: health_check
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3f14-719e-a0ee-6e408677fcd8
+    name: memory
+    default_value: ""
+  - id: 019f3b06-3f14-719e-a0ee-6e408677fcdb
+    name: parameters
+    default_value: ""
+  - id: 019f3b06-3f14-719e-a0ee-6e408677fcda
+    name: already_taken_actions
+    default_value: ""
+  - id: 019f3b06-3f14-719e-a0ee-6e408677fcd9
+    name: transaction_id
+    default_value: ""
+path: ""

@@ -1,0 +1,19 @@
+
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "agent_must_send_dialpad_output": {
+      "type": "boolean",
+      "description": "Set to `true` if the agent explicitly states they themselves will send a dialpad output or the agent was asked to do so. Otherwise, set to `false`."
+    },
+    "dialpad_output": {
+      "type": "number",
+      "description": "The output that the agent must send to the dialpad."
+    }
+  },
+  "required": ["agent_must_send_dialpad_output", "dialpad_output"]
+}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

@@ -1,0 +1,68 @@
+{{#system~}}
+Your current TASK_OBJECT SCHEMA:
+
+{{_getTaskObjectSchemaSkill(taskIdn=taskIdn, industry=industry, convoAgentPersonaId=convoAgentPersonaId)}}
+
+Your CURRENT TASK_OBJECT:
+
+{{taskObject}}
+
+Read the TASK_OBJECT SCHEMA and your CURRENT TASK_OBJECT. You must carefully check whether all the requirements are met. We only call fields Required fields if they are explicitly designated as Required fields. If a field is not designated as a Required field, then it is Optional. All required fields should not contain "required missing" or "required_missing" value.
+
+Q: Among the required fields in TASK_OBJECT SCHEMA, do you see any fields in CURRENT TASK_OBJECT that contain "required missing" or "required_missing" value? Say True or False, do not explain:
+A: {{~/system}}
+
+{{#assistant~}}
+{{Set(name="missing_required_fields_yes_no", value=Gen(temperature=0.2, topP=0, skipFilter=True, thinkingBudget=425), expose=True)}}
+{{~/assistant}}
+
+{{#if IsSimilar(val1=missing_required_fields_yes_no, val2="False", threshold=0.7)}}
+    {{! we send prepared task object further !}}
+    {{_sendSmsSkill(smsText=GetValueJSON(obj=taskObject, key="text"), targetNumber=GetValueJSON(obj=taskObject, key="phone_number"))}}
+    {{_publishTaskSkill(taskObject=taskObject, industry=industry, convoAgentPersonaId=convoAgentPersonaId)}}
+
+    {{! then we check if there is no owner_next_task_idn...}}
+    {{Set(name="owner_next_task_idn", value=GetValueJSON(obj=taskObject, key="owner_next_task_idn"))}}
+
+    {{#if IsSimilar(val1=owner_next_task_idn, val2=" ", threshold=0.7)}}
+        {{Set(name="owner_next_task_idn", value="no_task")}}
+    {{/if}}
+
+    {{#if IsSimilar(val1=owner_next_task_idn, val2="missing", threshold=0.7)}}
+        {{Set(name="owner_next_task_idn", value="no_task")}}
+    {{/if}}
+    {{#if IsSimilar(val1=owner_next_task_idn, val2="optional_missing", threshold=0.7)}}
+        {{Set(name="owner_next_task_idn", value="no_task")}}
+    {{/if}}
+
+    {{#if IsSimilar(val1=owner_next_task_idn, val2="no_task", threshold=0.7)}}
+        {{Set(name="owner_next_task_idn", value="no_task")}}
+    {{/if}}
+
+
+    {{#if owner_next_task_idn=="no_task"}}
+        {{! if not, to receive the next tasks}}
+        {{! figure out how to handle the next tasks in the queue}}
+        {{! discuss task priority, for example, if there was a next task in the current task, but other tasks entered the queue during execution, which task should be completed first?}}
+        {{SetState(name="task_idn", value=" ")}}
+        {{SetState(name="task_context", value=" ")}}
+    {{else}}
+        {{! and if there is, we assign a new task and send it for execution to the baker }}
+        {{SetState(name="task_idn", value=owner_next_task_idn)}}
+        {{! clarify with which context we should execute the next task from the current task, with the previous one or a new one?}}
+        {{! if with a new one, then uncomment this:}}
+        {{SetState(name="task_context", value=taskObject)}}
+        {{! if with the previous one, do nothing}}
+        {{_bakeSkill(task_context=taskObject, task_idn=owner_next_task_idn)}}
+    {{/if}}
+{{else}}
+    {{#system~}}
+    Among the required fields, if some information is missing, give the a brief recommendation on what to fill out, starting with "You must fill out the following required info..."
+    A: {{~/system}}
+
+    {{#assistant~}}
+    {{Set(name="supervisor_advice", value=Gen(temperature=0.2, topP=0, skipFilter=True, thinkingBudget=425), expose=True)}}
+    {{~/assistant}}
+
+    {{_bakeSkill(supervisor_advice=supervisor_advice, taskIdn=taskIdn, taskContext=taskContext)}}
+{{/if}}

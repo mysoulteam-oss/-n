@@ -1,0 +1,28 @@
+{% set title = '## **Scenario 0:** "Introduction"' %}
+
+{% set body %}
+### **Step 0.1:** ConvoAgent immediately asks if they may know the User's name, but does not insist. If the User does not provide their name or it is not clearly heard, ConvoAgent proceeds to the next step.
+
+### **Step 0.2:** If the User has not yet mentioned the reason for their call, ask how you can assist - e.g.: "Would you like to make a reservation, or is there anything else I can assist you with"? Otherwise, proceed to the next step.
+
+### **Step 0.3:** If the User indicates they want to make a reservation, greet them very warmly, call them by name, and say that we are thrilled to welcome them to our family!
+
+### **Step 0.4:** Start the relevant scenario as described in the **Scenarios** section based on the User's inquiry and the **<IntentTypeMap>**.
+{% endset %}
+
+{% set description %}
+ConvoAgent politely asks for the caller’s name, then checks how it can assist if the purpose isn’t yet stated. If the caller wants a reservation, it warmly greets them by name, welcomes them, and seamlessly proceeds to the appropriate scenario based on their intent.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_hospitality_introduction",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

@@ -1,0 +1,67 @@
+{% set customer_info = GetCustomerInfo() %}
+{% if not customer_info %}
+    {{Return()}}
+{% endif %}
+
+{% set platform_links = customer_info.platform_links %}
+{% if not platform_links %}
+    {{Return()}}
+{% endif %}
+
+{% set builder_link = platform_links.builder %}
+{% if not builder_link %}
+    {{Return()}}
+{% endif %}
+
+{% set tenant = customer_info.tenant %}
+
+{% set client_website_url = platform_links.builder ~ ", " ~ platform_links.portal %}
+
+{% if "dev" in builder_link %}
+    {% set client_website_url = client_website_url ~ ", https://workflow-builder-widget.dev.newo.ai" %}
+    {% if tenant != "newo" %}
+        {% if "https://builder.dev.newo.ai" not in client_website_url %}
+            {% set client_website_url = client_website_url ~ ", https://builder.dev.newo.ai" %}
+        {% endif %}
+        {% if "https://portal.dev.newo.ai" not in client_website_url %}
+            {% set client_website_url = client_website_url ~ ", https://portal.dev.newo.ai" %}
+        {% endif %}
+    {% endif %}
+{% elif "qa" in builder_link %}
+    {% set client_website_url = client_website_url ~ ", https://workflow-builder-widget.qa.newo.ai" %}
+    {% if tenant != "newo" %}
+        {% if "https://builder.qa.newo.ai" not in client_website_url %}
+            {% set client_website_url = client_website_url ~ ", https://builder.qa.newo.ai" %}
+        {% endif %}
+        {% if "https://portal.qa.newo.ai" not in client_website_url %}
+            {% set client_website_url = client_website_url ~ ", https://portal.qa.newo.ai" %}
+        {% endif %}
+    {% endif %}
+{% elif "stg" in builder_link %}
+    {% set client_website_url = client_website_url ~ ", https://workflow-builder-widget.stg.newo.ai" %}
+    {% if tenant != "newo" %}
+        {% if "https://builder.stg.newo.ai" not in client_website_url %}
+            {% set client_website_url = client_website_url ~ ", https://builder.stg.newo.ai" %}
+        {% endif %}
+        {% if "https://portal-newo.stg.newo.ai" not in client_website_url %}
+            {% set client_website_url = client_website_url ~ ", https://portal-newo.stg.newo.ai" %}
+        {% endif %}
+    {% endif %}
+{% else %}
+    {% set client_website_url = client_website_url ~ ", https://workflow-builder-widget.newo.ai" %}
+    {% if tenant != "newo" %}
+        {% if "https://builder.newo.ai" not in client_website_url %}
+            {% set client_website_url = client_website_url ~ ", https://builder.newo.ai" %}
+        {% endif %}
+        {% if "https://portal.newo.ai" not in client_website_url %}
+            {% set client_website_url = client_website_url ~ ", https://portal.newo.ai" %}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+{{utils_connector_set_setting_if_exists(
+    integrationIdn = "newo_chat",
+    connectorIdn = "workflow_builder",
+    field = "client_website_url",
+    value = client_website_url
+)}}

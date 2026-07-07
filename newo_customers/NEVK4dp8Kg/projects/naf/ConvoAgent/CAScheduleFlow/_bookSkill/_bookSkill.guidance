@@ -1,0 +1,288 @@
+{{Set(name="industry", value=GetCustomerAttribute(field="project_business_industry"))}}
+
+{{#if industry == "restaurant_industry"}}
+    {{Set(name="booking_urls", value=GetPersonaAttribute(id=userId, field="availability_booking_urls"))}}
+    {{!-- Restaurant in case the slot is bookable only via link --}}
+    {{#if not IsEmpty(text=booking_urls)}}
+        {{Set(name="schema", value=_schemasSkill(submittingBookingSchema="True", userId=userId))}}
+        {{Set(name="booking_details", value=_utilsGatherDetailsSkill(memory=memory, agentAnswer=agentAnswer, userId=userId, schema=schema, industry=industry))}}
+        {{Set(name="payload", value=GetValueJSON(obj=booking_details, key="payload"))}}
+        {{Set(name="time_formatted", value=Stringify(GetValueJSON(obj=payload, key="timeFormatted")))}}
+        {{Set(name="place", value=Stringify(GetValueJSON(obj=payload, key="place")))}}
+        {{Set(name="key", value=Concat(place, " - ", time_formatted))}}
+        {{Set(name="url", value=Stringify(GetValueJSON(obj=booking_urls, key=key)))}}
+        {{#if not IsEmpty(text=url)}}
+            {{Set(name="additional_validation_object", value=GetValueJSON(obj=booking_details, key="additionalValidation"))}}
+            {{Set(name="booking_date_time", value=Stringify(GetValueJSON(obj=additional_validation_object, key="dateTime")))}}
+            {{Set(name="previous_user_bookings", value=GetPersonaAttribute(id=userId, field="user_bookings"))}}
+            {{#if GetPersonaAttribute(id=userId, field="booking_submitted") == "True"}}
+                {{#if not IsEmpty(text=previous_user_bookings)}}
+                    {{Set(name="same_reservation_index", value=GetIndexesOfItemsArrayJSON(array=previous_user_bookings,filterPath=Concat("$[?(@=='", booking_date_time, "')]")))}}
+                    {{#if not IsEmpty(text=same_reservation_index)}}
+                        {{Set(name="footnote_actor_id", value=_utilsGetFootnoteSkill(userId=userId, system="True"))}}
+                        {{SendMessage(
+                            message=Concat("System log: Request to book a table for ", booking_date_time, " is already processed (manual SMS). Skipping."),
+                            actorIds=footnote_actor_id
+                        )}}
+                        {{Return()}}
+                    {{/if}}
+                {{/if}}
+            {{/if}}
+            {{SetPersonaAttribute(id=userId, field="availability_booking_url_selected", value=url)}}
+            {{!-- Wait for the broadcast conversation analysis (which extracts/updates the user's phone number) to finish before fetching it --}}
+            {{_check_broadcast_process_status_skill_nsl_wrapper(user_id=userId)}}
+            {{Set(name="user_phone", value=GetPersonaAttribute(id=userId, field="provided_phone_number_with_country_code"))}}
+            {{Set(name="conversation_channel", value=session_get_conversation_channel(user_id=userId))}}
+
+            {{Set(name="voice_channel", value="False")}}
+
+            {{#if conversation_channel == "phone"}}
+                {{Set(name="voice_channel", value="True")}}
+            {{/if}}
+
+            {{#if conversation_channel == "webcall"}}
+                {{Set(name="voice_channel", value="True")}}
+            {{/if}}
+
+            {{#if voice_channel == "True"}}
+                {{#if not IsEmpty(text=user_phone)}}
+                    {{!-- If we have the phone number on file, we send immediately  to skip turn. --}}
+                    {{SendSystemEvent(
+                        eventIdn="sms_worker_send_sms",
+                        connectorIdn="system",
+                        sms_text=Concat("Please, confirm your reservation by filling out the form: ", url),
+                        phone_number=user_phone,
+                        notify="false"
+                    )}}
+                    {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction="Inform the user that their desired timeslot could be reserved only after manual confirmation. You have sent them this SMS already. Ask the User to open the link and finish their reservation, ask if they need any help with the form.", uninterruptible="True")}}
+                {{else}}
+                    {{!-- We re in the phone call, but the agent has no confirmed phone number --}}
+                    {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction="Inform the user that their desired timeslot could be reserved only after manual confirmation. Tell them that you will need to send them a link to confirm the reservation and that you need to reconfirm their phone number for it.", uninterruptible="True")}}
+                {{/if}}
+            {{else}}
+                {{!-- In chat we just dump the link.--}}
+                {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction=Concat("Inform the user that their desired timeslot could be reserved only after manual confirmation. Send them the following URL and ask them to finalize the reservation: ", url), uninterruptible="True")}}
+            {{/if}}
+            {{Set(name="booking_log", value="The agent figured out that the booking requires manual confirmation. The agent can and should send the SMS with a link to confirm a booking! The agent must inform the user that he will send an SMS with the booking link for manual confirmation right away.")}}
+            {{SetPersonaAttribute(id=userId, field="action_state_booking_submitting", value=booking_log)}}
+
+            {{SetPersonaAttribute(id=userId, field="booking_submitted", value="True")}}
+
+            {{Set(
+                name="user_bookings",
+                value=AppendItemsArrayJSON(array=previous_user_bookings, items=AsStringJSON(val=booking_date_time))
+            )}}
+            {{SetPersonaAttribute(id=userId, field="user_bookings", value=user_bookings)}}
+            {{Return()}}
+        {{/if}}
+    {{/if}}
+
+    {{!-- TODO: Discuss and refactor (potentially, there might be a valid case where slots were not checked) --}}
+    {{!-- Handle case where available slots were not checked but Agent decided to make a booking (skipped step with slots checking) --}}
+
+    {{#if GetCustomerAttribute(field="project_attributes_setting_booking_type") == "default"}}
+        {{!-- If "booking_slots_availability_result" is empty, it means that Agent did not request slots so it is not correct to make a booking --}}
+        {{Set(name="booking_slots_availability_result", value=GetPersonaAttribute(id=userId, field="booking_slots_availability_result"))}}
+        {{#if IsEmpty(text=booking_slots_availability_result)}}
+            {{SendSystemEvent(
+                eventIdn="urgent_message",
+                connectorIdn="system",
+                baseInstruction="**You accidentally skipped checking availability for the reservation**. Apologize the user for the inconvenience and:
+    - If the user has specified a date and time for their reservation, say, 'Give me a moment to check available slots right now. I'll get back to you shortly.' and continue booking later.
+    - If the user did not provide date and time for reservation - **ask them to provide date and time for the reservation** and then you will proceed with checking the slots availability.",
+                uninterruptible="True"
+            )}}
+            {{Return()}}
+        {{/if}}
+
+        {{!-- If "booking_slots_availability_checking_status" is `True`, it means that Agent is checking slots right now so it is not correct to make a booking --}}
+        {{Set(name="booking_slots_availability_checking_status", value=GetPersonaAttribute(id=userId, field="booking_slots_availability_checking_status"))}}
+        {{#if booking_slots_availability_checking_status == "True"}}
+            {{Set(name="booking_slots_availability_checking_status_details", value=GetPersonaAttribute(id=userId, field="booking_slots_availability_checking_status_details"))}}
+            {{SendSystemEvent(
+                eventIdn="urgent_message",
+                connectorIdn="system",
+                baseInstruction=Concat("**You accidentally proceeded with booking before finalizing checking availability for the reservation**. Apologize the user for the inconvenience and tell that you are checking the slots availability and will proceed with the booking after.
+
+    Slots availability checking status:
+    '", booking_slots_availability_checking_status_details, "'."),
+                uninterruptible="True"
+            )}}
+            {{Return()}}
+        {{/if}}
+    {{/if}}
+
+    {{#if not _utilsFeatureFlagIsActiveSkill(featureFlagName="booking_use_new_restaurant_create_booking_approach")}}
+        {{#if GetCustomerAttribute(field="project_attributes_setting_booking_type") == "default"}}
+            {{Set(name="schema", value=_schemasSkill(submittingBookingRestaurantSchema="True", userId=userId))}}
+            {{Set(name="booking_details", value=_utilsGatherDetailsSkill(memory=memory, agentAnswer=agentAnswer, userId=userId, schema=schema, industry=industry))}}
+            {{_utilsSendSystemLogSkill(message=Concat("Booking details: ", booking_details))}}
+            {{Set(name="user_booking_payload_meta", value=UpdateValueJSON(obj="{}", key="memory", value=AsStringJSON(val=memory)))}}
+            {{Set(name="user_booking_payload_meta", value=UpdateValueJSON(obj=user_booking_payload_meta, key="agentAnswer", value=AsStringJSON(val=agentAnswer)))}}
+            {{Set(name="user_booking_payload_meta", value=UpdateValueJSON(obj=user_booking_payload_meta, key="bookingDetails", value=booking_details))}}
+
+            {{Set(name="user_booking_payloads", value=AppendItemsArrayJSON(array=GetPersonaAttribute(id=userId, field="user_booking_payloads"), items=user_booking_payload_meta))}}
+
+            {{__bookRestaurantSkill(bookingDetails=booking_details, userId=userId)}}
+            {{Return()}}
+        {{/if}}
+    {{/if}}
+{{/if}}
+
+{{Set(name="schema", value=_schemasSkill(submittingBookingSchema="True", userId=userId))}}
+{{Set(name="booking_details", value=_utilsGatherDetailsSkill(memory=memory, agentAnswer=agentAnswer, userId=userId, schema=schema, industry=industry))}}
+{{Set(name="payload", value=GetValueJSON(obj=booking_details, key="payload"))}}
+
+{{_utilsSendSystemLogSkill(message=Concat("Booking details: ", booking_details))}}
+
+{{Set(name="additional_validation_object", value=GetValueJSON(obj=booking_details, key="additionalValidation"))}}
+{{Set(name="booking_date_time", value=Stringify(GetValueJSON(obj=additional_validation_object, key="dateTime")))}}
+
+{{#if GetPersonaAttribute(id=userId, field="booking_submitted") == "True"}}
+    {{Set(name="previous_user_bookings", value=GetPersonaAttribute(id=userId, field="user_bookings"))}}
+    {{#if not IsEmpty(text=previous_user_bookings)}}
+        {{Set(name="same_reservation_index", value=GetIndexesOfItemsArrayJSON(array=previous_user_bookings,filterPath=Concat("$[?(@=='", booking_date_time, "')]")))}}
+        {{#if not IsEmpty(text=same_reservation_index)}}
+            {{Set(name="footnote_actor_id", value=_utilsGetFootnoteSkill(userId=userId, system="True"))}}
+            {{SendMessage(
+                message=Concat("System log: Request to book a table for ", booking_date_time, " is already sent. Skipping."),
+                actorIds=footnote_actor_id
+            )}}
+            {{Return()}}
+        {{/if}}
+    {{/if}}
+{{/if}}
+
+{{Set(name="required_info_missing", value=GetValueJSON(obj=additional_validation_object, key="requiredFieldsMissing"))}}
+
+{{#if required_info_missing == "true"}}
+    {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction=Concat("Apologize the user for the inconvenience and tell that you noticed that some details are missing and you need to reconfirm them before proceeding the booking. Ask the user to provide these details: ", Stringify(GetValueJSON(obj=additional_validation_object, key="detailsToReconfirm"))), uninterruptible="True")}}
+    {{Return()}}
+{{/if}}
+
+{{Set(name="request_sent", value="False")}}
+
+{{Set(name="user_booking_payload_meta", value=UpdateValueJSON(obj="{}", key="memory", value=AsStringJSON(val=memory)))}}
+{{Set(name="user_booking_payload_meta", value=UpdateValueJSON(obj=user_booking_payload_meta, key="agentAnswer", value=AsStringJSON(val=agentAnswer)))}}
+{{Set(name="user_booking_payload_meta", value=UpdateValueJSON(obj=user_booking_payload_meta, key="bookingDetails", value=booking_details))}}
+{{Set(name="user_booking_payload_meta", value=UpdateValueJSON(obj=user_booking_payload_meta, key="meta", value=additional_validation_object))}}
+
+{{Set(name="user_booking_payloads", value=AppendItemsArrayJSON(array=GetPersonaAttribute(id=userId, field="user_booking_payloads"), items=user_booking_payload_meta))}}
+
+{{SetPersonaAttribute(id=userId, field="user_booking_payloads", value=user_booking_payloads)}}
+
+{{#if industry == "restaurant_industry"}}
+    {{#if GetCustomerAttribute(field="project_attributes_setting_booking_type") == "default"}}
+        {{#if _utilsFeatureFlagIsActiveSkill(featureFlagName="booking_use_new_restaurant_create_booking_approach")}}
+            {{Set(name="time_formatted", value=Stringify(GetValueJSON(obj=payload, key="timeFormatted")))}}
+            {{Set(name="place", value=Stringify(GetValueJSON(obj=payload, key="place")))}}
+            {{Set(name="availability", value=GetPersonaAttribute(id=userId, field="availability"))}}
+
+            {{#if _validateDefaultRestaurantBookingSlotSkill(place=place, time=time_formatted, availability=availability) == "True"}}
+                {{!-- We pass only part of booking_details here -> Set(name="payload", value=GetValueJSON(obj=booking_details, key="payload") --}}
+                {{!-- Watch implementation file: --}}
+                {{__bookRestaurantDefaultSkill(payload=payload, userId=userId)}}
+                {{Set(name="request_sent", value="True")}}
+            {{else}}
+                {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction=Concat("Apologize the user for the inconvenience and tell that you noticed that the timeslot you were about to book (", place, " ", time_formatted, ") is not available. Remind user the available time slots and suggest choosing one of them"), uninterruptible="True")}}
+                {{Return()}}
+            {{/if}}
+        {{/if}}
+    {{/if}}
+{{/if}}
+
+{{Set(name="test_mode", value=session_in_test_mode(userId=userId))}}
+{{#if request_sent == "False"}}
+    {{#if test_mode != "True"}}
+      {{#if GetCustomerAttribute(field="project_attributes_setting_booking_type") == "intercom"}}
+          {{Set(name="intercom_actor", value=GetPersonaAttribute(id=userId, field="intercom_actor"))}}
+          {{Set(name="payload", value=UpdateValueJSON(obj=payload, key="clientActorId", value=AsStringJSON(val=GetPersonaAttribute(id=userId, field="intercom_client_actor_id"))))}}
+          {{SendCommand(
+              commandIdn="send_actor_event",
+              integrationIdn="customer_intercom",
+              connectorIdn="connection",
+              userPersonaId=userId,
+              toActorId=intercom_actor,
+              eventIdn="create_appointment",
+              eventArguments=payload
+          )}}
+      {{else}}
+          {{#if GetCustomerAttribute(field="project_attributes_setting_booking_type") == "project"}}
+              {{SendSystemEvent(
+                  eventIdn="book_slot",
+                  connectorIdn="system",
+                  payload=payload
+              )}}
+          {{else}}
+              {{Set(name="url", value=GetCustomerAttribute(field="project_attributes_setting_booking_url"))}}
+              {{SendCommand(
+                  commandIdn="send_request",
+                  integrationIdn="http",
+                  connectorIdn="http_connector",
+                  userPersonaId=GetUser(field="id"),
+                  method="POST",
+                  headers=GetCustomerAttribute(field="project_attributes_setting_booking_request_headers"),
+                  url=url,
+                  body=payload,
+                  targetAction="book_slot"
+              )}}
+          {{/if}}
+      {{/if}}
+    {{/if}}
+{{/if}}
+
+{{Set(name="booking_log", value="The agent has sent a booking request to the booking system, but has not yet received a confirmation. The booking is still not confirmed by the booking system!")}}
+{{Set(name="booking_log_advanced", value=Concat(booking_log, "
+Booking request was sent with the following payload:
+", payload))}}
+{{_utilsSendSystemLogSkill(message=booking_log_advanced)}}
+{{SetPersonaAttribute(id=userId, field="action_state_booking_submitting", value=booking_log)}}
+
+{{SetPersonaAttribute(id=userId, field="booking_submitted", value="True")}}
+{{Set(
+    name="user_bookings",
+    value=AppendItemsArrayJSON(array=GetPersonaAttribute(id=userId, field="user_bookings"), items=AsStringJSON(val=booking_date_time))
+)}}
+{{SetPersonaAttribute(id=userId, field="user_bookings", value=user_bookings)}}
+
+{{Set(name="submitting_phrase", value=GetCustomerAttribute(field="project_attributes_setting_booking_phrase_template_on_booking_submitting"))}}
+{{#if not IsEmpty(text=submitting_phrase)}}
+    {{SendSystemEvent(
+        eventIdn="urgent_message",
+        connectorIdn="system",
+        baseInstruction=Concat("Inform the user: '", submitting_phrase, "'. And proceed according to <ConvoAgentScenariosAndProcedures>."),
+        uninterruptible="True"
+    )}}
+{{/if}}
+
+{{Set(name="meta_fields", value=GetValueJSON(obj=booking_details, key="metaFields"))}}
+
+{{#if test_mode == "True"}}
+  {{Sleep(duration="10", interruptible="False")}}
+  {{SendSystemEvent(
+      eventIdn="result_success",
+      connectorIdn="system",
+      output=get_mock_data(type="success"),
+      targetAction="book_slot",
+      body=get_mock_data(type="success"),
+      statusCode="200"
+  )}}
+{{/if}}
+
+{{#if IsEmpty(text=meta_fields)}}
+    {{Return()}}
+{{/if}}
+
+{{#if industry == "restaurant_industry"}}
+    {{#if not _utilsFeatureFlagIsActiveSkill(featureFlagName="booking_use_new_restaurant_create_booking_approach")}}
+        {{! For restaurants new booking approach we send sms after booking has happened }}
+        {{Set(name="sms_body_text", value=Stringify(GetValueJSON(obj=meta_fields, key="smsBodyText")))}}
+
+        {{#if not IsEmpty(text=sms_body_text)}}
+            {{!-- Wait for the broadcast conversation analysis (which extracts/updates the user's phone number) to finish before fetching it --}}
+            {{_check_broadcast_process_status_skill_nsl_wrapper(user_id=userId)}}
+            {{Set(name="user_phone", value=GetPersonaAttribute(id=userId, field="provided_phone_number_with_country_code"))}}
+            {{SendSystemEvent(eventIdn="sms_worker_send_sms", connectorIdn="system", sms_text=sms_body_text, phone_number=user_phone)}}
+        {{/if}}
+    {{/if}}
+{{/if}}

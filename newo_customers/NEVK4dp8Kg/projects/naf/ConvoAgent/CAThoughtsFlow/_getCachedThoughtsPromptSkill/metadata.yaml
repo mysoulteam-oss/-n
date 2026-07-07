@@ -1,0 +1,15 @@
+id: 019f3b06-3af1-7547-be24-f117810807ca
+idn: _getCachedThoughtsPromptSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3af1-7547-be24-f117810807c9
+    name: userId
+    default_value: " "
+  - id: 019f3b06-3af1-7547-be24-f117810807c8
+    name: taskIdn
+    default_value: " "
+path: ""

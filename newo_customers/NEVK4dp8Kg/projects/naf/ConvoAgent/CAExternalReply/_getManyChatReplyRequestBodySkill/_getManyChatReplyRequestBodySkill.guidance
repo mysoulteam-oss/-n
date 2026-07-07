@@ -1,0 +1,40 @@
+{{#if channel == "fb"}}
+{{#system~}}
+{
+  "subscriber_id": "{{externalId}}",
+  "data": {
+    "version": "v2",
+    "content": {
+      "messages": [
+        {
+          "type": "text",
+          "text": {{AsStringJSON(val=message)}}
+        }
+      ]
+    }
+  }
+}
+{{~/system}}
+    {{Return(val=GetCurrentPrompt())}}
+{{/if}}
+
+{{#if channel == "ig"}}
+{{#system~}}
+{
+  "subscriber_id": "{{externalId}}",
+  "data": {
+    "version": "v2",
+    "content": {
+      "type": "instagram",
+      "messages": [
+        {
+          "type": "text",
+          "text": {{AsStringJSON(val=message)}}
+        }
+      ]
+    }
+  }
+}
+{{~/system}}
+    {{Return(val=GetCurrentPrompt())}}
+{{/if}}

@@ -1,0 +1,6 @@
+id: 019f3b06-3aac-7062-b9ac-86044ca2b424
+idn: MultiLocationAgent
+title: MultiLocationAgent
+description: >-
+  Analyzes conversation context to switch the active business location for
+  multi-location deployments.

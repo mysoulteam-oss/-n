@@ -1,0 +1,17 @@
+{% set schema = json.loads(schemas(booking_id="True")) %}
+
+{% system %}
+Base on conversation (enclosed in <Conversation>...</Conversation>) your goal is to understand which one booking from all bookings (enclosed in <UserBookings>...</UserBookings>) user wants to cancel.
+If there is no booking in <UserBookings>...</UserBookings> that matches conversation criteria, set booking_id field as "null".
+
+<UserBookings>
+{{ check_user_bookings(user_id=user_id) }}
+</UserBookings>
+
+<Conversation>
+{{memory}}
+</Conversation>
+{% end %}
+{% set result_json = Gen(jsonSchema=schema, validateSchema=True, temperature=0.2, topP=0, thinkingBudget=425) %}
+
+{{ Return(val=result_json) }}

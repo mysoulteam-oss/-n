@@ -1,0 +1,20 @@
+{% system %}
+{{prompt.strip()}}
+{% end %}
+{% set agent_answer = Gen(temperature=0.2, topP=0.5, skipFilter=True, thinkingBudget=thinking_budget) %}
+{% set messages = re.findall('(?s).*?[.!?](?:\s|$)', agent_answer) %}
+{% if agent_answer.endswith("?") and messages | length > 1 %}
+    {% set first_message = " ".join(messages[:-1]) %}
+    {% set last_message = messages[-1]|trim %}
+    {{SendMessage(message=first_message, actorIds=[actor_id])}}
+
+    {% set typing_speed = 40 %}
+    {% set min_delay = 2 %}
+    {% set delay = (last_message | length / typing_speed) | round %}
+    {{Sleep(duration=delay | string if delay > min_delay else min_delay | string, interruptible="y")}}
+    {{SendMessage(message=last_message, actorIds=[actor_id])}}
+{% else %}
+    {{SendMessage(message=agent_answer, actorIds=[actor_id])}}
+{% endif %}
+
+{{Return(val=agent_answer)}}

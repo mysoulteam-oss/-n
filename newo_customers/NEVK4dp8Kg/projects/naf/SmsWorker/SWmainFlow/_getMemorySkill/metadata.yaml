@@ -1,0 +1,9 @@
+id: 019f3b06-3eac-78fa-be93-90615275f849
+idn: _getMemorySkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

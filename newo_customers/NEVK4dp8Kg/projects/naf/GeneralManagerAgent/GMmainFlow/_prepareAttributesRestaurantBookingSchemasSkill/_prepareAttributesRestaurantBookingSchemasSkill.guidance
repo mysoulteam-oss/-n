@@ -1,0 +1,146 @@
+{{#if checkAvailabilityPayload == "True"}}
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "description": "User’s preferred date for the reservation in format YYYY-MM-DD. Example: 2024-09-28"
+    },
+    "time": {
+      "type": "string",
+      "description": "User’s preferred time for the reservation in format HH:MM (24 hours). Example: 20:00. If not provided, default to 19:00",
+      "default": "19:00"
+    },
+    "dateTime": {
+      "type": "string",
+      "description": "User’s preferred date and time for the reservation in format YYYY-MM-DD HH:MM. Combine `date` and `time` properties in the format. Example: 2024-09-28 20:00"
+    },
+    "partySize": {
+      "type": "string",
+      "description": "Only one number, the number of people for the reservation, if a range is provided, is set to maximum. Example: 6"
+    },
+    "timeZone": {
+      "type": "string",
+      "enum": ["[[project_business_time_zone]]"]
+    },
+    "restaurantId": {
+      "type": "string",
+      "enum": ["[[project_attributes_private_dynamic_restaurant_google_restaurant_id]]"]
+    },
+    "timeFormat": {
+      "type": "string",
+      "enum": ["12"]
+    },
+    "bookingWindow": {
+      "type": "string",
+      "enum": ["[[project_attributes_setting_booking_check_availability_window]]"]
+    },
+    "use12h": {
+      "type": "boolean",
+      "description": "Always must be `true`"
+    }
+  },
+  "required": [
+    "date",
+    "time",
+    "dateTime",
+    "partySize",
+    "timeZone",
+    "restaurantId",
+    "timeFormat",
+    "use12h"
+  ]
+}
+{{~/system}}
+
+    {{Return(val=GetCurrentPrompt())}}
+{{/if}}
+
+{{#if checkAvailabilityValidation == "True"}}
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "regularGroup": {
+      "type": "boolean",
+      "description": "Set to true if **persons < [[project_attributes_restaurant_large_group_reservation_minimum_party_size]]**."
+    }
+  },
+  "required": [
+    "regularGroup"
+  ]
+}
+{{~/system}}
+
+    {{Return(val=GetCurrentPrompt())}}
+{{/if}}
+
+{{#if bookSlotPayload == "True"}}
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "dateTime": {
+      "type": "string",
+      "description": "Date and time of the reservation (YYYY-MM-DD HH:MM). Example: 2024-02-15 14:00"
+    },
+    "timeFormatted": {
+      "type": "string",
+      "description": "Time of the reservation in 12 hour format (hh:mm A). Example: 02:00 PM"
+    },
+    "partySize": {
+      "type": "integer",
+      "description": "Number of people for the reservation"
+    },
+    "firstName": {
+      "type": "string",
+      "description": "Guest first name."
+    },
+    "lastName": {
+      "type": "string",
+      "description": "Guest last name. If not provided, set the same as firstName."
+    },
+    "phoneNumber": {
+      "type": "string",
+      "description": "Customer’s phone number in E.164 format"
+    },
+    "place": {
+      "type": "string",
+      "description": "Location or area within the restaurant (e.g., Patio). Set to one of the seating options."
+    }
+  },
+  "required": [
+    "dateTime",
+    "timeFormatted",
+    "partySize",
+    "firstName",
+    "lastName",
+    "phoneNumber",
+    "place"
+  ]
+}
+{{~/system}}
+
+    {{Return(val=GetCurrentPrompt())}}
+{{/if}}
+
+
+{{#if bookSlotMetaFields == "True"}}
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "smsBodyText": {
+      "type": "string",
+      "description": "Generate the SMS with booking confirmation using the following template: [[project_business_name]] booking confirmation. Congratulations! Your booking for [number of people] on [date] at [time] has been successfully submitted."
+    }
+  },
+  "required": [
+    "smsBodyText"
+  ]
+}
+{{~/system}}
+
+    {{Return(val=GetCurrentPrompt())}}
+{{/if}}

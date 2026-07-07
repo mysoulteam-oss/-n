@@ -1,0 +1,8 @@
+{# Skill is being triggered on `project_publish_finish` which is being sent on finishing Project publication #}
+
+{% set target_reference = GetTriggeredAct().arguments.registry_item_idn %}
+{% if target_reference != "lead_nurturing" %}
+    {{Return()}}
+{% endif %}
+
+{{ProjectImportSkill()}}

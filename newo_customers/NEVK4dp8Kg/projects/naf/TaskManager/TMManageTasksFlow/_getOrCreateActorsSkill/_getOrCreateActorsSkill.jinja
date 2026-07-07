@@ -1,0 +1,34 @@
+{# Get all existing actors for the phone number #}
+{% set voice_actors = GetActors(externalId=phoneNumber, integrationIdn="newo_voice", connectorIdn="newo_voice_connector") %}
+{% set twilio_actors = GetActors(externalId=phoneNumber, integrationIdn="twilio_messenger", connectorIdn="sms_connector") %}
+{% set newo_sms_actors = GetActors(externalId=phoneNumber, integrationIdn="newo_sms", connectorIdn="newo_sms_connector") %}
+
+{# Find existing persona_id from any existing actor (priority: voice > newo_sms > twilio) #}
+{% set persona_id = None %}
+{% if voice_actors %}
+    {% set persona_id = voice_actors[0].personaId | string %}
+{% elif twilio_actors %}
+    {% set persona_id = twilio_actors[0].personaId | string %}
+{% elif newo_sms_actors %}
+    {% set persona_id = newo_sms_actors[0].personaId | string %}
+{% endif %}
+
+{# If no persona exists, create a new one #}
+{% if not persona_id %}
+    {% set persona_id = CreatePersona(name="User") | string %}
+{% endif %}
+
+{# Create missing actors with the same persona_id #}
+{% if not voice_actors %}
+    {{CreateActor(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", externalId=phoneNumber, personaId=persona_id)}}
+{% endif %}
+
+{% if not twilio_actors %}
+    {{CreateActor(integrationIdn="twilio_messenger", connectorIdn="sms_connector", externalId=phoneNumber, personaId=persona_id)}}
+{% endif %}
+
+{% if not newo_sms_actors %}
+    {{CreateActor(integrationIdn="newo_sms", connectorIdn="newo_sms_connector", externalId=phoneNumber, personaId=persona_id)}}
+{% endif %}
+
+{{Return(val=persona_id)}}

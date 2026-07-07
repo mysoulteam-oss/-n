@@ -1,0 +1,77 @@
+{{Set(name="default_time_zone", value="America/Los_Angeles")}}
+
+{{!-- Set default time zone if not set --}}
+{{Set(name="current_time_zone", value=GetCustomerAttribute(field="project_business_time_zone"))}}
+{{#if current_time_zone == "N/A"}}
+  {{Set(name="current_time_zone", value=" ")}}
+{{/if}}
+{{#if IsEmpty(text=current_time_zone)}}
+  {{SetCustomerAttribute(field="project_business_time_zone", value=default_time_zone)}}
+  {{SetState(name="previous_time_zone", value=default_time_zone)}}
+  {{Return()}}
+{{/if}}
+
+{{!-- Exit if time zone was not changed --}}
+{{Set(name="previous_time_zone", value=GetState(name="previous_time_zone"))}}
+{{#if current_time_zone == previous_time_zone}}
+    {{Return()}}
+{{/if}}
+
+{{!-- Fast normalization for exact supported and explicit legacy-equivalent time zones --}}
+{{Set(name="normalized_time_zone", value=_prepareAttributesCommonDefaultBusinessTimeZoneReasoningSkill(time_zone=current_time_zone))}}
+{{#if not IsEmpty(text=normalized_time_zone)}}
+  {{SetCustomerAttribute(field="project_business_time_zone", value=normalized_time_zone)}}
+  {{SetState(name="previous_time_zone", value=normalized_time_zone)}}
+  {{Return()}}
+{{/if}}
+
+{{!-- Validate, transform and set time zone --}}
+{{Set(name="schema", value=_prepareAttributesCommonDefaultBusinessTimeZoneSchemaSkill())}}
+
+{{#system~}}
+Analyze the provided time zone data in the <ProvidedTimeZoneData> block.
+Validate and transform it to `tz database` (`tzdata`) item according to <ExplicitConstraints> and <OutputFormat> rules.
+
+---
+
+<ExplicitConstraints alt="explicit constraints">
+If <ProvidedTimeZoneData> block contains a valid `tzdata` item which is not present in the supported
+output `enum`:
+  1. Choose the closest supported equivalent from the output `enum`.
+  2. Prefer the same UTC offset and DST behavior.
+  3. If multiple options fit, prefer the same geographic region and the most semantically similar
+     city/country.
+  4. Known mappings: `America/Kingston` -> `America/Panama`, `America/Quito` -> `America/Lima`.
+
+If <ProvidedTimeZoneData> block contains something which does not look like a valid `tzdata` item:
+  1. Try to guess the most probable supported `tzdata` item and use it.
+  2. If guessing is impossible, use the default time zone which is `{{default_time_zone}}`.
+
+If <ProvidedTimeZoneData> already matches one of the supported output `enum` values, return it
+unchanged.
+
+Never return a value outside the supported output `enum`.
+</ExplicitConstraints>
+
+---
+
+<OutputFormat alt="rules regarding output format">
+- The output must be a valid JSON object generated according to provided schema.
+</OutputFormat>
+
+---
+
+<ProvidedTimeZoneData alt="provided time zone data" role="context">
+{{current_time_zone}}
+</ProvidedTimeZoneData>
+
+---
+
+JSON object: {{~/system}}{{#assistant~}}{{Set(name="time_zone_json", value=Gen(jsonSchema=schema, validateSchema=True, temperature=0.1, topP=0, skipFilter=True, thinkingBudget=1020))}}{{~/assistant}}
+
+{{!-- Parse response --}}
+{{Set(name="output_time_zone", value=Stringify(GetValueJSON(obj=time_zone_json, key="output_time_zone")))}}
+
+{{!-- Set new time zone --}}
+{{SetCustomerAttribute(field="project_business_time_zone", value=output_time_zone)}}
+{{SetState(name="previous_time_zone", value=output_time_zone)}}

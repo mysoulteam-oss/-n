@@ -1,0 +1,22 @@
+{{!-- TODO: Refactor --}}
+
+{{Set(name="booking_enabled", value=GetCustomerAttribute(field="project_attributes_setting_booking_enabled"))}}
+{{Set(name="calendar_event_integration", value=GetCustomerAttribute(field="project_attributes_setting_calendar_event_integration"))}}
+
+{{#system~}}
+<ActionsStates alt="actions states" role="context">
+{{#if booking_enabled == "True"}}
+# Booking Action State
+
+{{_utilsPersonaAttributeGetWithDefaultsSkill(id=userId, field="action_state_booking_submitting", defaultValue="The agent has **not** sent a booking request to the booking system, and has **not** yet received a confirmation.")}}
+{{/if}}
+{{#if calendar_event_integration == "google_integration"}}
+
+# Calendar Meeting Action State
+
+{{_utilsPersonaAttributeGetWithDefaultsSkill(id=userId, field="action_state_meeting_creating", defaultValue="The agent has **not** scheduled a meeting yet, and has **not** confirmed it with the calendar system.")}}
+{{/if}}
+</ActionsStates>
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

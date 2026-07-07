@@ -1,0 +1,30 @@
+id: 019f3b06-3aeb-7129-b93b-1a813f29c6d0
+idn: _schemasSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c6c9
+    name: availableTasks
+    default_value: " "
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c6ca
+    name: createMeeting
+    default_value: " "
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c6cb
+    name: defineTasks
+    default_value: " "
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c6cc
+    name: makeCall
+    default_value: " "
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c6cd
+    name: phoneNumberExists
+    default_value: " "
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c6ce
+    name: sendEmail
+    default_value: " "
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c6cf
+    name: sendSMS
+    default_value: " "
+path: ""

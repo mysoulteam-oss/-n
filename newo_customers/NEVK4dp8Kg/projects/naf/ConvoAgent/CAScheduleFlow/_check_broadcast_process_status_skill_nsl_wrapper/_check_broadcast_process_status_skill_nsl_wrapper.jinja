@@ -1,0 +1,2 @@
+{# Wait for the broadcast conversation analysis (which extracts/updates the user's contact info) to finish, then return its status #}
+{{Return(val=system_utils.check_broadcast_process_status(user_id=user_id))}}

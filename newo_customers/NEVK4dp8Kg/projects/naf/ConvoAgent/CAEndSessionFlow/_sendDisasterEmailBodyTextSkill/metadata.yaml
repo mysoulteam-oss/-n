@@ -1,0 +1,24 @@
+id: 019f3b06-3aeb-7129-b93b-1a813f29c665
+idn: _sendDisasterEmailBodyTextSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c662
+    name: workingHourStatus
+    default_value: " "
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c661
+    name: userId
+    default_value: " "
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c664
+    name: issueDescription
+    default_value: " "
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c660
+    name: reportDisaster
+    default_value: ""
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c663
+    name: actualResult
+    default_value: " "
+path: ""

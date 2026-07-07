@@ -1,0 +1,53 @@
+{% set customer_info = GetCustomerInfo() %}
+{% if not customer_info %}
+    {{Return()}}
+{% endif %}
+
+{% set web_search_request_service_url = GetProjectAttribute(field="project_attributes_setting_rag_append_website_search_request_url").strip() %}
+{% if not web_search_request_service_url %}
+    {% set web_search_request_service_url = "https://hooks.internal.newoai.org/oOlP_aqscLzEJ1jWOGzbEQ" %}
+{% endif %}
+
+{% set web_search_response_webhook = GetWebhook(webhookIdn = "web_search", webhookType = "incoming") %}
+{% if not web_search_response_webhook %}
+    {{Return()}}
+{% endif %}
+
+{% set payload = {
+    "external_actor_id": customer_info.idn,
+    "arguments": [
+        {
+            "name": "webhook",
+            "value": web_search_response_webhook.url | string
+        },
+        {
+            "name": "customer_idn",
+            "value": customer_info.idn
+        },
+        {
+            "name": "objective",
+            "value": objective
+        },
+        {
+            "name": "max_results",
+            "value": "20"
+        }
+    ]
+} %}
+
+{% set headers = {
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+} %}
+
+{{SendCommand(
+    commandIdn="send_request",
+    integrationIdn="http",
+    connectorIdn="http_connector",
+    userPersonaId=GetAgentPersona().id|string,
+    method="POST",
+    url=web_search_request_service_url,
+    headers=json.dumps(headers, ensure_ascii=False, indent=2),
+    body=json.dumps(payload, ensure_ascii=False, indent=2),
+    targetAction="web_search"
+)}}

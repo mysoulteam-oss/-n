@@ -1,0 +1,13 @@
+{% set user_id = user_id or GetUser().id | string %}
+
+{% set integration_type = v2v_get_current_provider(user_id=user_id) %}
+
+{% set inject_thoughts = inject_thoughts or "True" %}
+
+{% set footer_instruction = footer_instruction or "" %}
+
+{% if integration_type == "genai" %}
+    {{v2v_update_current_prompt_genai(user_id=user_id, footer_instruction=footer_instruction)}}
+{% elif integration_type == "openai" or integration_type == "grok" %}
+    {{v2v_update_current_prompt_openai_grok(user_id=user_id, inject_thoughts=inject_thoughts, footer_instruction=footer_instruction)}}
+{% endif %}

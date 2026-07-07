@@ -1,0 +1,9 @@
+id: 019f3b06-3ca2-71e8-9822-b576f556fdef
+idn: _migration_4_2_0_enable_vibe_builder
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

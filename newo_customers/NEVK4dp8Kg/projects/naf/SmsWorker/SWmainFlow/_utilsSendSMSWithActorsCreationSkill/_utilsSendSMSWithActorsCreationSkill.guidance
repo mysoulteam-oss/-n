@@ -1,0 +1,144 @@
+{{!-- TODO: Potentially, refactor or remove, Persona and Actors creation must be centralized / consistent --}}
+
+{{!-- ? Classify NEWO Chat as `temporal`, make sure that "Conversation Ended" will be guaranteed --}}
+
+{{Set(name="is_temporal", value=GetPersonaAttribute(id=userId, field="temporal"))}}
+
+{{!-- Define SMS channel (Twilio Messenger or NEWO SMS) --}}
+{{Set(name="integration_idn", value="twilio_messenger")}}
+{{Set(name="connector_idn", value="sms_connector")}}
+
+{{Set(name="sms_provider", value=GetCustomerAttribute(field="project_attributes_setting_sms_provider"))}}
+{{#if sms_provider == "sms_service"}}
+    {{Set(name="integration_idn", value="newo_sms")}}
+    {{Set(name="connector_idn", value="newo_sms_connector")}}
+{{/if}}
+
+{{!-- Get or create SMS Actor ID --}}
+{{Set(
+    name="sms_actor_id",
+    value=GetActors(
+        integrationIdn=integration_idn,
+        connectorIdn=connector_idn,
+        externalId=userPhoneNumber
+    )
+)}}
+
+{{#if is_temporal == "True"}}
+    {{#if IsEmpty(text=sms_actor_id)}}
+        {{!-- TODO: Handle potential error when Persona exists: we must search Actors not only by Twilio Messenger --}}
+        {{Set(name="full_name", value=_utilsPersonaAttributeGetWithDefaultsSkill(id=userId, field="full_name"))}}
+        {{#if IsSimilar(val1=full_name, val2="null", threshold=0.7)}}
+            {{Set(name="full_name", value=Concat("Unknown User (", userPhoneNumber, ")"))}}
+        {{/if}}
+        {{Set(name="user_persona_id", value=CreatePersona(name=full_name))}}
+        {{Set(
+            name="sms_actor_id",
+            value=CreateActor(
+                integrationIdn=integration_idn,
+                connectorIdn=connector_idn,
+                externalId=userPhoneNumber,
+                personaId=user_persona_id
+            )
+        )}}
+    {{else}}
+        {{Set(name="user_persona_id", value=GetActor(field="personaId", id=Stringify(sms_actor_id)))}}
+    {{/if}}
+{{else}}
+    {{#if IsEmpty(text=sms_actor_id)}}
+        {{Set(
+            name="sms_actor_id",
+            value=CreateActor(
+                integrationIdn=integration_idn,
+                connectorIdn=connector_idn,
+                externalId=userPhoneNumber,
+                personaId=userId
+            )
+        )}}
+    {{/if}}
+{{/if}}
+
+{{#if is_temporal == "True"}}
+    {{SetPersonaAttribute(field="temporal_convo_persona_id", value=GetUser(field="id"), id=user_persona_id)}}
+    {{SetPersonaAttribute(field="temporal_convo_actor_id", value=GetActor(field="id"), id=user_persona_id)}}
+    {{SetPersonaAttribute(field="temporal_session_is_active", value="True", id=user_persona_id)}}
+
+    {{SetPersonaAttribute(field="real_convo_persona_id", value=user_persona_id, id=GetUser(field="id"))}}
+{{/if}}
+
+{{!-- Send SMS --}}
+{{#if sms_provider == "sms_service"}}
+{{!-- TODO: remove after newo sms service added to SendMessage --}}
+    {{SendCommand(
+        commandIdn="send_message",
+        integrationIdn=integration_idn,
+        connectorIdn=connector_idn,
+        text=Stringify(smsText),
+        phoneNumber=userPhoneNumber
+    )}}
+{{else}}
+    {{SendMessage(
+        message=Stringify(smsText),
+        actorIds=sms_actor_id
+    )}}
+{{/if}}
+
+{{!-- Create message act using ConvoAgent, since in that way it will appear in the memory --}}
+{{SendSystemEvent(eventIdn="convoagent_create_message_act", connectorIdn="system", message_text=Stringify(smsText))}}
+{{!-- ! TODO: Reset `FastPrompt` after sending an SMS --}}
+
+{{!-- Get or create VAPI or NEWO Voice service Actor ID --}}
+{{Set(name="voice_integration_service", value=GetCustomerAttribute(field="project_attributes_setting_voice_integration_service"))}}
+{{!-- TODO: Refactor --}}
+{{Set(name="integration_idn", value=" ")}}
+{{Set(name="connector_idn", value=" ")}}
+{{#if voice_integration_service == "VAPI Integration"}}
+    {{Set(name="integration_idn", value="vapi")}}
+    {{Set(name="connector_idn", value="vapi_caller")}}
+{{/if}}
+{{#if voice_integration_service == "NEWO Voice Integration"}}
+    {{Set(name="integration_idn", value="newo_voice")}}
+    {{Set(name="connector_idn", value="newo_voice_connector")}}
+{{/if}}
+{{#if is_temporal == "True"}}
+    {{Set(
+        name="actor_id",
+        value=GetActors(
+            integrationIdn=integration_idn,
+            connectorIdn=connector_idn,
+            externalId=userPhoneNumber,
+            personaId=user_persona_id
+        )
+    )}}
+    {{#if IsEmpty(text=actor_id)}}
+        {{Set(
+            name="actor_id",
+            value=CreateActor(
+                integrationIdn=integration_idn,
+                connectorIdn=connector_idn,
+                externalId=userPhoneNumber,
+                personaId=user_persona_id
+            )
+        )}}
+    {{/if}}
+{{else}}
+    {{Set(
+        name="actor_id",
+        value=GetActors(
+            integrationIdn=integration_idn,
+            connectorIdn=connector_idn,
+            externalId=userPhoneNumber
+        )
+    )}}
+    {{#if IsEmpty(text=actor_id)}}
+        {{Set(
+            name="actor_id",
+            value=CreateActor(
+                integrationIdn=integration_idn,
+                connectorIdn=connector_idn,
+                externalId=userPhoneNumber,
+                personaId=userId
+            )
+        )}}
+    {{/if}}
+{{/if}}

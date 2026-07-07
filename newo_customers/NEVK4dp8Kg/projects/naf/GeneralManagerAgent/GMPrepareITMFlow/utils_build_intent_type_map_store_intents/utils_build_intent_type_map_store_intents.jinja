@@ -1,0 +1,5 @@
+{% set intent_name_pattern = "##\\s*\\*\\*(.*?)\\*\\*" %}
+
+{% set intents = re.findall(intent_name_pattern, intent_type_map) %}
+
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_intents_list", value=json.dumps(intents, ensure_ascii=False, indent=2))}}

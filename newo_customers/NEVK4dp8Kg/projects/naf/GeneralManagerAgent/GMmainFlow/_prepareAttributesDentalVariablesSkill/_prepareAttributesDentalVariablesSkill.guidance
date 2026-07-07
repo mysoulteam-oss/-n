@@ -1,0 +1,25 @@
+{{Set(name="is_first_init_done", value=GetCustomerAttribute(field="project_attributes_private_account_initialized_first_time"))}}
+{{!-- All `dental` Customer Attributes must be specified here with default values --}}
+{{!-- (must be sorted alphabetically) --}}
+
+{{!-- Set of `dental` attributes from Agent Creator and BOQ defaults --}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_dental_appointment_check_in_notes", ac_field="agent_creator_dental_appointment_check_in_notes")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_dental_appointment_scenario_link_guidance_instruction",
+  ac_field="agent_creator_dental_appointment_scenario_link_guidance_instruction",
+  default="*(No additional guidance was provided.)*"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_dental_appointment_schedule_questions_and_info",
+  ac_field="agent_creator_dental_appointment_schedule_questions_and_info",
+  default="*(No additional info or questions were provided.)*"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_dental_appointment_url", ac_field="agent_creator_dental_appointment_url")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_dental_insurances", ac_field="agent_creator_dental_insurances")}}

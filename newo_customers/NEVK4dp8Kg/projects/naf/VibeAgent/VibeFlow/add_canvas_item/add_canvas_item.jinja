@@ -1,0 +1,80 @@
+{% set user_id = GetUser().id | string %}
+{% set actor_id = GetActor().id | string %}
+{% set actor_id_normalized = actor_id.replace('-', '') %}
+
+{% set parameters = json.loads(parameters) %}
+{% set type_idn = parameters[0] %}
+{% set description = parameters[1] %}
+{% set library_item_idn = '' %}
+{% if parameters | length == 3 %}
+    {% set library_item_idn = parameters[2] %}
+{% endif %}
+
+{% if not library_item_idn %}
+    {% set skill_idn = 'generate_' ~ type_idn %}
+    {% set item = json.loads(Do(actionName=skill_idn, source='', query=description)) %}
+    {% set new_item_idn = uuid.uuid4() | string %}
+    {% set item_title = item.title if item.title is defined else '' %}
+    {{item.update({
+        "idn": new_item_idn,
+        "is_from_library": false,
+        "origin_idn": ""
+    })}}
+
+    {% set item_str = json.dumps(item, ensure_ascii=False, indent=2) %}
+
+    {{execute_add_canvas_item(type_idn=type_idn, item=item_str)}}
+
+    {% set transaction = [{
+        "revert_action": "execute_delete_canvas_item",
+        "revert_action_parameters": {"type_idn": type_idn, "item_idn": new_item_idn}
+    }] %}
+    {% set applied_change = {
+        "action": "add_canvas_item",
+        "summary": "Added new `" ~ type_idn ~ "` item `" ~ new_item_idn ~ "`.",
+        "details": {
+            "type_idn": type_idn,
+            "item_idn": new_item_idn,
+            "title": item_title,
+            "source": "generated"
+        }
+    } %}
+    {{add_transaction(transaction_id=transaction_id, transaction=json.dumps(transaction, ensure_ascii=False, indent=2))}}
+    {{add_applied_change(change_id=transaction_id, change=json.dumps(applied_change, ensure_ascii=False, indent=2))}}
+    {{SetPersonaAttribute(id=user_id, field="pending_canvas_review_type_" ~ actor_id_normalized, value=type_idn)}}
+    {{SetPersonaAttribute(id=user_id, field="pending_canvas_review_item_id_" ~ actor_id_normalized, value=new_item_idn)}}
+    {{SendMessage(message='<thinking>\nI have added a new item to `' ~ type_idn ~ '`:\n' ~ '```\n' ~ item_str ~ '\n```\n</thinking>', actorIds=[actor_id], useFilter=False)}}
+    {{already_taken_actions.append('I have added a new item to `' ~ type_idn ~ '`:\n' ~ '```\n' ~ item_str ~ '\n```')}}
+{% else %}
+    {% set library_item = get_library_item(type_idn=type_idn, item_idn=library_item_idn) %}
+    {% if library_item == "{}" %}
+        {{SendMessage(message='<thinking>\nI could not find a `' ~ type_idn ~ '` item with idn `' ~ library_item_idn ~ '` in the library.\n</thinking>', actorIds=[actor_id], useFilter=False)}}
+        {{already_taken_actions.append('I could not find a `' ~ type_idn ~ '` item with idn `' ~ library_item_idn ~ '` in the library.')}}
+    {% else %}
+        {% set library_item_obj = json.loads(library_item) %}
+        {% set item_title = library_item_obj.title if library_item_obj.title is defined else '' %}
+        {{execute_add_canvas_item(type_idn=type_idn, item=library_item)}}
+        {% set transaction = [{
+            "revert_action": "execute_delete_canvas_item",
+            "revert_action_parameters": {"type_idn": type_idn, "item_idn": library_item_idn}
+        }] %}
+        {% set applied_change = {
+            "action": "add_canvas_item",
+            "summary": "Added library `" ~ type_idn ~ "` item `" ~ library_item_idn ~ "`.",
+            "details": {
+                "type_idn": type_idn,
+                "item_idn": library_item_idn,
+                "title": item_title,
+                "source": "library"
+            }
+        } %}
+        {{add_transaction(transaction_id=transaction_id, transaction=json.dumps(transaction, ensure_ascii=False, indent=2))}}
+        {{add_applied_change(change_id=transaction_id, change=json.dumps(applied_change, ensure_ascii=False, indent=2))}}
+        {{SetPersonaAttribute(id=user_id, field="pending_canvas_review_type_" ~ actor_id_normalized, value=type_idn)}}
+        {{SetPersonaAttribute(id=user_id, field="pending_canvas_review_item_id_" ~ actor_id_normalized, value=library_item_idn)}}
+        {{SendMessage(message='<thinking>\nI have added an item to `' ~ type_idn ~ '`:\n' ~ '```\n' ~ library_item ~ '\n```\nThis item was added from the library.\n</thinking>', actorIds=[actor_id], useFilter=False)}}
+        {{already_taken_actions.append('I have added an item to `' ~ type_idn ~ '`:\n' ~ '```\n' ~ library_item ~ '\n```\nThis item was added from the library.')}}
+    {% endif %}
+{% endif %}
+
+{{main(memory=memory, already_taken_actions=already_taken_actions)}}

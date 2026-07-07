@@ -1,0 +1,6 @@
+id: 019f3b06-3aab-7dfa-a09f-a50f10126b02
+idn: ApifyCheckAvailabilityWorker
+title: ApifyCheckAvailabilityWorker
+description: >-
+  Runs Apify hospitality availability checks and returns normalized slot results
+  to the booking runtime.

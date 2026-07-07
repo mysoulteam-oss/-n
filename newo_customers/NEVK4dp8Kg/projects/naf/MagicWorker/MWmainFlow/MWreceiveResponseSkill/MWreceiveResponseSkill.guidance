@@ -1,0 +1,89 @@
+{{Set(name='bot_response', value=GetTriggeredAct(fields=['output']))}}
+{{Set(name="valid", value=_validateResponseSkill(response=bot_response))}}
+
+{{#if IsSimilar(val1=valid, val2="true", threshold=0.7)}}
+    {{SetState(name="attempt_number", value="0")}}
+    {{SetState(name="bot_response", value=bot_response)}}
+    {{Set(name="task_context", value=GetState(name="task_context"))}}
+    {{#if GetState(name="task_idn") == "w1s3_reserve_table_task"}}
+        {{#if GetCustomerAttribute(field="project_attributes_setting_hitl_monitoring_enabled") == "True"}}
+            {{Set(name="info", value=GetValueJSON(obj=task_context, key="info"))}}
+            {{Set(name="user_name", value=Stringify(GetValueJSON(obj=info, key="user_name")))}}
+            {{Set(name="user_phone", value=Stringify(GetValueJSON(obj=info, key="user_phone")))}}
+            {{Set(name="reservation_date", value=Stringify(GetValueJSON(obj=info, key="reservation_date")))}}
+            {{Set(name="reservation_time", value=Stringify(GetValueJSON(obj=info, key="reservation_time")))}}
+            {{Set(name="party_size", value=Stringify(GetValueJSON(obj=info, key="number_of_guests")))}}
+
+            {{Set(name="business_name", value=GetCustomerAttribute(field="project_business_name"))}}
+
+            {{SendCommand(
+                commandIdn="send_slack_report",
+                integrationIdn="api",
+                connectorIdn="webhook",
+                text=Concat("Please, check if booking happened! Business Name: ", business_name, ". Name:", user_name, " Phone: ", user_phone, " Date: ", reservation_date, " Time: ", reservation_time, " Party size: ", party_size)
+            )}}
+        {{/if}}
+    {{/if}}
+    {{_bakeSkill()}}
+{{else}}
+    {{Set(name="stop_retrying", value=_validateRetryCountSkill())}}
+    {{#if stop_retrying == "false"}}
+        {{Set(name="task_context", value=GetState(name="task_context"))}}
+        {{#if GetState(name="task_idn") == "w1s3_reserve_table_task"}}
+            {{Set(name="info", value=GetValueJSON(obj=task_context, key="info"))}}
+            {{Set(name="user_phone", value=Stringify(GetValueJSON(obj=info, key="user_phone")))}}
+            {{Set(name="user_phone", value=user_phone.replace("+", " ", 1))}}
+            {{Set(name="user_phone", value=Stringify(user_phone))}}
+            {{Set(name="info", value=UpdateValueJSON(obj=info, key="user_email", value=AsStringJSON(val=Concat("bookings+", user_phone, _getRandomPostfixSkill(), "@newo.ai"))))}}
+            {{Set(name="task_context", value=UpdateValueJSON(obj=task_context, key="info", value=info))}}
+            {{SetState(name="task_context", value=task_context)}}
+        {{/if}}
+        {{_magicSkill(task_context=task_context, task_idn=GetState(name="task_idn"), retry="true")}}
+    {{else}}
+
+        {{_utilsSendSystemLogSkill(message=Concat("ERROR in MB during executing ", GetState(name="task_idn"), ". Bot response ", bot_response))}}
+
+        {{Set(name="task_context", value=GetState(name="task_context"))}}
+        {{#if GetState(name="task_idn") == "w1s3_reserve_table_task"}}
+            {{#if GetCustomerAttribute(field="project_attributes_setting_hitl_monitoring_enabled") == "True"}}
+                {{Set(name="info", value=GetValueJSON(obj=task_context, key="info"))}}
+                {{Set(name="user_name", value=Stringify(GetValueJSON(obj=info, key="user_name")))}}
+                {{Set(name="user_phone", value=Stringify(GetValueJSON(obj=info, key="user_phone")))}}
+                {{Set(name="reservation_date", value=Stringify(GetValueJSON(obj=info, key="reservation_date")))}}
+                {{Set(name="reservation_time", value=Stringify(GetValueJSON(obj=info, key="reservation_time")))}}
+                {{Set(name="party_size", value=Stringify(GetValueJSON(obj=info, key="number_of_guests")))}}
+
+                {{Set(name="business_name", value=GetCustomerAttribute(field="project_business_name"))}}
+
+                {{SendCommand(
+                    commandIdn="send_slack_report",
+                    integrationIdn="api",
+                    connectorIdn="webhook",
+                    text=Concat("Error during booking, proceed with booking manually! Business Name: ", business_name, ". Name:", user_name, " Phone: ", user_phone, " Date: ", reservation_date, " Time: ", reservation_time, " Party size: ", party_size)
+                )}}
+            {{/if}}
+
+            {{Set(name="sms_text", value=Concat("Issue with your booking – ", GetCustomerAttribute(field="project_business_name"),". Sorry, I see that your booking did not go through due to a technical issue. Please make a new booking using the following link: ", GetCustomerAttribute(field="project_attributes_restaurant_googlemaps_reservation_url")))}}
+
+            {# ! TODO: Use SendMessage() instead or add SMS message to the Conversation History manually #}
+            {{SendSystemEvent(
+                eventIdn="convoagent_send_notification_message",
+                connectorIdn="system",
+                message=sms_text,
+                notify="false",
+                subject="There is an issue with your booking"
+            )}}
+        {{/if}}
+        {{#if GetCustomerAttribute(field="project_attributes_setting_magic_browser_alert_enabled") == "True"}}
+            {{SendSystemEvent(
+                eventIdn="email_worker_send_email",
+                connectorIdn="system",
+                email="dev@newo.ai",
+                cc=" ",
+                subject=Concat("ACTION REQUIRED! ", GetCustomerAttribute(field="project_business_name"), " magic browser error!"),
+                body=_buildAlertMailSkill(botResponse=bot_response, taskContext=GetState(name="task_context")),
+                ignore_opt_out="true"
+            )}}
+        {{/if}}
+    {{/if}}
+{{/if}}

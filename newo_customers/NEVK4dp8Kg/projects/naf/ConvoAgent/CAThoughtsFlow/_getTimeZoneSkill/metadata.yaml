@@ -1,0 +1,12 @@
+id: 019f3b06-3af1-7547-be24-f117810807e3
+idn: _getTimeZoneSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3af1-7547-be24-f117810807e2
+    name: userId
+    default_value: " "
+path: ""

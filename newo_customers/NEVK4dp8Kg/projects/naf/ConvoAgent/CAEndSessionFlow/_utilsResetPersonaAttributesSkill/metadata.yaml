@@ -1,0 +1,18 @@
+id: 019f3b06-3aeb-7129-b93b-1a813f29c69d
+idn: _utilsResetPersonaAttributesSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c69a
+    name: summary
+    default_value: " "
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c69b
+    name: userId
+    default_value: " "
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c69c
+    name: commonValues
+    default_value: " "
+path: ""

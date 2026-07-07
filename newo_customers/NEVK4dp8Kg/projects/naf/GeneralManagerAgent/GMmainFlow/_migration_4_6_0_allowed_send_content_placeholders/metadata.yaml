@@ -1,0 +1,9 @@
+id: 019f3b06-3ca2-71e8-9822-b576f556fdf8
+idn: _migration_4_6_0_allowed_send_content_placeholders
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

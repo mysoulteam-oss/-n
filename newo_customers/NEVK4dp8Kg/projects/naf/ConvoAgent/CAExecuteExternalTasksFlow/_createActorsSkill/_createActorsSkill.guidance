@@ -1,0 +1,69 @@
+{{!-- TODO: Potentially, refactor or remove, Persona and Actors creation must be centralized / consistent --}}
+
+{{Set(name="existed_sms_actors", value=GetActors(externalId=phoneNumber, integrationIdn="twilio_messenger", connectorIdn="sms_connector"))}}
+{{Set(name="existed_phone_actors", value=GetActors(externalId=phoneNumber, integrationIdn="vapi", connectorIdn="vapi_caller"))}}
+
+{{#if IsEmpty(text=existed_sms_actors)}}
+  {{#if IsEmpty(text=existed_phone_actors)}}
+    {{#if not IsEmpty(text=newoExternalChatId)}}
+        {{Set(name="existing_newo_chat_actor", value=GetActors(externalId=newoExternalChatId, integrationIdn="newo_chat", connectorIdn="newo_chat"))}}
+
+        {{#if IsEmpty(text=existing_newo_chat_actor)}}
+
+            {{Set(name="user_id", value=CreatePersona(name="User"))}}
+
+            {{Set(name="existing_newo_chat_actor", value=CreateActor(integrationIdn="newo_chat", connectorIdn="newo_chat", externalId=newoExternalChatId, personaId=user_id))}}
+
+        {{else}}
+            {{Set(name="user_id", value=GetActor(field="personaId", id=Stringify(existing_newo_chat_actor)))}}
+        {{/if}}
+    {{else}}
+        {{Set(name="user_id", value=CreatePersona(name="User"))}}
+    {{/if}}
+
+    {{Set(name="existed_phone_actors", value=CreateActor(integrationIdn="vapi", connectorIdn="vapi_caller", externalId=phoneNumber, personaId=user_id))}}
+    {{Set(name="existed_sms_actors", value=CreateActor(integrationIdn="twilio_messenger", connectorIdn="sms_connector", externalId=phoneNumber, personaId=user_id))}}
+
+  {{else}}
+    {{Set(name="user_id", value=GetActor(field="personaId", id=Stringify(existed_phone_actors)))}}
+
+    {{#if not IsEmpty(text=newoExternalChatId)}}
+        {{Set(name="existing_newo_chat_actor", value=GetActors(externalId=newoExternalChatId, integrationIdn="newo_chat", connectorIdn="newo_chat"))}}
+
+        {{#if IsEmpty(text=existing_newo_chat_actor)}}
+
+            {{Set(name="existing_newo_chat_actor", value=CreateActor(integrationIdn="newo_chat", connectorIdn="newo_chat", externalId=newoExternalChatId, personaId=user_id))}}
+
+        {{/if}}
+    {{/if}}
+
+    {{Set(name="user_sms_actor_id", value=CreateActor(integrationIdn="twilio_messenger", connectorIdn="sms_connector", externalId=phoneNumber, personaId=user_id))}}
+
+  {{/if}}
+
+{{else}}
+    {{Set(name="user_id", value=GetActor(field="personaId", id=Stringify(existed_sms_actors)))}}
+
+    {{#if not IsEmpty(text=newoExternalChatId)}}
+        {{Set(name="existing_newo_chat_actor", value=GetActors(externalId=newoExternalChatId, integrationIdn="newo_chat", connectorIdn="newo_chat"))}}
+
+        {{#if IsEmpty(text=existing_newo_chat_actor)}}
+
+            {{Set(name="existing_newo_chat_actor", value=CreateActor(integrationIdn="newo_chat", connectorIdn="newo_chat", externalId=newoExternalChatId, personaId=user_id))}}
+
+        {{/if}}
+    {{/if}}
+
+    {{#if IsEmpty(text=existed_phone_actors)}}
+
+        {{Set(name="existed_phone_actors", value=CreateActor(integrationIdn="vapi", connectorIdn="vapi_caller", externalId=phoneNumber, personaId=user_id))}}
+    {{/if}}
+
+{{/if}}
+
+{{Set(name="existed_phone_actors", value=Stringify(existed_phone_actors))}}
+{{Set(name="existed_phone_actors", value=existed_phone_actors.replace("['", " "))}}
+{{Set(name="existed_phone_actors", value=existed_phone_actors.replace("']", " "))}}
+{{Set(name="existed_phone_actors", value=Stringify(existed_phone_actors))}}
+
+{{Return(val=GetActor(field="personaId", id=existed_phone_actors))}}

@@ -1,0 +1,12 @@
+id: 019f3b06-3aeb-7129-b93b-1a813f29c6a3
+idn: _utilsUnpackJSONStringSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c6a2
+    name: source
+    default_value: " "
+path: ""

@@ -1,0 +1,123 @@
+{{StartNotInterruptibleBlock()}}
+
+{{Set(name="user_id", value=GetUser(field="id"))}}
+
+{{!-- TODO: Move to session ended? --}}
+{{SetState(name="user_reply_buffer", value=" ")}}
+{{SetState(name="fast_prompt", value=" ")}}
+{{SetState(name="fast_prompt_override_version", value=" ")}}
+{{SetState(name="cached_base_prompt", value=" ")}}
+{{SetState(name="cached_base_prompt_override_version", value=" ")}}
+{{SetPersonaAttribute(id=user_id, field="session_current_integration_idn", value=" ")}}
+{{SetPersonaAttribute(id=user_id, field="session_current_connector_idn", value=" ")}}
+{{SetPersonaAttribute(id=user_id, field="v2v_current_provider", value=" ")}}
+{{SetPersonaAttribute(id=user_id, field="outbound_session", value="False")}}
+{{SetPersonaAttribute(id=user_id, field="screening_system_handled", value="False")}}
+{{SetPersonaAttribute(id=user_id, field="busy_announcement_handled", value="False")}}
+
+{{Set(name="conversation_ended_time_pt", value=GetDatetime(format="time", timezone="America/Los_Angeles"))}}
+
+{{!-- FOR HITL --}}
+{{SetPersonaAttribute(id=user_id, field="conversation_conversation_ended_time_pt", value=conversation_ended_time_pt)}}
+
+{{Set(name="integration_idn", value=GetTriggeredAct(fields=["integrationIdn"]))}}
+{{Set(name="connector_idn", value=GetTriggeredAct(fields=["connectorIdn"]))}}
+
+{{!-- Exit if not VAPI or NEWO Voice service --}}
+{{#if integration_idn != "vapi"}}
+    {{#if integration_idn != "newo_voice"}}
+        {{Return()}}
+    {{/if}}
+{{/if}}
+
+{{SendSystemEvent(
+    eventIdn="convoagent_update_followup",
+    connectorIdn="system",
+    interval="-1",
+    personaId=user_id,
+    reason="conversation ended"
+)}}
+
+{{Set(name="phone_number", value=GetActor(field="externalId"))}}
+{{!-- For VAPI and NEWO Voice services --}}
+{{SetPersonaAttribute(id=user_id, field="last_convo_actor_id", value=" ")}}
+{{Set(name="reason", value=GetTriggeredAct(fields=["reason"]))}}
+{{Set(name="recording_url", value=GetTriggeredAct(fields="recordingUrl"))}}
+
+{{#if not IsEmpty(text=recording_url)}}
+    {{SetPersonaAttribute(id=user_id, field="recording_urls", value=AppendItemsArrayJSON(array=GetPersonaAttribute(id=user_id, field="recording_urls"), items=AsStringJSON(val=recording_url)))}}
+{{/if}}
+
+{{Set(name="conversation_channel", value=session_get_conversation_channel(integration_idn=GetActor(field="integrationIdn")))}}
+
+{{Set(name="execute_actions", value="False")}}
+{{#if conversation_channel == "phone"}}
+    {{Set(name="execute_actions", value="True")}}
+{{/if}}
+
+{{#if conversation_channel == "webcall"}}
+    {{Set(name="execute_actions", value="True")}}
+{{/if}}
+
+{{#if execute_actions == "True" }}
+    {{SetPersonaAttribute(id=user_id, field="last_conversation_ended_reason", value=reason)}}
+
+    {{Set(name="message", value="The call ended, but the reason is unknown.")}}
+
+    {{#if reason == "assistant-forwarded-call"}}
+        {{Set(name="message", value="The call ended because the agent forwarded the call.")}}
+    {{/if}}
+
+    {{#if reason == "assistant-ended-call"}}
+        {{Set(name="message", value="The call ended because the agent terminated it.")}}
+    {{/if}}
+
+    {{#if reason == "customer-ended-call"}}
+        {{Set(name="message", value="The call ended because the user terminated it.")}}
+    {{/if}}
+
+    {{_utilsSendSystemLogSkill(message=message)}}
+
+    {{#if not (GetCustomerAttribute(field="project_attributes_setting_session_ended_reset_persona_attributes") == "True") }}
+        {{!-- We do not personalize greeting phrases during Demo Setup (`demo_init` - before reinit process) --}}
+        {{!-- The proper solution would be to reset corresponding Persona Attributes but we technically cannot do it at the moment --}}
+        {{#if GetCustomerAttribute(field="project_attributes_private_account_initialized_first_time") == "True" }}
+            {{_generateGreetingPhrasesSkill(reason=reason, userId=user_id)}}
+        {{/if}}
+    {{else}}
+        {{!-- Reset stale thoughts so a new call starts from the configured initial thoughts. --}}
+        {{SetPersonaAttribute(id=user_id, field="convoagent_thoughts", value=" ")}}
+    {{/if}}
+
+    {{#if conversation_channel == "phone"}}
+        {{Set(name="conversation_started_time_pt", value=GetPersonaAttribute(id=user_id, field="conversation_session_started_time_pt"))}}
+        {{#if not IsEmpty(text=conversation_started_time_pt)}}
+            {{Set(name="callback_enabled", value=GetCustomerAttribute(field="project_attributes_setting_instant_callback_on_abort_enabled"))}}
+            {{#if callback_enabled == "True"}}
+                {{Set(name="should_call_back", value=_checkIfAgentShouldCallBackSkill(conversationStartedTime=conversation_started_time_pt, conversationEndedTime=conversation_ended_time_pt, callEndReason=reason, userId=user_id))}}
+                {{#if should_call_back == "True"}}
+                    {{SetPersonaAttribute(id=user_id, field="convoagent_called_back_once_in_session", value="True")}}
+                    {{_callbackAfterCallAbort(integrationIdn=integration_idn, connectorIdn=connector_idn, phoneNumber=phone_number)}}
+                {{/if}}
+            {{/if}}
+        {{/if}}
+    {{/if}}
+{{/if}}
+
+{{SetPersonaAttribute(id=user_id, field="last_call_ended_datetime_utc", value=GetDatetime(format="datetime", timezone="UTC"))}}
+
+{{!-- Send the Agent Creator first-call finish callback when demo setup or reinit opened the first-call callback window.
+After the first phone call ends, reset the marker so later calls and typical setup do not send first-call callbacks. --}}
+{{#if conversation_channel == "phone"}}
+    {{#if GetCustomerAttribute(field="project_attributes_private_dynamic_first_customer_call_events_must_be_sent") == "True" }}
+        {{SendSystemEvent(
+            eventIdn="agent_creator_first_customer_call_finished",
+            connectorIdn="system",
+            global="True",
+            user_phone_number=phone_number
+        )}}
+        {{SetCustomerAttribute(field="project_attributes_private_dynamic_first_customer_call_events_must_be_sent", value="False")}}
+    {{/if}}
+{{/if}}
+
+{{StopNotInterruptibleBlock()}}

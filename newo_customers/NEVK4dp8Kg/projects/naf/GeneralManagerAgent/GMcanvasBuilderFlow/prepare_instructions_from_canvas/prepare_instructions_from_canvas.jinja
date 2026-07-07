@@ -1,0 +1,26 @@
+{% set canvas = json.loads(GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas")) %}
+
+{% set intent_type_items = json.loads(utils_find_object_by_key_value(value="intent_types", obj=canvas.types, key="idn"))["items"] %}
+
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_itm_template", value=utils_build_itm_template_from_items(intent_type_items=intent_type_items))}}
+
+{{utils_compile_customer_attribute(template_attribute_name="project_attributes_private_dynamic_itm_template", compiled_attribute_name="project_attributes_private_dynamic_itm_compiled")}}
+
+{{SendSystemEvent(eventIdn="gm_prepare_itm", connectorIdn="system", global="True")}}
+
+{% set procedure_items = json.loads(utils_find_object_by_key_value(value="procedures", obj=canvas.types, key="idn"))["items"] %}
+
+{% set introduction_scenarios = json.loads(utils_find_object_by_key_value(value="introduction", obj=canvas.types, key="idn"))["items"] %}
+
+{% set scenario_items = json.loads(utils_find_object_by_key_value(value="scenarios", obj=canvas.types, key="idn"))["items"] %}
+
+{{SetCustomerAttribute(
+    field="project_attributes_private_dynamic_ami_template",
+    value=utils_build_ami_template_from_items(
+        procedure_items=procedure_items,
+        introduction_items=introduction_scenarios,
+        scenario_items=scenario_items
+    )
+)}}
+
+{{utils_compile_customer_attribute(template_attribute_name="project_attributes_private_dynamic_ami_template", compiled_attribute_name="project_attributes_private_dynamic_ami_compiled")}}

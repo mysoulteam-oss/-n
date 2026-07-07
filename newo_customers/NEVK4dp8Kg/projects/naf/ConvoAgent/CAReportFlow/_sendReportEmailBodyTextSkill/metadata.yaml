@@ -1,0 +1,27 @@
+id: 019f3b06-3aee-7139-ab2b-5344c58d269d
+idn: _sendReportEmailBodyTextSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d2698
+    name: customSection
+    default_value: ""
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d269a
+    name: reportType
+    default_value: " "
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d269b
+    name: transcript
+    default_value: ""
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d269c
+    name: workingHourStatus
+    default_value: " "
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d2697
+    name: userId
+    default_value: " "
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d2699
+    name: fieldsToExtract
+    default_value: " "
+path: ""

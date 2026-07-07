@@ -1,0 +1,2 @@
+{{Set(name="main_instruction", value=GetCustomerAttribute(field="project_attributes_private_dynamic_ami_compiled"))}}
+{{Return(val=main_instruction)}}

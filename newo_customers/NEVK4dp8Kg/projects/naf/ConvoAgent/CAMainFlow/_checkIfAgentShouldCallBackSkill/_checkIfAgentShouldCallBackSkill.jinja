@@ -1,0 +1,39 @@
+{% if callEndReason == "assistant-forwarded-call" %}
+    {{Return()}}
+{% endif %}
+{% set already_called_back = GetPersonaAttribute(id=userId, field="convoagent_called_back_once_in_session") %}
+{% if already_called_back == "True" %}
+    {{Return()}}
+{% endif %}
+{% set time_started = datetime.datetime.strptime(conversationStartedTime, "%H:%M:%S.%f") %}
+{% set time_ended = datetime.datetime.strptime(conversationEndedTime, "%H:%M:%S.%f") %}
+{% set duration = time_ended - time_started %}
+{% set timedelta = duration.total_seconds() %}
+{% if timedelta < 30 %}
+    {{Return(val="True")}}
+{% endif %}
+
+{% set memory_before_call_ended = memory_utils.get_memory(user_id=userId, count=30) %}
+
+{% system %}
+You are CallEndInspector. Your single task is to decide whether a phone conversation ended *intentionally* (i.e., the call is completed and not lost, no immediate callback is needed) or *non-intentionally* (e.g., dropped line; immediate callback warranted).
+
+## DECISION RULES
+Set `"intentional": true` if ANY of the following appear near the end (last 3–5 turns):
+1) **Mutual or acknowledged farewell**: both parties say goodbye/thanks/closure (e.g., “thanks”, “bye”, “have a great day”, “that’s all”), or the user expresses closure and the agent acknowledges it.
+2) **Handoff promised**: the agent says a human/team member will follow up.
+3) **Reschedule agreed**: user asks to be called later or at a specific time and the agent acknowledges.
+4) **Do-Not-Call**: user requests no further calls (stop calling / remove me).
+5) **Completed objective**: the core task clearly finished and the agent closes.
+
+<Transcription>
+{{memory_before_call_ended}}
+</Transcription>
+{% end %}
+{% set reasoning = json.loads(Gen(temperature=0.1, topP=0, jsonSchema='{"type":"object","properties": {"intentional": {"type": "boolean","description": "set to true if the conversation looks ended and agent should not call back immediately."}}, "required": ["intentional"]}', validateSchema=True, thinkingBudget=500)) %}
+
+{% if reasoning.intentional %}
+    {{Return()}}
+{% else %}
+    {{Return(val="True")}}
+{% endif %}

@@ -1,0 +1,9 @@
+{% set external_id = "email_actor_" ~ user_id ~ "_" ~ email %}
+{% set actors = GetActors(personaId=user_id, externalId=external_id, integrationIdn="system", connectorIdn="system") %}
+{% set actor_id = '' %}
+{% if not actors %}
+    {% set actor_id = CreateActor(integrationIdn="system", connectorIdn="system", externalId=external_id, personaId=user_id) %}
+{% else %}
+    {% set actor_id = actors[0].id | string %}
+{% endif %}
+{{Return(val=actor_id)}}

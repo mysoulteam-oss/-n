@@ -1,0 +1,10 @@
+{{Set(name="message", value="Do not reply to this mailbox as it is not monitored.")}}
+
+{{Set(name="email", value=GetCustomerAttribute(field="project_business_manager_email"))}}
+{{#if not IsEmpty(text=email)}}
+  {{Set(name="message", value=Concat(message, " Please send any questions to: ", email))}}
+{{/if}}
+
+{{Set(name="message", value=Concat(message, "<br><br>"))}}
+
+{{Return(val=message)}}

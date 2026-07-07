@@ -1,0 +1,12 @@
+id: 019f3b06-3ca4-715f-a65b-735f490de394
+idn: _prepareAttributesSalesMetadataSkill
+title: _prepareAttributesSalesMetadataSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3ca4-715f-a65b-735f490de393
+    name: triggered_by
+    default_value: ""
+path: ""

@@ -1,0 +1,11 @@
+{{Set(name="user_id", value=GetUser(field="id"))}}
+
+{{Set(name="user_phone", value=Stringify(targetNumber))}}
+{{Set(name="user_phone", value=_validatePhoneNumberSkill(phoneNumber=user_phone))}}
+
+{{SendSystemEvent(
+    eventIdn="sms_worker_send_sms",
+    connectorIdn="system",
+    sms_text=smsText,
+    phone_number=user_phone
+)}}

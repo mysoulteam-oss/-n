@@ -1,0 +1,9 @@
+id: 019f3b06-3ed9-7daa-a555-3c0189f20ca3
+idn: UpdateTaskStatusSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

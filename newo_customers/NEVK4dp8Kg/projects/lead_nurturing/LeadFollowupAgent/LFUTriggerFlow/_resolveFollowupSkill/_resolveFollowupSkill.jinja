@@ -1,0 +1,30 @@
+{% set previous_actions = 'None' %}
+{% set user_tasks = json.loads(user_tasks) %}
+{% if user_tasks %}
+  {% set previous_actions = '\n'.join(user_tasks) %}
+{% endif %}
+{% system %}
+Your task is to analyze the <ConversationHistory> and figure out if any action from <LeadNurturingInstruction> needs to be done. Use Python to evaluate the dates.
+Make sure not to duplicate already scheduled actions listed in <PreviouslyScheduledActions> block.
+
+{{_utilsGetConversationMetaSkill(userId=userId)}}
+
+<UserInformation>
+{{GetPersonaAttribute(id=userId, field="_private_dynamic_user_information")}}
+{{GetPersonaAttribute(id=userId, field="custom_user_data")}}
+</UserInformation>
+
+<ConversationHistory>
+{{memory}}
+</ConversationHistory>
+
+<LeadNurturingInstruction>
+{{GetCustomerAttribute(field="project_attributes_setting_lead_nurturing_instructions")}}
+</LeadNurturingInstruction>
+
+<PreviouslyScheduledActions>
+{{previous_actions}}
+</PreviouslyScheduledActions>
+{% end %}
+
+{{Return(val=Gen(temperature=0.1, topP=0, jsonSchema=_resolveFollowupSchemasSkill(), validateSchema=True, thinkingBudget=1020))}}

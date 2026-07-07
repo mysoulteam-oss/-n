@@ -1,0 +1,27 @@
+id: 019f3b06-3aed-7514-8647-494157904933
+idn: _generateGreetingPhrasesPromptSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aed-7514-8647-49415790492e
+    name: firstPriorityLanguage
+    default_value: " "
+  - id: 019f3b06-3aed-7514-8647-49415790492d
+    name: recent
+    default_value: " "
+  - id: 019f3b06-3aed-7514-8647-49415790492f
+    name: disclaimerPhrase
+    default_value: " "
+  - id: 019f3b06-3aed-7514-8647-494157904930
+    name: primaryLanguage
+    default_value: " "
+  - id: 019f3b06-3aed-7514-8647-494157904931
+    name: memory
+    default_value: " "
+  - id: 019f3b06-3aed-7514-8647-494157904932
+    name: later
+    default_value: " "
+path: ""

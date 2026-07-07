@@ -1,0 +1,123 @@
+{% set arguments = GetTriggeredAct().arguments %}
+
+{% set ignore_opt_out = arguments.ignore_opt_out or "false" %}
+{% set user_id = GetUser().id | string %}
+{% set email = arguments.email %}
+{% set notify = arguments.notify or "false" %}
+
+{% if ignore_opt_out == "false" %}
+    {% if GetPersonaAttribute(id=user_id, field="email_subscribed") == "false" %}
+        {{_utilsSendSystemLogSkill(message="Email to the " ~ email ~" won't be sent because user is unsubscribed.")}}
+        {{SendSystemEvent(
+            eventIdn="send_email_error",
+            connectorIdn="system",
+            integrationIdn="system",
+            code="OPT_OUT",
+            reason="Previously, the user opted out of receiving emails. Email sending is blocked until the user explicitly re-subscribes."
+        )}}
+        {{Return()}}
+    {% endif %}
+{% endif %}
+
+{% set tenant = GetCustomerInfo().tenant | string %}
+
+{% set subject = arguments.subject %}
+
+{% if not tenant or tenant == "newo" %}
+    {% set subject = "[Newo.ai] " ~ subject %}
+{% endif %}
+
+{% set cc = arguments.cc %}
+{% if not cc.strip() %}
+    {% set cc = "[]" %}
+{% endif %}
+{% set include_reply_to = (arguments.include_reply_to or "false") | string | lower == "true" %}
+
+{# Basic (practical) email regex: local@domain.tld, no spaces, requires a dot in domain #}
+{% set email_regex = re.compile("^[^\s@]+@[^\s@]+\.[^\s@]+$") %}
+{# Validating `toEmail` #}
+{% set normalized_email = email | string | lower | trim %}
+{% if not email_regex.match(normalized_email) %}
+    {{_utilsSendSystemLogSkill(message="Email to the " ~ normalized_email ~" won't be sent because the address is not valid.")}}
+    {{Return()}}
+{% endif %}
+{% set email = normalized_email %}
+
+{% set reply_to = "" %}
+{% if include_reply_to %}
+    {% set reply_to = GetCustomerAttribute(field="project_business_manager_email") | string | lower | trim %}
+    {% if reply_to and not email_regex.match(reply_to) %}
+        {{_utilsSendSystemLogSkill(message="Reply-to " ~ reply_to ~ " was excluded because the address is not valid.")}}
+        {% set reply_to = "" %}
+    {% endif %}
+{% endif %}
+
+{#
+Validating `cc`
+CC Example:
+"[\"Dmitry.filin\"]"
+We pass it as stringified array even though it is wrapped by real array on Make.com, handled there.
+#}
+{% set cc_arr_internal = json.loads(cc) %}
+{% set cc_arr_internal_normalized = [] %}
+{% for cc_email in cc_arr_internal %}
+    {% set normalized_cc = cc_email | string | lower | trim %}
+    {% if email_regex.match(normalized_cc) %}
+        {{cc_arr_internal_normalized.append(normalized_cc)}}
+    {% else %}
+        {{_utilsSendSystemLogSkill(message="CC " ~ normalized_cc ~" was excluded because the address is not valid.")}}
+    {% endif %}
+{% endfor %}
+{% set cc = json.dumps(cc_arr_internal_normalized, ensure_ascii=False, indent=2) %}
+{% set body_text = arguments.body ~ _getFooterSkill(tenant=tenant) %}
+{% set sender_name = _utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_setting_email_sender_name", defaultValue="Your Business | DoNotReply") %}
+{% set test_mode = session_in_test_mode(userId=user_id) %}
+
+{% if test_mode == "True" %}
+    {{SendSystemEvent(
+        eventIdn="email_worker_send_email_mock",
+        connectorIdn="system",
+        email=email,
+        cc=cc,
+        subject=subject,
+        body=arguments.body,
+        ignore_opt_out=ignore_opt_out,
+        notify=notify,
+        evaluated_body_text=body_text,
+        evaluated_sender_name=sender_name,
+        evaluated_tenant=tenant
+    )}}
+{% else %}
+    {{SendCommand(
+        commandIdn="send_email",
+        integrationIdn="api",
+        connectorIdn="webhook",
+        toEmail=email,
+        cc=cc,
+        replyTo=reply_to,
+        tenant=tenant,
+        subject=subject,
+        bodyText=body_text,
+        senderName=sender_name
+    )}}
+{% endif %}
+
+{{_utilsSendSystemLogSkill(message="Email is sent to " ~ email ~ " and cc to " ~ cc ~ ".")}}
+
+{% set email_actor = get_email_actor(user_id=user_id, email=email) %}
+{{SendMessage(message="Email:
+" ~ arguments.body, actorIds=[email_actor])}}
+
+{% if notify == "true" %}
+
+    {{SendSystemEvent(
+        eventIdn="urgent_message",
+        connectorIdn="system",
+        baseInstruction="You've just sent the following email message to the user: \n\n SUBJECT\n" ~ subject ~ "\n\nBODY\n\n" ~ arguments.body ~ "\n\nSimply inform the user that an email has been sent by saying this in the language the user is speaking to you in: I've just sent you an email message. Please check if you received it.
+    No need to tell or ask anything else for now.",
+        callAnalyzeConversationSkill="False",
+        callManageTaskSkill="False",
+        uninterruptible="True"
+    )}}
+
+{% endif %}

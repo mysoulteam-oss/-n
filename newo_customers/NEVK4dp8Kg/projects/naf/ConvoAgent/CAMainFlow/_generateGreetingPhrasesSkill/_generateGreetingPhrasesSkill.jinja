@@ -1,0 +1,101 @@
+{% set user_name = GetUser().name %}
+{% set business_name = GetCustomerAttribute(field="project_business_name_phonetic") or "" %}
+{% if business_name.strip() == "" %}
+    {% set business_name = GetCustomerAttribute(field="project_business_name") or "" %}
+{% endif %}
+
+{% set set_default_greeting = "False" %}
+
+{% if GetPersonaAttribute(id=userId, field="outbound_session") %}
+    {% if reason == "customer-did-not-answer" %}
+        {% set set_default_greeting = "True" %}
+    {% endif %}
+    {% if reason == "customer-busy" %}
+        {% set set_default_greeting = "True" %}
+    {% endif %}
+{% endif %}
+
+{% if set_default_greeting == "True" %}
+    {{ SetPersonaAttribute(id=userId, field="greeting_phrase", value=" ") }}
+    {{ SetPersonaAttribute(id=userId, field="new_session_greeting_phrase", value=" ") }}
+    {{ Return() }}
+{% endif %}
+
+{% set recent = GetCustomerAttribute(field="project_representative_agent_voice_greeting_phrase_recent_returning") %}
+{% set later = GetCustomerAttribute(field="project_representative_agent_voice_greeting_phrase_later_returning") %}
+
+{% if reason == "assistant-forwarded-call" %}
+    {% if user_name == "User" %}
+        {% set recent = "Welcome back! It looks like all our specialists are currently busy. I'd be happy to take your information and forward it to my colleagues via email. If you still prefer to be transferred, just let me know and I'll try to transfer you again." %}
+        {% if not later or later.strip() == "" %}
+            {% set later = GetCustomerAttribute(field="project_representative_agent_voice_greeting_phrase") %}
+        {% endif %}
+    {% else %}
+        {% set recent = "Welcome back, " ~ user_name ~ "! It looks like all our specialists are currently busy. I'd be happy to take your information and forward it to my colleagues via email. If you still prefer to be transferred, just let me know and I'll try to transfer you again." %}
+        {% if not later or later.strip() == "" %}
+            {% set later = "Welcome back to " ~ business_name ~ ", " ~ user_name ~ "! I'm " ~ GetCustomerAttribute(field="project_representative_agent_name") ~ ". How can I help you today?" %}
+        {% endif %}
+    {% endif %}
+{% else %}
+    {% if user_name == "User" %}
+        {% if not recent or recent.strip() == "" %}
+            {% set recent = "Welcome back to " ~ business_name ~ "! How can I help you?" %}
+        {% endif %}
+        {% if not later or later.strip() == "" %}
+            {% set later = GetCustomerAttribute(field="project_representative_agent_voice_greeting_phrase") %}
+        {% endif %}
+    {% else %}
+        {% if not recent or recent.strip() == "" %}
+            {% set recent = "Hello again, " ~ user_name ~ "! How can I assist you further?" %}
+        {% endif %}
+        {% if not later or later.strip() == "" %}
+                {% set later = "Welcome back to " ~ business_name ~ ", " ~ user_name ~ "! I'm " ~ GetCustomerAttribute(field="project_representative_agent_name") ~ ". How can I help you today?" %}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+{% set primary_language = GetCustomerAttribute(field="project_representative_agent_primary_language").strip() %}
+{% set disclaimer_phrase = GetCustomerAttribute(field="project_representative_agent_voice_disclaimer_phrase") %}
+
+{% set memory = get_prompt_memory(user_id=userId) %}
+{% if memory.count(user_name ~ ":") < 4 %}
+    {# If the user has interacted 3 or less times, prioritize the language used in the last agent reply #}
+    {% set first_priority_language = "language of last **agent** reply" %}
+{% else %}
+    {% set first_priority_language = "user language: " ~ _utilsPersonaAttributeGetWithDefaultsSkill(id=userId, field="user_language") %}
+{% endif %}
+
+{% set prompt = _generateGreetingPhrasesPromptSkill(
+    memory=memory,
+    recent=recent,
+    later=later,
+    firstPriorityLanguage=first_priority_language,
+    primaryLanguage=primary_language,
+    disclaimerPhrase=disclaimer_phrase
+) %}
+
+{% system %}
+{{prompt}}
+{% end %}
+{% set greeting_phrases = Gen(jsonSchema=_getSchemaSkill(schemaName="greeting"), validateSchema=True, temperature=0, topP=0, skipFilter=True, thinkingBudget=425) %}
+
+{{ SetPersonaAttribute(
+    id=userId,
+    field="greeting_phrase",
+    value=_utilsMakeBusinessNamePhoneticSkill(source=json.dumps(json.loads(greeting_phrases).get("recent_return_greeting"), ensure_ascii=False, indent=2))
+) }}
+
+{{ SetPersonaAttribute(
+    id=userId,
+    field="new_session_greeting_phrase",
+    value=_utilsMakeBusinessNamePhoneticSkill(source=json.dumps(json.loads(greeting_phrases).get("later_return_greeting"), ensure_ascii=False, indent=2))
+) }}
+
+{# stamp via the shared builder, not the mutated locals above #}
+{{ SetPersonaAttribute(id=userId, field="persona_greeting_signature", value=session_get_greeting_source_signature()) }}
+
+{{ SetPersonaAttribute(
+    id=userId,
+    field="current_session_summary",
+    value=json.dumps(json.loads(greeting_phrases).get("current_session_summary"), ensure_ascii=False, indent=2)
+) }}

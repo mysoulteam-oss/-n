@@ -1,0 +1,12 @@
+id: 019f3b06-3aed-7514-8647-494157904964
+idn: prompt_get_explicit_constraints_additional_limitations
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aed-7514-8647-494157904963
+    name: conversation_channel
+    default_value: ""
+path: ""

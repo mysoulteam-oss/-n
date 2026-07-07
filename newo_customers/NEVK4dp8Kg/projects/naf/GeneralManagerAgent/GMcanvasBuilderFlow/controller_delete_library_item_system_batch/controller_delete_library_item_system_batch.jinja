@@ -1,0 +1,11 @@
+{% set arguments = GetTriggeredAct().arguments %}
+{% set items = json.loads(arguments["items"]) %}
+
+{% for item in items %}
+    {{action_delete_library_item(type_idn=item.type_idn, item_idn=item.item_idn)}}
+{% endfor %}
+
+{{prepare_library()}}
+
+{# TODO: Potentially, check if the deleted item exists on the current canvas, and if so, change its is_from_library field to false and clear the origin_idn.
+During testing, nothing broke when a library item used in the canvas was deleted. #}

@@ -1,0 +1,44 @@
+{{Set(name="industry", value=GetCustomerAttribute(field="project_business_industry"))}}
+
+{{#if industry == "sales_industry"}}
+  {{Set(name="itm", value=GetCustomerAttribute(field="project_attributes_itm"))}}
+  {{#if not IsEmpty(text=itm)}}
+    {{Set(name="itm", value=itm.replace("to  a", "to a"))}}
+    {{SetCustomerAttribute(field="project_attributes_itm", value=itm)}}
+  {{/if}}
+{{/if}}
+
+{{Set(name="itm", value=GetCustomerAttribute(field="project_attributes_itm"))}}
+{{#if not IsEmpty(text=itm)}}
+  {{Set(name="itm", value=itm.replace("Session Type Map", "Intent Type Map"))}}
+  {{Set(name="itm", value=itm.replace("SessionTypeMap", "IntentTypeMap"))}}
+  {{SetCustomerAttribute(field="project_attributes_itm", value=itm)}}
+{{/if}}
+
+{{Set(name="custom_scenarios", value=GetCustomerAttribute(field="project_attributes_custom_scenarios"))}}
+{{#if not IsEmpty(text=custom_scenarios)}}
+  {{Set(name="custom_scenarios", value=custom_scenarios.replace("Session Type Map", "Intent Type Map"))}}
+  {{Set(name="custom_scenarios", value=custom_scenarios.replace("SessionTypeMap", "IntentTypeMap"))}}
+  {{SetCustomerAttribute(field="project_attributes_custom_scenarios", value=custom_scenarios)}}
+{{/if}}
+
+{{Set(name="custom_procedures", value=GetCustomerAttribute(field="project_attributes_custom_procedures"))}}
+{{#if not IsEmpty(text=custom_procedures)}}
+  {{Set(name="custom_procedures", value=custom_procedures.replace("Session Type Map", "Intent Type Map"))}}
+  {{Set(name="custom_procedures", value=custom_procedures.replace("SessionTypeMap", "IntentTypeMap"))}}
+  {{SetCustomerAttribute(field="project_attributes_custom_procedures", value=custom_procedures)}}
+{{/if}}
+
+{{Set(name="session_ended_report_content", value=GetCustomerAttribute(field="project_attributes_setting_session_ended_report_content"))}}
+{{#if not IsEmpty(text=session_ended_report_content)}}
+  {{Set(name="session_ended_report_content", value=session_ended_report_content.replace(
+    "The user wants or agent promises to relay information to the manager or co-workers.",
+    "The user wants or agent promises to relay information to the manager or co-workers at least once."
+  ))}}
+  {{SetCustomerAttribute(field="project_attributes_setting_session_ended_report_content", value=session_ended_report_content)}}
+{{/if}}
+
+{{!-- Remove redundant Outbound attributes --}}
+{{DeleteCustomerAttribute(field="project_representative_agent_voice_outbound_greeting_phrase")}}
+{{DeleteCustomerAttribute(field="project_attributes_setting_outbound_task_after_the_call")}}
+{{DeleteCustomerAttribute(field="project_attributes_setting_outbound_task_during_the_call")}}

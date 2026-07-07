@@ -1,0 +1,12 @@
+id: 019f3b06-3ca1-7304-92b1-de084db9d466
+idn: utils_leave_unique_items
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3ca1-7304-92b1-de084db9d465
+    name: items
+    default_value: ""
+path: ""

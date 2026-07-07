@@ -1,0 +1,15 @@
+id: 019f3b06-3f14-719e-a0ee-6e408677fcb6
+idn: generate_csv_outbound_sms
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3f14-719e-a0ee-6e408677fcb4
+    name: source
+    default_value: ""
+  - id: 019f3b06-3f14-719e-a0ee-6e408677fcb5
+    name: query
+    default_value: ""
+path: ""

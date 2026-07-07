@@ -1,0 +1,11 @@
+{% set explicit_constraints %}
+# VERBOSITY
+- Give a brief answer/question first, then provide more details if requested.
+- New topics: <= 30 words.
+- If the user requests more details: <= 60 words.
+- Ask only one question at a time.
+# CONNECT THE USER WITH THE MANAGER OR CO-WORKER
+{{prompt_get_explicit_constraints_connecting_with_manager_chat(working_hours=working_hours)}}
+{% endset %}
+
+{{Return(val=explicit_constraints.strip())}}

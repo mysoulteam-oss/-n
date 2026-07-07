@@ -1,0 +1,20 @@
+{% set cancellation_via_agent_title = "## **[T] Cancellation via Agent**" %}
+{% set cancellation_via_agent_body %}
+The user explicitly wants to cancel an existing appointment, reservation, or booking.
+ConvoAgent starts the scenario: **"Canceling Appointment via Agent"**.
+{% endset %}
+{% set cancellation_via_agent_description %}
+Appointment cancellation request; initiate cancellation process via agent.
+{% endset %}
+
+{% set item = {
+    "idn": "library_intent_types_common_cancellation_agent",
+    "title": cancellation_via_agent_title,
+    "body": cancellation_via_agent_body.strip(),
+    "is_from_library": True,
+    "origin_idn": "",
+    "description": cancellation_via_agent_description.strip(),
+    "mentions": [{"type": "scenarios", "item_idn": "scenario_common_canceling_appointment_agent"}]
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

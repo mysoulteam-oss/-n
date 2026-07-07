@@ -1,0 +1,8 @@
+{% set public_phone = GetCustomerAttribute(field="project_business_public_phone").strip() %}
+{% set bypass_phone = GetCustomerAttribute(field="project_attributes_setting_voice_integration_service_bypass_phone_number").strip() %}
+
+{% if public_phone %}
+    {% if public_phone == bypass_phone %}
+        {{SetCustomerAttribute(field="project_attributes_setting_voice_integration_service_bypass_phone_number", value="")}}
+    {% endif %}
+{% endif %}

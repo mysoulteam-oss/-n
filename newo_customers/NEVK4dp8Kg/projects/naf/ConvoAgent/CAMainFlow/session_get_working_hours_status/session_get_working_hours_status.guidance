@@ -1,0 +1,98 @@
+{{!-- Computes working_hours_status as BOOL string ("true"/"false") and caches it
+     on persona, so other skills read via GetPersonaAttribute without recomputation. --}}
+
+{{!-- WHE check: feature flag enabled AND compiled JSON present. NSLG has no
+     boolean AND helper, so this nests as two #if blocks. --}}
+{{Set(name="wheFlag", value=GetCustomerAttribute(field="project_attributes_setting_working_hours_structured_format_enabled"))}}
+{{Set(name="wheFlag", value=wheFlag.strip())}}
+{{Set(name="compiledRaw", value=GetCustomerAttribute(field="project_attributes_private_dynamic_schedule_compiled"))}}
+{{Set(name="compiledRaw", value=compiledRaw.strip())}}
+{{#if wheFlag == "True"}}
+  {{#if not IsEmpty(text=compiledRaw)}}
+    {{!-- WHE path: deterministic computation. working_schedule_session_is_open returns
+         empty string on soft-fallback (non-IANA TZ, missing tz/regular dict);
+         in that case drop through to legacy path below. Returns BOOL "true"
+         or "false" directly — write to persona attribute as-is. --}}
+    {{Set(name="isOpenStr", value=utils_session_is_open())}}
+    {{#if not IsEmpty(text=isOpenStr)}}
+      {{SetPersonaAttribute(id=user_id, field="working_hours_status", value=isOpenStr)}}
+      {{Return(val=isOpenStr)}}
+    {{/if}}
+  {{/if}}
+{{/if}}
+
+{{!-- Legacy path (single copy). Reached when WHE flag off, compiled empty,
+     or WHE soft-fallback returned empty. Computes BOOL locally. --}}
+
+{{!-- TODO: Take `project_attributes_private_dynamic_schedule_working_days_hours_exceptions` into account --}}
+
+{{#if GetCustomerAttribute(field="project_attributes_setting_define_conversation_is_during_working_hours_enabled") != "True"}}
+    {{Return()}}
+{{/if}}
+
+{{Set(name="working_hours_status", value=GetPersonaAttribute(id=user_id, field="working_hours_status"))}}
+{{#if not IsEmpty(text=working_hours_status)}}
+    {{Return(val=working_hours_status)}}
+{{/if}}
+
+{{Set(name="working_hours_object", value=GetCustomerAttribute(field="project_attributes_private_dynamic_schedule_working_hours_object"))}}
+
+{{!-- Fallback in case of missing `working_hours_object` — LLM emits BOOL status. --}}
+{{#if IsEmpty(text=working_hours_object)}}
+    {{Set(name="working_hours_status_json", value=_defineConversationIsDuringWorkingHoursStatusSkill())}}
+    {{Set(name="working_hours_status", value=Stringify(GetValueJSON(obj=working_hours_status_json, key="status")))}}
+    {{SetPersonaAttribute(id=user_id, field="working_hours_status", value=working_hours_status)}}
+    {{Return(val=working_hours_status)}}
+{{/if}}
+
+{{Set(name="time_zone", value=GetCustomerAttribute(field="project_business_time_zone"))}}
+{{Set(name="current_date", value=GetDatetime(format="date", timezone=time_zone))}}
+{{Set(name="current_date_week_day", value=GetDatetime(format="date", timezone=time_zone, weekday=True))}}
+{{Set(name="current_week_day", value=Stringify(current_date_week_day.replace(Concat(current_date, ", "), " ")))}}
+{{Set(name="day_object", value=GetValueJSON(obj=working_hours_object, key=current_week_day))}}
+
+{{#if day_object == "Schedule is not provided"}}
+    {{Set(name="working_hours_status_json", value=_defineConversationIsDuringWorkingHoursStatusSkill())}}
+    {{Set(name="working_hours_status", value=Stringify(GetValueJSON(obj=working_hours_status_json, key="status")))}}
+    {{SetPersonaAttribute(id=user_id, field="working_hours_status", value=working_hours_status)}}
+    {{Return(val=working_hours_status)}}
+{{/if}}
+
+{{!-- BOOL classification: "false" if non-working day, else compute from current minute. --}}
+{{#if GetValueJSON(obj=day_object, key="working_day") == "false"}}
+    {{Set(name="working_hours_status", value="false")}}
+{{else}}
+    {{Set(name="current_time", value=GetDatetime(format="time", timezone=time_zone))}}
+    {{Set(name="working_hours", value=GetValueJSON(obj=day_object, key="working_hours"))}}
+
+    {{Set(name="current_hour_list", value=current_time.split(":"))}}
+    {{Set(name="current_hour_list", value=Stringify(current_hour_list))}}
+    {{Set(name="current_hour_list", value=current_hour_list.replace("'", '"'))}}
+
+    {{Set(name="current_hour", value=Stringify(GetItemsArrayByIndexesJSON(array=current_hour_list, indexes=0)))}}
+    {{Set(name="current_minutes", value=GetItemsArrayByIndexesJSON(array=current_hour_list, indexes=1))}}
+
+    {{Set(name="empty_string", value=" ")}}
+    {{Set(name="current_minute_join", value=empty_string.join(current_minutes))}}
+    {{Set(name="current_minute_list", value=current_minute_join.split())}}
+    {{Set(name="current_minute_list", value=Stringify(current_minute_list))}}
+    {{Set(name="current_minute_list", value=current_minute_list.replace("'", '"'))}}
+    {{Set(name="current_minute_list", value=current_minute_list.replace('[""", ', "["))}}
+    {{Set(name="current_minute_list", value=current_minute_list.replace(', """]', "]"))}}
+
+    {{Set(name="current_minute", value=Stringify(GetItemsArrayByIndexesJSON(array=current_minute_list, indexes=0)))}}
+
+    {{Set(name="current_hour_minute", value=Concat(current_hour, current_minute))}}
+
+    {{Set(name="business_working_hour", value=working_hours.__contains__(current_hour_minute))}}
+    {{Set(name="exists", value=Stringify(business_working_hour))}}
+
+    {{#if exists == "True"}}
+        {{Set(name="working_hours_status", value="true")}}
+    {{else}}
+        {{Set(name="working_hours_status", value="false")}}
+    {{/if}}
+{{/if}}
+
+{{SetPersonaAttribute(id=user_id, field="working_hours_status", value=working_hours_status)}}
+{{Return(val=working_hours_status)}}

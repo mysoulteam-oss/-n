@@ -1,0 +1,9 @@
+{{Set(name="last_convo_actor_id", value=GetPersonaAttribute(id=userId, field="last_convo_actor_id"))}}
+
+{{#if not IsEmpty(text=last_convo_actor_id)}}
+    {{Return(val=last_convo_actor_id)}}
+{{/if}}
+
+{{Set(name="current_actor_id", value=GetActor(field="id"))}}
+{{SetPersonaAttribute(id=userId, field="last_convo_actor_id", value=current_actor_id)}}
+{{Return(val=current_actor_id)}}

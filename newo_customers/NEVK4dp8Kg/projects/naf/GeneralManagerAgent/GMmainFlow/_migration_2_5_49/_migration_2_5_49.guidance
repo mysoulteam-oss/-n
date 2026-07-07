@@ -1,0 +1,24 @@
+{{!-- Regenerate value --}}
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_schedule_working_hours_object", value=" ")}}
+
+{{!-- Set new recommended NEWO Voice Connector settings --}}
+{{!-- Checking Connector presence before setting --}}
+{{Set(name="newo_voice_connector_tokens_sliding_window", value=GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_tokens_sliding_window"))}}
+{{#if not IsEmpty(text=newo_voice_connector_tokens_sliding_window)}}
+  {{SetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_tokens_sliding_window", value="65536")}}
+{{/if}}
+
+{{Set(name="top_p", value=GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_top_p"))}}
+{{#if not IsEmpty(text=top_p)}}
+  {{SetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_top_p", value="0.9")}}
+{{/if}}
+
+{{Set(name="temperature", value=GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_temperature"))}}
+{{#if not IsEmpty(text=temperature)}}
+  {{SetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_temperature", value="0.85")}}
+{{/if}}
+
+{{!-- Disable V2V for NEWO Voice --}}
+{{SetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_mode", value="transcriber")}}
+{{SetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider", value="genai")}}
+{{SetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_vertex_enabled", value="True")}}

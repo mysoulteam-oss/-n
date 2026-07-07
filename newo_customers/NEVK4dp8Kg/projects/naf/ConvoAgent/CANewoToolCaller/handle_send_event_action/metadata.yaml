@@ -1,0 +1,36 @@
+id: 019f3b06-3aee-7139-ab2b-5344c58d2620
+idn: handle_send_event_action
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d2618
+    name: conversation_channel
+    default_value: ""
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d2619
+    name: latest_agent_answer
+    default_value: ""
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d261a
+    name: main_instruction
+    default_value: ""
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d261b
+    name: memory
+    default_value: ""
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d261f
+    name: user_id
+    default_value: ""
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d261e
+    name: tool_object
+    default_value: ""
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d261d
+    name: tool_name
+    default_value: ""
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d261c
+    name: memory_without_latest_agent_answer
+    default_value: ""
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d2617
+    name: broadcast_process_id
+    default_value: ""
+path: ""

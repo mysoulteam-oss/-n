@@ -1,0 +1,9 @@
+{# Find object by value of the specified key #}
+
+{% set json_object = json.loads(obj) %}
+
+{% for item in json_object %}
+    {% if item[key] == value %}
+        {{ Return(val=json.dumps(item, ensure_ascii=False, indent=2)) }}
+    {% endif %}
+{% endfor %}

@@ -1,0 +1,20 @@
+{% set triggered_by = GetTriggeredAct().arguments.triggered_by %}
+{% if triggered_by != "reinit" %}
+    {{Return()}}
+{% endif %}
+
+{# `BulkDeleteCustomerAttributes()` deletes all Customer Attributes, so initialize
+   the remaining projects after NAF has rebuilt its shared Attributes. #}
+{% for project in GetProjects() %}
+    {% if project.registry_item_idn != "naf" %}
+        {{SendSystemEvent(
+            eventIdn="project_publish_finish",
+            connectorIdn="project",
+            global="True",
+            triggered_by=triggered_by,
+            registry_item_idn=project.registry_item_idn,
+            force_agent_creator_callback="True",
+            force_demo_init="True"
+        )}}
+    {% endif %}
+{% endfor %}

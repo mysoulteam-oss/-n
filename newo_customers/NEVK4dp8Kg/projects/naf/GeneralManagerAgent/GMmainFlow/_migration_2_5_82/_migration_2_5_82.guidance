@@ -1,0 +1,47 @@
+{{!-- Rename `BOI` to `ITM` - delete redundant AKB topics --}}
+
+{{Set(name="persona_id", value=GetAgentPersona(field="id"))}}
+{{Set(name="industry", value=GetCustomerAttribute(field="project_business_industry"))}}
+{{Set(name="scenario", value=GetCustomerAttribute(field="project_attributes_scenario"))}}
+{{Set(
+  name="labels",
+  value=CreateArray(
+    industry,
+    scenario,
+    "attribute_template"
+  )
+)}}
+
+{{Set(
+  name="existing_topic_id",
+  value=SearchFuzzyAkb(
+    query="ATTRIBUTE_SESSION_TYPE_MAP_CONVOAGENT_NON_WORKING_HOURS",
+    searchFields=["name"],
+    numberTopics=1,
+    fields=["id"],
+    labels=labels,
+    filterByPersonaIds=persona_id,
+    scoreThreshold=1.0
+  )
+)}}
+
+{{#if not IsEmpty(text=existing_topic_id)}}
+  {{DeleteAkb(ids=existing_topic_id)}}
+{{/if}}
+
+{{Set(
+  name="existing_topic_id",
+  value=SearchFuzzyAkb(
+    query="ATTRIBUTE_SESSION_TYPE_MAP_CONVOAGENT_WORKING_HOURS",
+    searchFields=["name"],
+    numberTopics=1,
+    fields=["id"],
+    labels=labels,
+    filterByPersonaIds=persona_id,
+    scoreThreshold=1.0
+  )
+)}}
+
+{{#if not IsEmpty(text=existing_topic_id)}}
+  {{DeleteAkb(ids=existing_topic_id)}}
+{{/if}}

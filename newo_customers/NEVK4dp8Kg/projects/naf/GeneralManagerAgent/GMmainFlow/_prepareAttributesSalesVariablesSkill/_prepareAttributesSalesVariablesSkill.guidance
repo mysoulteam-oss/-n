@@ -1,0 +1,49 @@
+{{Set(name="is_first_init_done", value=GetCustomerAttribute(field="project_attributes_private_account_initialized_first_time"))}}
+{{!-- All `sales` Customer Attributes must be specified here with default values --}}
+{{!-- (must be sorted alphabetically) --}}
+
+{{!-- Set of `sales` attributes from Agent Creator and BOQ defaults --}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_sales_after_appointment_notes",
+  ac_field="agent_creator_sales_after_appointment_notes",
+  default="*(No specific notes provided. Proceed with the next step.)*"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(is_first_init_done=is_first_init_done, naf_field="project_attributes_sales_appointment_url", ac_field="agent_creator_sales_appointment_url")}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_sales_appointment_via_link_guidance_instruction",
+  ac_field="agent_creator_sales_appointment_via_link_guidance_instruction",
+  default="*(No specific instruction provided. Just share the link and ask user to create their appointment.)*"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_sales_pre_sale_questions",
+  ac_field="agent_creator_sales_additional_questions",
+  default="*(No questions provided. Just answer user's questions and proceed to the next step.)*"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_sales_qualifying_criteria",
+  ac_field="agent_creator_sales_qualifying_criteria",
+  default="*(No specific qualifying criteria provided. Proceed with scheduling steps. User is qualified automatically.)*"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_sales_qualifying_criteria_fallback_action",
+  ac_field="agent_creator_sales_qualifying_criteria_fallback_action",
+  default="*(The user is always qualified.)*"
+)}}
+
+{{set_customer_attribute_from_ac_if_first_init_and_empty(
+  is_first_init_done=is_first_init_done,
+  naf_field="project_attributes_sales_qualifying_questions",
+  ac_field="agent_creator_sales_qualifying_questions",
+  default="*(No questions provided.)*"
+)}}

@@ -1,0 +1,63 @@
+{% set arguments = GetTriggeredAct().arguments %}
+{% set user_id = GetUser().id | string %}
+{% set introduction_raw = arguments.get("introduction", "") %}
+{% set intent_types_raw = arguments.get("intent_types", "") %}
+{% set scenarios_raw = arguments.get("scenarios", "") %}
+{% set procedures_raw = arguments.get("procedures", "") %}
+
+{% set canvas = json.loads(GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas")) %}
+
+{% set introduction_type = utils_find_object_by_key_value(value="introduction", obj=canvas.types, key="idn") %}
+{% set intent_types_type = utils_find_object_by_key_value(value="intent_types", obj=canvas.types, key="idn") %}
+{% set scenarios_type = utils_find_object_by_key_value(value="scenarios", obj=canvas.types, key="idn") %}
+{% set procedures_type = utils_find_object_by_key_value(value="procedures", obj=canvas.types, key="idn") %}
+
+{% set introduction_items = json.loads(introduction_type)["items"] if introduction_type else [] %}
+{% set intent_type_items = json.loads(intent_types_type)["items"] if intent_types_type else [] %}
+{% set scenario_items = json.loads(scenarios_type)["items"] if scenarios_type else [] %}
+{% set procedure_items = json.loads(procedures_type)["items"] if procedures_type else [] %}
+
+{% set selected_introduction_items = json.loads(utils_select_canvas_items_by_ids(items=introduction_items, selected_idns=introduction_raw)) %}
+{% set selected_intent_type_items = json.loads(utils_select_canvas_items_by_ids(items=intent_type_items, selected_idns=intent_types_raw)) %}
+{% set selected_scenario_items = json.loads(utils_select_canvas_items_by_ids(items=scenario_items, selected_idns=scenarios_raw)) %}
+{% set selected_procedure_items = json.loads(utils_select_canvas_items_by_ids(items=procedure_items, selected_idns=procedures_raw)) %}
+
+{% set itm_template = utils_build_itm_template_from_items(intent_type_items=selected_intent_type_items) %}
+{% set itm_compiled = utils_compile_text_with_customer_attributes(text=itm_template) %}
+
+{% if itm_compiled.strip() %}
+    {% set wh_filter = "Remove only the specific scenario rule for **non-working hours**. Strictly preserve opposite conditions (like working hours) and any mentions in general lists or text." %}
+    {% set nwh_filter = "Remove only the specific scenario rule for **working hours**. Strictly preserve opposite conditions (like non-working hours) and any mentions in general lists or text." %}
+    {% set itm_non_working_hours_compiled = utils_build_intent_type_map_llm_filtered(filter=nwh_filter, base=itm_compiled).strip("```").strip() %}
+    {% set itm_working_hours_compiled = utils_build_intent_type_map_llm_filtered(filter=wh_filter, base=itm_compiled).strip("```").strip() %}
+{% else %}
+    {% set itm_non_working_hours_compiled = "" %}
+    {% set itm_working_hours_compiled = "" %}
+{% endif %}
+
+{% set ami_template = utils_build_ami_template_from_items(
+    procedure_items=selected_procedure_items,
+    introduction_items=selected_introduction_items,
+    scenario_items=selected_scenario_items,
+    allow_default_introduction="True" if not introduction_raw.strip() else "False",
+    ensure_language_switch_procedure="True"
+) %}
+{% set ami_compiled = utils_compile_text_with_customer_attributes(text=ami_template) %}
+
+{% set normalized_configuration = {
+    "introduction": json.loads(introduction_raw) if introduction_raw.strip() else None,
+    "intent_types": json.loads(intent_types_raw) if intent_types_raw.strip() else None,
+    "scenarios": json.loads(scenarios_raw) if scenarios_raw.strip() else None,
+    "procedures": json.loads(procedures_raw) if procedures_raw.strip() else None
+} %}
+
+{{SetPersonaAttribute(id=user_id, field="convoagent_recompile_override_configuration", value=json.dumps(normalized_configuration, ensure_ascii=False, indent=2))}}
+{{SetPersonaAttribute(id=user_id, field="convoagent_recompile_override_ami_compiled", value=ami_compiled)}}
+{{SetPersonaAttribute(id=user_id, field="convoagent_recompile_override_itm_working_hours_compiled", value=itm_working_hours_compiled)}}
+{{SetPersonaAttribute(id=user_id, field="convoagent_recompile_override_itm_non_working_hours_compiled", value=itm_non_working_hours_compiled)}}
+{{SetPersonaAttribute(id=user_id, field="convoagent_recompile_override_version", value=uuid.uuid4() | string)}}
+
+{{SendSystemEvent(
+    eventIdn="convoagent_recompile_refresh",
+    connectorIdn="system"
+)}}

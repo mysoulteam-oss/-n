@@ -1,0 +1,18 @@
+{% if GetTriggeredAct().text == "outbound-queue-test" %}
+    {{SendMessage(message="`Outbound Queue Test` just started, pushing to the queue..")}}
+    {% for _ in range(3) %}
+        {% set ts = datetime.datetime.now().timestamp() | string %}
+        {% set phone = "+1244" ~ ts[-6:] ~ ts[-8] %}
+        {# Precision is not guaranteed, .12345 is valid as well as .1234 #}
+        {# So indexing is just approximation, using replace to strictly have a phone. #}
+        {% set phone = phone.replace('.', '4') %}
+        {{SendSystemEvent(
+            eventIdn="task_manager_schedule_tasks",
+            connectorIdn="system",
+            global="True",
+            content="Call the user at " ~ phone ~ ". Ask if they enjoyed __mock__!",
+            phoneNumber=phone,
+            taskTypes='["make_call"]'
+        )}}
+    {% endfor %}
+{% endif %}

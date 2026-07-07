@@ -1,0 +1,111 @@
+{{SetPersonaAttribute(id=userId, field="call_metadata", value="")}}
+{{SetPersonaAttribute(id=userId, field="session_current_integration_idn", value="")}}
+{{SetPersonaAttribute(id=userId, field="session_current_connector_idn", value="")}}
+{{SetPersonaAttribute(id=userId, field="last_convo_actor_id", value="")}}
+{{SetPersonaAttribute(id=userId, field="last_conversation_ended_reason", value="")}}
+{{SetPersonaAttribute(id=userId, field="recording_urls", value="")}}
+{{SetPersonaAttribute(id=userId, field="convoagent_thoughts", value="")}}
+{{SetPersonaAttribute(id=userId, field="email_already_sent_information", value="")}}
+{{SetPersonaAttribute(id=userId, field="already_sent_information", value="")}}
+{{SetPersonaAttribute(id=userId, field="rag", value="")}}
+{{SetPersonaAttribute(id=userId, field="last_call_ended_datetime_utc", value="")}}
+{{SetPersonaAttribute(id=userId, field="table_booked", value="")}}
+{{SetPersonaAttribute(id=userId, field="restaurant_availability", value="")}}
+{{SetPersonaAttribute(id=userId, field="availability_booking_urls", value="")}}
+{{SetPersonaAttribute(id=userId, field="availability", value="")}}
+{{SetPersonaAttribute(id=userId, field="availability_booking_url_selected", value="")}}
+{{SetPersonaAttribute(id=userId, field="booking_slots_availability_checking_status", value="")}}
+{{SetPersonaAttribute(id=userId, field="booking_slots_availability_checking_status_details", value="")}}
+{{SetPersonaAttribute(id=userId, field="booking_slots_availability_result", value="")}}
+{{SetPersonaAttribute(id=userId, field="last_requested_datetime", value="")}}
+{{SetPersonaAttribute(id=userId, field="working_hours_status", value="")}}
+{{SetPersonaAttribute(id=userId, field="agent_gave_low_conversation_quality_score", value="False")}}
+{# NOTE: If session ends abnormally (crash/timeout), these flags may persist as "True"
+   until the next normal session end. This is a known limitation for both SMS and email. #}
+{{SetPersonaAttribute(id=userId, field="agent_mentioned_sms_delivery_failure", value="False")}}
+{{SetPersonaAttribute(id=userId, field="agent_mentioned_email_delivery_failure", value="False")}}
+{{SetPersonaAttribute(id=userId, field="last_availability_payload", value="")}}
+{{SetPersonaAttribute(id=userId, field="custom_prompt_section", value="")}}
+{{SetPersonaAttribute(id=userId, field="conversation_meta", value="")}}
+{{SetPersonaAttribute(id=userId, field="action_state_booking_submitting", value="")}}
+{{SetPersonaAttribute(id=userId, field="action_state_meeting_creating", value="")}}
+{{SetPersonaAttribute(id=userId, field="convoagent_called_back_once_in_session", value="False")}}
+{{SetPersonaAttribute(id=userId, field="user_bookings", value="")}}
+{{SetPersonaAttribute(id=userId, field="v2v_current_provider", value="")}}
+{{SetPersonaAttribute(id=userId, field="outbound_session", value="False")}}
+
+{# TODO: Define whether `detected_phone_number` must be reset on `conversation_ended` or not #}
+{{SetPersonaAttribute(id=userId, field="detected_phone_number_country_code", value="null")}}
+{{SetPersonaAttribute(id=userId, field="detected_phone_number_with_country_code", value="null")}}
+{{SetPersonaAttribute(id=userId, field="detected_phone_number_without_country_code", value="null")}}
+
+{{SetPersonaAttribute(id=userId, field="voicemail_checked", value="False")}}
+{{SetPersonaAttribute(id=userId, field="outbound_call", value="False")}}
+{{SetPersonaAttribute(id=userId, field="outbound_session_global", value="False")}}
+{{SetPersonaAttribute(id=userId, field="is_outbound_call_first_message", value="True")}}
+{{SetPersonaAttribute(id=userId, field="previous_session_ended", value="True")}}
+{{SetPersonaAttribute(id=userId, field="conversation_concluded", value="False")}}
+
+{# Transient broadcast-process tracking state: reset every session so the dict does not grow unboundedly across sessions #}
+{{SetPersonaAttribute(id=userId, field="broadcast_processes_status", value="{}")}}
+
+{% set current_session_ended_datetime_utc = GetDateTime(format="datetime", timezone="UTC") %}
+
+{{SetPersonaAttribute(id=userId, field="last_session_ended_datetime_utc", value=current_session_ended_datetime_utc)}}
+
+{% set reset_persona_attributes = GetCustomerAttribute(field="project_attributes_setting_session_ended_reset_persona_attributes") %}
+{% set temporal = GetPersonaAttribute(id=userId, field="temporal") %}
+
+{% if temporal == "True" %}
+    {% set real_convo_persona_id = GetPersonaAttribute(id=userId, field="real_convo_persona_id") %}
+    {% if real_convo_persona_id.strip() %}
+        {{SetPersonaAttribute(field="temporal_session_is_active", value="False", id=real_convo_persona_id)}}
+    {% endif %}
+    {# TODO: Set Persona name and description when `UpdateUser` will be capable of doing so #}
+{% else %}
+    {% if commonValues.strip() and commonValues != "{}" %}
+        {% set commonValues = json.loads(commonValues) %}
+        {% set user_name = commonValues.get("user_name", "") %}
+        {% if user_name.strip() %}
+            {% set is_similar = IsSimilar(val1=user_name, val2="Not Provided", strategy="hamming", threshold=0.7) %}
+            {% if not is_similar %}
+                {# Update user name only in case it was extracted #}
+                {{UpdateUser(field="name", value=user_name)}}
+                {% if not reset_persona_attributes == "True" %}
+                    {{SetPersonaAttribute(field="full_name", value=user_name, id=userId)}}
+                    {{SetPersonaAttribute(field="name_was_extracted", value="True", id=userId)}}
+                {% else %}
+                    {{SetPersonaAttribute(field="full_name", value="Not provided", id=userId)}}
+                    {{SetPersonaAttribute(field="name_was_extracted", value="False", id=userId)}}
+                {% endif %}
+            {% endif %}
+            {{UpdateUser(field="description", value=summary)}}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+{{_utilsSendSystemLogSkill(message="Persona attributes have been reset.")}}
+
+{# Greeting phrase for NEWO Voice #}
+{% if reset_persona_attributes == "True" %}
+    {{SetPersonaAttribute(id=userId, field="greeting_phrase", value="")}}
+    {{SetPersonaAttribute(id=userId, field="new_session_greeting_phrase", value="")}}
+    {{SetPersonaAttribute(id=userId, field="persona_greeting_signature", value="")}}
+{% else %}
+    {{SetPersonaAttribute(id=userId, field="greeting_phrase", value=GetPersonaAttribute(id=userId, field="new_session_greeting_phrase"))}}
+{% endif %}
+{{SetPersonaAttribute(id=userId, field="current_session_summary", value="")}}
+
+{% if reset_persona_attributes == "True" %}
+    {{SetPersonaAttribute(id=userId, field="user_booking_payloads", value="")}}
+    {{SetPersonaAttribute(id=userId, field="bookings", value="")}}
+    {{SetPersonaAttribute(id=userId, field="booking", value="")}}
+    {{SetPersonaAttribute(id=userId, field="booking_submitted", value="")}}
+    {{SetPersonaAttribute(id=userId, field="last_availability_locations", value="")}}
+    {{SetPersonaAttribute(id=userId, field="email", value="")}}
+    {{SetPersonaAttribute(id=userId, field="user_language", value="")}}
+    {{SetPersonaAttribute(id=userId, field="sms_subscribed", value="")}}
+    {{SetPersonaAttribute(id=userId, field="email_subscribed", value="")}}
+    {# Building user's information (getting data up to date) #}
+    {{persona_utils.persona_build_user_information(user_id=userId)}}
+{% endif %}

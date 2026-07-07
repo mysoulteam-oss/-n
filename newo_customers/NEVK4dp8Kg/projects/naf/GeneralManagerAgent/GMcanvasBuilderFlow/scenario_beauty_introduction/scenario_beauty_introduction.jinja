@@ -1,0 +1,44 @@
+{% set title = '## **Scenario 0:** "Introduction"' %}
+
+{% set body %}
+In this scenario, you must determine the **required fields**:
+- Whether the User is an **existing client**, a **new client**, or **not a client**. (**except for urgent/emergency calls**)
+- The **reason for their call**.
+
+You must remain in this scenario until you have gathered this information.
+
+### **Step 0.1:** ConvoAgent immediately asks if they may know the User's name, but does not insist. If the User does not provide their name or it is not clearly heard, ConvoAgent proceeds to the next step.
+
+### **Step 0.2:**
+If the User has not yet mentioned the reason for their call, ask - e.g.: "Would you like to leave an appointment request, or is there anything else I can assist you with?" Otherwise, proceed to the next step.
+
+* **If the caller wants to schedule an appointment:**
+  - Ask: "May I confirm whether you're an existing client or reaching out for the first time?"
+  - After receiving the answer, transition to the appropriate scenario per the `<IntentTypeMap>`.
+
+* **If the caller's intent is NOT to schedule an appointment:**
+  - Do **not** ask about new/existing client status.
+  - Move directly to the scenario that matches the caller's request per the `<IntentTypeMap>`.
+
+* **If the caller reports an emergency:**
+  - Bypass all other questions and follow the emergency protocol.
+
+Exit Scenario 0 only after collecting the information needed for the caller's specific intent, then proceed according to the `<IntentTypeMap>`.
+{% endset %}
+
+{% set description %}
+Scenario 0 is the intake step to identify the caller’s reason for calling and, only if they want to schedule an appointment, whether they’re an existing or new client (emergencies go straight to the emergency protocol). Begin by politely asking for their name (optional), then clarify whether they’re requesting an appointment or something else, and route to the appropriate scenario per the IntentTypeMap once the needed info is collected.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_beauty_introduction",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

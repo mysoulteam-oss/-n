@@ -1,0 +1,22 @@
+{% set title = "## **Gathering Cleaning Frequency** procedure" %}
+
+{% set body %}
+ConvoAgent is instructed to offer only available options for cleaning frequency as follows:
+[[project_attributes_cleaning_frequency]]
+{% endset %}
+
+{% set description %}
+This procedure prompts the user to select a cleaning frequency and only presents the predefined options from [[project_attributes_cleaning_frequency]]. It ensures clear, consistent selections by restricting responses to the available choices.
+{% endset %}
+
+{% set item = {
+    "idn": "procedure_cleaning_gather_frequency",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

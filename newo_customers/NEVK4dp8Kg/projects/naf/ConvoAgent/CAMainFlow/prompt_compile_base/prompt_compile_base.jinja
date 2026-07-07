@@ -1,0 +1,89 @@
+{# This skill is used to get prompt that is used across all integrations and replace some placeholders with actual information.
+In particular this skill updates the following placeholders:
+- <||language_instructions_placeholder||>
+- <||availability_placeholder||>
+- <||action_booking_placeholder||>
+- <||action_meeting_placeholder||>
+- <||conversation_meta_placeholder||>
+- <||working_hours_phrase_placeholder||>
+- <||custom_section_placeholder||>
+- <||user_information_placeholder||>
+- <||custom_user_information_placeholder||>
+- <||spelled_phone_number_placeholder||>
+- <||calendar_placeholder||>
+
+Remaining placeholders that are not replaced within this skill:
+- <||convo_agent_thoughts_placeholder||>
+- <||rag_placeholder||>
+In case conversation needed:
+    - <||memory_placeholder||>
+    - <||user_name_placeholder||>
+    - <||last_user_message||>
+- <||general_instruction_footer||> #}
+
+{% set prompt = prompt_get_cached_base(user_id=user_id) %}
+{% if "<||language_instructions_placeholder||>" in prompt %}
+    {% set prompt = prompt.replace("<||language_instructions_placeholder||>", agent_instructions.get_language_instructions(user_id=user_id)) %}
+{% endif %}
+
+{% set availability %}# Slots availability request
+{{GetPersonaAttribute(id=user_id, field="booking_slots_availability_checking_status_details").strip() or "You have not requested available slots from the booking system yet. The booking is not yet confirmed by the booking system; it has not taken place!"}}{% endset %}
+
+{% set booking_slots_availability_result = GetPersonaAttribute(id=user_id, field="booking_slots_availability_result").strip() %}
+
+{% if booking_slots_availability_result %}
+    {% set availability %}{{availability}}
+
+# Slots availability response
+{{booking_slots_availability_result}}{% endset %}
+{% endif %}
+
+{% set prompt = prompt.replace("<||availability_placeholder||>", availability) %}
+
+{% if GetCustomerAttribute(field="project_attributes_setting_booking_enabled") == "True" %}
+    {% set booking_action_state %}# Booking Action State
+
+{{GetPersonaAttribute(id=user_id, field="action_state_booking_submitting").strip() or "You have not requested available slots from the booking system and have not agreed slot with the user, so you can't submit booking right now."}}
+    {% endset %}
+{% endif %}
+
+{% if GetCustomerAttribute(field="project_attributes_setting_calendar_event_integration") == "google_integration" %}
+    {% set calendar_action_state %}# Calendar Meeting Action State
+
+{{GetPersonaAttribute(id=user_id, field="action_state_meeting_creating").strip() or "The agent has **not** scheduled a meeting yet, and has **not** confirmed it with the calendar system."}}
+    {% endset %}
+{% endif %}
+
+{% set prompt = prompt.replace("<||action_booking_placeholder||>", booking_action_state or "") %}
+{% set prompt = prompt.replace("<||action_meeting_placeholder||>", calendar_action_state or "") %}
+{% set prompt = prompt.replace("<||conversation_meta_placeholder||>", GetPersonaAttribute(id=user_id, field="conversation_meta") or "") %}
+
+{# Adding working hours phrase if exists #}
+{# TODO: Optimize this, do not get each time. #}
+{% set working_hours_phrase = GetPersonaAttribute(id=user_id, field="working_hours_phrase").strip() %}
+{% if working_hours_phrase %}
+    {% set working_hours_phrase %}
+<When the="user is asking about business currently open" on.intent="know currently working" id="operating-phrase">
+<example>
+User: are you open right now?
+ConvoAgent: {{working_hours_phrase}}
+</example>
+
+> [!NOTE]
+> Except cases when the user is asking about any future date and / or time.
+> For call transfer cases follow **CALL TRANSFERRING** rules.
+</When>
+    {% endset %}
+{% endif %}
+
+{% set prompt = prompt.replace("<||working_hours_phrase_placeholder||>", working_hours_phrase or "") %}
+
+{% set prompt = prompt.replace("<||custom_section_placeholder||>", GetPersonaAttribute(id=user_id, field="custom_prompt_section")) %}
+{% set prompt = prompt.replace("<||user_information_placeholder||>", GetPersonaAttribute(id=user_id, field="_private_dynamic_user_information_conversational_prompt") or "") %}
+{% set prompt = prompt.replace("<||custom_user_information_placeholder||>", GetPersonaAttribute(id=user_id, field="custom_user_data")) %}
+
+{% set prompt = prompt.replace("<||spelled_phone_number_placeholder||>", GetPersonaAttribute(id=user_id, field="phone_number_spelled") or "") %}
+
+{% set prompt = prompt.replace("<||calendar_placeholder||>", GetCustomerAttribute(field="project_attributes_private_dynamic_prompt_calendar") or "") %}
+
+{{Return(val=prompt)}}

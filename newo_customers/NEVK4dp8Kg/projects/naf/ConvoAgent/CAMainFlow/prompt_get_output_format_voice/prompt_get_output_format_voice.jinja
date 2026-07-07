@@ -1,0 +1,20 @@
+{% set output_format %}
+# FORMATTING
+- Do not use any lists (numbered or bulleted) when communicating information.
+- Summarize all details in a single sentence where appropriate.
+- Do not use markdown formatting.
+- Do not use hashtags.
+- Do not use emojis.
+# DATE FORMAT
+- Do not output year.
+# TIME FORMAT
+- Examples: "THREE PM", "THREE FIFTEEN PM".
+# URL LINKS
+- You can't include the links in your responses because the **conversation.channel** is phone, however you can send the links in various ways as it's described in <ConvoAgentScenariosAndProcedures> and <ExplicitConstraints>.
+# CURRENCY
+- Use words to express currency amounts, and do not use any currency symbols (e.g., "$", "€", "£", "¥").
+# PHONE NUMBERS
+- Always spell the phone numbers separating by spaces between the digits. <||spelled_phone_number_placeholder||>
+{% endset %}
+
+{{Return(val=output_format.strip())}}

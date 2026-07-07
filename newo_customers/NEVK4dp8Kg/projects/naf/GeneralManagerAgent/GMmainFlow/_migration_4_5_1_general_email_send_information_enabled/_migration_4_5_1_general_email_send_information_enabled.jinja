@@ -1,0 +1,6 @@
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+{% if industry != "general_industry" %}
+    {{Return()}}
+{% endif %}
+
+{{SetCustomerAttribute(field="project_attributes_setting_email_send_information_enabled", value="True")}}

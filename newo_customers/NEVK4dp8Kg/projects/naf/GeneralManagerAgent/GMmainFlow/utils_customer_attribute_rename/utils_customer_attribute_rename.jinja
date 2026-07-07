@@ -1,0 +1,12 @@
+{% set old_idn = old_idn.strip() %}
+{% set new_idn = new_idn.strip() %}
+
+{% if not old_idn or not new_idn %}
+    {{Return(val="")}}
+{% endif %}
+
+{% set old_idn_value = GetCustomerAttribute(field=old_idn) %}
+
+{{SetCustomerAttribute(field=new_idn, value=old_idn_value)}}
+
+{{DeleteCustomerAttribute(field=old_idn)}}

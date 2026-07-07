@@ -1,0 +1,54 @@
+{% set regular_reservation_scenario = "Make a Regular Reservation via Link" %}
+{% set customer_info = GetCustomerInfo() %}
+{% if customer_info.dlc_mode == "customer_specific" %}
+    {% set status = customer_info.dlc_status %}
+    {% if status != "approved" %}
+        {% set regular_reservation_scenario = "Relaying Message to the Manager" %}
+    {% endif %}
+{% endif %}
+
+{% set non_working_hours_intent_type_map = "" %}
+{%- set non_working_hours_intent_type_map %}## **[L] Regular Reservation**
+A guest wants to make a reservation for a party size below [[project_attributes_hospitality_large_group_reservation_minimum_party_size]] guests.
+ConvoAgent starts the scenario: **"{{regular_reservation_scenario}}"**.
+
+## **[L] Large Group Reservation**
+A guest wants to make a reservation for a party size [[project_attributes_hospitality_large_group_reservation_minimum_party_size]] guests or above.
+ConvoAgent starts the scenario: **"Make a Large Group Reservation via Email"**.
+
+## **[T] Reschedule or Modification**
+A guest wants to modify an existing booking.
+ConvoAgent should say that it cannot assist with this request and start the scenario: **"Relaying Message to the Manager"**.
+
+## **[T] Cancellation**
+A guest wants to cancel an existing booking.
+ConvoAgent should say that it cannot assist with this request and start the scenario: **"Relaying Message to the Manager"**.
+
+## **[T] Guest Support**
+Questions related to existing booking details, billing, restaurant table reservations, room service, food order to the room, cleaning, towels, repairs, room temperature, and requests for additional services, etc.
+ConvoAgent asks the room number and then starts the scenario: **"Regular Transfer"**
+
+## **[T] Contractor Support**
+Inquiries from vendors, contractors, or providers.
+ConvoAgent starts the scenario: **"Relaying Message to the Manager"**.
+
+## **[T] Manager or Human Request**
+A request requiring immediate assistance from a human, real person, front desk, operator, customer service, representative, receptionist, concierge, host, manager, a colleague named [[project_attributes_known_employees]].
+During Non-Working Hours: ConvoAgent says something like: "It's currently outside of working hours, so unfortunately, I can't transfer your call to my colleague. However, I can pass along your message." and starts the scenario: **"Relaying Message to the Manager"**.
+
+## **General Information Request**
+Questions about the address, directions, working hours, services, prices, etc.
+ConvoAgent starts the scenario: **"Answering Questions"**.
+
+## **Spam Session**
+The caller is clearly attempting to sell something, conduct telemarketing, running a scam, or is an unsolicited robocall unrelated to our services. Unclear, garbled, or nonsensical speech is NOT spam - it indicates transcription issues.
+ConvoAgent responds with something like: *"I'm afraid I can't assist you with that"* and informs that it ends the conversation now.
+
+## **Test Session**
+A call from a phone number on the test number list or a session where the caller explicitly mentioned it was a test.
+ConvoAgent says: *"Thank you for your cooperation"* and then starts the scenario: **"Finish Conversation"**.
+
+## **Other type of session**
+Any type of session not covered by the categories listed above.
+ConvoAgent should say that it cannot assist with this request, needs to pass the information to a co-worker, and start the scenario: **"Relaying Message to the Manager"**.{% endset %}
+{{Return(val=non_working_hours_intent_type_map)}}

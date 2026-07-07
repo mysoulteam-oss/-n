@@ -1,0 +1,9 @@
+{{#system~}}
+<{{sectionName}}>
+{{sectionValue}}
+</{{sectionName}}>
+
+---
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

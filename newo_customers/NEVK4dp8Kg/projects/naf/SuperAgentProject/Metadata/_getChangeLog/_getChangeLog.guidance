@@ -1,0 +1,112 @@
+{{#system~}}
+# Super Agent Changelog
+
+## Super Agent `0.2.2` - 2024-07-27
+
+**New Features:**
+
+1. New Fields in Task Object Format: Added 'required_agent_fields' and 'required_user_fields' to the
+   info field of task_object_format. This reduces false assumptions by Supervisor about task object
+   readiness, ensuring tasks are not dispatched prematurely (e.g., without user confirmation of
+   booking details or desired booking time etc.).
+2. New Workflow Step: Introduced a new step in the workflow to send an SMS to the user confirming
+   the booking.
+
+**Improvements:**
+
+1. Task Object Trimming: Modified task_object_format such that now Baker fills only the info field
+   in task_objects.
+2. Supervisor Schema Validation: Updated Supervisor to validate the generated object based solely on
+   the info field schema; other header elements of the task object are added during dispatch. This
+   results in better, smaller, and faster generation of task objects with fewer errors by Baker and
+   better validation by Supervisor.
+3. Booking Instructions Revision: Slightly revised the main and initial booking instructions to
+   ensure all booking details are reconfirmed before passing on to the next worker, specifically
+   requiring confirmation of dates if a user mentions a day of the week.
+4. Instruction Review Update: Now reviewing task-specific instructions only during their execution,
+   excluding AGENT_MAIN_INSTRUCTION, which has streamlined prompts and enhanced agent adherence to
+   instructions.
+5. Task Object Modification for Slots: Trimmed task object for slots by removing 'maximum_capacity'
+   and 'datetime' fields. Updated MagicWorker's instructions to return 'location' during slot
+   retrieval and booking to facilitate SMS notifications to the user.
+6. Refactoring Baker and Supervisor Skills: Overhauled Baker and Supervisor skills across all
+   workers.
+7. Email Worker Stability: Email Worker now uses webhooks, enhancing the stability of email
+   dispatch. Refinement of Baker has improved the clarity of email generation.
+
+**Bug Fixes:**
+
+1. Baker Correction: Fixed an issue in Baker where it was incorrectly assuming the status of a task.
+2. Minor Bug Fixes: Addressed some minor bugs.
+
+## Super Agent `0.3.0` - 2024-09-05
+
+**New Features:**
+
+1. New Workflows for Restaurant Industry: Added workflows including modification and cancellation of
+   reservations.
+2. UTM Tags in Emails: Implemented sending UTM tags in emails following the end of conversational
+   sessions.
+3. Customer Attribute Flags: Introduced two flags in customer attributes to enable or disable
+   reports at the session's start and end.
+4. User Session Notification: Created a customer attribute for enabling user session notifications.
+5. Large Group Reservation Time Frame: Added a feature that allows setting a time frame for making
+   reservations for large groups.
+6. New Skill for Task Determination: Introduced a new skill specifically for task determination,
+   significantly reducing prompt length and enhancing accuracy.
+7. Sandbox Integration for End Session Testing: Added sandbox integration to the getMemory skill to
+   facilitate testing of session endings.
+8. External API Data Fetch Feature: Implemented a feature for agents to fetch data from external
+   APIs/services.
+9. Handling Common Numbers: Now handling common phone numbers from which guests might call, while
+   ensuring our agent does not respond to bots that send messages via these numbers.
+10. Transfer Call for Multiple Numbers: General implementation for transferring calls across
+    multiple numbers.
+
+**Improvements:**
+
+1. Improved Understanding of Working Hours: Introduced a new format for a better understanding of
+   working hours.
+2. Switched All Skills to GTP-4o: Transitioned all skills to gtp4o, which operates faster and more
+   cost-effectively.
+3. Enhanced Task Object Generation and Validation: Improved generation and validation of task
+   objects by Baker and Supervisor.
+4. External API Data Fetch Feature: Implemented a feature for agents to fetch data from external
+   APIs/services.
+5. Magic Browser Caching and Script Search: MagicWorker will now search for a script by task_idn in
+   its own akb to find a script to send to the magic browser integration; added caching for Magic
+   Browser.
+6. Standardized External API Interaction: Standardized methods for working with external APIs.
+7. Refactor 'Your Persona and Roles': Refactored to generate content based on existing attributes,
+   centralizing updates for business phone/email etc.
+8. Updated ApiWorker to Latest Standards: Upgraded ApiWorker to the latest standards.
+9. Re-engineered MagicBrowser Task Objects: Redesigned MagicBrowser task objects to not depend on
+   the start URL.
+
+**Bug Fixes:**
+
+1. Fixed Agent Misidentification of Phone Numbers: Addressed an issue where agents in chat
+   mistakenly provided business phone numbers as user's own.
+2. Corrected Task Object Errors in SMSWorker, EmailWorker, and MagicBrowserWorker: Resolved an error
+   where Supervisor flagged task objects as incorrect, requiring them to be reissued.
+
+## Super Agent `0.3.1` - 2024-09-10
+
+**Improvements:**
+
+1. Added filtration by scenario for task selection.
+
+**Bug Fixes:**
+
+1. Fixed issue related to confirmation of unavailable slots.
+
+## Super Agent `0.3.2` - 2024-09-13
+
+**Bug Fixes:**
+
+1. Fixed issue with phone number validation.
+
+## Super Agent `0.4.0` - TODO
+
+- WORK IN PROGRESS
+{{~/system}}

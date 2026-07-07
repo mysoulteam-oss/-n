@@ -1,0 +1,21 @@
+id: 019f3b06-3aea-7bec-815e-12eae75b9b7b
+idn: semaphore_format_skill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aea-7bec-815e-12eae75b9b77
+    name: actual
+    default_value: "False"
+  - id: 019f3b06-3aea-7bec-815e-12eae75b9b78
+    name: analysis
+    default_value: ""
+  - id: 019f3b06-3aea-7bec-815e-12eae75b9b79
+    name: expected
+    default_value: "False"
+  - id: 019f3b06-3aea-7bec-815e-12eae75b9b7a
+    name: report
+    default_value: ""
+path: ""

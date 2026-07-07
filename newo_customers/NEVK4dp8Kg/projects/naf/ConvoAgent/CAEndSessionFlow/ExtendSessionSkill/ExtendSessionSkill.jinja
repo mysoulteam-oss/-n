@@ -1,0 +1,38 @@
+{# Set session timer #}
+{% set user_id = GetUser().id | string %}
+{% set session_timeout = GetTriggeredAct().arguments.timeout %}
+
+{% if not session_timeout %}
+    {% set conversation_concluded = GetPersonaAttribute(id=user_id, field="conversation_concluded") %}
+    {% set integration_idn = session_utils.session_get_current_integration_idn(user_id=user_id) %}
+    {% set conversation_channel = session_utils.session_get_conversation_channel(user_id=user_id, integration_idn=integration_idn) %}
+    {% set session_timeout = "" %}
+
+    {% if conversation_concluded == "True" %}
+        {% if conversation_channel in ("phone", "webcall") %}
+            {% set session_timeout = GetCustomerAttribute(field="project_attributes_setting_conversation_session_timeout_finished_voice") %}
+        {% else %}
+            {% set session_timeout = GetCustomerAttribute(field="project_attributes_setting_conversation_session_timeout_finished_chat") %}
+        {% endif %}
+    {% else %}
+        {% if conversation_channel in ("phone", "webcall") %}
+            {% set session_timeout = GetCustomerAttribute(field="project_attributes_setting_conversation_session_timeout_unfinished_voice") %}
+        {% else %}
+            {% set session_timeout = GetCustomerAttribute(field="project_attributes_setting_conversation_session_timeout_unfinished_chat") %}
+        {% endif %}
+    {% endif %}
+
+    {% if not session_timeout.strip() %}
+        {% set session_timeout = "300" %}
+    {% endif %}
+{% endif %}
+
+{{SendCommand(
+    commandIdn="set_timer",
+    integrationIdn="program_timer",
+    connectorIdn="session_timer",
+    personaId=user_id,
+    timerName="session_timer",
+    interval=session_timeout,
+    eventIdn="end_session"
+)}}

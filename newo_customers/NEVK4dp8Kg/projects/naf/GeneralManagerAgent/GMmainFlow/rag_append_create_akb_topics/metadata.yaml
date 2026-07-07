@@ -1,0 +1,18 @@
+id: 019f3b06-3ca4-715f-a65b-735f490de3b3
+idn: rag_append_create_akb_topics
+title: rag_append_create_akb_topics
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3ca4-715f-a65b-735f490de3b1
+    name: label
+    default_value: ""
+  - id: 019f3b06-3ca4-715f-a65b-735f490de3b0
+    name: id_prefix
+    default_value: ""
+  - id: 019f3b06-3ca4-715f-a65b-735f490de3b2
+    name: input_structured_text
+    default_value: ""
+path: ""

@@ -1,0 +1,43 @@
+{% set user_id = GetUser().id | string %}
+{% set agent_persona_id = GetAgentPersona().id | string %}
+{% set actor_id = GetActor().id | string %}
+
+{% set parameters_parsed = json.loads(parameters) %}
+{% set idn = '' %}
+{% if parameters_parsed | length > 1 %}
+    {% set idn = parameters_parsed[1] %}
+{% endif %}
+{% set instruction_type = parameters_parsed[0] %}
+{% set actor_id_normalized = actor_id.replace('-', '') %}
+{% set pending_review_type = GetPersonaAttribute(id=user_id, field="pending_canvas_review_type_" ~ actor_id_normalized).strip() %}
+{% set pending_review_item_id = GetPersonaAttribute(id=user_id, field="pending_canvas_review_item_id_" ~ actor_id_normalized).strip() %}
+
+{% set canvas = json.loads(GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas")) %}
+{% set found_instruction = {} %}
+{% for type in canvas.types %}
+    {% if type.idn == instruction_type %}
+        {% if not idn %}
+            {% set found_instruction = type %}
+        {% else %}
+            {% for item in type["items"] %}
+                {% if item.idn == idn %}
+                    {% set found_instruction = item %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{% if not found_instruction %}
+    {{SendMessage(message='<thinking>\nI did not find any instruction for my query: ' ~ parameters ~ '\n</thinking>', actorIds=[actor_id], useFilter=False)}}
+    {{already_taken_actions.append('I did not find any instruction for my query: ' ~ parameters)}}
+{% else %}
+    {{SendMessage(message='<thinking>\nI have found the following instruction(s) for my query ' ~ parameters ~ ':\n' ~ json.dumps(found_instruction, ensure_ascii=False, indent=2) ~ '\n</thinking>', actorIds=[actor_id], useFilter=False)}}
+    {{already_taken_actions.append('I have found the following instruction(s) for my query ' ~ parameters ~ ':\n' ~ json.dumps(found_instruction, ensure_ascii=False, indent=2))}}
+{% endif %}
+{% if instruction_type == pending_review_type and idn == pending_review_item_id %}
+    {{DeletePersonaAttribute(id=user_id, field="pending_canvas_review_type_" ~ actor_id_normalized)}}
+    {{DeletePersonaAttribute(id=user_id, field="pending_canvas_review_item_id_" ~ actor_id_normalized)}}
+{% endif %}
+
+{{main(memory=memory, already_taken_actions=already_taken_actions)}}

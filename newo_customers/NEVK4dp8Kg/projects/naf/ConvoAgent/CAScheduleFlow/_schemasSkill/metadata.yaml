@@ -1,0 +1,30 @@
+id: 019f3b06-3af0-77e7-b66a-c13b7444d0eb
+idn: _schemasSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3af0-77e7-b66a-c13b7444d0e5
+    name: createMeetingSchema
+    default_value: "False"
+  - id: 019f3b06-3af0-77e7-b66a-c13b7444d0ea
+    name: workingHoursSchema
+    default_value: " "
+  - id: 019f3b06-3af0-77e7-b66a-c13b7444d0e9
+    name: submittingBookingSchema
+    default_value: "False"
+  - id: 019f3b06-3af0-77e7-b66a-c13b7444d0e8
+    name: submittingBookingRestaurantSchema
+    default_value: "False"
+  - id: 019f3b06-3af0-77e7-b66a-c13b7444d0e7
+    name: promisedMeetingSchema
+    default_value: "False"
+  - id: 019f3b06-3af0-77e7-b66a-c13b7444d0e6
+    name: promisedBookSchema
+    default_value: "False"
+  - id: 019f3b06-3af0-77e7-b66a-c13b7444d0e4
+    name: userId
+    default_value: " "
+path: ""

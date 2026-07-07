@@ -1,0 +1,12 @@
+id: 019f3b06-3ca3-70bb-9518-bcc63f6195e1
+idn: _prepareAttributesDentalMetadataSkill
+title: _prepareAttributesDentalMetadataSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3ca3-70bb-9518-bcc63f6195e0
+    name: triggered_by
+    default_value: ""
+path: ""

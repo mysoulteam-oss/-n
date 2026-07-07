@@ -1,0 +1,30 @@
+{% set prefix = 'ConvoAgent: ' %}
+
+{# TODO: Remove when default values of skills will be not only strings #}
+{# TODO: Change default value to integer instead of string #}
+{% set amount_of_turns = amount_of_turns | int %}
+
+{% if memory.strip() %}
+    {# 1. Split conversation into speaker turns #}
+    {% set turns = memory.split('\n' + prefix) %}
+
+    {# 2. Grab the last N turns with normal Python slicing #}
+    {% set latest_turns = turns[-amount_of_turns:] %}
+
+    {# 3. Re-add the prefix between items #}
+    {% set joined = latest_turns
+        | map('trim')
+        | join('\n' + prefix) %}
+
+    {# 4. if the slice lost its first prefix, restore it once #}
+    {# TODO: Handle case where user's Persona name is not `User` #}
+    {% set formatted_turns =
+        joined if joined.startswith('ConvoAgent:')
+        or joined.startswith('User:')
+        else prefix + joined
+    %}
+
+    {{ Return(val=formatted_turns) }}
+{% else %}
+    {{ Return(val="") }}
+{% endif %}

@@ -1,0 +1,89 @@
+{% set user_id = GetUser().id | string %}
+{% set actor_id = GetPersonaAttribute(id=user_id, field="last_convo_actor_id") %}
+
+{# Exit if the conversation is no longer active #}
+{% if not actor_id %}
+    {{Return()}}
+{% endif %}
+{% set act = GetTriggeredAct() %}
+
+{{SetPersonaAttribute(id=user_id, field="conversation_concluded", value="True")}}
+
+{#  Send `extend_session` event #}
+{{SendSystemEvent(
+    eventIdn="extend_session",
+    connectorIdn="system"
+)}}
+
+{% if act.arguments.conversation_channel == "phone" %}
+    {% set voice_integration_service = GetCustomerAttribute(field="project_attributes_setting_voice_integration_service") %}
+
+    {% if voice_integration_service == "VAPI Integration" %}
+        {{SendCommand(
+            commandIdn="stop_call",
+            integrationIdn="vapi",
+            connectorIdn="vapi_caller",
+            actorId=actor_id
+        )}}
+    {% endif %}
+
+    {% if voice_integration_service == "NEWO Voice Integration" %}
+        {% set stop_call_timeout = GetCustomerAttribute(field="project_attributes_setting_voice_stop_call_timeout") %}
+        {% if not stop_call_timeout.strip() %}
+            {% set stop_call_timeout = "6" %}
+        {% endif %}
+        {{SendCommand(
+            commandIdn="stop_call",
+            integrationIdn="newo_voice",
+            connectorIdn="newo_voice_connector",
+            actorId=actor_id,
+            waitForStopSeconds=stop_call_timeout
+        )}}
+    {% endif %}
+
+    {{SendSystemEvent(
+        eventIdn="convoagent_update_followup",
+        connectorIdn="system",
+        interval="-1",
+        personaId=user_id,
+        reason="hang up",
+        delay="5",
+        interruptible="False"
+    )}}
+{% endif %}
+
+{% if act.arguments.conversation_channel == "webcall" %}
+    {% set stop_call_timeout = GetCustomerAttribute(field="project_attributes_setting_voice_stop_call_timeout") %}
+    {% if not stop_call_timeout.strip() %}
+        {% set stop_call_timeout = "6" %}
+    {% endif %}
+    {{SendCommand(
+        commandIdn="stop_call",
+        integrationIdn="newo_voice",
+        connectorIdn="newo_voice_connector_web",
+        actorId=actor_id,
+        waitForStopSeconds=stop_call_timeout
+    )}}
+
+    {{SendSystemEvent(
+        eventIdn="convoagent_update_followup",
+        connectorIdn="system",
+        interval="-1",
+        personaId=user_id,
+        reason="hang up",
+        delay="5",
+        interruptible="False"
+    )}}
+{% endif %}
+
+{% if act.arguments.conversation_channel == "chat" %}
+    {{SendSystemEvent(
+        eventIdn="convoagent_update_followup",
+        connectorIdn="system",
+        interval="-1",
+        personaId=user_id,
+        reason="hang up",
+        delay="5",
+        interruptible="False"
+    )}}
+{% endif %}

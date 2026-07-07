@@ -1,0 +1,5 @@
+{% set library_items = [
+    json.loads(scenario_home_service_introduction())
+] %}
+
+{{Return(val=json.dumps(library_items, ensure_ascii=False, indent=2))}}

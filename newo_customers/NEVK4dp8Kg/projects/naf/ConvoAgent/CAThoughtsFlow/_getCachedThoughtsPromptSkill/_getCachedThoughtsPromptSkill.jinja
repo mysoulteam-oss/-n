@@ -1,0 +1,13 @@
+{% if GetPersonaAttribute(id=userId, field="thoughts_new_session") == "True" %}
+    {{SetPersonaAttribute(id=userId, field="thoughts_new_session", value="False")}}
+    {% set return_result = _getCompletePromptSkill(userId=userId, taskIdn=taskIdn) %}
+    {{SetState(name="last_no_task_prompt", value=return_result)}}
+{% else %}
+    {% set return_result = GetState(name="last_no_task_prompt") %}
+    {% if not return_result.strip() %}
+        {% set return_result = _getCompletePromptSkill(userId=userId, taskIdn=taskIdn) %}
+        {{SetState(name="last_no_task_prompt", value=return_result)}}
+    {% endif %}
+{% endif %}
+
+{{Return(val=return_result)}}

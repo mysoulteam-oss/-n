@@ -1,0 +1,51 @@
+{{Set(name="timezone", value="America/Los_Angeles")}}
+{{Set(name="conversation_date", value=GetDatetime(format="date", timezone=timezone))}}
+{{Set(name="current_date_week_day", value=GetDatetime(format="date", timezone=timezone, weekday=True))}}
+{{Set(name="conversation_week_day", value=Stringify(current_date_week_day.replace(Concat(conversation_date, ", "), " ")))}}
+{{Set(name="conversation_date_list", value=Stringify(conversation_date.split("-")))}}
+{{Set(name="conversation_date_list", value=conversation_date_list.replace("'", '"'))}}
+{{Set(name="conversation_month", value=Stringify(GetItemsArrayByIndexesJSON(array=conversation_date_list, indexes=1)))}}
+
+{{Set(name="conversation_end_time_pt", value=GetPersonaAttribute(id=userId, field="conversation_conversation_ended_time_pt"))}}
+{{#if IsEmpty(text=conversation_end_time_pt)}}
+    {{Set(name="conversation_end_time_pt", value=GetDatetime(format="time", timezone="America/Los_Angeles"))}}
+{{/if}}
+
+{{Set(name="business_hours", value="Off-hours")}}
+
+{{#if workingHours == "Working hours"}}
+    {{Set(name="business_hours", value="Business")}}
+{{/if}}
+
+{{Set(name="channel", value=_getConversationChannelSkill(userId=userId, outboundCall=outboundCall))}}
+
+{{SendCommand(
+    commandIdn="send_hitl_report",
+    integrationIdn="api",
+    connectorIdn="webhook",
+    businessLabel=businessLabel,
+    conversationDate=conversation_date,
+    conversationDay=conversation_week_day,
+    conversationMonth=conversation_month,
+    conversationStartTime=GetPersonaAttribute(id=userId, field="conversation_session_started_time_pt"),
+    conversationEndTime=conversation_end_time_pt,
+    businessHours=business_hours,
+    userPhoneNumber=Stringify(GetValueJSON(obj=commonValues, key="user_phone")),
+    userName=Stringify(GetValueJSON(obj=commonValues, key="user_name")),
+    userEmail=Stringify(GetValueJSON(obj=commonValues, key="user_email")),
+    channel=channel,
+    description=summary,
+    callType=category,
+    recordingUrl=recordingUrl,
+    superagentVersion=GetCustomerAttribute(field="project_attributes_private_sa_version"),
+    success=success,
+    potentialRevenue=potentialRevenue,
+    asr=asr,
+    revenueGenerating=revenueGenerating,
+    args=args,
+    isTest=Stringify(GetValueJSON(obj=semaphore, key="isTest")),
+    actualResult=Stringify(GetValueJSON(obj=semaphore, key="actualResult")),
+    expectedResult=Stringify(GetValueJSON(obj=semaphore, key="expectedResult")),
+    aiResultSuccess=Stringify(GetValueJSON(obj=semaphore, key="aiResultSuccess")),
+    isLead=Stringify(GetValueJSON(obj=semaphore, key="isLead"))
+)}}

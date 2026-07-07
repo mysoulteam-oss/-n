@@ -1,0 +1,118 @@
+{{Set(name="current_restaurant_googlemaps_reservation_url", value=GetCustomerAttribute(field="project_attributes_restaurant_googlemaps_reservation_url"))}}
+
+{{#if current_restaurant_googlemaps_reservation_url == "N/A"}}
+  {{Set(name="current_restaurant_googlemaps_reservation_url", value=" ")}}
+{{/if}}
+
+{{!-- Exit if `Google Maps Reservation URL` is empty --}}
+{{#if IsEmpty(text=current_restaurant_googlemaps_reservation_url)}}
+  {{SetCustomerAttribute(field="project_attributes_private_dynamic_restaurant_google_restaurant_id", value=" ")}}
+  {{SetCustomerAttribute(field="project_attributes_task_context_w1s3_reserve_table_task", value=" ")}}
+  {{SetState(name="previous_restaurant_googlemaps_reservation_url", value=" ")}}
+  {{Return()}}
+{{/if}}
+
+{{!-- Exit if `Google Maps Reservation URL` was not changed --}}
+{{Set(name="previous_restaurant_googlemaps_reservation_url", value=GetState(name="previous_restaurant_googlemaps_reservation_url"))}}
+{{#if current_restaurant_googlemaps_reservation_url == previous_restaurant_googlemaps_reservation_url}}
+  {{Set(name="dynamic_restaurant_google_restaurant_id", value=GetCustomerAttribute(field="project_attributes_private_dynamic_restaurant_google_restaurant_id"))}}
+  {{Set(name="task_context_w1s3_reserve_table_task", value=GetCustomerAttribute(field="project_attributes_task_context_w1s3_reserve_table_task"))}}
+
+  {{#if not IsEmpty(text=dynamic_restaurant_google_restaurant_id)}}
+    {{#if not IsEmpty(text=task_context_w1s3_reserve_table_task)}}
+      {{Return()}}
+    {{/if}}
+  {{/if}}
+
+  {{#if not IsEmpty(text=task_context_w1s3_reserve_table_task)}}
+    {{#if not IsEmpty(text=dynamic_restaurant_google_restaurant_id)}}
+      {{Return()}}
+    {{/if}}
+  {{/if}}
+{{/if}}
+
+{{!-- Validate, transform and set `Google Maps Reservation URL` --}}
+{{Set(name="schema", value=_prepareAttributesRestaurantPrivateDynamicGoogleVariablesSchemaSkill())}}
+
+{{#system~}}
+Analyze the provided `Google Maps Restaurant Reservation URL` in the <ProvidedGoogleMapsReservationURL> block.
+Validate and transform it according to <ExplicitConstraints> and <OutputFormat> rules.
+
+---
+
+<ExplicitConstraints alt="explicit constraints">
+If <ProvidedGoogleMapsReservationURL> block contains something which does not look like a valid `Google Maps Restaurant Reservation URL`:
+  - Set `input_google_maps_reservation_url_is_valid` as `false`
+  - Set `output_refined_transformed_google_maps_reservation_url` as "null"
+  - Set `output_google_maps_restaurant_id` as "null"
+Examples for invalid `Google Maps Restaurant Reservation URL`:
+  - `https://www.google.com/maps/reserve/v/dine/c/` (missing `XXXXXXXXXXX` part)
+  - `https://www.google.com/maps/XXXXXXXXXXX/` (missing `/reserve/` part)
+  - `example.com` (domain other than `google.com/maps/reserve`)
+Examples for valid `Google Maps Restaurant Reservation URL`:
+  - `https://www.google.com/maps/reserve/v/dine/c/XXXXXXXXXXX`
+  - `https://www.google.com/maps/reserve/dine?c=XXXXXXXXXXX&ihs=3`
+  - `https://www.google.com/maps/reserve/v/dine/c/XXXXXXXXXXX?source=pa&opi=79508299&hl=en-US&gei=FXdYZ4OeLcTm5NoProiP4Qk&sourceurl=http://www.google.com/service/MapsPlaceService/GetPlace?hl%3Den%26authuser%3D0%26gl%3Dus`
+  - `google.com/maps/reserve/v/dine/c/XXXXXXXXXXX` (without `https://www.` or similar)
+</ExplicitConstraints>
+
+---
+
+<OutputFormat alt="rules regarding output format">
+1. The output must be a valid JSON object generated according to provided schema.
+2. `output_refined_transformed_google_maps_reservation_url`:
+  - Must be a valid URL without any additional redundant query parameters or "null"
+  - Must be transformed to the following format: `https://www.google.com/maps/reserve/v/dine/c/XXXXXXXXXXX`:
+    - E.g. `https://www.google.com/maps/reserve/dine?c=XXXXXXXXXXX&ihs=3` -> `https://www.google.com/maps/reserve/v/dine/c/XXXXXXXXXXX`
+3. `output_google_maps_restaurant_id` must be a valid `Google Maps Restaurant ID` (e.g. `XXXXXXXXXXX`) or "null"
+</OutputFormat>
+
+---
+
+<ProvidedGoogleMapsReservationURL alt="provided google maps restaurant reservation url" role="context">
+{{current_restaurant_googlemaps_reservation_url}}
+</ProvidedGoogleMapsReservationURL>
+
+---
+
+JSON object: {{~/system}}{{#assistant~}}{{Set(name="google_maps_reservation_json", value=Gen(jsonSchema=schema, validateSchema=True, temperature=0.1, topP=0, skipFilter=True, thinkingBudget=1020))}}{{~/assistant}}
+
+{{!-- Parse response --}}
+{{Set(name="output_refined_transformed_google_maps_reservation_url", value=Stringify(GetValueJSON(obj=google_maps_reservation_json, key="output_refined_transformed_google_maps_reservation_url")))}}
+{{Set(name="output_google_maps_restaurant_id", value=Stringify(GetValueJSON(obj=google_maps_reservation_json, key="output_google_maps_restaurant_id")))}}
+
+{{!-- Exit if `Google Maps Restaurant Reservation URL` is invalid --}}
+{{!-- TODO: Send error message somewhere --}}
+{{#if IsSimilar(val1=output_refined_transformed_google_maps_reservation_url, val2="null", threshold=0.7)}}
+  {{SetCustomerAttribute(field="project_attributes_private_dynamic_restaurant_google_restaurant_id", value=" ")}}
+  {{SetCustomerAttribute(field="project_attributes_task_context_w1s3_reserve_table_task", value=" ")}}
+  {{SetState(name="previous_restaurant_googlemaps_reservation_url", value=current_restaurant_googlemaps_reservation_url)}}
+  {{Return()}}
+{{/if}}
+{{#if IsSimilar(val1=output_google_maps_restaurant_id, val2="null", threshold=0.7)}}
+  {{SetCustomerAttribute(field="project_attributes_private_dynamic_restaurant_google_restaurant_id", value=" ")}}
+  {{SetCustomerAttribute(field="project_attributes_task_context_w1s3_reserve_table_task", value=" ")}}
+  {{SetState(name="previous_restaurant_googlemaps_reservation_url", value=current_restaurant_googlemaps_reservation_url)}}
+  {{Return()}}
+{{/if}}
+
+{{!-- Proceed if `Google Maps Restaurant Reservation URL` is valid --}}
+
+{{!-- Overwrite `Google Maps Restaurant Reservation URL` with refined one --}}
+{{SetCustomerAttribute(field="project_attributes_restaurant_googlemaps_reservation_url", value=output_refined_transformed_google_maps_reservation_url)}}
+
+{{!-- Set other dependant Attributes based on `Google Maps Restaurant Reservation URL` --}}
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_restaurant_google_restaurant_id", value=output_google_maps_restaurant_id)}}
+
+{{!-- TODO: Refactor, improve setting of `project_attributes_private_dynamic_restaurant_google_restaurant_seating_options` --}}
+{{SetCustomerAttribute(
+  field="project_attributes_task_context_w1s3_reserve_table_task",
+  value=Concat(
+    "**Google Restaurant ID:** *",
+    output_google_maps_restaurant_id,
+    "*. **Seating options:** *",
+    GetCustomerAttribute(field="project_attributes_private_dynamic_restaurant_google_restaurant_seating_options"),
+    "*"
+))}}
+
+{{SetState(name="previous_restaurant_googlemaps_reservation_url", value=output_refined_transformed_google_maps_reservation_url)}}

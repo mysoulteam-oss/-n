@@ -1,0 +1,15 @@
+id: 019f3b06-3af0-77e7-b66a-c13b7444d137
+idn: check_service_area_by_location
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3af0-77e7-b66a-c13b7444d135
+    name: memory_conversation
+    default_value: ""
+  - id: 019f3b06-3af0-77e7-b66a-c13b7444d136
+    name: served_area
+    default_value: ""
+path: ""

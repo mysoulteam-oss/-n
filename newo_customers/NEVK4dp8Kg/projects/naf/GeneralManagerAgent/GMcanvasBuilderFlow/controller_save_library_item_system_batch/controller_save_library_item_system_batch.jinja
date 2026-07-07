@@ -1,0 +1,15 @@
+{% set arguments = GetTriggeredAct().arguments %}
+
+{% set items = json.loads(arguments["items"]) %}
+
+{% for item in items %}
+    {% set type_idn = item.pop("type_idn") %}
+    {{action_add_library_item(item=item, type_idn=type_idn)}}
+{% endfor %}
+
+{# Updating library on canvas #}
+{{prepare_library()}}
+{# Updating canvas items #}
+{{prepare_instructions_update_from_library()}}
+{# Building instructions #}
+{{prepare_instructions_from_canvas()}}

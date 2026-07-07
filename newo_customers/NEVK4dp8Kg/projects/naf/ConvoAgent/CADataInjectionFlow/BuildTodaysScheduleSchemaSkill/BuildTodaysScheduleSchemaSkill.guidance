@@ -1,0 +1,56 @@
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "time_zone_friendly_name": {
+      "type": "string",
+      "description": "The friendly name of the current time zone."
+    },
+    "business_open": {
+      "type": "boolean",
+      "description": "Set to true if there are no exceptions and both 'working_today' and 'working_time' are true."
+    },
+    "opens_day": {
+      "type": "string",
+      "description": "The closest day of the week when the main entity of the business will open. Possible values include 'today', 'tomorrow', or specific next open date in YYYY-MM-DD format."
+    },
+    "opens_time": {
+      "type": "string",
+      "description": "The closest main entity time when the business will open for the day specified in 'opens_day'. Expected format: HH:MM (AM/PM)."
+    },
+    "close_time": {
+      "type": "string",
+      "description": "The closing main entity time of the business for the current operational day or next operational window depending on `business_open`. Expected format: HH:MM (AM/PM)."
+    },
+    "working_time": {
+      "type": "boolean",
+      "description": "According to working schedule and current date and time, set to true if current date and time are within the hours of operation for the main business entity."
+    },
+    "working_today": {
+      "type": "boolean",
+      "description": "According to working schedule and current date (not time), set to true if today's date is usually a working day for the main business entity."
+    },
+    "exceptions": {
+      "type": "boolean",
+      "description": "Set to true if current date and time falls within provided schedule exceptions."
+    },
+    "phrase": {
+      "type": "string",
+      "description": "The relevant compiled <PhraseTemplate>"
+    }
+  },
+  "required": [
+    "time_zone_friendly_name",
+    "working_today",
+    "working_time",
+    "exceptions",
+    "business_open",
+    "opens_day",
+    "opens_time",
+    "close_time",
+    "phrase"
+  ]
+}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

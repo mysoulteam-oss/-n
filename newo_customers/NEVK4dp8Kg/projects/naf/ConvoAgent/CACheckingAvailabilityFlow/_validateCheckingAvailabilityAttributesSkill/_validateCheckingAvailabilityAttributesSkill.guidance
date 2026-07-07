@@ -1,0 +1,46 @@
+{{Set(name="industry", value=GetCustomerAttribute(field="project_business_industry"))}}
+{{#if industry == "restaurant_industry"}}
+    {{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_type") == "default"}}
+    {{!-- Exit in case of empty `Google Restaurant ID` --}}
+        {{#if IsEmpty(text=GetCustomerAttribute(field="project_attributes_private_dynamic_restaurant_google_restaurant_id"))}}
+            {{_utilsSendSystemLogSkill(message="Google Restaurant ID is not set. Please put Google Restaurant Reservation URL in the `project_attributes_restaurant_googlemaps_reservation_url` customer attribute.")}}
+            {{Return()}}
+        {{/if}}
+        {{Return(val="t")}}
+    {{/if}}
+{{/if}}
+
+{{#if industry == "hospitality_industry"}}
+    {{!-- Exit in case of empty `Project Business Name` --}}
+    {{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_type") == "default"}}
+        {{#if IsEmpty(text=GetCustomerAttribute(field="project_business_name"))}}
+            {{_utilsSendSystemLogSkill(message="Proper Project Business Name is required for default hospitality availability check to work. Please put precise hotel name in the project_business_name attribute, as it is listed in Google.")}}
+            {{Return()}}
+        {{/if}}
+        {{Return(val="t")}}
+    {{/if}}
+{{/if}}
+
+
+{{!-- Getting `project_attributes_private_dynamic_booking_check_availability_schema_template` "compiled" value --}}
+{{Set(name="availability_schema", value=GetCustomerAttribute(field="project_attributes_private_dynamic_booking_check_availability_payload_schema_compiled"))}}
+
+{{#if IsEmpty(text=availability_schema)}}
+    {{_utilsSendSystemLogSkill(message="Payload schema to check availability is not set. Please put payload schema first in the `project_attributes_setting_booking_check_availability_payload_schema_template` customer attribute and then press on 'Publish Agent'.")}}
+    {{Return()}}
+{{/if}}
+
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_type") == "intercom"}}
+    {{Return(val="t")}}
+{{/if}}
+
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_type") == "project"}}
+    {{Return(val="t")}}
+{{/if}}
+
+{{#if IsEmpty(text=GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_url"))}}
+    {{_utilsSendSystemLogSkill(message="URL to check availability is not set. Please put URL first in the `project_attributes_setting_booking_check_availability_url` customer attribute.")}}
+    {{Return()}}
+{{/if}}
+
+{{Return(val="t")}}

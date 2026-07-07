@@ -1,0 +1,24 @@
+id: 019f3b06-3f01-7864-872a-0defeda7f6e3
+idn: _magicBrowserTaskObjectiveSkill
+title: _magicBrowserTaskObjectiveSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3f01-7864-872a-0defeda7f6e2
+    name: personaId
+    default_value: " "
+  - id: 019f3b06-3f01-7864-872a-0defeda7f6de
+    name: industry
+    default_value: " "
+  - id: 019f3b06-3f01-7864-872a-0defeda7f6df
+    name: taskIdn
+    default_value: " "
+  - id: 019f3b06-3f01-7864-872a-0defeda7f6e0
+    name: timeZone
+    default_value: " "
+  - id: 019f3b06-3f01-7864-872a-0defeda7f6e1
+    name: scenario
+    default_value: " "
+path: ""

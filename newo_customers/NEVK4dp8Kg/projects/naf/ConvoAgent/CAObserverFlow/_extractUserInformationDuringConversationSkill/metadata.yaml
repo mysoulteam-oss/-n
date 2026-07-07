@@ -1,0 +1,18 @@
+id: 019f3b06-3aee-7139-ab2b-5344c58d2660
+idn: _extractUserInformationDuringConversationSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d265d
+    name: memory
+    default_value: " "
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d265e
+    name: userId
+    default_value: " "
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d265f
+    name: isOutboundCall
+    default_value: " "
+path: ""

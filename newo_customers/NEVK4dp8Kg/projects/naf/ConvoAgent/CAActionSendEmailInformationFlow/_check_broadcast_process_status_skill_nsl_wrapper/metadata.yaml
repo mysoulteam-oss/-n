@@ -1,0 +1,15 @@
+id: 019f3b06-3ae9-741d-b0d8-47fe478e61df
+idn: _check_broadcast_process_status_skill_nsl_wrapper
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e61dd
+    name: attempts_number
+    default_value: "5"
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e61de
+    name: user_id
+    default_value: ""
+path: ""

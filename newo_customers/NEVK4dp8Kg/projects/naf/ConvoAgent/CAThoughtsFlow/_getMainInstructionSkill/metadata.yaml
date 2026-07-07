@@ -1,0 +1,21 @@
+id: 019f3b06-3af1-7547-be24-f117810807dc
+idn: _getMainInstructionSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3af1-7547-be24-f117810807db
+    name: convoAgentPersonaId
+    default_value: " "
+  - id: 019f3b06-3af1-7547-be24-f117810807d8
+    name: industry
+    default_value: " "
+  - id: 019f3b06-3af1-7547-be24-f117810807d9
+    name: taskIdn
+    default_value: " "
+  - id: 019f3b06-3af1-7547-be24-f117810807da
+    name: scenario
+    default_value: " "
+path: ""

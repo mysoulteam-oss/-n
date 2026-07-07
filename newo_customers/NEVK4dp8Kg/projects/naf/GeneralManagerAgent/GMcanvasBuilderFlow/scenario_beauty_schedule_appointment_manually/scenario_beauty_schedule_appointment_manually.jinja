@@ -1,0 +1,77 @@
+{% set title = '## **Scenario 2:** "Scheduling Appointment Manually"' %}
+
+{% set body %}
+### Go step by step
+
+### **Step 2.1:** **CRITICAL STEP!!!** Ask the user following questions and/or provide the following information:
+[[project_attributes_beauty_appointment_schedule_questions_and_info]]
+
+### **Step 2.2:** Follow **Asking About the Services** procedure.
+<Case1 condition="requested service is provided">
+- If the User's [requested service] in the **Products and Services** section, gently push the user towards making an appointment with [[project_business_name]] for the service - say something like: "Rest assured, [[project_business_name]] has a long track record with the service that you need". Then proceed to **Step 2.3**.
+</Case1>
+<Case2 condition="requested service is NOT provided">
+- If no alternative service works for the User, apologize the User and follow **Finish Conversation** scenario.
+</Case2>
+
+### **Step 2.3:** **CRITICAL STEP!!!** Collect information about User’s preferred location for the appointment, from the list of **Available Locations** specified for selected treatment. You need to know where the user wants the appointment based on locations described in `<BusinessContext>` and a previously chosen treatment’s specifics.
+
+#### **Sub-steps**
+1. Tell User where the chosen treatment or consultation can be performed by explicitly telling specific treatment locations from `<BusinessContext>` and **Available Locations**. Exact template: "We offer [treatment] in [location]".
+2. If there is more than one location available, ask User to select one.
+3. Proceed to **Step 2.4**
+
+#### **Requirements**
+- If the treatment is only available in one location, do not ask for a preferred location. If the available location for the treatment was not specified yet, specify.
+- Pay attention to the locations for each treatment listed in **Available Locations**, to understand which location the treatment or consultation is available at and explicitly let User know about locations availability if did not yet before.
+- If User wants to book a treatment or consultation that is only available in one location, tell them which location it is available at, they cannot request an appointment for a location that the treatment is not available at.the other location.
+- If User wants to book a consultation, pay attention to the consultation specifications for the treatment. Is it complimentary, should it be booked on a separate date, is there a separate consultation provided, and which location it is available at.
+- If the location was already mentioned and available for the treatment, reconfirm it and proceed to **Step 2.4**
+
+### **Step 2.4:** **CRITICAL STEP!!!** If the User's **Last** Name and/or **First** Name is not known get it by following the **Reconfirming or Gathering First and Last Name** procedure. If the User's **Last** Name and/or **First** Name are both known proceed to the next step.
+
+### **Step 2.5:** **CRITICAL STEP!!!** Follow the **Gathering Preferred Date and Time** procedure.
+
+### **Step 2.6:** **CRITICAL STEP!!!** Follow **Reconfirming or Gathering Phone Number** procedure.
+
+### **Step 2.7:** Outline the appointment details as follows:
+"Ok! Just to summarize: this appointment is for [user's requested service], your preferred date [user preferred date] at [user preferred time] with [preferred specialist, if applicable]. Please note, my co-worker will call to finalize the appointment and confirm if the date and time are available!"
+
+### **Step 2.8:** **CRITICAL STEP!!!** Inform the user in user's language that you will send an SMS with the link using the **code-phrase**: "I will send you an SMS with preliminary data for the appointment". This is a required phrase — without it, an SMS will not be sent, so you must say it at this step. Take a break before the next step.
+
+### **Step 2.9:** Follow **Finish Conversation** scenario.
+{% endset %}
+
+{% set description %}
+A structured, step-by-step flow to manually schedule an appointment: confirm the requested service and its availability, present eligible locations, then collect the client’s name, preferred date/time, and phone number before summarizing the booking. It includes the required SMS trigger phrase (“I will send you an SMS with preliminary data for the appointment”) and directs a graceful exit if the service isn’t offered.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_beauty_schedule_appointment_manually",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_asking_about_services"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_date_time_beauty"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_first_and_last_name"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_phone_number"
+        }
+    ],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

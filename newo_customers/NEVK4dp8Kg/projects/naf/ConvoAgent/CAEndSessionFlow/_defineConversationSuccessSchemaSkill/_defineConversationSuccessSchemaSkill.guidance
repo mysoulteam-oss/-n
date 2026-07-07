@@ -1,0 +1,23 @@
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "classification": {
+      "type": "string",
+      "description": "Put the classification.",
+      "enum": [
+        "success ai",
+        "success - transfer by design",
+        "success - transfer fall back",
+        "failure - transfer",
+        "success - undefined"
+      ]
+    }
+  },
+  "required": [
+    "classification"
+  ]
+}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

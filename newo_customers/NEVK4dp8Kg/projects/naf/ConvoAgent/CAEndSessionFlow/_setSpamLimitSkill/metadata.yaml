@@ -1,0 +1,15 @@
+id: 019f3b06-3aeb-7129-b93b-1a813f29c68d
+idn: _setSpamLimitSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c68c
+    name: semaphore
+    default_value: " "
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c68b
+    name: userId
+    default_value: " "
+path: ""

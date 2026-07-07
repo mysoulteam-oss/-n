@@ -1,0 +1,28 @@
+{% set user_id = user_id or GetUser().id | string %}
+{% set user_name = GetUser().name.strip() or "User" %}
+{% set memory = get_prompt_memory(user_id=user_id) %}
+{% set user_turn_pattern = "(?m)^" ~ re.escape(user_name) ~ ":\\s*(.*)$" %}
+{% set user_messages = re.findall(user_turn_pattern, memory) %}
+{% set user_messages = user_messages | map("trim") | list %}
+
+{% set latest_message_text = "" %}
+{% set repeat_counter = 0 %}
+
+{% if user_messages %}
+    {% set latest_message_text = user_messages[-1] %}
+    {% for previous_message in user_messages[:-1] | reverse %}
+        {% if previous_message == latest_message_text %}
+            {% set repeat_counter = repeat_counter + 1 %}
+        {% else %}
+            {{Return(val=json.dumps({
+                "message_text": latest_message_text,
+                "repeat_counter": repeat_counter
+            }, ensure_ascii=False, indent=2))}}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{{Return(val=json.dumps({
+    "message_text": latest_message_text,
+    "repeat_counter": repeat_counter
+}, ensure_ascii=False, indent=2))}}

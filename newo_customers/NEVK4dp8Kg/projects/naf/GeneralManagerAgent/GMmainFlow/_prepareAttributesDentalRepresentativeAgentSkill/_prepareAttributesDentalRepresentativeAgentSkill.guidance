@@ -1,0 +1,35 @@
+{{!-- All `representative agent` common Customer Attributes must be specified here with default values --}}
+{{!-- (must be sorted alphabetically) --}}
+
+{{Set(name="business_name", value=GetCustomerAttribute(field="project_business_name"))}}
+{{Set(name="agent_name", value=GetCustomerAttribute(field="project_representative_agent_name"))}}
+
+{{Set(name="language_primary", value=GetCustomerAttribute(field="project_representative_agent_primary_language"))}}
+
+{{utils_customer_attribute_set_if_empty_depending_on_language(
+    attribute_idn="project_representative_agent_chat_greeting_phrase",
+    input_text=Concat(
+        "This is ",
+        business_name,
+        "! I'm ",
+        agent_name,
+        ". Would you like to schedule a dental appointment, or can I assist you with something else?"
+    ),
+    input_text_language="English",
+    target_language=language_primary
+)}}
+
+{{utils_customer_attribute_set_if_empty_depending_on_language(
+    attribute_idn="project_representative_agent_voice_greeting_phrase",
+    input_text=Concat(
+        "Thank you for calling ",
+        business_name,
+        "! I'm ",
+        agent_name,
+        ". Would you like to schedule a dental appointment, or can I assist you with something else?"
+    ),
+    input_text_language="English",
+    target_language=language_primary
+)}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_representative_agent_title", value="AI Representative")}}

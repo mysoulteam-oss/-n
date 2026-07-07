@@ -1,0 +1,24 @@
+id: 019f3b06-3aed-7514-8647-4941579049bf
+idn: user_message_fast_reply_post_actions
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aed-7514-8647-4941579049bb
+    name: agent_answer
+    default_value: ""
+  - id: 019f3b06-3aed-7514-8647-4941579049bd
+    name: conversation_channel
+    default_value: ""
+  - id: 019f3b06-3aed-7514-8647-4941579049be
+    name: user_id
+    default_value: ""
+  - id: 019f3b06-3aed-7514-8647-4941579049bc
+    name: call_analyze_conversation
+    default_value: ""
+  - id: 019f3b06-3aed-7514-8647-4941579049ba
+    name: set_follow_up_timer
+    default_value: ""
+path: ""

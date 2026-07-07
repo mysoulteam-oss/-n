@@ -1,0 +1,23 @@
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+
+{% if industry == "beauty_industry" %}
+    {{Return(val=default_itm_wh_beauty())}}
+{% elif industry == "catering_industry" %}
+    {{Return(val=default_itm_wh_catering())}}
+{% elif industry == "cleaning_industry" %}
+    {{Return(val=default_itm_wh_cleaning())}}
+{% elif industry == "dental_industry" %}
+    {{Return(val=default_itm_wh_dental())}}
+{% elif industry == "home_service_industry" %}
+    {{Return(val=default_itm_wh_home_service())}}
+{% elif industry == "hospitality_industry" %}
+    {{Return(val=default_itm_wh_hospitality())}}
+{% elif industry == "restaurant_industry" %}
+    {{Return(val=default_itm_wh_restaurant())}}
+{% elif industry == "sales_industry" %}
+    {{Return(val=default_itm_wh_sales())}}
+{% elif industry == "general_industry" %}
+    {{Return(val=default_itm_wh_general())}}
+{% else %}
+    {{Return(val="")}}
+{% endif %}

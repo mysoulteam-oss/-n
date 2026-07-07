@@ -1,0 +1,18 @@
+id: 019f3b06-3ae9-741d-b0d8-47fe478e6218
+idn: _sendSMSInformationSkill
+title: _sendSMSInformationSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e6215
+    name: agentAnswer
+    default_value: " "
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e6216
+    name: memory
+    default_value: " "
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e6217
+    name: userId
+    default_value: " "
+path: ""

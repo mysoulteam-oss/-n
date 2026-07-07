@@ -1,0 +1,38 @@
+{% set user_id = GetUser().id | string %}
+{% set current_progress_status = GetPersonaAttribute(id=user_id, field="booking_slots_availability_checking_status") %}
+{% if current_progress_status == "True" %}
+    {{Return()}}
+{% endif %}
+
+{% if not _validateCheckingAvailabilityAttributesSkill().strip() %}
+    {{_notifyUserIssueSkill()}}
+    {{Return()}}
+{% endif %}
+
+{% set waiting_mode_instruction %}
+You promised to check availability you are currently waiting for the result.
+
+- Do not mention availability yet - you are still checking available slots.{% endset %}
+
+{{SendSystemEvent(
+    eventIdn="convoagent_activate_waiting_mode",
+    connectorIdn="system",
+    instruction=waiting_mode_instruction
+)}}
+
+{% set act = GetTriggeredAct() %}
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+{% if industry == "hospitality_industry" %}
+    {% if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_type") == "default" %}
+        {{SendSystemEvent(
+            eventIdn="check_availability_hospitality",
+            connectorIdn="system",
+            memory=act.arguments.memory_without_latest_agent_answer,
+            agentAnswer=act.arguments.latest_agent_answer,
+            userId=user_id
+        )}}
+        {{Return()}}
+    {% endif %}
+{% endif %}
+
+{{_requestAvailableSlotsSkill(memory=act.arguments.memory_without_latest_agent_answer, agentAnswer=act.arguments.latest_agent_answer, userId=user_id)}}

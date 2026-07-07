@@ -1,0 +1,32 @@
+{{#if schemaName == "greeting"}}
+{{#system~}}
+{
+  "type": "object",
+  "properties": {
+    "current_session_summary": {
+      "type": "string",
+      "description": "Put here a detailed summary of the conversation that happened before call was ended."
+    },
+    "preferred_language_for_greetings": {
+      "type": "string",
+      "description": "The main language to be used for greeting phrases."
+    },
+    "recent_return_greeting": {
+      "type": "string",
+      "description": "Generate a greeting phrase for the User if they will call back in 5 minutes."
+    },
+    "later_return_greeting": {
+      "type": "string",
+      "description": "Generate a greeting phrase for the User if they will call other day."
+    }
+  },
+  "required": [
+    "current_session_summary",
+    "preferred_language_for_greetings",
+    "recent_return_greeting",
+    "later_return_greeting"
+  ]
+}
+{{~/system}}
+    {{Return(val=GetCurrentPrompt())}}
+{{/if}}

@@ -1,0 +1,16 @@
+{{#system~}}
+{{GetCustomerAttribute(field="project_attributes_setting_conversation_summary_instruction")}}
+
+Avoid generating a summary if the conversation is short. If there are 5-6 messages or fewer, simply state what is happening as is.
+
+<Conversation>
+{{transcript}}
+</Conversation>
+
+Summary:
+{{~/system}}
+{{#assistant~}}
+{{Return(
+  val=Gen(temperature=0.1, topP=0, skipFilter=True, thinkingBudget=1020)
+)}}
+{{~/assistant}}

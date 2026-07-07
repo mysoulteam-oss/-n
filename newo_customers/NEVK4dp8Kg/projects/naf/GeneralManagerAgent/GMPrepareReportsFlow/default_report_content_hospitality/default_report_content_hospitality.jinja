@@ -1,0 +1,178 @@
+{% set report_content %}
+## Report Type: **[L] Large Group Reservation**
+### Fields to be included in the report:
+User name
+User phone
+User email
+Party size
+Requested date
+Requested time
+Amount of days
+Special requests
+40-word summary
+
+### Subject line format:
+Congratulations with a LARGE GROUP RESERVATION! [user name] [user phone] [12-word additional summary]
+
+### SMS example:
+Congratulations! LARGE GROUP RESERVATION: [user name] [user phone] [20-word additional summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **[L] Regular Reservation**
+### Fields to be included in the report:
+User name
+User phone
+User email
+Party size
+Requested date
+Requested time
+Amount of days
+Special requests
+40-word summary
+
+### Subject line format:
+Congratulations with a REGULAR RESERVATION! [user name] [user phone] [12-word additional summary]
+
+### SMS example:
+Congratulations! REGULAR RESERVATION: [user name] [user phone] [20-word additional summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **[T] Reschedule or Modification**
+### Fields to be included in the report:
+User name
+User phone
+Party size
+Original reservation date
+Original reservation time
+Original amount of days
+Requested changes
+40-word summary
+
+### Subject line format:
+RESCHEDULE OR MODIFICATION: [user name] [user phone] [12-word additional summary]
+
+### SMS example:
+RESCHEDULE OR MODIFICATION: [user name] [user phone] [20-word additional summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **[T] Cancellation**
+### Fields to be included in the report:
+User name
+User phone
+Party size
+Original reservation date
+Original reservation time
+Original amount of days
+Reason for cancellation (if provided)
+40-word summary
+
+### Subject line format:
+CANCEL RESERVATION: [user name] [user phone] [12-word additional summary]
+
+### SMS example:
+CANCEL RESERVATION: [user name] [user phone] [20-word additional summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **[T] Guest Support**
+### Fields to be included in the report:
+User name
+User phone
+40-word summary
+
+### Subject line format:
+GUEST SUPPORT: [user name] [user phone] [6-word additional summary]
+
+### SMS example:
+GUEST SUPPORT: [user name] [user phone] [20-word additional summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **[T] Contractor Support**
+### Fields to be included in the report:
+Contractor name
+Contractor phone
+Contractor company (if provided)
+Message to manager
+
+### Subject line format:
+CONTRACTOR SUPPORT: [contractor name] [contractor phone] [6-word additional summary]
+
+### SMS example:
+CONTRACTOR SUPPORT: [contractor name] [contractor phone] [20-word additional summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **[T] Manager or Human Request**
+### Fields to be included in the report:
+User name
+User phone
+User message to manager
+
+### Subject line format:
+MANAGER OR HUMAN REQUEST: [user name] [user phone] [6-word additional summary]
+
+### SMS example:
+MANAGER OR HUMAN REQUEST: [user name] [user phone] [20-word additional summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **General Information Request**
+### Fields to be included in the report:
+User name
+User phone
+Question asked
+40-word summary
+
+### Subject line format:
+GENERAL INFORMATION REQUEST: [user name] [user phone] [6-word additional summary]
+
+### SMS example:
+GENERAL INFORMATION REQUEST: [user name] [user phone] [20-word additional summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **Spam Session**
+### Fields to be included in the report:
+Caller phone number
+40-word summary
+
+### Subject line format:
+SPAM SESSION: [caller phone number] [6-word additional summary]
+
+### SMS example:
+SPAM SESSION: [caller phone number] [20-word additional summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **Test Session**
+### Fields to be included in the report:
+User name (if provided)
+User phone
+40-word summary
+
+### Subject line format:
+TEST SESSION: [user name or "Unknown"] [user phone] [6-word additional summary]
+
+### SMS example:
+TEST SESSION: [user name or "Unknown"] [user phone] [20-word additional summary] Truly, [agent name], [agent title]
+
+---
+
+## Report Type: **Other type of session**
+### Fields to be included in the report:
+User name
+User phone
+40-word summary
+
+### Subject line format:
+OTHER: [user name] [user phone] [6-word additional summary]
+
+### SMS example:
+OTHER: [user name] [user phone] [20-word additional summary] Truly, [agent name], [agent title]
+{% endset %}
+
+{{Return(val=report_content)}}

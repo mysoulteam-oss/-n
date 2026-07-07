@@ -1,0 +1,15 @@
+id: 019f3b06-3f14-719e-a0ee-6e408677fcd0
+idn: get_library_item
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3f14-719e-a0ee-6e408677fcce
+    name: type_idn
+    default_value: ""
+  - id: 019f3b06-3f14-719e-a0ee-6e408677fccf
+    name: item_idn
+    default_value: ""
+path: ""

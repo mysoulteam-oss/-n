@@ -1,0 +1,15 @@
+id: 019f3b06-3ca0-7efc-bce5-b2e839836f05
+idn: action_save_item
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3ca0-7efc-bce5-b2e839836f03
+    name: item
+    default_value: ""
+  - id: 019f3b06-3ca0-7efc-bce5-b2e839836f04
+    name: type_idn
+    default_value: ""
+path: ""

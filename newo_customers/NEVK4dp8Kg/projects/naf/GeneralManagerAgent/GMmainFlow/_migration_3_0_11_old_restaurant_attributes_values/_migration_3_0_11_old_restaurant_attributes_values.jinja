@@ -1,0 +1,92 @@
+{# Delete deprecated Attributes #}
+{{DeleteCustomerAttribute(field="project_attributes_setting_agent_speech_ended_follow_up_interval")}}
+{{DeleteCustomerAttribute(field="project_attributes_setting_followup_timer_enabled")}}
+{{DeleteCustomerAttribute(field="project_attributes_setting_think_skill_enabled")}}
+{{DeleteCustomerAttribute(field="project_description")}}
+{{DeleteCustomerAttribute(field="project_name")}}
+
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+{% if industry != "restaurant_industry" %}
+    {{Return()}}
+{% endif %}
+
+{# Delete deprecated restaurant Attributes #}
+{{DeleteCustomerAttribute(field="project_attributes_restaurant_time_constraints")}}
+
+{# Migrate checking availability validation template #}
+{% set validation_template = GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_validation_schema_template") %}
+{% set updated_validation_template = validation_template.replace("**`partySize`", "**persons") %}
+
+{{SetCustomerAttribute(field="project_attributes_setting_booking_check_availability_validation_schema_template", value=updated_validation_template)}}
+
+{# Migrate booking payload schema template #}
+{% set old_booking_payload_schema_template %}
+{
+  "type": "object",
+  "properties": {
+    "reserveTableURL": {
+      "type": "string",
+      "enum": ["[[project_attributes_restaurant_googlemaps_reservation_url]]"]
+    },
+    "dateTime": {
+      "type": "string",
+      "description": "Date and time of the reservation (YYYY-MM-DD HH:MM). Example: 2024-02-15 14:00"
+    },
+    "timeFormatted": {
+      "type": "string",
+      "description": "Time of the reservation in 12 hour format (hh:mm A). Example: 02:00 PM"
+    },
+    "partySize": {
+      "type": "integer",
+      "description": "Number of people for the reservation"
+    },
+    "timeZone": {
+      "type": "string",
+      "enum": ["[[project_business_time_zone]]"]
+    },
+    "firstName": {
+      "type": "string",
+      "description": "Guest first name."
+    },
+    "lastName": {
+      "type": "string",
+      "description": "Guest last name. If not provided, set the same as firstName."
+    },
+    "phoneNumber": {
+      "type": "string",
+      "description": "Customer’s phone number in E.164 format"
+    },
+    "concatenatedPhoneNumber": {
+      "type": "string",
+      "description": "Concatenate phoneNumber with four absolutely random letters(avoid using sequence abcd). Example: 14603408421rops"
+    },
+    "email": {
+      "type": "string",
+      "description": "Generate an email address in the format: bookings+concatenatedPhoneNumber@newo.ai. Put here the generated email address. Example: bookings+14603408421rops@newo.ai"
+    },
+    "place": {
+      "type": "string",
+      "description": "Location or area within the restaurant (e.g., Patio). Set to one of the seating options."
+    }
+  },
+  "required": [
+    "reserveTableURL",
+    "dateTime",
+    "timeFormatted",
+    "partySize",
+    "timeZone",
+    "firstName",
+    "lastName",
+    "phoneNumber",
+    "concatenatedPhoneNumber",
+    "email",
+    "place"
+  ]
+}
+{% endset %}
+
+{% set current_booking_payload_schema_template = GetCustomerAttribute(field="project_attributes_setting_booking_payload_schema_template") %}
+
+{% if current_booking_payload_schema_template.strip() == old_booking_payload_schema_template.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_setting_booking_payload_schema_template", value="")}}
+{% endif %}

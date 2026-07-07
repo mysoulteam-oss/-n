@@ -1,0 +1,93 @@
+{% set output_log_attribute_value = GetCustomerAttribute(field=output_log_attribute_name) %}
+
+{# Define the Timestamp using GetDateTime Action #}
+{% set project_tz = GetCustomerAttribute(field="project_business_time_zone") %}
+{% if not project_tz.strip() %}
+    {% set project_tz = "UTC" %}
+{% endif %}
+{% set timestamp = GetDateTime(format="datetime", timezone=project_tz, weekday=True) %}
+
+{# Separator designed for both Human readability and LLM parsing #}
+{# Uses Markdown syntax (Horizontal Rule + Bold) to clearly demarcate sections #}
+{% set separator_header %}
+---
+
+**📅 Append Log Entry [{{ timestamp }}]**
+{% endset %}
+
+{# Prepare the new entry block #}
+{# We trim the input to ensure clean spacing relative to the header #}
+{% set new_entry_block = separator_header.strip() ~ "\n\n" ~ input_unstructured_text | trim %}
+
+{# Append logic with sliding window #}
+{# TODO: Clarify exact limit. Currently set to 180,000 chars safely below strict max. #}
+{% set max_length = 180000 %}
+{% set extended_output_log_attribute_value = "" %}
+
+{% if output_log_attribute_value and output_log_attribute_value.strip() %}
+    {# Normalize line endings to ensure consistent character counts and delimiter matching (e.g. Windows inputs) #}
+    {% set output_log_normalized = output_log_attribute_value | replace('\r\n', '\n') %}
+    {% set full_potential_log = output_log_normalized ~ "\n\n" ~ new_entry_block %}
+
+    {% if full_potential_log|length <= max_length %}
+        {% set extended_output_log_attribute_value = full_potential_log %}
+    {% else %}
+        {# Sliding Window Strategy: #}
+        {# 1. Split history into atomic entries. #}
+        {# 2. Drop oldest entries until the total length (including new entry) fits the limit. #}
+        {# 3. Ensure entries are preserved whole (no truncation within an entry). #}
+
+        {# Define the strict separator used to identify entry boundaries. #}
+        {# We use a specific prefix to avoid false positives on user content (like dashes or generic headers). #}
+        {# Note: The delimiter includes the double newline from the previous entry's end. #}
+        {% set entry_prefix = "---\n\n**📅 Append Log Entry [" %}
+        {% set delimiter = "\n\n" ~ entry_prefix %}
+
+        {% set parts = output_log_normalized.split(delimiter) %}
+        {% set entries = [] %}
+
+        {# Reconstruct full entries from split parts #}
+        {% for part in parts %}
+            {% if loop.first %}
+                {# The first part is the oldest entry and naturally doesn't have the preceding delimiter #}
+                {% set full_entry = part %}
+            {% else %}
+                {# Restore the prefix for subsequent parts to reconstruct the valid block #}
+                {% set full_entry = entry_prefix ~ part %}
+            {% endif %}
+            {% set _ = entries.append(full_entry) %}
+        {% endfor %}
+
+        {# Add the new entry to the end of the list #}
+        {% set _ = entries.append(new_entry_block) %}
+
+        {# Rebuild log from newest to oldest #}
+        {% set current_build = "" %}
+        {% set fit = true %}
+
+        {% for entry in entries | reverse %}
+            {% if fit %}
+                {% if current_build == "" %}
+                    {% set next_build = entry %}
+                {% else %}
+                    {% set next_build = entry ~ "\n\n" ~ current_build %}
+                {% endif %}
+
+                {% if next_build|length <= max_length %}
+                    {% set current_build = next_build %}
+                {% else %}
+                    {# Limit exceeded. Stop adding older entries. #}
+                    {# This effectively drops the 'current' entry (which is older) and all preceding it. #}
+                    {% set fit = false %}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% set extended_output_log_attribute_value = current_build %}
+    {% endif %}
+{% else %}
+    {# First entry: simple assignment #}
+    {% set extended_output_log_attribute_value = new_entry_block %}
+{% endif %}
+
+{{SetCustomerAttribute(field=output_log_attribute_name, value=extended_output_log_attribute_value)}}

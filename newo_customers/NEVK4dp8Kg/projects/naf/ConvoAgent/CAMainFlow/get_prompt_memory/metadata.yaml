@@ -1,0 +1,24 @@
+id: 019f3b06-3aed-7514-8647-49415790493e
+idn: get_prompt_memory
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aed-7514-8647-49415790493b
+    name: include_summary
+    default_value: "True"
+  - id: 019f3b06-3aed-7514-8647-49415790493d
+    name: to_date
+    default_value: ""
+  - id: 019f3b06-3aed-7514-8647-49415790493a
+    name: count
+    default_value: "80"
+  - id: 019f3b06-3aed-7514-8647-494157904939
+    name: user_id
+    default_value: ""
+  - id: 019f3b06-3aed-7514-8647-49415790493c
+    name: only_before_call_ended
+    default_value: ""
+path: ""

@@ -1,0 +1,20 @@
+{{Set(name="mode", value=GetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_mode"))}}
+{{Set(name="v2v_enabled", value="False")}}
+
+{{#if mode == "transcriber"}}
+    {{SetState(name="conversation_started_newo_voice_skill", value="Gen1ConversationStartedInboundSkill")}}
+    {{SetState(name="conversation_started_newo_voice_web_skill", value="Gen1ConversationStartedInboundSkill")}}
+{{/if}}
+
+{{#if mode == "voice-to-voice"}}
+    {{Set(name="v2v_enabled", value="True")}}
+{{/if}}
+
+{{#if mode == "speech-to-speech"}}
+    {{Set(name="v2v_enabled", value="True")}}
+{{/if}}
+
+{{#if v2v_enabled == "True"}}
+    {{SetState(name="conversation_started_newo_voice_skill", value="v2v_conversation_started")}}
+    {{SetState(name="conversation_started_newo_voice_web_skill", value="v2v_conversation_started_web")}}
+{{/if}}

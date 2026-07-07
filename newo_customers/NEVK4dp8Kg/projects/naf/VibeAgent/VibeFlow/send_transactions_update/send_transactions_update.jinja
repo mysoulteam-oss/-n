@@ -1,0 +1,17 @@
+{% set actor_id = GetActor().id | string %}
+{% set transactions_map = json.loads(get_transaction(transaction_id='')) %}
+{% set transactions = [] %}
+
+{% for transaction_id in transactions_map.keys() %}
+    {{transactions.append({
+        "transaction_id": transaction_id
+    })}}
+{% endfor %}
+
+{{SendCommand(
+   commandIdn="update_transactions",
+   integrationIdn="newo_chat",
+   connectorIdn="vibe_agent",
+   user_actor_id=actor_id,
+   transactions=json.dumps(transactions, ensure_ascii=False, indent=2)
+)}}

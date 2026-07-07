@@ -1,0 +1,79 @@
+{{Set(name="industry", value=GetCustomerAttribute(field="project_business_industry"))}}
+
+{{#if industry == "dental_industry"}}
+  {{Set(name="session_ended_report_content", value=GetCustomerAttribute(field="project_attributes_setting_session_ended_report_content"))}}
+  {{Set(name="session_ended_report_content", value=session_ended_report_content.replace(
+    "The patient needs to reschedule their existing appointment.",
+    "The patient needs to reschedule their existing appointment or looking for any earlier available appointments while having existing one."
+  ))}}
+  {{SetCustomerAttribute(field="project_attributes_setting_session_ended_report_content", value=session_ended_report_content)}}
+{{/if}}
+
+{{#if industry == "sales_industry"}}
+  {{Set(name="boi", value=GetCustomerAttribute(field="project_attributes_boi"))}}
+  {{Set(name="boi", value=boi.replace("Appointment Setting via Calendar Invite    ", "Appointment Setting via Calendar Invite"))}}
+  {{Set(name="boi", value=boi.replace("Appointment Setting via Calendar Invite   ", "Appointment Setting via Calendar Invite"))}}
+  {{Set(name="boi", value=boi.replace("Appointment Setting via Calendar Invite  ", "Appointment Setting via Calendar Invite"))}}
+  {{Set(name="boi", value=boi.replace("Appointment Setting via Calendar Invite ", "Appointment Setting via Calendar Invite"))}}
+  {{SetCustomerAttribute(field="project_attributes_boi", value=boi)}}
+
+  {{Set(name="custom_scenarios", value=GetCustomerAttribute(field="project_attributes_custom_scenarios"))}}
+  {{Set(name="custom_scenarios", value=custom_scenarios.replace("Appointment Setting via Calendar Invite    ", "Appointment Setting via Calendar Invite"))}}
+  {{Set(name="custom_scenarios", value=custom_scenarios.replace("Appointment Setting via Calendar Invite   ", "Appointment Setting via Calendar Invite"))}}
+  {{Set(name="custom_scenarios", value=custom_scenarios.replace("Appointment Setting via Calendar Invite  ", "Appointment Setting via Calendar Invite"))}}
+  {{Set(name="custom_scenarios", value=custom_scenarios.replace("Appointment Setting via Calendar Invite ", "Appointment Setting via Calendar Invite"))}}
+  {{SetCustomerAttribute(field="project_attributes_custom_scenarios", value=custom_scenarios)}}
+{{/if}}
+
+{{#if industry == "restaurant_industry"}}
+  {{!-- Reset attributes in case of default booking settings to deliver fix for `isWithinBookingWindow` --}}
+  {{#if GetCustomerAttribute(field="project_attributes_setting_booking_check_availability_type") == "default"}}
+      {{SetCustomerAttribute(field="project_attributes_setting_booking_check_availability_payload_schema_template", value=" ")}}
+  {{/if}}
+  {{#if GetCustomerAttribute(field="project_attributes_setting_booking_type") == "default"}}
+      {{SetCustomerAttribute(field="project_attributes_setting_booking_payload_schema_template", value=" ")}}
+  {{/if}}
+{{/if}}
+
+{{!-- Reset value --}}
+{{SetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider_genai_functions_enabled", value="True")}}
+
+{{!-- Enable V2V for NEWO Voice --}}
+{{SetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_mode", value="voice-to-voice")}}
+
+{{!-- Set new recommended NEWO Voice Connector settings --}}
+{{!-- Checking Connector presence before setting --}}
+{{Set(name="tokens_sliding_window", value=GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_tokens_sliding_window"))}}
+{{#if not IsEmpty(text=tokens_sliding_window)}}
+  {{SetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_tokens_sliding_window", value="65536")}}
+{{/if}}
+
+{{Set(name="top_p", value=GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_top_p"))}}
+{{#if not IsEmpty(text=top_p)}}
+  {{SetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_top_p", value="1.0")}}
+{{/if}}
+
+{{Set(name="temperature", value=GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_temperature"))}}
+{{#if not IsEmpty(text=temperature)}}
+  {{SetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_temperature", value="0.75")}}
+{{/if}}
+
+{{Set(name="speech_activity_start_sensitivity", value=GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_speech_activity_start_sensitivity"))}}
+{{#if not IsEmpty(text=speech_activity_start_sensitivity)}}
+  {{SetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_speech_activity_start_sensitivity", value="low")}}
+{{/if}}
+
+{{Set(name="speech_activity_stop_sensitivity", value=GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_speech_activity_stop_sensitivity"))}}
+{{#if not IsEmpty(text=speech_activity_stop_sensitivity)}}
+  {{SetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_speech_activity_stop_sensitivity", value="high")}}
+{{/if}}
+
+{{Set(name="turn_coverage", value=GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_turn_coverage"))}}
+{{#if not IsEmpty(text=turn_coverage)}}
+  {{SetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_turn_coverage", value="only_activity")}}
+{{/if}}
+
+{{Set(name="model", value=GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_model"))}}
+{{#if not IsEmpty(text=model)}}
+  {{SetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector", field="genai_v2v_model", value="gemini-live-2.5-flash-preview-native-audio")}}
+{{/if}}

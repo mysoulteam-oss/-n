@@ -1,0 +1,12 @@
+id: 019f3b06-3af1-7547-be24-f11781080810
+idn: _utilsGetOrSetLastConvoActorId
+title: _utilsGetOrSetLastConvoActorId
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3af1-7547-be24-f1178108080f
+    name: userId
+    default_value: " "
+path: ""

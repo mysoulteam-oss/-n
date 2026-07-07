@@ -1,0 +1,9 @@
+id: 019f3b06-3af0-77e7-b66a-c13b7444d0d7
+idn: GoogleMeetingCreatedSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

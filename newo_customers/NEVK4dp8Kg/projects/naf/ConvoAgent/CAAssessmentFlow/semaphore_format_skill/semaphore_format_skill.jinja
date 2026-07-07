@@ -1,0 +1,41 @@
+{% set bullet = "🆗" %}
+{% set warning = "⚠️" %}
+{% set cross = "❌" %}
+{% set hand = "✋" %}
+{% set horizontal_rule = "\n---\n" %}
+
+{% set report = json.loads(report) %}
+
+{% if expected == "True" %}
+    {% set report = report.replace("[STEP]", bullet) %}
+{% endif %}
+
+{% if actual == "True" %}
+    {% set report = report.replace("[YES]", bullet).replace("[NO]", cross) %}
+    {% set assessment = json.loads(analysis) %}
+    {% set analysis_result = assessment.analysis %}
+
+    {% set technical_issues = analysis_result.technical_issues.strip() %}
+    {% if technical_issues.lower() not in ("", "n/a") %}
+        {% set report = report ~ horizontal_rule ~ warning ~ "Probably technical issue: " ~ technical_issues %}
+    {% endif %}
+
+    {% set mentioned_issues = analysis_result.mentioned_issues.strip() %}
+    {% if mentioned_issues.lower() not in ("", "n/a") %}
+        {% set report = report ~ horizontal_rule ~ warning ~ "Experienced issue: " ~ mentioned_issues %}
+    {% endif %}
+
+    {% if analysis_result.user_refused %}
+        {% set report = report ~ horizontal_rule ~ hand ~ "Probably refused by the user." %}
+    {% endif %}
+
+    {% if analysis_result.fail_caused_by_user %}
+        {% set report = report ~ horizontal_rule ~ hand ~ "Probably failed by the user." %}
+    {% endif %}
+
+    {% if assessment.get("is_reporting", False) %}
+        {% set report = report ~ horizontal_rule ~ warning ~ "Must be reported to Technical Owners." %}
+    {% endif %}
+{% endif %}
+
+{{Return(val=report)}}

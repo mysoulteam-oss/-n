@@ -1,0 +1,15 @@
+{# Check the number of active calls stored in AKB #}
+{% set agent_persona_id = GetAgentPersona().id | string %}
+{% set active_calls = SearchFuzzyAkb(
+    query="",
+    searchFields=["name"],
+    numberTopics=100,
+    scoreThreshold=0,
+    labels=["active_call"],
+    filterByPersonaIds=[agent_persona_id]
+) %}
+{% if active_calls %}
+    {{Return(val=active_calls|length|string)}}
+{% else %}
+    {{Return(val="0")}}
+{% endif %}

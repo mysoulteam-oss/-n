@@ -1,0 +1,12 @@
+id: 019f3b06-3f14-719e-a0ee-6e408677fcd2
+idn: get_memory
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3f14-719e-a0ee-6e408677fcd1
+    name: to_date
+    default_value: ""
+path: ""

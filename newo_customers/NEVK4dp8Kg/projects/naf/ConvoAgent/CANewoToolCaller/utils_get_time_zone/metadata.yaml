@@ -1,0 +1,12 @@
+id: 019f3b06-3aee-7139-ab2b-5344c58d2646
+idn: utils_get_time_zone
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aee-7139-ab2b-5344c58d2645
+    name: user_id
+    default_value: ""
+path: ""

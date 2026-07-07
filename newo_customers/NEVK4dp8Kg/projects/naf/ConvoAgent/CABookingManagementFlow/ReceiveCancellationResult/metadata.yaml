@@ -1,0 +1,9 @@
+id: 019f3b06-3aea-7bec-815e-12eae75b9b98
+idn: ReceiveCancellationResult
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

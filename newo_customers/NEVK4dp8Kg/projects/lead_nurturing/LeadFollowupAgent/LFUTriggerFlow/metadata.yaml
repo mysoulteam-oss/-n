@@ -1,0 +1,28 @@
+id: a24b0798-4baf-457b-9da2-ba3c8a6fd000
+idn: LFUTriggerFlow
+title: LFUTriggerFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 779a7191-ef0f-40e9-9334-6dd3107b6ba1
+    description: null
+    idn: custom_session_ended
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: ResolveFollowupsSkill
+    state_idn: null
+    integration_idn: null
+    connector_idn: null
+  - id: 6e5051d3-27a9-4373-b4a8-9f915450fb19
+    description: null
+    idn: task_manager_get_user_tasks_success
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: GetUserTasksSuccess
+    state_idn: null
+    integration_idn: null
+    connector_idn: null
+state_fields: []

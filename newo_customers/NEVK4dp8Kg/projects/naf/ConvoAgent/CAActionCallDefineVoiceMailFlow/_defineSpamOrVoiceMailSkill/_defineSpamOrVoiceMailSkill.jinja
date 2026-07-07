@@ -1,0 +1,179 @@
+{% set outbound_session = GetPersonaAttribute(id=userId, field="outbound_session") %}
+{% set check_spam_or_voicemail = GetCustomerAttribute(field="project_attributes_setting_check_spam_or_voicemail") %}
+{% if check_spam_or_voicemail == "False" and outbound_session != "True" %}
+    {{Return()}}
+{% endif %}
+
+{% set memory = memory_utils.get_memory(user_id=userId, from_date=GetPersonaAttribute(id=userId, field="last_call_ended_datetime_utc") or GetPersonaAttribute(id=userId, field="last_session_ended_datetime_utc")) %}
+{% set user = GetUser().name ~ ":" %}
+
+{% if memory.count(user) < 1 %}
+    {{Return()}}
+{% endif %}
+
+{% if memory.count(user) > 20 %}
+    {{Return()}}
+{% endif %}
+
+{% if outbound_session != "True" %}
+    {% set spam_or_voicemail = "spammer" %}
+{% else %}
+    {% if system_utils.ff_active(ff_name="v2v_outbound_include_voicemail_rule_initial_instruction") %}
+        {% set spam_or_voicemail = "spammer" %}
+    {% else %}
+        {% set spam_or_voicemail = "spammer or voicemail" %}
+    {% endif %}
+{% endif %}
+
+{# TODO: add separate fields for defining spam and voicemail #}
+{% set schema = {
+    "type": "object",
+    "properties": {
+        "explanation": {
+            "type": "string",
+            "description": "A short explanation referencing specific parts of the conversation that justify the final decision."
+        },
+        "detection_result": {
+            "type": "string",
+            "enum": ["True", "False", "Skip"],
+            "description": "Indicates the final classification: 'True' if the user is clearly a " ~ spam_or_voicemail ~ ", 'False' if the user is NOT a " ~ spam_or_voicemail ~ ", 'Skip' if insufficient context or accidental/disclaimer-like input."
+        },
+        "skip_reason": {
+            "type": "string",
+            "description": "If detection_result is Skip and it seems like the agent stumbled upon screening system put `screening_system`. If detection_result is Skip because of not enough information to make final decision, put `not_enough`. If detection_result is Skip because of busy announcement put `transferring_machine`. In all other cases put `other`.",
+            "enum": ["screening_system", "not_enough", "busy_announcement", "other"]
+        }
+    },
+    "required": ["explanation", "detection_result"]
+} %}
+
+{% set prompt %}You are a professional voicemail and spam detector. You will be provided with a <Conversation> between a ConvoAgent and a user. Your goal is to determine whether the ConvoAgent is speaking to a {{spam_or_voicemail}}.
+
+To make a correct decision, follow these guidelines:
+- The user may exhibit suspicious behavior such as:
+    - Repeatedly ignoring the topic.
+    - Interrupting the ConvoAgent frequently.
+    - Saying the same or very similar sentences multiple times.
+    - Avoiding or ignoring questions asked by the ConvoAgent.
+    - Giving irrelevant or nonsensical responses.
+
+Return `"Skip"` if:
+- ConvoAgent may encounter a gatekeeper or call screening system (for example: "Hi, if you record your name and reason for calling, I will see if this person is available.", etc.). These are not considered voicemail or spam. Prefer using "Skip" unless there are explicit voicemail indicators such as: “leave a message,” “after the tone,” “beep,” or “not available.”
+- ConvoAgent may encounter a hold message / busy announcement (such as: "The number you have dialed is busy. Please wait a moment" / "The party you are calling is on another call. Hold on for a moment", etc.). Use "Skip" in this case.
+- The user asks early screening questions (first 1-2 exchanges) like "Who's calling?", "What's this about?", or iOS Call Screening prompts such as "Please state your name" / "Please say why you're calling". Treat this as a gatekeeper screen and allow the agent to answer before re-evaluating.
+- The user says "please stay on the line/one moment/hold" (or similar) and the next user message is a greeting or a question (handoff to human).
+- The user's message is short like disclaimer, accidental phrase, or background phrase.
+- After several conversational turns, the User and ConvoAgent are speaking different languages, and the ConvoAgent fails to adapt or switch to the User's language. In such cases, repeated or seemingly irrelevant user responses must not be treated as spam but instead as a language mismatch, and the correct decision is `"Skip"`.
+
+If the user shows strong signs of being a {{spam_or_voicemail}}, return `"True"` — this should be based on clear voicemail phrases (e.g., "leave a message", "after the tone", "beep", "not available") or obvious spam patterns.
+
+# Additional description for `detection_result` field:
+There are three possible options:
+- `"True"` - If you are on 100 percent sure that ConvoAgent speaks to {{spam_or_voicemail}}.
+- `"False"` - If you are on 100 percent sure that ConvoAgent speaks to NOT {{spam_or_voicemail}}.
+- `"Skip"` - If it's not enough of provided conversation to make decision.
+
+<Conversation>
+{{memory}}
+</Conversation>
+
+Response:{% endset %}
+
+{% set result_json = json.loads(structured_generation(prompt=prompt, schema=schema)) %}
+
+{% set detection_result = result_json.detection_result %}
+
+{% if detection_result == "Skip" %}
+    {% if result_json.skip_reason == "screening_system" and GetPersonaAttribute(id=userId, field="screening_system_handled") != "True" %}
+        {{SetPersonaAttribute(id=userId, field="screening_system_handled", value="True")}}
+        {{SendSystemEvent(
+            eventIdn="urgent_message",
+            connectorIdn="system",
+            baseInstruction="You stumbled upon a screening system. Your goal is to state your name and call reason so the screening system can connect you with a human.",
+            uninterruptible="True"
+        )}}
+    {% endif %}
+    {% if result_json.skip_reason == "busy_announcement" and GetPersonaAttribute(id=userId, field="busy_announcement_handled") != "True" %}
+        {{SetPersonaAttribute(id=userId, field="busy_announcement_handled", value="True")}}
+        {{SendSystemEvent(
+            eventIdn="convoagent_send_context",
+            connectorIdn="system",
+            context="You stumbled upon a busy announcement. Your goal is to wait for the user to pick up the phone and once they greet you, start greeting and state reason for you call again.",
+            uninterruptible="True"
+        )}}
+    {% endif %}
+    {{Return()}}
+{% endif %}
+
+{% if detection_result == "True" %}
+    {% if voiceMailRecheck == "False" %}
+        {# To avoid looping, we add the parameter `executionAllowed`. If the skill has already been invoked from the current skill, we exit #}
+        {% if executionAllowed == "True" %}
+            {% set _ = _defineSpamOrVoiceMailSkill(voiceMailRecheck="True", userId=userId, actorId=actorId, executionAllowed="False") %}
+        {% else %}
+            {{Return()}}
+        {% endif %}
+    {% else %}
+        {{SetPersonaAttribute(id=userId, field="voicemail_checked", value="True")}}
+        {{SetPersonaAttribute(id=userId, field="voicemail_detected", value="True")}}
+        {# ? TODO: Is this event / skill actual? #}
+        {{SendSystemEvent(eventIdn="convoagent_voicemail_detected", connectorIdn="system") }}
+
+        {% if outbound_session != "True" %}
+            {{SendSystemEvent(
+                eventIdn="urgent_message",
+                connectorIdn="system",
+                baseInstruction="Your goal is to verbalize that you stumbled upon a spam. You can say something like: 'It seems like I am speaking to a spammer. Goodbye.'",
+                uninterruptible="True"
+            )}}
+            {% set stop_call_timeout = GetCustomerAttribute(field="project_attributes_setting_voice_stop_call_timeout") %}
+            {% if not stop_call_timeout.strip() %}
+                {% set stop_call_timeout = "6" %}
+            {% endif %}
+        {% else %}
+            {{SendSystemEvent(
+                eventIdn="urgent_message",
+                connectorIdn="system",
+                baseInstruction="You stumbled upon a voicemail. " ~ GetCustomerAttribute(field="project_representative_agent_voicemail_detection_behavior_instruction"),
+                uninterruptible="True"
+            )}}
+            {# Since Agent will provide a bigger message, we must set a much higher value #}
+            {% set stop_call_timeout = "30" %}
+        {% endif %}
+
+        {% set voice_integration_service = GetCustomerAttribute(field="project_attributes_setting_voice_integration_service") %}
+        {% if voice_integration_service == "VAPI Integration" %}
+            {{Sleep(duration=stop_call_timeout, interruptible="y")}}
+            {{SendCommand(
+                commandIdn="stop_call",
+                integrationIdn="vapi",
+                connectorIdn="vapi_caller",
+                actorId=actorId
+            )}}
+        {% endif %}
+        {% if voice_integration_service == "NEWO Voice Integration" %}
+            {# ! TODO: remove `Sleep`, return set `stop_call_timeout` as `waitForStopSeconds` value after Platform fixes #}
+            {{Sleep(duration=stop_call_timeout, interruptible="y")}}
+            {{SendCommand(
+                commandIdn="stop_call",
+                integrationIdn="newo_voice",
+                connectorIdn="newo_voice_connector",
+                actorId=actorId,
+                waitForStopSeconds="1"
+            )}}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+{% if detection_result == "False" %}
+    {% if humanRecheck == "False" %}
+        {# To avoid looping, we add the parameter `executionAllowed`. If the skill has already been invoked from the current skill, we exit #}
+        {% if executionAllowed == "True" %}
+            {% set _ =_defineSpamOrVoiceMailSkill(humanRecheck="True", userId=userId, actorId=actorId, executionAllowed="False") %}
+        {% else %}
+            {{Return()}}
+        {% endif %}
+    {% else %}
+        {{SetPersonaAttribute(id=userId, field="voicemail_checked", value="True")}}
+    {% endif %}
+{% endif %}

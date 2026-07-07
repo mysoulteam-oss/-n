@@ -1,0 +1,6 @@
+{{#system~}}
+{{rows}}
+{{newRow}}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

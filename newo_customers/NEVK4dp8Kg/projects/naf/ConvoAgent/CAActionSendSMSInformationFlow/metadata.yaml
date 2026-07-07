@@ -1,0 +1,46 @@
+id: 019f3b06-3ae9-741d-b0d8-47fe478e6201
+idn: CAActionSendSMSInformationFlow
+title: CAActionSendSMSInformationFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e6224
+    description: null
+    idn: send_information_tool
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: SendSMSToolSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e6225
+    description: null
+    idn: send_sms_error
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: HandleSMSSendingErrorSkill
+    state_idn: null
+    integration_idn: twilio_messenger
+    connector_idn: sms_connector
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e6226
+    description: null
+    idn: send_sms_error
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: HandleSMSSendingErrorSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e6227
+    description: null
+    idn: send_sms_tool
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: SendSMSToolSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

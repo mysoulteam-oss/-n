@@ -1,0 +1,24 @@
+id: 019f3b06-3ca4-715f-a65b-735f490de3d2
+idn: utils_connector_create_if_not_exists
+title: utils_connector_create_if_not_exists
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3ca4-715f-a65b-735f490de3d1
+    name: title
+    default_value: ""
+  - id: 019f3b06-3ca4-715f-a65b-735f490de3cf
+    name: integrationIdn
+    default_value: ""
+  - id: 019f3b06-3ca4-715f-a65b-735f490de3ce
+    name: connectorIdn
+    default_value: ""
+  - id: 019f3b06-3ca4-715f-a65b-735f490de3cd
+    name: start
+    default_value: ""
+  - id: 019f3b06-3ca4-715f-a65b-735f490de3d0
+    name: settings
+    default_value: ""
+path: ""

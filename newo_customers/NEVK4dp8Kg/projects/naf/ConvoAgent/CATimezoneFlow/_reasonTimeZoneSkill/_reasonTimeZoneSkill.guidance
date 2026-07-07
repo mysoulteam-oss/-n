@@ -1,0 +1,44 @@
+{{#system~}}
+You will be provided with the agent time zone and conversation history. Your goal is to identify mistakes made by agent and respond with the urgent note containing a corrected time zone conversion.
+
+# Context
+
+The user is talking to the agent right now and he can ask something like "what time it would be in my timezone ...?". The main goal for now is to identify is there any mistakes made by the agent while responding such questions.
+
+Below is the agent time zone and conversation transcript.
+
+
+# Output Format
+
+- No quotes. No formatting. Just a plain text.
+- Respond with a corrected answer if you've identified some agent mistake.
+- Respond with "none" without explanation if there are no mistakes / questions / reason to correct the agent.
+- Respond with "none" without explanation if your correction would be just a repetition of agent's replies.
+
+---
+
+<AgentTimeZone>
+ConvoAgent.timezone: {{timeZone}}
+</AgentTimeZone>
+
+<Conversation>
+{{memory}}
+</Conversation>
+
+Result: Give the final conversion without explanation in the following format:
+> Apologize for the inconvenience, there was a mistake: in user's local time ... would be ... in [ConvoAgent.timezone] time.
+Or:
+> Apologize for the inconvenience, there was a mistake: in agent's local time ... would be ... in [user timezone] time.
+Or (if there nothing to fix):
+> none
+{{~/system}}
+
+{{#assistant~}}
+{{Set(name="reason_result", value=Gen(temperature=0.2, topP=0, skipFilter=True, thinkingBudget=500), expose=True)}}
+{{~/assistant}}
+
+{{#if reason_result == "none"}}
+  {{Return(val=" ")}}
+{{/if}}
+
+{{Return(val=reason_result)}}

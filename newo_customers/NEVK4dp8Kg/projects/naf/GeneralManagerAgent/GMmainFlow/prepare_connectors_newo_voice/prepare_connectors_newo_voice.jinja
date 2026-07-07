@@ -1,0 +1,60 @@
+{# ? TODO: Setup remaining settings #}
+
+{# TODO: Set STT and TTS settings #}
+{# {% set stt_settings = {"model": "nova-3", "provider": "deepgram", "language_hint": "multi"} %} #}
+{# {% set tts_settings = {"model": "eleven_flash_v2_5", "provider": "elevenlabs", "voice": "m2sZcyg8CYkgA7WLQRSH", "language_hint": "en"} %} #}
+
+{{utils_connector_create_if_not_exists(
+    integrationIdn = "newo_voice",
+    connectorIdn = "newo_voice_connector",
+    title = "newo_voice_connector",
+    settings = {
+        "voice_mode": "voice-to-voice",
+        "genai_v2v_tokens_sliding_window": "65536",
+        "genai_v2v_top_p": "0.9",
+        "genai_v2v_temperature": "0.9",
+        "genai_v2v_speech_activity_start_sensitivity": "low",
+        "genai_v2v_speech_activity_stop_sensitivity": "high",
+        "genai_v2v_turn_coverage": "only_activity",
+        "genai_v2v_model": "gemini-live-2.5-flash-native-audio",
+        "genai_v2v_proactive_audio": "False",
+        "deepgram_stt_endpointing": "350",
+        "flush_on_punctuation": "False",
+        "openai_v2v_model": "gpt-realtime-1.5",
+        "openai_v2v_temperature": "0.8",
+        "openai_v2v_speed": "1.15",
+        "stt_mode": "google",
+        "v2v_mode_user_stt": "None",
+        "google_stt_model": "chirp_3",
+        "google_stt_language_codes": "auto",
+    },
+    start = True
+)}}
+
+{{utils_connector_create_if_not_exists(
+    integrationIdn = "newo_voice",
+    connectorIdn = "newo_voice_connector_web",
+    title = "newo_voice_connector_web",
+    settings = {
+        "voice_mode": "voice-to-voice",
+        "genai_v2v_tokens_sliding_window": "65536",
+        "genai_v2v_top_p": "0.9",
+        "genai_v2v_temperature": "0.9",
+        "genai_v2v_speech_activity_start_sensitivity": "low",
+        "genai_v2v_speech_activity_stop_sensitivity": "high",
+        "genai_v2v_turn_coverage": "only_activity",
+        "genai_v2v_model": "gemini-live-2.5-flash-native-audio",
+        "genai_v2v_proactive_audio": "False",
+        "deepgram_stt_endpointing": "350",
+        "flush_on_punctuation": "False",
+        "openai_v2v_model": "gpt-realtime-1.5",
+        "openai_v2v_temperature": "0.8",
+        "openai_v2v_speed": "1.15",
+        "stt_mode": "google",
+        "v2v_mode_user_stt": "None",
+        "google_stt_model": "chirp_3",
+        "google_stt_language_codes": "auto",
+        "provider": "webrtc"
+    },
+    start = True
+)}}

@@ -1,0 +1,20 @@
+{% set user_id = GetUser().id | string %}
+{% set actor_id_normalized = (GetActor().id | string).replace('-', '') %}
+{% set persona_field = "transaction_" ~ actor_id_normalized %}
+{% set transactions_raw = GetPersonaAttribute(id=user_id, field=persona_field).strip() %}
+{% set transactions = {} %}
+
+{% if transactions_raw %}
+    {% set transactions = json.loads(transactions_raw) %}
+{% endif %}
+
+{% if transaction_id %}
+    {% set transaction_key = transaction_id.replace('-', '') %}
+    {% if transaction_key in transactions %}
+        {{Return(val=json.dumps(transactions[transaction_key], ensure_ascii=False, indent=2))}}
+    {% else %}
+        {{Return(val=json.dumps({}, ensure_ascii=False, indent=2))}}
+    {% endif %}
+{% else %}
+    {{Return(val=json.dumps(transactions, ensure_ascii=False, indent=2))}}
+{% endif %}

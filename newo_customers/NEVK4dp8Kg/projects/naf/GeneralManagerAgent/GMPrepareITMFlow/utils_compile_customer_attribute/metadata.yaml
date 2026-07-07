@@ -1,0 +1,15 @@
+id: 019f3b06-3ca0-7efc-bce5-b2e839836ec1
+idn: utils_compile_customer_attribute
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3ca0-7efc-bce5-b2e839836ebf
+    name: compiled_attribute_name
+    default_value: ""
+  - id: 019f3b06-3ca0-7efc-bce5-b2e839836ec0
+    name: template_attribute_name
+    default_value: ""
+path: ""

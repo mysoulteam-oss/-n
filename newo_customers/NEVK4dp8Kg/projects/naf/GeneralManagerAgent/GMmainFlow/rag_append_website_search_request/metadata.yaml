@@ -1,0 +1,12 @@
+id: 019f3b06-3ca4-715f-a65b-735f490de3bd
+idn: rag_append_website_search_request
+title: rag_append_website_search_request
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3ca4-715f-a65b-735f490de3bc
+    name: objective
+    default_value: ""
+path: ""

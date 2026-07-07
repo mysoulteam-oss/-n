@@ -1,0 +1,12 @@
+id: 019f3b06-3ca2-71e8-9822-b576f556fdd0
+idn: _migration_3_0_3_blocked_phones_clean
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3ca2-71e8-9822-b576f556fdcf
+    name: intent_types
+    default_value: ""
+path: ""

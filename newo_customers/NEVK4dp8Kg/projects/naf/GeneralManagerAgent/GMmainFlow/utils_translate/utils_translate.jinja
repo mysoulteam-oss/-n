@@ -1,0 +1,12 @@
+{% system %}
+Translate a text specified in <TextToTranslate> to {{target_language}} language.
+Return only the translated text without any explanation or additional text.
+
+<TextToTranslate>
+{{input_text}}
+</TextToTranslate>
+{% end %}
+
+{% set translated_text = Gen(temperature=0.1, topP=0, skipFilter=True, thinkingBudget=420) %}
+
+{{Return(val=translated_text)}}

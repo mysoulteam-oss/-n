@@ -1,0 +1,24 @@
+id: 019f3b06-3ae9-741d-b0d8-47fe478e6231
+idn: collect_quality_metrics
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e622e
+    name: scenarios
+    default_value: ""
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e6230
+    name: intents
+    default_value: ""
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e622f
+    name: transcript
+    default_value: ""
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e622c
+    name: session_short_description
+    default_value: ""
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e622d
+    name: main_scenario
+    default_value: ""
+path: ""

@@ -1,0 +1,11 @@
+{% set old_check_timezone_tool = "If there are **two or more Agent messages** in `<Conversation>` and `<LatestConvoAgentAnswer>` that mention **related time** or **related timezones**, then this flag becomes **false** — because the clarification from Agent was already given. This flag is true only when there is no repeated clarification, meaning the latest messages introduces a new or first-time timezone reference." %}
+
+{% set new_check_timezone_tool %}"This flag is `true` only if the total count of agent messages in `<Conversation>` and `<LatestConvoAgentAnswer>` that mention **last** **related time** or **related timezones** is 0 or 1. If there are more than 1 mentions, tool must NOT be called."{% endset %}
+
+{# Migrate check_timezone_tool conditions #}
+{% set newo_tools = GetCustomerAttribute(field="project_attributes_settings_newo_tools").strip() %}
+
+{% if "that mention **last** **related time** or **related timezones**" not in newo_tools %}
+    {% set updated_newo_tools = newo_tools.replace(old_check_timezone_tool, new_check_timezone_tool) %}
+    {{SetCustomerAttribute(field="project_attributes_settings_newo_tools", value=updated_newo_tools)}}
+{% endif %}

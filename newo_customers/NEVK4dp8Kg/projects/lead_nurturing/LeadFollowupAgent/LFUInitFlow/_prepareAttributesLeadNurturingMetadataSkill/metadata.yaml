@@ -1,0 +1,9 @@
+id: 0c44ad93-e53b-4585-bd75-4664c6258215
+idn: _prepareAttributesLeadNurturingMetadataSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

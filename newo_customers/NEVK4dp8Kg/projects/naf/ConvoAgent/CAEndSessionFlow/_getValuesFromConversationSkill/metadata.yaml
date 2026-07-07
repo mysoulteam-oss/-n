@@ -1,0 +1,15 @@
+id: 019f3b06-3aeb-7129-b93b-1a813f29c656
+idn: _getValuesFromConversationSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c654
+    name: userId
+    default_value: " "
+  - id: 019f3b06-3aeb-7129-b93b-1a813f29c655
+    name: transcript
+    default_value: " "
+path: ""

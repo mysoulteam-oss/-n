@@ -1,0 +1,100 @@
+{% set current_intent_type_map = GetCustomerAttribute(field="project_attributes_private_dynamic_itm_compiled") %}
+
+{% set previous_intent_type_map = GetState(name="itm_cached") %}
+
+{# Account set up for the first time. #}
+{% if not previous_intent_type_map.strip() %}
+    {{SetState(name="itm_cached", value=current_intent_type_map)}}
+
+    {% set industry = GetCustomerAttribute(field="project_business_industry") %}
+    {% set scenario = GetCustomerAttribute(field="project_attributes_scenario") %}
+
+    {# TODO: Consider getting rid of AKB reference #}
+    {% set itm_non_working_hours_compiled = SearchFuzzyAkb(
+        query="ATTRIBUTE_INTENT_TYPE_MAP_CONVOAGENT_NON_WORKING_HOURS",
+        searchFields=["name"],
+        numberTopics=1,
+        filterByPersonaIds=[GetAgent(idn="ConvoAgent").persona_id],
+        labels=[industry, scenario, "attribute_template"]
+    ) %}
+
+    {% set itm_working_hours_compiled = SearchFuzzyAkb(
+        query="ATTRIBUTE_INTENT_TYPE_MAP_CONVOAGENT_WORKING_HOURS",
+        searchFields=["name"],
+        numberTopics=1,
+        filterByPersonaIds=[GetAgent(idn="ConvoAgent").persona_id],
+        labels=[industry, scenario, "attribute_template"]
+    ) %}
+
+    {% if itm_non_working_hours_compiled and itm_working_hours_compiled %}
+        {{SetCustomerAttribute(
+            field="project_attributes_private_dynamic_itm_non_working_hours_compiled",
+            value=itm_non_working_hours_compiled[0].summary
+        )}}
+        {{SetCustomerAttribute(
+            field="project_attributes_private_dynamic_itm_working_hours_compiled",
+            value=itm_working_hours_compiled[0].summary
+        )}}
+
+    {% else %}
+
+        {{SetCustomerAttribute(
+            field="project_attributes_private_dynamic_itm_non_working_hours_compiled",
+            value=default_itm_nwh()
+        )}}
+        {{SetCustomerAttribute(
+            field="project_attributes_private_dynamic_itm_working_hours_compiled",
+            value=default_itm_wh()
+        )}}
+
+    {% endif %}
+
+    {{utils_compile_customer_attribute(
+        template_attribute_name="project_attributes_private_dynamic_itm_non_working_hours_compiled",
+        compiled_attribute_name="project_attributes_private_dynamic_itm_non_working_hours_compiled"
+    )}}
+
+    {{utils_compile_customer_attribute(
+        template_attribute_name="project_attributes_private_dynamic_itm_working_hours_compiled",
+        compiled_attribute_name="project_attributes_private_dynamic_itm_working_hours_compiled"
+    )}}
+
+    {{utils_build_intent_type_map_store_intents(intent_type_map=current_intent_type_map)}}
+    {{SendSystemEvent(eventIdn="gm_itm_built", connectorIdn="system", global="True")}}
+    {{Return()}}
+{% endif %}
+
+{% set current_dynamic_intent_type_map_convoagent_non_working_hours = GetCustomerAttribute(field="project_attributes_private_dynamic_itm_non_working_hours_compiled") %}
+
+{% set current_dynamic_intent_type_map_convoagent_working_hours = GetCustomerAttribute(field="project_attributes_private_dynamic_itm_working_hours_compiled") %}
+
+{# ITM is not changed since recent publish #}
+{% if current_intent_type_map == previous_intent_type_map %}
+    {% if  current_dynamic_intent_type_map_convoagent_non_working_hours %}
+        {% if current_dynamic_intent_type_map_convoagent_working_hours %}
+            {% if not GetCustomerAttribute(field="project_attributes_private_dynamic_intents_list").strip() %}
+                {{utils_build_intent_type_map_store_intents(intent_type_map=current_intent_type_map)}}
+            {% endif %}
+            {{SendSystemEvent(eventIdn="gm_itm_built", connectorIdn="system", global="True")}}
+            {{Return()}}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+{{utils_build_intent_type_map_store_intents(intent_type_map=current_intent_type_map)}}
+
+{% set wh_filter = "Remove only the specific scenario rule for **non-working hours**. Strictly preserve opposite conditions (like working hours) and any mentions in general lists or text." %}
+{% set nwh_filter = "Remove only the specific scenario rule for **working hours**. Strictly preserve opposite conditions (like non-working hours) and any mentions in general lists or text." %}
+
+{{SetCustomerAttribute(
+    field="project_attributes_private_dynamic_itm_non_working_hours_compiled",
+    value=utils_build_intent_type_map_llm_filtered(filter=nwh_filter, base=current_intent_type_map).strip("```").strip()
+)}}
+
+{{SetCustomerAttribute(
+    field="project_attributes_private_dynamic_itm_working_hours_compiled",
+    value=utils_build_intent_type_map_llm_filtered(filter=wh_filter, base=current_intent_type_map).strip("```").strip()
+)}}
+
+{{SetState(name="itm_cached", value=current_intent_type_map)}}
+{{SendSystemEvent(eventIdn="gm_itm_built", connectorIdn="system", global="True")}}

@@ -1,0 +1,12 @@
+id: 019f3b06-3aec-7a79-bb1b-812bfca74a35
+idn: add_phone_number_to_pool_wrapper
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aec-7a79-bb1b-812bfca74a34
+    name: agent_phone_number
+    default_value: ""
+path: ""

@@ -1,0 +1,8 @@
+{{! TODO: Define call transfer criteria }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_transfer_call_enabled", value="True")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_transfer_call_criteria", value="- Speak with the manager or co-worker (including returning or continuing a previous conversation)")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_transfer_call_confirmation_phrase", value="Would you like me to connect you with a co-worker now?")}}
+
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_setting_transfer_call_additional_statement", value=" ")}}

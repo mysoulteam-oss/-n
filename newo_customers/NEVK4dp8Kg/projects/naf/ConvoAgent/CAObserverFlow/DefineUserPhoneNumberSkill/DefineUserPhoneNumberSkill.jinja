@@ -1,0 +1,254 @@
+{#
+    ! TODO: Maybe `StartNotInterruptibleBlock` and `StopNotInterruptibleBlock` must be added.
+    Skipped due to NSL doesn't support currently.
+#}
+
+{#
+    PURPOSE:
+    This skill parses the user's phone number to identify the international country code and removes it.
+
+    It handles common formatting issues, international exit codes, and ensures that
+    internal or incomplete numbers are preserved safely without incorrect parsing.
+#}
+
+{# Define user's phone number information #}
+
+{% set user_id = GetTriggeredAct().arguments.user_id %}
+
+{% set user_phone_number = GetTriggeredAct().arguments.user_phone_number_with_country_code %}
+
+{% if user_phone_number %}
+    {#
+        CLEANING & NORMALIZATION:
+        Standardize the input by removing common formatting characters
+        (+, -, spaces, parentheses). This allows for consistent digit-based matching.
+    #}
+    {% set user_phone_number = common_utils.normalize_phone(value=user_phone_number, characters_to_keep="#*") | trim %}
+
+    {#
+        INTERNATIONAL PREFIX HANDLING:
+        Standard international exit codes ('00' or '011') are identified and removed from
+        a 'candidate_number' used for matching.
+
+        The original 'user_phone_number' is preserved to ensure that if matching fails
+        (e.g., for short codes or internal numbers starting with these digits),
+        the data is not corrupted in the fallback case.
+    #}
+    {% set candidate_number = user_phone_number %}
+    {% if candidate_number.startswith("00") %}
+        {% set candidate_number = candidate_number[2:] %}
+    {% elif candidate_number.startswith("011") %}
+        {% set candidate_number = candidate_number[3:] %}
+    {% endif %}
+
+    {#
+        COUNTRY CODE TO TRUNK CODE MAPPING DOCUMENTATION:
+        Zone 1 (North American Numbering Plan):
+            1: (Empty) USA, Canada, Caribbean, etc.
+        Zone 2 (Primarily Africa):
+            20: 0 (Egypt), 27: 0 (South Africa), 211: (Empty) South Sudan, 212: 0 (Morocco),
+            213: 0 (Algeria), 216: (Empty) Tunisia, 218: 0 (Libya), 220: (Empty) Gambia,
+            221: (Empty) Senegal, 222: (Empty) Mauritania, 223: (Empty) Mali, 224: (Empty) Guinea,
+            225: (Empty) Ivory Coast, 226: (Empty) Burkina Faso, 227: (Empty) Niger, 228: (Empty) Togo,
+            229: (Empty) Benin, 230: (Empty) Mauritius, 231: (Empty) Liberia, 232: 0 (Sierra Leone),
+            233: 0 (Ghana), 234: 0 (Nigeria), 235: (Empty) Chad, 236: (Empty) Central African Republic,
+            237: (Empty) Cameroon, 238: (Empty) Cape Verde, 239: (Empty) Sao Tome and Principe,
+            240: (Empty) Equatorial Guinea, 241: 0 (Gabon), 242: (Empty) Congo, 243: 0 (DR Congo),
+            244: (Empty) Angola, 245: (Empty) Guinea-Bissau, 246: (Empty) Diego Garcia,
+            247: (Empty) Ascension Island, 248: (Empty) Seychelles, 249: 0 (Sudan), 250: (Empty) Rwanda,
+            251: 0 (Ethiopia), 252: 0 (Somalia), 253: (Empty) Djibouti, 254: 0 (Kenya), 255: 0 (Tanzania),
+            256: 0 (Uganda), 257: (Empty) Burundi, 258: (Empty) Mozambique, 260: 0 (Zambia),
+            261: 0 (Madagascar), 262: 0 (Reunion/Mayotte), 263: 0 (Zimbabwe), 264: 0 (Namibia),
+            265: (Empty) Malawi, 266: (Empty) Lesotho, 267: (Empty) Botswana, 268: (Empty) Swaziland,
+            269: (Empty) Comoros, 290: (Empty) Saint Helena, 291: 0 (Eritrea), 297: (Empty) Aruba,
+            298: (Empty) Faroe Islands, 299: (Empty) Greenland.
+        Zones 3 and 4 (Primarily Europe):
+            30: (Empty) Greece, 31: 0 (Netherlands), 32: 0 (Belgium), 33: 0 (France),
+            34: (Empty) Spain, 350: (Empty) Gibraltar, 351: (Empty) Portugal, 352: (Empty) Luxembourg,
+            353: 0 (Ireland), 354: (Empty) Iceland, 355: 0 (Albania), 356: (Empty) Malta,
+            357: (Empty) Cyprus, 358: 0 (Finland), 359: 0 (Bulgaria), 36: 06 (Hungary),
+            370: 0 (Lithuania), 371: (Empty) Latvia, 372: (Empty) Estonia, 373: 0 (Moldova),
+            374: 0 (Armenia), 375: 80 (Belarus), 376: (Empty) Andorra, 377: (Empty) Monaco,
+            378: (Empty) San Marino, 379: (Empty) Vatican City, 380: 0 (Ukraine), 381: 0 (Serbia),
+            382: 0 (Montenegro), 383: 0 (Kosovo), 385: 0 (Croatia), 386: 0 (Slovenia),
+            387: 0 (Bosnia and Herzegovina), 389: 0 (North Macedonia), 39: (Empty) Italy,
+            40: 0 (Romania), 41: 0 (Switzerland), 420: (Empty) Czech Republic, 421: 0 (Slovakia),
+            423: (Empty) Liechtenstein, 43: 0 (Austria), 44: 0 (United Kingdom),
+            45: (Empty) Denmark, 46: 0 (Sweden), 47: (Empty) Norway, 48: (Empty) Poland,
+            49: 0 (Germany).
+        Zone 5 (South and Central Americas):
+            500: (Empty) Falkland Islands, 501: (Empty) Belize, 502: (Empty) Guatemala,
+            503: (Empty) El Salvador, 504: (Empty) Honduras, 505: (Empty) Nicaragua,
+            506: (Empty) Costa Rica, 507: (Empty) Panama, 508: (Empty) St. Pierre and Miquelon,
+            509: (Empty) Haiti, 51: 0 (Peru), 52: (Empty) Mexico, 53: 0 (Cuba), 54: 0 (Argentina),
+            55: (Empty) Brazil, 56: (Empty) Chile, 57: (Empty) Colombia, 58: 0 (Venezuela),
+            590: 0 (Guadeloupe), 591: 0 (Bolivia), 592: (Empty) Guyana, 593: 0 (Ecuador),
+            594: 0 (French Guiana), 595: 0 (Paraguay), 596: 0 (Martinique), 597: 0 (Suriname),
+            598: 0 (Uruguay), 599: (Empty) Curacao/Bonaire.
+        Zone 6 (Southeast Asia and Oceania):
+            60: 0 (Malaysia), 61: 0 (Australia), 62: 0 (Indonesia), 63: 0 (Philippines),
+            64: 0 (New Zealand), 65: (Empty) Singapore, 66: 0 (Thailand), 670: (Empty) East Timor,
+            672: (Empty) Norfolk Island, 673: (Empty) Brunei, 674: (Empty) Nauru,
+            675: (Empty) Papua New Guinea, 676: (Empty) Tonga, 677: (Empty) Solomon Islands,
+            678: (Empty) Vanuatu, 679: (Empty) Fiji, 680: (Empty) Palau, 681: (Empty) Wallis and Futuna,
+            682: (Empty) Cook Islands, 683: (Empty) Niue, 685: (Empty) Samoa, 686: (Empty) Kiribati,
+            687: (Empty) New Caledonia, 688: (Empty) Tuvalu, 689: (Empty) French Polynesia,
+            690: (Empty) Tokelau, 691: (Empty) Micronesia, 692: (Empty) Marshall Islands.
+        Zone 7 (Russia and neighboring regions):
+            7: 8 (Russia, Kazakhstan).
+        Zone 8 (East Asia, Southeast Asia, and special services):
+            81: 0 (Japan), 82: 0 (South Korea), 84: 0 (Vietnam), 850: (Empty) North Korea,
+            852: (Empty) Hong Kong, 853: (Empty) Macau, 855: 0 (Cambodia), 856: 0 (Laos),
+            86: (Empty) China, 870: (Empty) Inmarsat, 880: 0 (Bangladesh),
+            881: (Empty) Global Mobile Satellite, 882: (Empty) International Networks, 886: 0 (Taiwan).
+        Zone 9 (West, Central, and South Asia):
+            90: 0 (Turkey), 91: (Empty) India, 92: 0 (Pakistan), 93: 0 (Afghanistan),
+            94: 0 (Sri Lanka), 95: 0 (Myanmar), 960: (Empty) Maldives, 961: 0 (Lebanon),
+            962: 0 (Jordan), 963: 0 (Syria), 964: (Empty) Iraq, 965: (Empty) Kuwait,
+            966: 0 (Saudi Arabia), 967: 0 (Yemen), 968: (Empty) Oman, 970: 0 (Palestine),
+            971: 0 (UAE), 972: 0 (Israel), 973: (Empty) Bahrain, 974: (Empty) Qatar,
+            975: (Empty) Bhutan, 976: 0 (Mongolia), 977: 0 (Nepal), 98: 0 (Iran),
+            992: 8 (Tajikistan), 993: 8 (Turkmenistan), 994: 0 (Azerbaijan), 995: 0 (Georgia),
+            996: 0 (Kyrgyzstan), 998: 0 (Uzbekistan).
+    #}
+
+    {#
+        COUNTRY CODES MAPPING:
+        Defines the international Country Codes.
+    #}
+    {% set country_codes = [
+        "998", "996", "995", "994", "993", "992", "977", "976", "975", "974",
+        "973", "972", "971", "970", "968", "967", "966", "965", "964", "963",
+        "962", "961", "960", "886", "882", "881", "880", "870", "856", "855",
+        "853", "852", "850", "692", "691", "690", "689", "688", "687", "686",
+        "685", "683", "682", "681", "680", "679", "678", "677", "676", "675",
+        "674", "673", "672", "670", "599", "598", "597", "596", "595", "594",
+        "593", "592", "591", "590", "509", "508", "507", "506", "505", "504",
+        "503", "502", "501", "500", "423", "421", "420", "389", "387", "386",
+        "385", "383", "382", "381", "380", "379", "378", "377", "376", "375",
+        "374", "373", "372", "371", "370", "359", "358", "357", "356", "355",
+        "354", "353", "352", "351", "350", "299", "298", "297", "291", "290",
+        "269", "268", "267", "266", "265", "264", "263", "262", "261", "260",
+        "258", "257", "256", "255", "254", "253", "252", "251", "250", "249",
+        "248", "247", "246", "245", "244", "243", "242", "241", "240", "239",
+        "238", "237", "236", "235", "234", "233", "232", "231", "230", "229",
+        "228", "227", "226", "225", "224", "223", "222", "221", "220", "218",
+        "216", "213", "212", "211", "98", "95", "94", "93", "92", "91",
+        "90", "86", "84", "82", "81", "66", "65", "64", "63", "62",
+        "61", "60", "58", "57", "56", "55", "54", "53", "52", "51",
+        "49", "48", "47", "46", "45", "44", "43", "41", "40", "39",
+        "36", "34", "33", "32", "31", "30", "27", "20", "7", "1"
+    ] %}
+
+    {#
+        COUNTRY CODES TO TRUNK CODES MAPPING:
+        Defines the international Country Codes specified to Trunk Codes.
+    #}
+
+    {% set ns = namespace(found_match=false, code="null", rest="null") %}
+
+    {#
+        MATCHING LOGIC:
+        Iterate through the known country codes to check if the candidate number starts with one.
+
+        ALGORITHM DETAILS:
+        1. SORTING (Greedy Matching):
+            The 'country_codes' list is statically PRE-SORTED by length (descending) to prioritize
+            the longest possible match. This prevents "Partial Matching" bugs where a shorter
+            country code is a prefix of a longer one (e.g., ensuring '+1 242' is correctly
+            identified as the Bahamas [+1242] rather than USA [+1] with an extra '242').
+
+        2. Check if 'candidate_number' starts with a 'code' from the list.
+        3. Validate the remaining digits ('diff') and the TOTAL length of the number:
+            - Country Code '1' (NANP/US): Requires at least 10 remaining digits (diff >= 10).
+            - All other codes: Require the TOTAL length of the candidate number to be >= 10.
+
+        DESIGN DECISION & TRADE-OFFS:
+        We enforce a strict minimum TOTAL length of 10 digits for most of the world to filter out
+        incomplete 8-9 digit numbers that accidentally start with a country code (e.g., '624456022'
+        should not be parsed as Indonesia +62).
+
+        This design intentionally sacrifices support for extremely rare, short international
+        numbers from tiny regions (e.g., St. Helena +290 xxxx, Niue +683 xxxx) in favor of
+        robustly handling the much more common case of incomplete/local 9-digit numbers.
+    #}
+    {% for code in country_codes %}
+        {% if not ns.found_match and candidate_number.startswith(code) %}
+            {% set diff = candidate_number|length - code|length %}
+
+            {#
+                For non-US/NANP numbers, we verify the TOTAL length is >= 10.
+                This ensures we do not falsely match short local numbers.
+            #}
+            {% if (code == "1" and diff >= 10) or (code != "1" and candidate_number|length >= 10) %}
+                {% set ns.code = code %}
+                {% set ns.rest = candidate_number[code|length:] %}
+                {% set ns.found_match = true %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {#
+        FALLBACK LOGIC:
+        If no valid country code match is identified (due to internal numbers,
+        short codes, or missing map entries), the original cleaned number
+        is preserved as 'rest' and the country code is set to "null".
+    #}
+    {% if not ns.found_match %}
+        {% set ns.code = "null" %}
+        {% set ns.rest = user_phone_number %}
+    {% endif %}
+
+    {% set user_phone_number_country_code = ns.code %}
+    {% set user_phone_number_without_country_code = ns.rest %}
+{% else %}
+    {% set user_phone_number = "null" %}
+    {% set user_phone_number_country_code = "null" %}
+    {% set user_phone_number_without_country_code = "null" %}
+{% endif %}
+
+{{SetPersonaAttribute(id=user_id, field="detected_phone_number_with_country_code", value=user_phone_number)}}
+{{SetPersonaAttribute(id=user_id, field="detected_phone_number_country_code", value=user_phone_number_country_code)}}
+{{SetPersonaAttribute(id=user_id, field="detected_phone_number_without_country_code", value=user_phone_number_without_country_code)}}
+
+{# Building user's information (getting data up to date) #}
+{% if not GetPersonaAttribute(id=user_id, field="phone_number_spelled").strip() %}
+    {% if user_phone_number_without_country_code != "null" %}
+        {% set agent_country_code = GetCustomerAttribute(field="project_representative_agent_voice_phone_country_code").strip() %}
+
+        {% if user_phone_number_country_code == "null" %}
+            {#
+                UNRECOGNIZED COUNTRY CODE:
+                The matching logic above could not identify a known country code in the user's
+                phone number. Fall back to spelling the full normalized number as-is.
+            #}
+            {% set phone_number_for_spelling = user_phone_number %}
+        {% elif user_phone_number_country_code == agent_country_code %}
+            {#
+                LOCAL CALL:
+                The user dials from the same country as the agent.
+                Prepend the national trunk code so the agent pronounces the number the way
+                a local would dial it (e.g., for Ukraine +380: "0 XX XXX XX XX").
+                If the country has no trunk code (e.g., USA), the prefix is empty.
+            #}
+            {% set trunk_code = json.loads(_country_codes_to_trunk_code_map()).get(user_phone_number_country_code, "") %}
+            {% set phone_number_for_spelling = trunk_code ~ user_phone_number_without_country_code %}
+        {% else %}
+            {#
+                FOREIGN CALL:
+                The user dials from a different country than the agent.
+                Use the full international number (country code + national number) without "+".
+            #}
+            {% set phone_number_for_spelling = user_phone_number_country_code ~ user_phone_number_without_country_code %}
+        {% endif %}
+
+        {% set phone_number_spelled = json.loads(get_user_phone_number_spelled(phone_number=phone_number_for_spelling)) %}
+
+        {% set phone_number_spelled_instruction = "For example for the user's detected phone number: " ~ '"' ~ phone_number_for_spelling ~ '", spell it like: "' ~ phone_number_spelled["spelled"] ~ '" or like: "' ~ phone_number_spelled["divided"] ~ '". Avoid skipping or mixing up any digits! Spell it as is!' %}
+
+        {{SetPersonaAttribute(id=user_id, field="phone_number_spelled", value=phone_number_spelled_instruction)}}
+        {{SetPersonaAttribute(id=user_id, field="detected_phone_number", value=phone_number_for_spelling)}}
+    {% endif %}
+{% endif %}
+
+{{persona_utils.persona_build_user_information(user_id=user_id)}}

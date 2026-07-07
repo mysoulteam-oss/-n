@@ -1,0 +1,15 @@
+id: 019f3b06-3ca4-715f-a65b-735f490de3ab
+idn: ProjectImportSkill
+title: ProjectImportSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3ca4-715f-a65b-735f490de3aa
+    name: triggered_by
+    default_value: ""
+  - id: 019f3b06-3ca4-715f-a65b-735f490de3a9
+    name: force_agent_creator_callback
+    default_value: ""
+path: ""

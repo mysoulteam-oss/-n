@@ -1,0 +1,9 @@
+id: 019f3b06-3af1-7547-be24-f117810807e1
+idn: _getPromptCalendarSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

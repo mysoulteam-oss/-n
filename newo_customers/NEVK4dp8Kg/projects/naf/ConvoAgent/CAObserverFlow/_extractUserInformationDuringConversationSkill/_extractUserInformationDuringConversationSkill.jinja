@@ -1,0 +1,187 @@
+{# TODO: Combine with information extraction during `session_ended` #}
+
+{# Building user's information (getting data up to date) #}
+{{persona_utils.persona_build_user_information(user_id=userId)}}
+
+{# Define Agent's phone number information #}
+{% set agent_phone_number = GetCustomerAttribute(field="project_representative_agent_voice_phone_number") %}
+{% set agent_phone_number_country_code_two_letter = GetCustomerAttribute(field="project_representative_agent_voice_phone_alpha2_code") %}
+{% set agent_phone_number_country_code = GetCustomerAttribute(field="project_representative_agent_voice_phone_country_code") %}
+
+{% set restricted_languages_list = GetCustomerAttribute(field="project_business_language_restricted_list") %}
+{% if restricted_languages_list.strip() and restricted_languages_list != "[]" %}
+    {% set restricted_languages = json.loads(restricted_languages_list) | join(", ") %}
+{% else %}
+    {% set restricted_languages = "" %}
+{% endif %}
+
+{% set language_restriction_instruction = ( "[!Caution] Prohibited languages: " ~ restricted_languages ~ ". Never set `user_preferred_language` to the prohibited languages.
+"
+) if restricted_languages else "" %}
+
+{% set schema = _schemasSkill(extractInformation="True") %}
+
+{% system %}
+Your goal is to build a valid JSON object according to the schema based on the following information:
+- Agent's phone number information (provided in <AgentPhoneNumberInformation> block)
+- Previously extracted user information (provided in <UserInformation> block)
+- Conversation between the ConvoAgent and the user (provided in <ConversationHistory> block)
+
+Important notes:
+- Latest information from the conversation has a higher priority than the previously extracted information.
+- New information is not always present in the conversation.
+- The conversation may contain irrelevant information.
+
+Rules for `user_preferred_language`:
+- Out-of-context, accidental, off-topic, one-word or one-off utterances in another language must be critically ignored for language determination. Fragmentary, ambiguous, short, isolated, or unfinished messages in another language must be considered insufficient and ignored.
+- Set the preferred language to language of user's **latest** message if the user's **latest** message in another language is clearly directed to the Agent (intended as communication with the Agent) AND is a cohesive, complete utterance that clearly expresses a full intent or meaning on its own (e.g., a full question, answer, or statement) suiting the conversation context.
+- Update the preferred language if the user clearly pronounced the language they want to switch on. In this case, it can be one word like "Dutch", "Russian", "Portuguese", or any other language.
+- `user.language` of <UserInformation> block is historical metadata and must NOT be used as a deciding factor.
+- Important: if there is already a continued conversation between ConvoAgent and User for multiple turns, the User's last utterance in different language is suspected to be incidental STT issue.
+- If there are some difficulties or misunderstandings in conversation, do not update language to the last User's turn.
+{{language_restriction_instruction}}
+Rules for user's phone number extraction:
+Follow these steps in strict order to determine the phone number and country code.
+
+1. **Analyze Conversation and Handle "No Spoken Number" Case:**
+    - First, scan the `<ConversationHistory>` to find the most recent phone number that is **explicitly identified as belonging to the user** (e.g., "my number is...", "you can reach me at...").
+    - It does not matter who spoke the number (User or ConvoAgent), as long as the conversation's context confirms it is the *user's* contact number (e.g., Agent: "Is your number 555-1234?" User: "Yes").
+    - **Do not extract numbers that are explicitly attributed to someone else** or for a different purpose (e.g., an order number, a number for a different office).
+    - **If no such user phone number is mentioned in the `<ConversationHistory>`:** Populate the final `user_phone_number_with_country_code`, `user_phone_number_country_code`, and `user_phone_number_without_country_code` fields by copying data from `<UserInformation>` using this strict priority:
+        1. First, use the values from `user.provided_phone_number_...` (if they are not null).
+        2. If `user.provided_phone_number_...` fields are null, then use the values from `user.detected_phone_number_...` (if they are not null).
+        3. If all phone fields in `<UserInformation>` are null, set the final `user_phone_number_...` fields to "null".
+    - After this, set all fields in the `notes` object to their "null" or default values and **stop**. Do not proceed to Step 2.
+    - **If a user's number IS mentioned:** Proceed to Step 2 and populate the `notes` object based on the spoken number.
+
+2. **Analyze Spoken Number and Populate Notes (Only if a number was spoken):**
+    - Populate `notes.spelled_phone_number` with the exact phrase as it was spoken.
+    - Convert this spoken number into a pure numeric string (handling "double 5" -> "55", etc.) and populate `notes.spelled_phone_number_corrected` with the result.
+    - Analyze the spoken phrase to determine if a country code was explicitly mentioned. Populate `notes.spelled_phone_number_contains_country_code` accordingly.
+
+3. **Check for Explicit Country Information:**
+    - Examine the user's language around the spoken number. If the user explicitly mentions a country or a country code (e.g., "my German number is..."), that information has the highest priority for determining the final country code.
+
+4. **Match Against Existing Data (Confirmation Logic):**
+    - Compare the value you generated for `notes.spelled_phone_number_corrected` with the `user.provided_phone_number_without_country_code` from the `<UserInformation>` block.
+    - It is a confirmation **only if one of these is true**:
+        a) The numbers **EXACTLY MATCH**.
+        b) The existing number from `<UserInformation>` (including its country code) **ENDS WITH** the new spoken number, and the new spoken number is shorter. (This handles cases where the user confirms the national part of a full international number).
+
+5. **Handle as a New Number:**
+    - If the number in `notes.spelled_phone_number_corrected` is not a confirmation (Step 4) and no explicit country was mentioned (Step 3), treat it as a new phone number.
+    - Determine its country code heuristically by following this priority:
+        1. **First, check the user's previous country:** If a country code exists in `user.provided_phone_number_country_code` inside `<UserInformation>`, use that one. A user is most likely to provide another number from their own country.
+        2. **If not available, use the Agent's country:** If `<UserInformation>` has no phone number, fall back to using the **Agent's country code** from `<AgentPhoneNumberInformation>`.
+
+6. **Final Formatting Rules:**
+    - The final phone numbers and country codes in the main user fields (`user_phone_number...`) must not contain the `+` (plus) symbol.
+    - For US phone numbers (country code `1`), ensure the `user_phone_number_without_country_code` has exactly 10 digits.
+
+Rules for `user_email`:
+- Latest confirmed email address is the most accurate. Apply all the corrections made during the conversation for the email address.
+- Do not forget to keep all the intentionally spelled special characters, such as "dot", "plus", "at".
+
+Rules for opt-in preferences (SMS and Email):
+- Set `sms_opt_in` to `false` **only** if the user clearly and explicitly states they do not want to receive SMS messages (e.g., "don't text me", "no SMS please", "stop texting me", "I don't want any text messages"). Do NOT set to `false` when: the user says "No" to a phone number confirmation question (this means the number is wrong, not SMS refusal); the user declines to provide a phone number (this is about the number itself, not SMS preference); the user's response is ambiguous or could reasonably be interpreted as referring to something other than SMS opt-out. If in doubt, keep `sms_opt_in` as `true`. If the user later provides a new phone number, treat it as consent to use that number for SMS unless they explicitly restate their opt-out. If the user agrees to receive SMS or does not mention anything about SMS preferences, set this field to `true`.
+- Set `email_opt_in` to `false` **only** if the user clearly and explicitly states they do not want to receive emails or requests not to be contacted via email (e.g., "don't email me", "no emails please", "stop emailing me"). Do NOT set to `false` when: the user says "No" to an email address confirmation question (this means the email is wrong, not email refusal); the user declines to provide an email address (this is about the address itself, not email preference); the user's response is ambiguous or could reasonably be interpreted as referring to something other than email opt-out. If in doubt, keep `email_opt_in` as `true`. If the user later provides a new email address, treat it as consent to use that email unless they explicitly restate their opt-out. If the user agrees to receive emails or does not mention anything about email preferences, set this field to `true`.
+- Do not infer opt-out intent — only explicit statements should trigger a `false` value.
+
+---
+
+<AgentPhoneNumberInformation alt="agent phone number information" role="context">
+Agent's two-letter country code (ISO 3166-1 alpha-2): {{agent_phone_number_country_code_two_letter}}
+Agent's phone number with country code: {{agent_phone_number}}
+Agent's phone country code: {{agent_phone_number_country_code}}
+</AgentPhoneNumberInformation>
+
+<UserInformation alt="user information" role="context">
+{{GetPersonaAttribute(id=userId, field="_private_dynamic_user_information")}}
+{{GetPersonaAttribute(id=userId, field="custom_user_data")}}
+</UserInformation>
+
+<ConversationHistory alt="conversation history (older messages above, newer messages below)" role="context">
+{{memory}}
+</ConversationHistory>
+
+---
+
+JSON object:
+{% end %}
+{% set response = Gen(jsonSchema=schema, validateSchema=True, temperature=0.2, topP=0, skipFilter=True, thinkingBudget=425) %}
+{% set response = json.loads(response) %}
+
+{% set user_name = response.user_name %}
+{% set user_email = response.user_email %}
+{% set user_language = response.user_preferred_language %}
+{% set user_phone_number_with_country_code = response.user_phone_number_with_country_code %}
+{% set user_phone_number_country_code = response.user_phone_number_country_code %}
+{% set user_phone_number_without_country_code = response.user_phone_number_without_country_code %}
+{% set sms_subscribed = response.sms_opt_in %}
+{% set email_subscribed = response.email_opt_in %}
+
+{# TODO: Define setting Persona Name - check `_extractValuesFromConversationSkill` and `EndSessionSkill` #}
+{% if user_name.strip() %}
+    {% if not IsSimilar(val1=user_name, val2="null", threshold=0.8, strategy="symbols") %}
+        {{ SetPersonaAttribute(id=userId, field="full_name", value=user_name) }}
+        {{ UpdateUser(field="name", value=user_name) }}
+    {% endif %}
+{% endif %}
+
+{% if user_email.strip() %}
+    {% if not IsSimilar(val1=user_email, val2="null", threshold=0.8, strategy="symbols") %}
+        {{ SetPersonaAttribute(id=userId, field="email", value=user_email) }}
+    {% endif %}
+{% endif %}
+
+{#  never equals to null bcz of primary_language  #}
+{{ SetPersonaAttribute(id=userId, field="user_language", value=user_language) }}
+
+{% if user_phone_number_with_country_code.strip() != "null" %}
+    {{ SetPersonaAttribute(id=userId, field="provided_phone_number_with_country_code", value=user_phone_number_with_country_code) }}
+{% endif %}
+
+{% if user_phone_number_country_code.strip() != "null" %}
+    {{ SetPersonaAttribute(id=userId, field="provided_phone_number_country_code", value=user_phone_number_country_code) }}
+{% endif %}
+
+{% if user_phone_number_without_country_code.strip() != "null" %}
+    {{ SetPersonaAttribute(id=userId, field="provided_phone_number_without_country_code", value=user_phone_number_without_country_code) }}
+
+    {% set agent_country_code = GetCustomerAttribute(field="project_representative_agent_voice_phone_country_code").strip() %}
+
+    {% if user_phone_number_country_code == "null" %}
+        {#
+            UNRECOGNIZED COUNTRY CODE:
+            The matching logic above could not identify a known country code in the user's
+            phone number. Fall back to spelling the full normalized number as-is.
+        #}
+        {% set phone_number_normalized = user_phone_number_without_country_code %}
+    {% elif user_phone_number_country_code == agent_country_code %}
+        {#
+            LOCAL CALL:
+            The user dials from the same country as the agent.
+            Prepend the national trunk code so the agent pronounces the number the way
+            a local would dial it (e.g., for Ukraine +380: "0 XX XXX XX XX").
+            If the country has no trunk code (e.g., USA), the prefix is empty.
+        #}
+        {% set trunk_code = json.loads(_country_codes_to_trunk_code_map()).get(user_phone_number_country_code, "") %}
+        {% set phone_number_normalized = trunk_code ~ user_phone_number_without_country_code %}
+    {% else %}
+        {#
+            FOREIGN CALL:
+            The user dials from a different country than the agent.
+            Use the full international number (country code + national number) without "+".
+        #}
+        {% set phone_number_normalized = user_phone_number_country_code ~ user_phone_number_without_country_code %}
+    {% endif %}
+
+    {{SetPersonaAttribute(id=userId, field="provided_phone_number", value=phone_number_normalized)}}
+{% endif %}
+
+{{SetPersonaAttribute(id=userId, field="sms_subscribed", value=(sms_subscribed | string).lower())}}
+
+{{SetPersonaAttribute(id=userId, field="email_subscribed", value=(email_subscribed | string).lower())}}
+
+{# Rebuilding user's information #}
+{{persona_utils.persona_build_user_information(user_id=userId)}}

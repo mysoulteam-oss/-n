@@ -1,0 +1,53 @@
+{% set arguments = GetTriggeredAct().arguments %}
+
+{% set ns = namespace(headers=json.loads(arguments.headers)) %}
+{% set rows = json.loads(arguments.rows) %}
+{% set task_type = arguments.task_type %}
+
+{% if ((ns.headers | length) > 1) and "phone" in ns.headers[0].lower() %}
+    {% if "reason" in ns.headers[1].lower() %}
+        {% for row in rows %}
+            {% if task_type == "make_call" %}
+                {% set outbound_action = "Call" %}
+            {% elif task_type == "send_sms" %}
+                {% set outbound_action = "Send an SMS" %}
+            {% endif %}
+            {{SendSystemEvent(
+                eventIdn="task_manager_schedule_tasks",
+                connectorIdn="system",
+                global="True",
+                content=outbound_action ~ " the user at " ~ row[0] ~ ". " ~ row[1],
+                phoneNumber=row[0],
+                taskTypes=json.dumps([task_type], ensure_ascii=False, indent=2)
+            )}}
+            {{Sleep(duration="5")}}
+        {% endfor %}
+        {{Return()}}
+    {% endif %}
+{% endif %}
+
+{% for row in rows %}
+    {% set contact_details = json.loads(get_contact_details(row=row, headers=ns.headers)) %}
+    {% if contact_details.phone_number == "null" %}
+        {{SendSystemEvent(
+            eventIdn="update_call_record",
+            connectorIdn="system",
+            phoneNumber="|".join(row),
+            endCallReason="Phone number is not found.",
+            callRecording="-",
+            summary="Couldn't find phone number in row.",
+            global="True"
+        )}}
+    {% else %}
+        {{SendSystemEvent(
+            eventIdn="task_manager_schedule_tasks",
+            connectorIdn="system",
+            global="True",
+            content=contact_details.content,
+            taskTypes=json.dumps([task_type], ensure_ascii=False, indent=2),
+            phoneNumber=contact_details.phone_number
+        )}}
+        {{Sleep(duration="5")}}
+    {% endif %}
+{% endfor %}
+

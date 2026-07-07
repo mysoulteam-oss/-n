@@ -1,0 +1,39 @@
+{{!-- Define email body --}}
+{{Set(name="email_body", value=_sendReportEmailBodyTextSkill(
+    transcript=transcript,
+    userId=userId,
+    fieldsToExtract=fieldsToExtract,
+    workingHourStatus=workingHourStatus,
+    reportType=reportType,
+    customSection=customSection
+))}}
+
+{{!-- Send email: check report type attribute --}}
+{{Set(name="sessionEndedReportType", value=GetCustomerAttribute(field="project_attributes_setting_session_ended_report_type_email"))}}
+
+{{#if sessionEndedReportType == "custom"}}
+    {{SendSystemEvent(
+        eventIdn="convoagent_send_custom_report_email",
+        connectorIdn="system",
+        email=email,
+        cc=cc,
+        subject=subject,
+        body=email_body,
+        transcript=transcript,
+        userId=userId,
+        reportType=reportType,
+        ignore_opt_out="true"
+    )}}
+    {{_utilsSendSystemLogSkill(message=Concat("Custom report email event emitted for ", email, " and cc to ", cc, "."))}}
+{{else}}
+    {{SendSystemEvent(
+        eventIdn="email_worker_send_email",
+        connectorIdn="system",
+        email=email,
+        cc=cc,
+        subject=subject,
+        body=email_body,
+        ignore_opt_out="true"
+    )}}
+    {{_utilsSendSystemLogSkill(message=Concat("Report email is sent to ", email, " and cc to ", cc, "."))}}
+{{/if}}

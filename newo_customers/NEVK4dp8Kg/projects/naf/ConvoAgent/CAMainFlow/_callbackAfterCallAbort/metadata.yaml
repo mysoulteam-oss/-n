@@ -1,0 +1,18 @@
+id: 019f3b06-3aec-7a79-bb1b-812bfca74a3c
+idn: _callbackAfterCallAbort
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aec-7a79-bb1b-812bfca74a39
+    name: phoneNumber
+    default_value: " "
+  - id: 019f3b06-3aec-7a79-bb1b-812bfca74a3a
+    name: connectorIdn
+    default_value: " "
+  - id: 019f3b06-3aec-7a79-bb1b-812bfca74a3b
+    name: integrationIdn
+    default_value: " "
+path: ""

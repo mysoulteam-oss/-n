@@ -1,0 +1,28 @@
+id: 019f3b06-3ae9-741d-b0d8-47fe478e61dc
+idn: CAActionSendEmailInformationFlow
+title: CAActionSendEmailInformationFlow
+description: ""
+default_runner_type: guidance
+default_model:
+  provider_idn: google
+  model_idn: gemini25_flash
+events:
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e61ff
+    description: null
+    idn: send_email_error
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: HandleEmailSendingErrorSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+  - id: 019f3b06-3ae9-741d-b0d8-47fe478e6200
+    description: null
+    idn: send_email_tool
+    skill_selector: skill_idn
+    interrupt_mode: queue
+    skill_idn: SendEmailToolSkill
+    state_idn: null
+    integration_idn: system
+    connector_idn: system
+state_fields: []

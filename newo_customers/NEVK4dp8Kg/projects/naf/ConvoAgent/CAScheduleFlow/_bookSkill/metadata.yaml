@@ -1,0 +1,18 @@
+id: 019f3b06-3af0-77e7-b66a-c13b7444d0c1
+idn: _bookSkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3af0-77e7-b66a-c13b7444d0be
+    name: userId
+    default_value: " "
+  - id: 019f3b06-3af0-77e7-b66a-c13b7444d0bf
+    name: agentAnswer
+    default_value: " "
+  - id: 019f3b06-3af0-77e7-b66a-c13b7444d0c0
+    name: memory
+    default_value: " "
+path: ""

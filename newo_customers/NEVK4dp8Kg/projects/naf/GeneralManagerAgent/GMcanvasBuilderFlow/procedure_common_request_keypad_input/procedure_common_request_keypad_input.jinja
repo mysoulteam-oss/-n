@@ -1,0 +1,23 @@
+{% set title = '## **Requesting Keypad (DTMF) Input** procedure' %}
+
+{% set body %}
+Ask the user to enter their insurance number, phone number, or order ID (select the one needed based on the conversation) using the dial pad, then provide the following instruction: "When you are done, press the # (pound) key; to clear your input, press the * (star) key."
+
+Wait for the user's input and proceed with the next step.
+{% endset %}
+
+{% set description %}
+Use this procedure when the agent needs the User to type input (such as a phone number) using the dial pad. The agent asks the User for the required input and tells them how to submit it, which triggers the tool that disables the follow-up, switching the system into a waiting state for the User's keypad (DTMF) input instead of prompting the User again.
+{% endset %}
+
+{% set item = {
+    "idn": "procedure_common_request_keypad_input",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

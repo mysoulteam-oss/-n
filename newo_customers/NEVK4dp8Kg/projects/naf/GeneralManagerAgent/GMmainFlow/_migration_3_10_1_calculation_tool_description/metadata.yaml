@@ -1,0 +1,9 @@
+id: 019f3b06-3ca2-71e8-9822-b576f556fdda
+idn: _migration_3_10_1_calculation_tool_description
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

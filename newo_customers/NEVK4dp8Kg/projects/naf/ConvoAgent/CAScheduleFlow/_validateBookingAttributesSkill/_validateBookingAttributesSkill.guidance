@@ -1,0 +1,32 @@
+{{#if GetCustomerAttribute(field="project_business_industry") == "restaurant_industry"}}
+    {{!-- Exit in case of empty `Google Restaurant ID` --}}
+    {{#if GetCustomerAttribute(field="project_attributes_setting_booking_type") == "default"}}
+        {{#if IsEmpty(text=GetCustomerAttribute(field="project_attributes_private_dynamic_restaurant_google_restaurant_id"))}}
+            {{_utilsSendSystemLogSkill(message="Google Restaurant ID is not set. Please put Google Restaurant ID from google reserve page first in the `project_attributes_private_dynamic_restaurant_google_restaurant_id` customer attribute.")}}
+            {{Return()}}
+        {{/if}}
+        {{Return(val="t")}}
+    {{/if}}
+{{/if}}
+
+{{!-- Getting `project_attributes_private_dynamic_booking_schema_template` "compiled" value --}}
+{{Set(name="booking_schema", value=GetCustomerAttribute(field="project_attributes_private_dynamic_booking_schema_compiled"))}}
+{{#if IsEmpty(text=booking_schema)}}
+    {{_utilsSendSystemLogSkill(message="Payload schema to book is not set. Please put payload schema first in the `project_attributes_setting_booking_payload_schema_template` customer attribute and then press on 'Publish Agent'.")}}
+    {{Return()}}
+{{/if}}
+
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_type") == "intercom"}}
+    {{Return(val="t")}}
+{{/if}}
+
+{{#if GetCustomerAttribute(field="project_attributes_setting_booking_type") == "project"}}
+    {{Return(val="t")}}
+{{/if}}
+
+{{#if IsEmpty(text=GetCustomerAttribute(field="project_attributes_setting_booking_url"))}}
+    {{_utilsSendSystemLogSkill(message="URL to book is not set. Please put URL first in the `project_attributes_setting_booking_url` customer attribute.")}}
+    {{Return()}}
+{{/if}}
+
+{{Return(val="t")}}

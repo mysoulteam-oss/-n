@@ -1,0 +1,33 @@
+{% set sales_generated_scenarios = GetState(name="sales_generated_scenarios") %}
+
+{% if not sales_generated_scenarios.strip() %}
+    {{scenario_sales_generate()}}
+    {% set sales_generated_scenarios = json.loads(GetState(name="sales_generated_scenarios")) %}
+{% else %}
+    {% set sales_generated_scenarios = json.loads(sales_generated_scenarios) %}
+{% endif %}
+
+{% set title %}
+## **Scenario 1:** "Consultation and Lead Qualification"
+{% endset %}
+
+{% set body %}
+{{sales_generated_scenarios.consultation_and_lead_qualification_scenario_body}}
+{% endset %}
+
+{% set description %}
+Engage the user in a consultative conversation, explain the benefits, and qualify them as a lead for a sales call. The agent builds interest, qualifies the lead and pushes toward booking a call or providing resources for follow-up.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_sales_consultation_and_lead_qualification",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

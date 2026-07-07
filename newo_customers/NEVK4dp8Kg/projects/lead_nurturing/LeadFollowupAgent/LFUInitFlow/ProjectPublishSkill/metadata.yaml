@@ -1,0 +1,9 @@
+id: cdc22fba-d1fe-4c91-9a01-5745c712cf9e
+idn: ProjectPublishSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

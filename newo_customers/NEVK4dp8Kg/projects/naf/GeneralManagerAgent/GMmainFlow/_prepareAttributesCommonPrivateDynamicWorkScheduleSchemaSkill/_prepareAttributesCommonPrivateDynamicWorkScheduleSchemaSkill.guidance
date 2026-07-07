@@ -1,0 +1,31 @@
+{{#system~}}
+{
+    "type": "object",
+    "properties": {
+        "non_working_days": {
+            "type": "string",
+            "description": "Non-working days separated by commas. According to business work schedule (without exceptions). Set to string \"null\" if there are no non-working days."
+        },
+        "working_days": {
+            "type": "string",
+            "description": "Working days separated by commas. According to business work schedule (without exceptions)."
+        },
+        "working_hours": {
+            "type": "string",
+            "description": "List of working hours by days. Example: Monday: 9AM-10PM, Tuesday: 8AM-9PM, Wednesday: 9AM-5PM"
+        },
+        "working_days_hours_exceptions": {
+            "type": "string",
+            "description": "Exceptions for working days and hours with additional information (if presented). Set to string \"null\" if there are no exceptions."
+        }
+    },
+    "required": [
+        "non_working_days",
+        "working_days",
+        "working_hours",
+        "working_days_hours_exceptions"
+    ]
+}
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

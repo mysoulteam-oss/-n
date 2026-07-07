@@ -1,0 +1,20 @@
+{# Update scenario reference in catering industry #}
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+{% if industry != "catering_industry" %}
+    {{Return()}}
+{% endif %}
+
+{% set itm = GetCustomerAttribute(field="project_attributes_itm") %}
+{% if itm.strip() %}
+    {{SetCustomerAttribute(field="project_attributes_itm", value=itm.replace("“Order a Catering Service”", '"Order a Catering Service"'))}}
+{% endif %}
+
+{% set custom_scenarios = GetCustomerAttribute(field="project_attributes_custom_scenarios") %}
+{% if custom_scenarios.strip() %}
+    {{SetCustomerAttribute(field="custom_scenarios", value=custom_scenarios.replace("“Order a Catering Service”", '"Order a Catering Service"'))}}
+{% endif %}
+
+{% set custom_procedures = GetCustomerAttribute(field="project_attributes_custom_procedures") %}
+{% if custom_procedures.strip() %}
+    {{SetCustomerAttribute(field="custom_procedures", value=custom_procedures.replace("“Order a Catering Service”", '"Order a Catering Service"'))}}
+{% endif %}

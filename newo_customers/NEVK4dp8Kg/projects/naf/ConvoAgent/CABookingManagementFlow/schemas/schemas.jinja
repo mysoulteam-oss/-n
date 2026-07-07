@@ -1,0 +1,16 @@
+{% if booking_id == "True" %}
+    {{Return(val=json.dumps({
+  "type": "object",
+  "properties": {
+    "booking_id": {
+      "type": "string",
+      "description": "Unique booking identifier. Use \"null\" (as string) if no booking exists."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Short description of the cancellation reason. Leave empty if no description is provided."
+    }
+  },
+  "required": ["booking_id", "notes"]
+}, ensure_ascii=False, indent=2))}}
+{% endif %}

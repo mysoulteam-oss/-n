@@ -1,0 +1,51 @@
+{% set title = '## **Reconfirming or Gathering Email Address** procedure' %}
+
+{% set case_2_phone_channel_email_collect = 'say the **code-phrase**: "Give me a moment, I will send you an SMS message please reply with your email address."' %}
+{% set customer_info = GetCustomerInfo() %}
+{% if customer_info.dlc_mode == "customer_specific" %}
+    {% set status = customer_info.dlc_status %}
+    {% if status != "approved" %}
+        {% set agent_phone_number = GetCustomerAttribute(field="project_representative_agent_voice_phone_number").strip() %}
+        {% if not agent_phone_number %}
+          {% set case_2_phone_channel_email_collect = 'say: "Please spell your email".'%}
+        {% else %}
+          {% set case_2_phone_channel_email_collect = 'say: "Please send your email address via SMS to my number: ' ~ agent_phone_number ~ '".'%}
+        {% endif %}
+    {% endif %}
+{% endif %}
+{% set body = "" %}
+{% set body %}
+Before proceeding, check the **<PreviousConversationSummary>** section, **<Conversation>**, and **<UserInformation>** section for an explicit, valid email string.
+
+**CRITICAL VALIDATION:** A valid email MUST contain an "@" symbol and a "." (dot) that is positioned AFTER the "@" and BETWEEN characters (e.g., "name@domain.com"). Strings like "name@com" or "name@domain." are INVALID.
+
+You must not rely on the User's claim that they "sent it" unless the actual email text is visible. Follow the rules:
+
+- Rule 1: **Email string is MISSING or INVALID (e.g., no dot after the "@"):**
+
+  - If `conversation.channel` in <ConversationMeta> is set to **PHONE**, {{case_2_phone_channel_email_collect}}
+    - **Stay on this Rule 1** until an email with both "@" and a "." after it is visible. **Do not proceed to Rule 2 if the dot is missing.**
+    - If you are having trouble getting the User's email address or can not gather it via SMS, say the following: "Could you please spell out the email address verbally, letter-by-letter? It would be very helpful for me if you spell tricky parts in a way like - the first character is J as in joy, the next is O as in ocean, next H as in horse, and N as in noun."
+  - If `conversation.channel` in <ConversationMeta> is set to **CHAT**: Ask the user to provide a valid email in the chat.
+    - If the user provides a valid email in the current turn, treat it as gathered immediately.
+
+- Rule 2: **A valid email string is present:**
+  - If `conversation.channel` in <ConversationMeta> is set to **PHONE**: Say: "I see your email address..." and slowly **spell it out character by character**. Then ask: "May I use this email address?"
+  - If a valid email string is present and `conversation.channel` in <ConversationMeta> is set to **CHAT**: Do not reconfirm the email. Do not ask the user to repeat it. Treat the email as already gathered and proceed directly to the next step.
+{% endset %}
+
+{% set description %}
+The procedure tells the agent to look for a visible, valid email address in <Conversation>, <PreviousConversationSummary>, or <UserInformation>. If it is still missing or invalid, ask for a valid email and stay on this step until one is visible. On phone, read a valid email out character by character and ask permission to use it; in chat, never reconfirm or ask the user to repeat a valid email that is already available, and proceed to the next step immediately.
+{% endset %}
+
+{% set item = {
+    "idn": "procedure_common_gather_email",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

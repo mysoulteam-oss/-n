@@ -1,0 +1,11 @@
+{% set availability_json = json.loads(availability) %}
+{% for obj in availability_json %}
+    {% if obj.location == place %}
+        {% for slot in obj.availableTimeSlots %}
+            {% if slot == time %}
+                {{Return(val="True")}}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+{{Return()}}

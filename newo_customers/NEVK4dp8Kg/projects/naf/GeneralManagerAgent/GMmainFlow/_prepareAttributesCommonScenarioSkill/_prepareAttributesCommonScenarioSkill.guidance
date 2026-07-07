@@ -1,0 +1,2 @@
+{{! Is being set in each industry independently }}
+{{_utilsCustomerAttributeSetIfEmptySkill(field="project_attributes_scenario", value=" ")}}

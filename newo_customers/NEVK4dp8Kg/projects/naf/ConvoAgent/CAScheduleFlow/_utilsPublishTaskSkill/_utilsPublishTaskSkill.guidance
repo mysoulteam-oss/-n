@@ -1,0 +1,77 @@
+{{Set(name="convo_agent_persona", value=GetAgent(idn="ConvoAgent", field="personaId"))}}
+{{Set(name="industry", value=GetCustomerAttribute(field="project_business_industry"))}}
+{{Set(name="scenario", value=GetCustomerAttribute(field="project_attributes_scenario"))}}
+
+{{Set(name="meta", value=SearchFuzzyAkb(
+        query=Stringify(GetValueJSON(obj=taskObject, key="task_idn")),
+        searchFields=["name"],
+        numberTopics=1,
+        fields=["summary"],
+        scoreThreshold=0.9,
+        filterByPersonaIds=convo_agent_persona,
+        labels=CreateArray("task_object_format", industry, scenario)
+    )
+)}}
+
+{{Set(name="complete_task_object", value=UpdateValueJSON(obj=meta, key="info", value=taskObject))}}
+
+{{Set(name="to_idn", value=GetValueJSON(obj=complete_task_object, key="receiver_worker_idn"))}}
+{{Set(name="test_mode", value=session_in_test_mode(userId=userId))}}
+{{#if test_mode != "True"}}
+  {{SendSystemEvent(
+      eventIdn="worker_message",
+      connectorIdn="system",
+      fromIdn=GetAgentPersona(),
+      fromId=GetAgentPersona(field="id"),
+      toIdn=to_idn,
+      toId=" ",
+      message=" ",
+      body=complete_task_object,
+      bodyFormat=" "
+  )}}
+{{/if}}
+
+{{Set(
+    name="task_idn",
+    value=Stringify(GetValueJSON(obj=complete_task_object, key="task_idn"))
+)}}
+
+{{Set(name="footnote_actor_id", value=_utilsGetFootnoteSkill(userId=userId, system="True"))}}
+
+{{SendMessage(
+    message=Concat("System log: The task with IDN ", task_idn, " has just been sent from the CAScheduleFlow to ", Stringify(GetValueJSON(obj=complete_task_object, key="receiver_worker_idn"))),
+    actorIds=footnote_actor_id
+)}}
+
+{{#if test_mode == "True"}}
+  {{!-- This is magic browser old restaurant only. --}}
+
+  {{Sleep(duration="10", interruptible="False")}}
+
+  {{Set(name="user_name", value=GetValueJSON(obj=taskObject, key="user_name"))}}
+  {{Set(name="user_phone", value=GetValueJSON(obj=taskObject, key="user_phone"))}}
+  {{Set(name="reservation_date", value=GetValueJSON(obj=taskObject, key="reservation_date"))}}
+  {{Set(name="reservation_time", value=GetValueJSON(obj=taskObject, key="reservation_time"))}}
+  {{Set(name="number_of_guests", value=GetValueJSON(obj=taskObject, key="number_of_guests"))}}
+
+  {{Set(name="body", value=get_mock_data(type="task_object",
+    user_name=user_name,
+    user_phone=user_phone,
+    reservation_date=reservation_date,
+    reservation_time=reservation_time,
+    number_of_guests=number_of_guests
+  ))}}
+
+
+  {{SendSystemEvent(
+    eventIdn="worker_message",
+    connectorIdn="system",
+    fromIdn="MagicWorker",
+    fromId=" ",
+    toIdn="SmsWorker",
+    toId=" ",
+    message=" ",
+    body=body,
+    bodyFormat=" "
+  )}}
+{{/if}}

@@ -1,0 +1,16 @@
+{{prepare_library()}}
+
+{{SendSystemEvent(eventIdn="gm_workflow_builder_library_built", connectorIdn="system", global="True")}}
+
+{% set current_canvas = GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas").strip() %}
+
+{% if not current_canvas %}
+    {{SendSystemEvent(eventIdn="gm_clear_itm", connectorIdn="system", global="True")}}
+    {{prepare_instructions_default()}}
+{% else %}
+    {{prepare_instructions_update_from_library()}}
+{% endif %}
+
+{{prepare_instructions_from_canvas()}}
+
+{{SendSystemEvent(eventIdn="gm_workflow_builder_canvas_built", connectorIdn="system", global="True")}}

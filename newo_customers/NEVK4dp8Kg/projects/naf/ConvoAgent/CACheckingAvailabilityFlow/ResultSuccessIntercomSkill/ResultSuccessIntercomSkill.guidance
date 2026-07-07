@@ -1,0 +1,6 @@
+{{Set(name="command_idn", value=GetTriggeredAct(fields="commandIdn"))}}
+
+{{#if command_idn == "get_or_create_actor"}}
+    {{Set(name="body", value=GetTriggeredAct(fields="body"))}}
+    {{SetPersonaAttribute(id=GetUser(field="id"), field="intercom_actor", value=Stringify(GetValueJSON(obj=body, key="id")))}}
+{{/if}}

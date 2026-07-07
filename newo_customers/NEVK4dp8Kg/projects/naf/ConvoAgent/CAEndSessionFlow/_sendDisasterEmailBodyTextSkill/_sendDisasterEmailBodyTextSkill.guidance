@@ -1,0 +1,53 @@
+{{Set(name="recording_urls", value=GetPersonaAttribute(id=userId, field="recording_urls"))}}
+
+{{#if IsEmpty(text=recording_urls)}}
+    {{Set(name="record", value=" ")}}
+{{else}}
+    {{!-- {{Set(name="record", value=Concat("<strong>Recording URL:</strong> ", _utilsPrepareRecordingUrls(recordingUrls=recording_urls), "<br><strong>Caller phone number:</strong> ", GetPersonaAttribute(id=userId, field="detected_phone_number_with_country_code"), "<br><br>"))}} --}}
+    {{!-- TODO: Temporary without recording url --}}
+    {{Set(name="record", value=Concat("<strong>Caller phone number:</strong> ", GetPersonaAttribute(id=userId, field="detected_phone_number_with_country_code"), "<br><br>"))}}
+{{/if}}
+
+
+{{Set(name="time_zone", value=GetCustomerAttribute(field="project_business_time_zone"))}}
+{{Set(name="current_date", value=GetDatetime(format="date", timezone=time_zone))}}
+{{Set(name="current_time", value=GetDatetime(format="time", timezone=time_zone))}}
+{{Set(name="current_time_list", value=current_time.split(":"))}}
+{{Set(name="current_time_list", value=Stringify(current_time_list))}}
+{{Set(name="current_time_list", value=current_time_list.replace("'", '"'))}}
+
+{{Set(name="current_hour", value=Stringify(GetItemsArrayByIndexesJSON(array=current_time_list, indexes=0)))}}
+{{Set(name="current_minutes", value=Stringify(GetItemsArrayByIndexesJSON(array=current_time_list, indexes=1)))}}
+
+{{Set(name="current_date_time", value=Concat(current_date, " ", current_hour, ":", current_minutes))}}
+
+
+{{!-- JSON unpack --}}
+{{Set(name="actualResult", value=actualResult.replace("\n", "<br>"))}}
+{{Set(name="actualResult", value=actualResult.replace('\"', '"'))}}
+
+
+{{#system~}}
+Do not reply to this mailbox as it is not monitored.<br><br>
+
+Dear technical owner,<br><br>
+
+Issue happened during one of the conversations with your AI agent.<br><br>
+
+Disaster reason: {{reportDisaster}}<br><br>
+
+<strong>Outline:</strong> {{issueDescription}}<br><br>
+<strong>Steps:</strong><br>
+{{actualResult}}<br><br>
+
+{{record}}
+
+<strong>Conversation session ended:</strong> {{current_date_time}}<br>
+<strong>Working hours:</strong> {{workingHourStatus}}<br><br>
+Yours truly,<br>
+{{GetCustomerAttribute(field="project_representative_agent_name")}}<br>
+{{GetCustomerAttribute(field="project_representative_agent_title")}}<br>
+{{GetCustomerAttribute(field="project_business_name")}}<br><br>
+{{~/system}}
+
+{{Return(val=GetCurrentPrompt())}}

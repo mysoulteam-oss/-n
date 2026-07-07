@@ -1,0 +1,40 @@
+{% set sales_generated_scenarios = GetState(name="sales_generated_scenarios") %}
+
+{% if not sales_generated_scenarios.strip() %}
+    {{scenario_sales_generate()}}
+    {% set sales_generated_scenarios = json.loads(GetState(name="sales_generated_scenarios")) %}
+{% else %}
+    {% set sales_generated_scenarios = json.loads(sales_generated_scenarios) %}
+{% endif %}
+
+{% set title = '## **Scenario 2:** "Partner Registration"' %}
+
+{% set body %}
+{{sales_generated_scenarios.partner_registration_scenario_body}}
+{% endset %}
+
+{% set description %}
+Guide a potential partner through an engaging. The agent qualifies the partner, shares program benefits, collects key contact info, and either sets up a strategy call or facilitates sign-up—depending on the partner’s client base.
+{% endset %}
+
+
+{% set item = {
+    "idn": "scenario_sales_partner_registration",
+    "title": title.strip(),
+    "body": body.strip(),
+    "mentions": [
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_phone_number"
+        },
+        {
+            "type": "procedures",
+            "item_idn": "procedure_common_gather_email"
+        }
+    ],
+    "description": description.strip(),
+    "is_from_library": True,
+    "origin_idn": ""
+} %}
+
+{{Return(val=json.dumps(item, ensure_ascii=False, indent=2))}}

@@ -1,0 +1,82 @@
+{% set last_session_ended_datetime_utc = GetPersonaAttribute(id=user_id, field="last_session_ended_datetime_utc") %}
+{% set last_call_ended_datetime_utc = GetPersonaAttribute(id=user_id, field="last_call_ended_datetime_utc") %}
+
+{# In reset-persona mode, observe memory only after the most recent call/session cutoff. #}
+{% if GetCustomerAttribute(field="project_attributes_setting_session_ended_reset_persona_attributes") == "True" %}
+    {% set last_session_ended_datetime_utc = last_call_ended_datetime_utc.strip() or last_session_ended_datetime_utc %}
+    {% set last_call_ended_datetime_utc = "" %}
+{% endif %}
+
+{% if last_call_ended_datetime_utc.strip() %}
+    {% set current_session_summary = "" %}
+
+    {% if include_summary == "False" %}
+        {% set memory_before_call_ended = memory_utils.get_memory(
+            user_id=user_id,
+            count=count,
+            from_date=last_session_ended_datetime_utc,
+            to_date=last_call_ended_datetime_utc
+        ) %}
+    {% else %}
+        {% set current_session_summary = GetPersonaAttribute(id=user_id, field="current_session_summary") %}
+
+        {% if not current_session_summary.strip() %}
+            {% set memory_before_call_ended = memory_utils.get_memory(
+                user_id=user_id,
+                count=count,
+                from_date=last_session_ended_datetime_utc,
+                to_date=last_call_ended_datetime_utc
+            ) %}
+        {% else %}
+            {% set memory_before_call_ended = "" %}
+        {% endif %}
+    {% endif %}
+
+    {% set memory_after_call_ended = memory_utils.get_memory(
+        user_id=user_id,
+        count=count,
+        from_date=last_call_ended_datetime_utc,
+        to_date=to_date
+    ) %}
+
+    {% set last_conversation_ended_reason = GetPersonaAttribute(id=user_id, field="last_conversation_ended_reason") %}
+    {% if last_conversation_ended_reason == "assistant-forwarded-call" %}
+        {% set call_ended_instruction = "
+
+---
+#MARKER: <CallTransferCase>
+You transferred the call, but it seems that no one picked up.
+
+Say exactly: \"Welcome back, [user name if known]! It looks like all our specialists are currently busy. I'd be happy to take your information and forward it to my colleagues via email. If you still prefer to be transferred, just let me know and I'll try to transfer you again.\".
+#MARKER: <CallTransferSuggestedCase> Only transfer the call if the user clearly insists on speaking with a manager.
+---
+
+A new conversation started from this point:
+" %}
+    {% else %}
+        {% set call_ended_instruction = "
+
+---
+#MARKER: <CallEndedCase>
+The call has ended, but the user is calling again.
+" + current_session_summary + "
+Listen carefully to the user's intent.
+---
+" %}
+    {% endif %}
+
+    {% if only_before_call_ended == "True" %}
+        {% set memory = memory_before_call_ended + call_ended_instruction + "\n" %}
+    {% else %}
+        {% set memory = memory_before_call_ended + call_ended_instruction + "\n\nA new conversation started from this point:\n\n" + memory_after_call_ended %}
+    {% endif %}
+{% else %}
+    {% set memory = memory_utils.get_memory(
+        user_id=user_id,
+        count=count,
+        from_date=last_session_ended_datetime_utc,
+        to_date=to_date
+    ) %}
+{% endif %}
+
+{{Return(val=memory)}}

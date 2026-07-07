@@ -1,0 +1,127 @@
+{{#if GetCustomerAttribute(field="project_attributes_setting_calendar_event_integration") != "google_integration" }}
+    {{Return()}}
+{{/if}}
+
+{{Set(name="event_duration", value=GetCustomerAttribute(field="project_attributes_setting_meeting_duration"))}}
+{{Set(name="time_zone", value=_utilsGetTimeZoneSkill(userId=userId))}}
+{{Set(name="current_date", value=GetDatetime(format="date", timezone=time_zone))}}
+{{Set(name="current_time", value=GetDatetime(format="time", timezone=time_zone, weekday=False))}}
+{{Set(name="current_date_week_day", value=GetDatetime(format="date", timezone=time_zone, weekday=True))}}
+{{Set(name="current_week_day", value=Stringify(current_date_week_day.replace(Concat(current_date, ", "), " ")))}}
+
+{{Set(name="schema", value=_schemasSkill(createMeetingSchema="True"))}}
+{{#system~}}
+Your goal is to build JSON object with meeting details. All fields must be filled strictly based on the information provided in the sections below. Values explicitly stated in <Conversation> take priority over <UserInformation>. Do not input any random values into any field. If you can't fill any field listed in the `required` array of the JSON schema, leave that field empty and set `required_fields_missing` to `true`. If all required fields are filled, set `required_fields_missing` to `false`.
+
+<UserInformation alt="user information" role="context">
+{{GetPersonaAttribute(id=userId, field="_private_dynamic_user_information")}}
+{{GetPersonaAttribute(id=userId, field="custom_user_data")}}
+</UserInformation>
+
+<ConversationMeta>
+conversation.timezone: {{time_zone}}
+conversation.day_of_week: {{current_week_day}}
+conversation.time: {{current_time}}
+conversation.date: {{current_date}}
+</ConversationMeta>
+
+<Calendar>
+{{GetCustomerAttribute(field="project_attributes_private_dynamic_prompt_calendar")}}
+</Calendar>
+
+<Conversation>
+{{memory}}
+ConvoAgent: {{agentAnswer}}
+</Conversation>
+
+{{~/system}}
+{{Set(name="meeting_details", value=Gen(jsonSchema=schema, validateSchema=True, temperature=0.2, topP=0, thinkingBudget=1020))}}
+
+{{#if GetValueJSON(obj=meeting_details, key="required_fields_missing") == "true"}}
+    {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction=Concat("Tell the user - you noticed that some details are missing. Ask the user to provide these details: ", Stringify(GetValueJSON(obj=meeting_details, key="details_to_reconfirm")), uninterruptible="True"))}}
+    {{Return()}}
+{{/if}}
+
+{{Set(name="datetime", value=Stringify(GetValueJSON(obj=meeting_details, key="datetime")))}}
+{{Set(name="user_email", value=Stringify(GetValueJSON(obj=meeting_details, key="user_email")))}}
+{{Set(name="manager_email", value=GetCustomerAttribute(field="project_business_manager_email"))}}
+
+{{Set(name="random_postfix_1", value=_utilsGetRandomPostfixSkill())}}
+{{Set(name="random_postfix_2", value=_utilsGetRandomPostfixSkill())}}
+
+{{Set(name="start_time", value=Stringify(GetValueJSON(obj=meeting_details, key="datetime")))}}
+{{Set(name="title", value=Concat("Meeting with ", GetCustomerAttribute(field="project_business_name")))}}
+{{Set(name="description", value=Stringify(GetValueJSON(obj=meeting_details, key="conversation_summary")))}}
+{{Set(name="attendees", value=Concat('["', user_email, '", "', manager_email, '"]'))}}
+
+{{Set(name="requested_day_of_week", value=Stringify(GetValueJSON(obj=meeting_details, key="requestedDayOfWeek")))}}
+{{Set(name="requested_date", value=Stringify(GetValueJSON(obj=meeting_details, key="requestedDate")))}}
+{{Set(name="requested_time_formatted", value=Stringify(GetValueJSON(obj=meeting_details, key="requestedTimeFormatted")))}}
+
+{{Set(name="check_working_hour_status", value=GetCustomerAttribute(field="project_attributes_setting_meeting_check_availability_working_hours_status"))}}
+
+{{#if check_working_hour_status == "True"}}
+    {{Set(name="working_hour_status", value=_utilsGetWorkingStatusSkill(dayOfWeek=requested_day_of_week, requestedDate=requested_date, time=requested_time_formatted))}}
+
+    {{#if working_hour_status == "non_working_day"}}
+        {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction="Apologize the user for the inconvenience and tell that you noticed that they chose non working day. Shortly name working days and ask to choose different day.", uninterruptible="True")}}
+        {{Return()}}
+    {{/if}}
+
+    {{#if working_hour_status == "non_working_hours"}}
+        {{SendSystemEvent(eventIdn="urgent_message", connectorIdn="system", baseInstruction="Apologize the user for the inconvenience and tell that you noticed that they chose non working hour. Shortly name working hours for the requested day and ask to choose different time.", uninterruptible="True")}}
+        {{Return()}}
+    {{/if}}
+
+{{/if}}
+
+{{Set(name="test_mode", value=session_in_test_mode(userId=userId))}}
+
+{{#if test_mode != "True"}}
+  {{SendCommand(
+      commandIdn="create_event",
+      integrationIdn="google_calendar",
+      connectorIdn="calendar",
+      eventId=Concat(user_email, "_", userId, "_", random_postfix_1, "_", random_postfix_2),
+      userPersonaId=userId,
+      startTime=start_time,
+      eventDurationMinutes=event_duration,
+      title=title,
+      description=description,
+      attendees=attendees
+  )}}
+{{/if}}
+
+{{Set(name="meeting_log", value="The agent has just sent a calendar invite creation request and has not received a response from calendar system yet. The calendar invite creation is not confirmed yet!")}}
+{{Set(name="meeting_log_advanced", value=Concat(meeting_log, "
+Request payload:
+```
+Event datetime: ", start_time, "
+Event duration minutes: ", event_duration, "
+Event title: ", title, "
+Event description: ", description, "
+Event attendees: ", attendees, "
+```"))}}
+{{_utilsSendSystemLogSkill(message=meeting_log_advanced)}}
+{{SetPersonaAttribute(id=userId, field="action_state_meeting_creating", value=meeting_log_advanced)}}
+
+{{#if test_mode == "True"}}
+  {{Sleep(duration="10", interruptible="False")}}
+
+  {{Set(name="response_calendar_link", value=GetTriggeredAct(fields=["calendarLink"]))}}
+  {{Set(name="response_start_time", value=GetTriggeredAct(fields=["startTime"]))}}
+  {{Set(name="response_attendees", value=GetTriggeredAct(fields=["attendees"]))}}
+  {{Set(name="response_meet_link", value=GetTriggeredAct(fields=["meetLink"]))}}
+  {{Set(name="response_organizer", value=GetTriggeredAct(fields=["organizer"]))}}
+  {{Set(name="response_title", value=GetTriggeredAct(fields=["title"]))}}
+    {{SendSystemEvent(
+        eventIdn="create_event_success_mock",
+        connectorIdn="system",
+        calendarLink="https://meet.google.com/",
+        startTime=start_time,
+        eventDurationMinutes=event_duration,
+        attendees=attendees,
+        organizer=manager_email,
+        title="Test Meeting"
+    )}}
+{{/if}}

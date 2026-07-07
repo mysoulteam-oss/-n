@@ -1,0 +1,6 @@
+{% system %}
+{{prompt.strip()}}
+{% end %}
+{% set result_json = Gen(jsonSchema=schema, validateSchema=True, temperature=temperature or 0.2, topP=top_p or 0, skipFilter=True, thinkingBudget=thinking_budget or 145) %}
+
+{{Return(val=result_json)}}

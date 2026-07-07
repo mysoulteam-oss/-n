@@ -1,12 +1,12 @@
 # Secrets — never commit
 .env
 .newo/
-newo_customers/default/attributes.yaml
-newo_customers/default/projects/*/attributes.yaml
+newo_customers/*/attributes.yaml
+newo_customers/*/projects/*/attributes.yaml
 
 # Client conversations (personal data)
-newo_customers/default/conversations.yaml
-newo_customers/default/conversations/
+newo_customers/*/conversations.yaml
+newo_customers/*/conversations/
 
 # Dependencies
 node_modules/

@@ -1,0 +1,107 @@
+{% set schema = {
+  "type": "object",
+  "properties": {
+    "intent_misclassified": {
+      "type": "boolean",
+      "description": "Set to `true` if the agent misclassified the user's intent at least once during the conversation."
+    },
+    "intent_misclassified_examples": {
+      "type": "array",
+      "description": "Examples of conversation turns where the agent misclassified the user's intent. Max 5. Return an empty array if no such examples are present.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "mixed_steps_present": {
+      "type": "boolean",
+      "description": "Set to `true` if the agent, one or more times during the conversation, combined two steps together."
+    },
+    "mixed_steps_present_examples": {
+      "type": "array",
+      "description": "Examples of conversation turns where the agent combined two steps together. Max 5. Return an empty array if no such examples are present.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "agent_did_not_follow_workflow": {
+      "type": "boolean",
+      "description": "Set to `true` if the agent did not follow the prescribed steps of scenario."
+    },
+    "agent_did_not_follow_workflow_examples": {
+      "type": "array",
+      "description": "Examples of conversation turns where the agent did not follow the prescribed steps of the scenario. Max 5. Return an empty array if no such examples are present.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "agent_cannot_switch_scenario": {
+      "type": "boolean",
+      "description": "Set to `true` if the agent fails or refuses to switch to another scenario when requested or clearly required."
+    },
+    "agent_cannot_switch_scenario_examples": {
+      "type": "array",
+      "description": "Examples of conversation turns where the agent failed or refused to switch to another scenario when requested or clearly required. Max 5. Return an empty array if no such examples are present.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "agent_skipped_critical_step": {
+      "type": "boolean",
+      "description": "Set `true` only if the agent moved PAST a **CRITICAL STEP!!!** without its exact required code-phrase/action — the agent advanced to a later step or its result appeared, yet the phrase is absent from every agent turn. A normal-looking outcome doesn't prove the phrase was said. Do NOT flag a step the conversation never reached (user ended early, refused, or cancelled). Ordinary skipped steps go to `agent_did_not_follow_workflow`."
+    },
+    "agent_skipped_critical_step_examples": {
+      "type": "array",
+      "description": "Each item names the critical step and quotes the turn where its phrase/action should have been but is absent. Max 5. Return an empty array if no critical steps were skipped.",
+      "items": { "type": "string" }
+    },
+    "agent_skipped_required_field": {
+      "type": "boolean",
+      "description": "Set `true` if the agent acted on or moved past a field the scenario requires (date, time, guests, name, phone, email) without the USER ever stating it. Don't assume it was collected because the chat looks complete. Don't flag fields the scenario didn't need, or a step the conversation never reached."
+    },
+    "agent_skipped_required_field_examples": {
+      "type": "array",
+      "description": "Each item names the missing field and quotes where the agent proceeded without it. Max 5. Return an empty array if no required fields were skipped.",
+      "items": { "type": "string" }
+    },
+    "mixed_steps_across_scenarios": {
+      "type": "boolean",
+      "description": "Set `true` if one agent turn does a current-scenario step AND an action outside it (starting another process — a code-phrase or collecting info for a different request — not just answering or acknowledging). You only see the current scenario; no need to name the other one. Different from `mixed_steps_present`, which is two steps of the SAME scenario."
+    },
+    "mixed_steps_across_scenarios_examples": {
+      "type": "array",
+      "description": "Each item quotes the turn and points out the in-scenario part and the part that doesn't belong. Max 5. Return an empty array if no mixed steps across scenarios were detected.",
+      "items": { "type": "string" }
+    },
+    "conversation_termination_type": {
+      "type": "string",
+      "enum": [
+        "finish_scenario_called",
+        "user_ended_before_completion",
+        "finish_scenario_not_applicable"
+      ],
+      "description": "How the conversation ended in relation to the finish-conversation scenario."
+    }
+  }
+} %}
+
+{% set prompt %}
+
+In this conversation session, {{session_short_description}}, ConvoAgent was expected to follow the {{main_scenario}} scenario. You will be provided with the scenario definition (enclosed in <Scenarios>...</Scenarios>), intent types (enclosed in <IntentTypes>...</IntentTypes>) and the conversation transcript (enclosed in <Conversation>...</Conversation>). Please analyze whether the agent followed the scenario correctly and whether it was guided by the appropriate intent types. Compare the expected outcome with the actual result, and evaluate the relevant metrics based on how accurately the agent adhered to the expected intent types, scenario structure, and workflow.
+
+<IntentTypes>
+{{intents}}
+</IntentTypes>
+
+<Scenarios>
+{{scenarios}}
+</Scenarios>
+
+<Conversation>
+{{transcript}}
+</Conversation>
+
+{% endset %}
+
+{% set result_json = structured_generation(schema=schema, prompt=prompt.strip()) %}
+
+{{Return(val=result_json)}}

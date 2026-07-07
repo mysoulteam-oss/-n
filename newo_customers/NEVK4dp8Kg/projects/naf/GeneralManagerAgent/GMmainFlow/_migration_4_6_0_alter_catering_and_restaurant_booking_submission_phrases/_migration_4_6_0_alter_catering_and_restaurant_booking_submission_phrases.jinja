@@ -1,0 +1,17 @@
+{% set old_catering_phrase = 'You will receive SMS confirmation shortly. We are eagerly awaiting your catering event on [catering order date and time].' %}
+{% set new_catering_phrase = 'Your catering request is being processed. You should receive an SMS notification shortly.' %}
+
+{% set old_restaurant_phrase = 'You will receive SMS confirmation shortly. We are eagerly awaiting your visit on [reservation date and time].' %}
+{% set new_restaurant_phrase = 'Your booking request is being processed. You should receive an SMS notification shortly.' %}
+
+{% set current_phrase = GetCustomerAttribute(field="project_attributes_setting_booking_phrase_template_on_booking_submitting") %}
+
+{% if (not current_phrase) or (not current_phrase.strip()) %}
+    {{Return()}}
+{% endif %}
+
+{% set updated_phrase = current_phrase.replace(old_catering_phrase, new_catering_phrase).replace(old_restaurant_phrase, new_restaurant_phrase) %}
+
+{% if updated_phrase != current_phrase %}
+    {{SetCustomerAttribute(field="project_attributes_setting_booking_phrase_template_on_booking_submitting", value=updated_phrase)}}
+{% endif %}

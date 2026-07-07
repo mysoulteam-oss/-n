@@ -1,0 +1,70 @@
+{% set arguments = GetTriggeredAct().arguments %}
+{% set toDate = arguments.get("toDate", "") %}
+{% set user = GetUser() %}
+{% set user_id = user.id | string %}
+
+{% set memory = get_prompt_memory(
+    user_id=user_id,
+    to_date=toDate or GetDateTime(format="datetime", timezone="UTC"),
+    include_summary="False"
+) %}
+
+{% set main_instruction = GetTriggeredAct().arguments.mainInstruction %}
+
+{# TODO: Move setting `memory_without_latest_agent_answer` to `analyze_conversation` event senders #}
+{% set latest_agent_answer = GetTriggeredAct().arguments.convoAgentAnswer %}
+
+{% set channel = GetTriggeredAct().arguments.conversationChannel %}
+{% set latest_agent_answer_with_prefix = "ConvoAgent: " + latest_agent_answer %}
+
+{% if channel == "chat" %}
+    {% if GetCustomerAttribute(field="project_attributes_setting_chat_split_messages") == "True" %}
+        {% set messages = re.findall('(?s).*?(?<!Mr)(?<!Mrs)(?<!Ms)(?<!Dr)(?<!Sr)(?<!Jr)[.!?](?:\s|$)', latest_agent_answer) %}
+        {% if latest_agent_answer.endswith("?") and messages | length > 1 %}
+            {% set first_message = " ".join(messages[:-1]) %}
+            {% set last_message = messages[-1]|trim %}
+            {% set latest_agent_answer_with_prefix %}ConvoAgent: {{first_message}}
+ConvoAgent: {{last_message}}{% endset %}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+{% if memory.endswith(latest_agent_answer_with_prefix) %}
+    {% set memory_without_latest_agent_answer = memory.rsplit(sep=latest_agent_answer_with_prefix, maxsplit=1)[0].rstrip("\n") %}
+{% else %}
+    {% set memory_without_latest_agent_answer = memory %}
+{% endif %}
+
+{% set broadcast_process_id = uuid.uuid4() | string %}
+
+{% set broadcast_statuses = GetPersonaAttribute(id=user_id, field="broadcast_processes_status") %}
+{% if broadcast_statuses or broadcast_statuses == "{}" %}
+    {% set broadcast_statuses_loaded = json.loads(broadcast_statuses) %}
+{% else %}
+    {% set broadcast_statuses_loaded = {} %}
+{% endif %}
+
+{% set _ = broadcast_statuses_loaded.update({broadcast_process_id: "in_progress"}) %}
+
+{{ SetPersonaAttribute(id=user_id, field="broadcast_processes_status", value=json.dumps(broadcast_statuses_loaded, indent=2, ensure_ascii=False)) }}
+
+{% set latest_user_message = "" %}
+
+{% set user_name = user.name.strip() or "User" %}
+{% set memory_for_split = "\n" ~ memory_without_latest_agent_answer %}
+{% set user_prefix = "\n" ~ user_name ~ ": " %}
+{% if user_prefix in memory_for_split %}
+    {% set latest_user_message = memory_for_split.rsplit(sep=user_prefix, maxsplit=1)[1].split(sep="\nConvoAgent: ", maxsplit=1)[0].strip() %}
+{% endif %}
+
+{{SendSystemEvent(
+    eventIdn="broadcast_analyze_conversation",
+    connectorIdn="system",
+    conversationChannel=channel,
+    mainInstruction=main_instruction if main_instruction else "",
+    convoAgentAnswer=latest_agent_answer,
+    memory=memory,
+    memoryWithoutLatestAgentAnswer=memory_without_latest_agent_answer,
+    broadcast_process_id=broadcast_process_id,
+    latestUserMessage=latest_user_message
+)}}

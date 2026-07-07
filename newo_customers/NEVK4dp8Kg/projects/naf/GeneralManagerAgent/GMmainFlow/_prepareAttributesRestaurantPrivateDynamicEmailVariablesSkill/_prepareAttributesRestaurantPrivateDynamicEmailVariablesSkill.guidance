@@ -1,0 +1,8 @@
+{{#system~}}
+catering_email: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_restaurant_catering_email")}}
+large_group_reservation_email: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_restaurant_large_group_reservation_email")}}
+order_email: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_restaurant_order_email")}}
+private_dining_email: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_attributes_restaurant_private_dining_email")}}
+manager_email: {{_utilsCustomerAttributeGetWithDefaultsSkill(field="project_business_manager_email")}}
+{{~/system}}
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_email_variables", value=GetCurrentPrompt())}}

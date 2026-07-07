@@ -1,0 +1,18 @@
+id: 019f3b06-3aea-7bec-815e-12eae75b9bf3
+idn: _utilsGetWorkingStatusSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aea-7bec-815e-12eae75b9bf0
+    name: requestedDate
+    default_value: " "
+  - id: 019f3b06-3aea-7bec-815e-12eae75b9bf1
+    name: dayOfWeek
+    default_value: " "
+  - id: 019f3b06-3aea-7bec-815e-12eae75b9bf2
+    name: time
+    default_value: " "
+path: ""

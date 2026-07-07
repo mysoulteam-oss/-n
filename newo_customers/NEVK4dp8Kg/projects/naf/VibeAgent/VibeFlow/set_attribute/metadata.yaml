@@ -1,0 +1,21 @@
+id: 019f3b06-3f14-719e-a0ee-6e408677fd08
+idn: set_attribute
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3f14-719e-a0ee-6e408677fd04
+    name: already_taken_actions
+    default_value: ""
+  - id: 019f3b06-3f14-719e-a0ee-6e408677fd05
+    name: memory
+    default_value: ""
+  - id: 019f3b06-3f14-719e-a0ee-6e408677fd06
+    name: parameters
+    default_value: ""
+  - id: 019f3b06-3f14-719e-a0ee-6e408677fd07
+    name: transaction_id
+    default_value: ""
+path: ""

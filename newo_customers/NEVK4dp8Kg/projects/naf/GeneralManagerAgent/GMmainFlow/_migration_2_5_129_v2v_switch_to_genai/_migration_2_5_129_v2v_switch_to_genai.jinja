@@ -1,0 +1,20 @@
+{% set newo_voice_connector_object = GetConnectorInfo(integrationIdn="newo_voice", connectorIdn="newo_voice_connector") %}
+{% if newo_voice_connector_object %}
+    {% set newo_voice_connector_settings = newo_voice_connector_object.settings %}
+    {% if newo_voice_connector_settings %}
+        {% if newo_voice_connector_settings.genai_v2v_model %}
+            {{SetConnectorInfo(
+                integrationIdn="newo_voice",
+                connectorIdn="newo_voice_connector",
+                field="genai_v2v_model",
+                value="gemini-live-2.5-flash-preview-native-audio-09-17"
+            )}}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+{# ! Migration to `GenAI` only for `restaurant` industry #}
+{% set industry = GetCustomerAttribute(field="project_business_industry") %}
+{% if industry == "restaurant_industry" %}
+    {{SetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_to_voice_provider", value="genai")}}
+{% endif %}

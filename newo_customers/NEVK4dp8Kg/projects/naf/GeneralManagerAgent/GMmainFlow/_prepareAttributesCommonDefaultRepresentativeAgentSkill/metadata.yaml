@@ -1,0 +1,9 @@
+id: 019f3b06-3ca3-70bb-9518-bcc63f6195c6
+idn: _prepareAttributesCommonDefaultRepresentativeAgentSkill
+title: _prepareAttributesCommonDefaultRepresentativeAgentSkill
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

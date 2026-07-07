@@ -1,0 +1,46 @@
+{% if GetPersonaAttribute(id=userId, field="temporal") == "True" %}
+    {{ Return() }}
+{% endif %}
+
+{% set spam_limit = GetCustomerAttribute(field="project_attributes_setting_spam_limit") %}
+{% set session_type = semaphore.sessionType %}
+{% if "spam" in session_type|lower and spam_limit != "-1" %}
+    {% set spam_counter = GetPersonaAttribute(id=userId, field="spam_counter") | int %}
+    {% set spam_counter = spam_counter + 1 %}
+    {{ SetPersonaAttribute(id=userId, field="spam_counter", value=spam_counter|string) }}
+
+    {% if spam_counter|int >= spam_limit|int %}
+
+        {% set blocked_raw = GetCustomerAttribute(field="project_attributes_setting_blocked_phone_numbers") %}
+        {% if not blocked_raw.strip() %}
+            {% set blocked_raw = "[]" %}
+        {% endif %}
+        {% set blocked_numbers = json.loads(blocked_raw) %}
+
+        {% set user_phone_number = GetPersonaAttribute(id=userId, field="provided_phone_number_with_country_code") %}
+        {% set normalized_user_phone_number = common_utils.normalize_phone(value=user_phone_number, characters_to_keep="#*") %}
+
+        {% set normalized_blocked_numbers = common_utils.normalize_phone(
+            value=blocked_raw,
+            input_type="json_array",
+            characters_to_keep="#*"
+        ) %}
+        {% set normalized_blocked_numbers = json.loads(normalized_blocked_numbers) %}
+
+        {% if normalized_user_phone_number and normalized_user_phone_number not in normalized_blocked_numbers %}
+            {% set new_blocked = blocked_numbers + [user_phone_number] %}
+            {{_utilsSendSystemLogSkill(message="Spam sessions limit reached, blocking the user's phone number.")}}
+            {{SendSystemEvent(
+                eventIdn="sms_worker_send_sms",
+                connectorIdn="system",
+                sms_text="You have been blocked from contacting us due to repeated spam calls. If you believe this is a mistake, please contact us via email.",
+                phone_number=user_phone_number
+            )}}
+            {{ SetCustomerAttribute(field="project_attributes_setting_blocked_phone_numbers", value=json.dumps(new_blocked, ensure_ascii=False, indent=2)) }}
+        {% endif %}
+        {{ SetPersonaAttribute(id=userId, field="spam_counter", value="0") }}
+    {% endif %}
+
+{% else %}
+    {{SetPersonaAttribute(id=userId, field="spam_counter", value="0")}}
+{% endif %}

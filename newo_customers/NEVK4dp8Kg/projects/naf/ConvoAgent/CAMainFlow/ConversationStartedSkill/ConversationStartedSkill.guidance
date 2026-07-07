@@ -1,0 +1,55 @@
+{{StartNotInterruptibleBlock()}}
+
+{{Set(name="user_id", value=GetUser(field="id"))}}
+
+{{initialize_current_conversation_language(user_id=user_id)}}
+
+{{Set(name="current_actor_integration_idn", value=GetActor(field="integrationIdn"))}}
+{{SetPersonaAttribute(id=user_id, field="session_current_integration_idn", value=" ")}}
+{{SetPersonaAttribute(id=user_id, field="session_current_connector_idn", value=" ")}}
+
+{{!-- TODO: Refactor, split and speed up `Conversation Started` Skill --}}
+{{#if current_actor_integration_idn == "vapi"}}
+    {{SetCustomerAttribute(field="project_attributes_setting_voice_integration_service", value="VAPI Integration")}}
+{{/if}}
+
+{{SetState(name="user_reply_buffer", value=" ")}}
+{{SetState(name="fast_prompt", value=" ")}}
+{{SetState(name="fast_prompt_override_version", value=" ")}}
+{{SetState(name="cached_base_prompt_override_version", value=" ")}}
+{{SetState(name="corrected_memory", value=" ")}}
+
+{{#if _utilsFeatureFlagIsActiveSkill(featureFlagName="multi_location")}}
+    {{SetPersonaAttribute(id=user_id, field="multi_location_current_location", value="default")}}
+{{/if}}
+
+{{SetPersonaAttribute(id=user_id, field="working_hours_status", value=" ")}}
+{{SetPersonaAttribute(id=user_id, field="working_hours_phrase", value=" ")}}
+{{SendSystemEvent(eventIdn="build_operating_phrase", connectorIdn="system")}}
+
+{{SendSystemEvent(eventIdn="prepare_rag_context_command", connectorIdn="system")}}
+{{SendSystemEvent(eventIdn="prepare_injecting_data", connectorIdn="system", global=True)}}
+
+{{! TODO: Define whether `detected_phone_number` must be reset on `conversation_ended` or not }}
+{{SetPersonaAttribute(id=user_id, field="detected_phone_number_country_code", value="null")}}
+{{SetPersonaAttribute(id=user_id, field="detected_phone_number_with_country_code", value="null")}}
+{{SetPersonaAttribute(id=user_id, field="detected_phone_number_without_country_code", value="null")}}
+
+{{Set(name="url", value=GetTriggeredAct(fields=["web_chat_url"]))}}
+
+{{#if IsEmpty(text=GetPersonaAttribute(id=user_id, field="url_params"))}}
+    {{#if not IsEmpty(text=url)}}
+        {{SetPersonaAttribute(id=user_id, field="url_params", value=_getUrlParamsSkill(url=url))}}
+    {{/if}}
+{{/if}}
+
+{{!-- To not start session on Chat opening (conversation started event is being sent) --}}
+{{#if current_actor_integration_idn != "newo_chat"}}
+    {{!-- Send `extend_session` event --}}
+    {{SendSystemEvent(
+        eventIdn="extend_session",
+        connectorIdn="system"
+    )}}
+{{/if}}
+
+{{StopNotInterruptibleBlock()}}

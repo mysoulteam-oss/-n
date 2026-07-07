@@ -1,0 +1,21 @@
+{% set url = recording.strip() %}
+
+{% if not url %}
+    {{ Return(val="") }}
+{% endif %}
+
+{% set customer_info = GetCustomerInfo() %}
+{% set platform_links = customer_info.platform_links %}
+{% set organization_type = customer_info.organization_type.strip() %}
+{% set idn = customer_info.idn.strip() %}
+
+{% if not platform_links or not organization_type or not idn %}
+    {{ Return(val="") }}
+{% endif %}
+
+{% set portal_url = "/".join([platform_links.portal.rstrip("/"), organization_type, idn]) %}
+{% set portal_recording_url = portal_url ~ "/recording/" %}
+{% set call_id = url.strip().split("/") | last %}
+{% set full_portal_url = portal_recording_url ~ call_id %}
+
+{{ Return(val=full_portal_url) }}

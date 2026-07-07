@@ -1,0 +1,12 @@
+id: 019f3b06-3ed9-7daa-a555-3c0189f20c92
+idn: _getPersonaIdSkill
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3ed9-7daa-a555-3c0189f20c91
+    name: phone_number
+    default_value: "null"
+path: ""

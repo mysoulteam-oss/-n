@@ -1,0 +1,119 @@
+{% set act = GetTriggeredAct() %}
+{% set user_id = GetUser().id | string %}
+{% set actor_id = GetActor().id | string %}
+{% set actor_id_normalized = (GetActor().id | string).replace('-', '') %}
+{% set persona_field = "transaction_" ~ actor_id_normalized %}
+{% set metadata_field = "transaction_metadata_" ~ actor_id_normalized %}
+{% set transaction_id = act.arguments.transaction_id.replace('-', '') %}
+{% set transaction = json.loads(get_transaction(transaction_id=transaction_id)) %}
+{% set transaction_metadata = json.loads(get_transaction_metadata(transaction_id=transaction_id)) %}
+{% if not transaction %}
+    {{Return()}}
+{% endif %}
+{% set effect_lines = [] %}
+{% for commit in transaction %}
+    {% set revert_action = commit.revert_action %}
+    {% set params = commit.revert_action_parameters or {} %}
+    {% set removed_item_title = "" %}
+    {% if revert_action == "execute_delete_canvas_item" %}
+        {% set existing_item_raw = get_canvas_item(type_idn=params.get("type_idn", ""), item_idn=params.get("item_idn", "")) %}
+        {% if existing_item_raw and existing_item_raw.strip() %}
+            {% set existing_item_obj = json.loads(existing_item_raw) %}
+            {% set removed_item_title = existing_item_obj.get("title", "") or "" %}
+        {% endif %}
+    {% endif %}
+    {{Do(actionName=commit.revert_action, **commit.revert_action_parameters)}}
+    {{Sleep(duration="2", interruptible="False")}}
+    {% if revert_action == "execute_delete_canvas_item" %}
+        {% if removed_item_title.strip() %}
+            {% set effect_line = "A `" ~ params.get("type_idn", "") ~ '` item "' ~ removed_item_title ~ '" was removed.' %}
+        {% else %}
+            {% set effect_line = "A `" ~ params.get("type_idn", "") ~ "` item was removed." %}
+        {% endif %}
+    {% elif revert_action == "execute_add_canvas_item" %}
+        {% set item_raw = params.get("item", "") or "" %}
+        {% set item_title = "" %}
+        {% if item_raw.strip() %}
+            {% set item_obj = json.loads(item_raw) %}
+            {% set item_title = item_obj.get("title", "") or "" %}
+        {% endif %}
+        {% if item_title.strip() %}
+            {% set effect_line = "A `" ~ params.get("type_idn", "") ~ '` item "' ~ item_title ~ '" was restored.' %}
+        {% else %}
+            {% set effect_line = "A `" ~ params.get("type_idn", "") ~ "` item was restored." %}
+        {% endif %}
+    {% elif revert_action == "execute_set_attribute" %}
+        {% set attribute_value = (params.get("val", "") or "") | string %}
+        {% set attribute_value = attribute_value.strip() or "[empty]" %}
+        {% set effect_line = "Attribute `" ~ params.get("idn", "") ~ "` is now `" ~ attribute_value ~ "`." %}
+    {% else %}
+        {% set effect_line = "" %}
+    {% endif %}
+    {% if effect_line and effect_line not in effect_lines %}
+        {{effect_lines.append(effect_line)}}
+    {% endif %}
+{% endfor %}
+
+{% set transactions = json.loads(get_transaction(transaction_id='')) %}
+{{transactions.pop(transaction_id)}}
+{% set all_transaction_metadata = json.loads(get_transaction_metadata(transaction_id='')) %}
+{{all_transaction_metadata.pop(transaction_id)}}
+{% set removed_checkpoint_ids = [] %}
+{% if transactions %}
+    {{SetPersonaAttribute(id=user_id, field=persona_field, value=json.dumps(transactions, ensure_ascii=False, indent=2))}}
+{% else %}
+    {{DeletePersonaAttribute(id=user_id, field=persona_field)}}
+{% endif %}
+{% if all_transaction_metadata %}
+    {{SetPersonaAttribute(id=user_id, field=metadata_field, value=json.dumps(all_transaction_metadata, ensure_ascii=False, indent=2))}}
+{% else %}
+    {{DeletePersonaAttribute(id=user_id, field=metadata_field)}}
+{% endif %}
+{{remove_applied_change(change_id=transaction_id)}}
+{% set checkpoint_id = transaction_metadata.get("checkpoint_id", "").replace('-', '') %}
+{% if checkpoint_id %}
+    {% set has_checkpoint_transactions = false %}
+    {% for metadata in all_transaction_metadata.values() %}
+        {% if metadata.get("checkpoint_id", "").replace('-', '') == checkpoint_id %}
+            {% set has_checkpoint_transactions = true %}
+        {% endif %}
+    {% endfor %}
+    {% if not has_checkpoint_transactions %}
+        {{DeletePersonaAttribute(id=user_id, field="checkpoint_" ~ checkpoint_id)}}
+        {{removed_checkpoint_ids.append(checkpoint_id)}}
+        {% set active_checkpoint_id = GetPersonaAttribute(id=user_id, field="checkpoint_id_" ~ actor_id_normalized).strip().replace('-', '') %}
+        {% if active_checkpoint_id == checkpoint_id %}
+            {{DeletePersonaAttribute(id=user_id, field="checkpoint_id_" ~ actor_id_normalized)}}
+            {{DeletePersonaAttribute(id=user_id, field="checkpoint_sequence_" ~ actor_id_normalized)}}
+        {% endif %}
+    {% endif %}
+{% endif %}
+{{send_transactions_update()}}
+{% if removed_checkpoint_ids %}
+{{SendCommand(
+   commandIdn="revert_to_checkpoint_success",
+   integrationIdn="newo_chat",
+   connectorIdn="vibe_agent",
+   user_actor_id=actor_id,
+   checkpoint_ids=json.dumps(removed_checkpoint_ids, indent=2, ensure_ascii=False)
+)}}
+{% endif %}
+
+{{SendSystemEvent(
+    eventIdn="project_publish_finish",
+    connectorIdn="project",
+    triggered_by="vibe_builder_revert",
+    registry_item_idn="naf",
+    global="True"
+)}}
+{% if effect_lines %}
+    {% set revert_text = '<user_action>\nThe user reverted an earlier change. As a result:\n' ~ (effect_lines | join("\n")) ~ '\n</user_action>' %}
+{% else %}
+    {% set revert_text = '<user_action>\nThe user reverted an earlier change. The AI Employee configuration has changed.\n</user_action>' %}
+{% endif %}
+{{CreateMessageAct(
+    text=revert_text,
+    from="user",
+    userPersonaId=user_id,
+    userActorId=actor_id
+)}}

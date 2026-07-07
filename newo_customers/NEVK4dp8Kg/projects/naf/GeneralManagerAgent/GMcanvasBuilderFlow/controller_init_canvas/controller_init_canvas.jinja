@@ -1,0 +1,9 @@
+{% set canvas = GetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas")|string|trim %}
+
+{{SendCommand(
+   commandIdn="update_canvas",
+   integrationIdn="newo_chat",
+   connectorIdn="workflow_builder",
+   user_actor_id=GetActor().id|string,
+   body=canvas
+)}}

@@ -1,0 +1,7 @@
+{% set act = GetTriggeredAct() %}
+{% if act.arguments.taskType != "make_call" %}
+    {{Return()}}
+{% endif %}
+
+{% set task = act.arguments.task %}
+{{try_start_call(task=task)}}

@@ -1,0 +1,8 @@
+{{Set(name="exists", value=rows.__contains__(newRow))}}
+{{Set(name="exists", value=Stringify(exists))}}
+
+{{#if exists == "True"}}
+    {{Return(val=rows)}}
+{{/if}}
+
+{{Return(val=_utilsAppendRowSkill(rows=rows, newRow=newRow))}}

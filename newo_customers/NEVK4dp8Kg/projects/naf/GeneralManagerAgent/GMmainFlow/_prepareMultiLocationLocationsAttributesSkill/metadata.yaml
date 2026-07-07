@@ -1,0 +1,12 @@
+id: 019f3b06-3ca4-715f-a65b-735f490de3a6
+idn: _prepareMultiLocationLocationsAttributesSkill
+title: _prepareMultiLocationLocationsAttributesSkill
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3ca4-715f-a65b-735f490de3a5
+    name: baseLocations
+    default_value: ""
+path: ""

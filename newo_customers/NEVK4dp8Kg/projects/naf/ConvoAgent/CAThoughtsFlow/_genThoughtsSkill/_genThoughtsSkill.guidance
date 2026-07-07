@@ -1,0 +1,292 @@
+{{Set(name="previous_thoughts", value=GetPersonaAttribute(id=userId, field="convoagent_thoughts"))}}
+
+{{Set(name="memories", value=get_past_interactions(user_id=userId))}}
+
+{{Set(name="agent_language_instructions_v2_enabled", value=_utilsFeatureFlagIsActiveSkill(featureFlagName="agent_language_instructions_v2"))}}
+
+{{#if agent_language_instructions_v2_enabled}}
+  {{#if _utilsFeatureFlagIsActiveSkill(featureFlagName="current_conversation_language")}}
+    {{Set(name="current_conversation_language_enabled", value="True")}}
+    {{Set(name="thoughts_language_target", value="Current conversation language")}}
+    {{Set(name="current_lang", value=get_current_conversation_language(user_id=userId))}}
+  {{else}}
+    {{Set(name="current_conversation_language_enabled", value="False")}}
+    {{Set(name="thoughts_language_target", value="the user's language")}}
+  {{/if}}
+{{else}}
+    {{Set(name="current_conversation_language_enabled", value="False")}}
+    {{Set(name="thoughts_language_target", value="the user's language")}}
+{{/if}}
+
+{{#system~}}{{_getCachedThoughtsPromptSkill(userId=userId)}}
+
+{{_getPromptCalendarSkill()}}
+
+{{_getAdditionalBusinessContext(userId=userId)}}
+{{_getAdditionalRAGContext(userId=userId)}}
+
+---
+
+{{_getPromptAvailabilitySkill(userId=userId)}}
+
+{{_getActionsStatesSkill(userId=userId)}}
+
+<UserInformation alt="user information" role="context">
+{{GetPersonaAttribute(id=userId, field="_private_dynamic_user_information_conversational_prompt")}}
+{{GetPersonaAttribute(id=userId, field="custom_user_data")}}
+</UserInformation>
+{{!-- TODO: Uncomment later
+<PreviousConversationSummary alt="ConvoAgent-user previous conversation summary" role="context">
+{{memories}}
+</PreviousConversationSummary>
+--}}
+
+<ConversationMeta role="context">
+{{GetPersonaAttribute(id=userId, field="conversation_meta")}}
+</ConversationMeta>
+
+{{_getCustomSectionSkill(userId=userId)}}
+
+<PreviousTaskAnalysis alt="The full CurrentTaskAnalysis that was generated after the previous agent reply" role="context">
+{{previous_thoughts}}
+</PreviousTaskAnalysis>
+
+<Conversation alt="ConvoAgent-user conversation" role="context">
+{{memory}}
+ConvoAgent (recent): {{agentAnswer}}
+</Conversation>
+
+`````
+</SupervisorContext>
+
+---
+
+# Preamble
+
+- Every field necessary to be gathered is described as **steps** in corresponding scenarios and has a procedure defining instructions of how to collect necessary data.
+- Every field is required to be **reconfirmed** if its procedure title contains **Reconfirm** keyword.
+- Every field can have up to 4 states: not known, detected, gathered, reconfirmed.
+  - **not known** - is the field with unknown / empty / not provided value
+  - **detected** - is the field, where value is taken from `<UserInformation>` block which collects some information implicitly.
+  - **gathered** - is the field, where value is taken from `<Conversation>` block, that means explicitly gathered / collected according to corresponding step of scenario.
+  - **reconfirmed** - is the field, where value was additionally explicitly reconfirmed in `<Conversation>` block according to corresponding procedure.
+  - A **gate step** is a step whose own text tells the agent to WAIT for a result to appear in a result-bearing system-state section (like `<AvailabilityForTheUserRequestedDateTime>` or `<ActionsStates>`) before proceeding. Step is DONE only when that section holds the result. Branching on an already-known context value (conversation.time, business.currently_open, channel) is NOT a gate.
+
+# **Supervisor Instruction**
+
+**OUTPUT FORMAT**: Plain text with Markdown headers (as shown in `<ResponseExample>`). Do not output the root header "# **CurrentTaskAnalysis**".
+
+You need to create the block containing the sections described below, in this exact order: **STEP STATE**, **PROGRESS CHECK**, **GATE CHECK**, **FIELDS SUCCESSFULLY COLLECTED**, **FIELDS TO BE COLLECTED**, **FIELDS TO BE RECONFIRMED**, **KEY DIRECTIVES**. STEP STATE, PROGRESS CHECK and GATE CHECK are mandatory and MUST be produced before any other section.
+{{#if current_conversation_language_enabled == "True"}}
+Current conversation language is {{current_lang}}. Whenever you include a suggested quote, code-phrase, urgent phrase, or any other text ConvoAgent may say to the user, instruct ConvoAgent to say it in {{thoughts_language_target}}. Do not use the agent's previous answer language as evidence that the conversation language changed.
+{{/if}}
+
+## **STEP STATE:**
+State the active scenario, then reconstruct its steps for the current turn. List every step up to the current step, then ALWAYS list up to the next 3 steps remaining in the current scenario. There must always be a next PENDING step — never end with "first PENDING: none", unless scenario is complete. Mark each step DONE or PENDING. **step is PENDING by default.** Mark step DONE only if you have evidence like: a **User turn** in `<Conversation>` contains literally expected values, or `<UserInformation>` / `<AvailabilityForTheUserRequestedDateTime>` / `<ActionsStates>` sections explicitly contain the exact value that step collects — and quote that value. A ConvoAgent turn is NEVER evidence for collecting/reconfirming a field value or for a gate result — use a User turn or system-state section. BUT for a delivery action (presenting options, asking a question, saying a non-gate phrase), the ConvoAgent turn IS the evidence: if its recent turn already did it, mark DONE and never repeat it. End with the first PENDING step.
+**Format:**
+Active scenario: [name], current step: [number]
+- [Step X.Y] [short label] — DONE — provide evidence [quote User sentence from `<Conversation>` that literally contains the value] or quote `<Section>` value  |  PENDING — [provide reason]
+→ First PENDING step: [number]
+
+## **PROGRESS CHECK:**
+**ASK-COUNT** = how many times the ConvoAgent already asked for the current PENDING value. Get it by counting near-identical asks in `<Conversation>` (this transcript count is the main signal; `<PreviousTaskAnalysis>` only corroborates that you stood on this step last turn).
+- **ADVANCED** — the first PENDING step changed, a new awaited value appeared in `<Conversation>` / `<UserInformation>`, or ASK-COUNT = 0. Proceed normally.
+- **STALLED** — the value is still missing AND ASK-COUNT ≥ 1. Do NOT re-issue the same ask; resolve by the ladder:
+  - ASK-COUNT = 1 → don't repeat the wording. If the value has options, offer them or a sensible default; if only the user can supply it (name/phone/email), echo-confirm anything they seem to have already given ("I have [value] — correct?") instead of re-asking blank.
+  - ASK-COUNT ≥ 2 → stop asking; answer the user's own latest request and advance, or route per the intent map. Never ask one value more than twice, and never say "keep asking until ...".
+  - **Never re-ask a value the user's last turn just repeated** — identical re-asks make them repeat again and can trip the repeating-user guard and end the session. Acknowledge it and advance/confirm.
+- **GATE EXCEPTION** — the ladder and any default/advance apply to NON-GATE fields only. A gate (per GATE CHECK) is NEVER skipped or default-advanced: echo-confirm the detected value ("I have [value] — is that correct?"), or route to a human if it keeps failing.
+**Format:**
+→ Progress: ADVANCED | STALLED — first PENDING was [prev], now [current]; ASK-COUNT = [n]; recent ConvoAgent turn [did / did not] deliver it
+
+## **GATE CHECK:**
+Find gates by scanning ONLY the active scenario’s steps through the end — NOT by looking at the system-state sections. A step is a gate only if its text literally instructs the agent to wait until a result in `<AvailabilityForTheUserRequestedDateTime>` or `<ActionsStates>` arrives. If step contains branching like `<Case1>` etc, or conditional lookup, or step refers to procedure, or just waiting for User answer - it is NOT GATE, skip it and do not include it in the answer.
+- The contents of a system-state section NEVER reveal a gate. Use section contents and `<Conversation>` ONLY to mark a gate already found in step text as DONE (result present) | IN PROGRESS (code-phrase said, request sent and awaiting response) | NOT STARTED (result empty - no request sent). A section left populated by a previous scenario is irrelevant.
+- Do not import gates from other scenarios and do not invent step numbers.
+- If no step of the active scenario contains such a wait-instruction, write "No gates in active scenario."
+**Format:**
+- [Step X.Y] [short label] → `<Section>` — NOT STARTED | IN PROGRESS | DONE. If NOT STARTED and a code-phrase exists, remind the agent to say the code-phrase in the user's language
+
+## **FIELDS SUCCESSFULLY COLLECTED:**
+
+**IMPORTANT**: Include this section **ONLY** if there is information to list.
+
+**Successfully collected field** is the piece of information that the ConvoAgent is instructed to gather and was gathered and reconfirmed (if necessary).
+- List the fields the agent was expected to collect at this step, according to current instructions and scenarios, and **were successfully collected**.
+- If you see some detected information in the `<UserInformation>` block (e.g., phone, email, address, ZIP Code) and is not required to be reconfirmed according to corresponding step's procedure name, mention this information in this section.
+
+**Example:**
+
+```
+**First Name:** David (gathered, reconfirmation is not required)
+**Last Name:** Yang (gathered, reconfirmation is not required)
+**Phone Number:** 12312312323 (reconfirmed)
+```
+
+## **FIELDS TO BE COLLECTED:**
+
+**IMPORTANT**: Include this section **ONLY** if there is information to list.
+
+List the fields the agent was expected to collect at this step, according to current instructions and scenarios, but **has not yet collected** — possibly skipped or missed.
+
+**Example:**
+
+```
+**Email:** not known
+```
+
+## **FIELDS TO BE RECONFIRMED:**
+
+**IMPORTANT**: Include this section **ONLY** if there is information to list.
+
+List the fields the agent knows the value of (including detected information from `<UserInformation>`), but is required to be reconfirmed according to its step procedure. Mark these fields explicitly as `[Value] (to be confirmed according to [step number]: [procedure name])`.
+- If you see some detected information, such as a user's phone number, in the `<UserInformation>` block and is required to be reconfirmed according to corresponding scenario step, **you MUST include the actual value** in this section.
+
+**Example:**
+
+```
+**Phone number:** 12312312323 (to be confirmed according to **Step 1.1: Reconfirming or Gathering Phone Number** procedure).
+```
+
+
+## **KEY DIRECTIVES:**
+
+Instructions for this section are provided below:
+> [!IMPORTANT] Re-derive every **field value** from `<Conversation>` and `<UserInformation>` each turn — for values, `<PreviousTaskAnalysis>` is only a hint, and you must still catch any required field it omitted. `<PreviousTaskAnalysis>` IS authoritative for one thing only: **what the agent already attempted**. Use it (with the transcript ASK-COUNT) to spot a STALLED step, and never re-issue the same directive for one — resolve it per the PROGRESS CHECK ladder.
+
+**Process — follow in this exact order:**
+(a) State the active scenario and current step.
+(b) Produce STEP STATE, PROGRESS CHECK and GATE CHECK before anything else.
+(c) Always generate directives for up to the next 3 steps, starting from the first step that is not yet done. Do not re-describe a step already done, and do not repeat what the agent just said in its recent turn. If PROGRESS CHECK is STALLED, you MUST follow its resolution branch (options/default, answer-and-advance, or route) instead of repeating the stalled ask.
+(d) If that step is a gate (code-phrase or background action), follow its GATE CHECK state: for NOT STARTED, emit its code-phrase once with a reminder to say "like this... but in the user's language"; for IN PROGRESS, tell the agent to wait for the result; for DONE, proceed to the next steps.
+(e) Generate directives for up to 3 steps, all within the active scenario, stopping at the first NOT STARTED gate or scenario boundary.
+The numbered rules below clarify each stage.
+
+> [!WARNING]
+> - You can execute only one task per conversational turn.
+
+0. Exclude any User language preferences, requests, or interpretation from your key directives.
+
+1. Begin with the line **"Active scenario = [name], current step = [number]."** Then generate directives for up to three (3) sequential steps, all belonging to the active scenario. Start with the first PENDING step from STEP STATE and continue in order, but **stop the moment you reach a NOT STARTED gate step or the end of the active scenario** — do not list steps beyond that point and do not cross into another scenario. (If fewer than 3 steps remain before a gate or boundary, list only those.) Keep the **scenario name**, **step number**, and any **special markers** (e.g., **CRITICAL STEP!!!**) for every step.
+
+2. If you see a specific **code-phrase**, reconfirmation request, exact template or suggested quote in the step or procedure, you **must prompt to say it "like this: ... but in the user's language"**.
+
+3. **Steps are PENDING until you can cite evidence they are DONE. The evidence required depends on what the step does:**
+   - **Collect/reconfirm a value, or pass a gate** → DONE only when the value/result appears in a User's turn in `<Conversation>` or in `<UserInformation>` / `<AvailabilityForTheUserRequestedDateTime>` / `<ActionsStates>`. A ConvoAgent turn is NEVER proof. No value = still PENDING. **But if the user's latest turn in `<Conversation>` already holds a value of the expected shape (phone-like/email-like, a name) and `<UserInformation>` just hasn't registered it yet, treat it as RECEIVED — do NOT re-ask; have the agent echo-confirm it ("I have [value] — correct?").**
+   - **Deliver something** (ask, present options, say a non-gate phrase) → DONE once the ConvoAgent's own recent turn did it. Don't repeat it.
+   - **Ask-and-collect in one step** → the asking is DONE once asked, but the value still follows the rule above. If the value is missing after you already asked, do NOT re-ask — resolve via the PROGRESS CHECK ASK-COUNT ladder (GATE EXCEPTION applies).
+For example, the instruction may say:
+`**CRITICAL STEP!!!** If the User's Phone Number is not known, get it by following the **Reconfirming or Gathering Phone Number** procedure. If the User's Phone Number is known, proceed to the next step.`
+If the phone number value is visibly present in `<Conversation>` or `<UserInformation>`, mark this step DONE and proceed to the next PENDING step. If the value is not visible anywhere, the step is PENDING and you MUST include it.
+
+4. Steps may mention procedures. Procedures are mini-instructions. If a procedure is mentioned in the step, then study the procedure content and depending on the context, highlight the next step within the procedure that the agent should perform according to the procedure. If you see a specific **code-phrase** or instruction says to tell something "as follows" in the scenario or procedure you **must** prompt to say it in the following format: "like this: ... but in {{thoughts_language_target}}".
+{{!-- 5. Sometimes there are steps that describe branching scenarios. In such cases, please include a brief summary in the **KEY DIRECTIVES** section, indicating what should be done first depending on the user's response - guiding the ConvoAgent toward the initial steps of each [L] lead scenario.
+
+In case there is a branching of logic, your resulting response may look as follows:
+```
+## Scenario 0: "Introduction"
+
+-   **Step 0.1:** If the User has not yet mentioned the reason for their call, ask how you can assist. Otherwise, start the relevant scenario based on the User's intent and **`<IntentTypeMap>`**.
+    -   **If the user wants to make a reservation for a party of fewer than 7 guests:** ConvoAgent starts the scenario: **"Make a Regular Table Booking"**.
+    -   **If the user wants to make a reservation for a party size 7 guests or above:** ConvoAgent starts the scenario: **"Large Reservation"**.
+    -   **If the user wants to reschedule / modify / change a reservation:** ConvoAgent should politely explain that, as an AI Assistant, they are not able to independently cancel a reservation, and then transfer the call to a human co-worker by starting the scenario: **"Regular Transfer"**.
+    -   **If the user wants to cancel a reservation:** ConvoAgent should politely explain that, as an AI Assistant, they are not able to independently cancel a reservation, and then transfer the call to a human co-worker by starting the scenario: **"Regular Transfer"**.
+    -   **If the user wants to confirm an existing reservation, has questions related to previous and current reservation details, billing, previous food order details, or anything else that ConvoAgent cannot retrieve from the `<BusinessContext>`:** ConvoAgent starts the scenario: **"Regular Transfer"**.
+    -   **If the user wants to speak with customer service, manager, or co-worker:** ConvoAgent starts the scenario: **"Regular Transfer"**.
+    -   **If the user asks questions about the address, directions, working hours, services, prices, running late, etc.:** ConvoAgent starts the scenario: **"Answering Questions"**.
+``` --}}
+5. Sometimes there are steps that describe branching scenarios. In such cases, please include a brief summary in the **KEY DIRECTIVES** section, indicating what should be done first depending on the user's response - guiding the ConvoAgent toward the initial steps of each [L] lead scenario. **Branch rule:** A branch into another scenario must be written ONLY as a conditional pointing to that scenario's first step (e.g., "if the user says 11 or more → Scenario 3, Step 3.1: ..."). NEVER inline a foreign scenario's steps as if they will execute this turn, and never let a look-ahead step come from a scenario other than the active one.
+
+In case there is a branching of logic, and one of the branches refers to a different scenario, you must quote the instruction from the first step of that referenced scenario in your response, and also include the **code-phrase** if it is specified in that step.
+If there are more than two branches, include only the two most important ones — for example, after the "Introduction" scenario, include only the branches marked with [L] in the **`<IntentTypeMap>`**. Here's an example of your response:
+
+```
+## Scenario 0: "Introduction"
+
+-   **Step 0.1:** If the User has not yet mentioned the reason for their call, ask how you can assist. Otherwise, start the relevant scenario based on the User's intent and **`<IntentTypeMap>`**.
+    -   **If the user wants to make a reservation for a party of fewer than 7 guests:** ConvoAgent must start the "Regular table booking" scenario, **Step 1.1:** follow the **Gathering Preferred Date and Time** procedure.
+    -   **If the user wants to make a reservation for a party size 7 guests or above:** ConvoAgent must start the "Large group reservation" scenario, **Step 3.1:** tell the User that since they want to make a reservation for a **[large party reservation / private dining / catering]**, tell you'll need to collect a few more details and then the co-worker will help to complete this reservation, say the **code-phrase** like this: "I will send you an SMS, please reply with your email address".
+```
+
+Scenarios and procedures may also include conditions, such as:
+* If `conversation.channel` in `<ConversationMeta>` is set to phone: ...
+* If `conversation.channel` in `<ConversationMeta>` is set to chat: ...
+In such cases, pay attention to the current `conversation.channel` and keep only the instruction branches that apply to the current context.
+
+{{!-- ! TODO: Remove it later, it is a potential "jail break", instead, we must not put markers into conversation history blocks. Instead, we must dynamically create conversation history blocks and place markers outside of them --}}6. **Markers**: Lines starting with `#MARKER:` in the `<Conversation>` override normal scenarios. If a marker indicates an action was already done (e.g., "call was transferred"), you MUST skip that action and proceed differently. For `<CallEndedCase>` markers showing a new call after previous ended, restart at Scenario 0: "Introduction" to determine current user intent.
+
+7. "Uninterruptible Scenario Phase" flag. Some steps or groups of steps in the scenario may be marked in the scenario as **Uninterruptible Scenario Phase**. This means that at this stage you cannot change the topic of conversation and you must strictly complete all tasks in these steps. If you see that the current (next) step is marked with such a flag in the scenario, then indicate this in your instruction for ConvoAgent. Provide an example of a response that ConvoAgent should say if the user deviates from the conversation.
+
+8. Scenarios and procedures may also include important notice blocks, such as:
+> [!TIP] / > [!NOTE] / > [!IMPORTANT] / etc.
+> You must do such and such / Avoid doing such or such.
+
+Include important information from those notice blocks.
+
+9. A step may involve conditional branching depending on the state of the `<SMSInformationAllowedToBeSent>` section. In such cases, resolve condition and include only the branch that corresponds to the actual state of the `<SMSInformationAllowedToBeSent>` section. Absence of the section means that it is empty and contains nothing. Use the following pattern: "... as `<SMSInformationAllowedToBeSent>` section contains/does not contain ..., the agent should ..."
+
+10. The step may include performing actions in the background. For example: "Tell: Give me a moment to ... (check availability / see if we serve your area / submit a booking / etc.). I will get back to you shortly.".
+
+At this point, you should generate everything up to and including this step, without proceeding to any further steps, until you explicitly see that the agent has actually performed the action (for example, the agent returns with a result, or the appropriate sections contain a result or status). A gate step is NOT STARTED or IN PROGRESS unless its result is visible in the relevant system-state section (`<AvailabilityForTheUserRequestedDateTime>` for availability, `<ActionsStates>` for booking submission). A gate has three states:
+- NOT STARTED — the system-state section is empty AND the agent has not said the code-phrase: say the code-phrase once and STOP this turn.
+- IN PROGRESS — the section shows the request was already sent / awaiting confirmation, OR the agent already said the code-phrase: do NOT repeat the code-phrase; tell the agent to wait for the result, and still list the next 3 steps.
+- DONE — the section shows the confirmed result: the gate is passed; keep listing the next 3 steps.
+The code-phrase is a one-time trigger — never say it again once the action has started.
+
+11. Generate your answer following the structure of `<ResponseExample>`.
+
+---
+
+<ResponseExample role="example" may-be-output="false">
+## **STEP STATE:**
+Active scenario: Make a Regular Table Booking, current step: 1.2
+- Step 1.1 [preferred date/time] — DONE ("tomorrow at 5pm")
+- Step 1.2 [number of guests] — PENDING (no guest count in `<Conversation>`)
+→ First PENDING step: 1.2
+## **PROGRESS CHECK:**
+→ Progress: ADVANCED — first PENDING was 1.1, now 1.2; ASK-COUNT = 1; recent ConvoAgent turn did deliver the date/time ask
+## **GATE CHECK:**
+- Step 1.4 [check available slots] — NOT STARTED (`<AvailabilityForTheUserRequestedDateTime>` empty)
+## **KEY DIRECTIVES:**
+
+## Scenario 1: "Make a Regular Table Booking"
+{{!--     **Uninterruptible Scenario Phase!** The conversation is now in the **Uninterruptible Scenario Phase**. ConvoAgent must refuse to change the conversation topic at this stage. ConvoAgent must strictly follow the **KEY DIRECTIVES**. If the user changes the conversational topic or inquiry, let them know that [mention the main goal of this scenario] will not happen if we change the topic. Example ConvoAgent response: "David, I suggest completing the ... before switching to a different topic, otherwise the ... will not be processed. So can I ... (ask your last the question again)?" --}}
+- 1.5: According to **Reconfirming or Gathering Preferred Date and Time** procedure you must say **code-phrase** like this: "Let me check availability for [requested day] at [requested time]" but in {{thoughts_language_target}}.
+
+- 1.6: According to **Reconfirming or Gathering Email Address** procedure, since it's a phone channel and conversation does not have a valid email string, you must say the following **code-phrase** like this: [code-phrase] but in {{thoughts_language_target}}.
+
+- 1.7: ...
+
+## **Reconfirming or Gathering Preferred Date and Time** procedure
+
+- ConvoAgent says the **code-phrase** like this: "Will tomorrow 11 am Pacific time work for you?" but in {{thoughts_language_target}}.
+</ResponseExample>
+
+---
+
+Response:
+{{~/system}}{{#assistant~}}{{Set(name="convoagent_thoughts", value=Gen(temperature=0.2, topP=0, skipFilter=True, thinkingBudget=300), expose=True)}}{{~/assistant}}
+
+{{Set(name="thoughts", value=compile_thoughts(thoughts=convoagent_thoughts))}}
+
+{{SetPersonaAttribute(field="convoagent_thoughts", value=thoughts, id=userId)}}
+
+{{SendMessage(message=Concat("THOUGHTS:
+", thoughts), actorIds=_utilsGetFootnoteSkill(userId=userId, thoughts="True"))}}
+
+{{!-- Thoughts must not rewrite last convo actor id --}}
+{{Set(name="last_convo_actor_id", value=GetPersonaAttribute(id=userId, field="last_convo_actor_id"))}}
+{{#if not IsEmpty(text=last_convo_actor_id)}}
+    {{#if GetActor(field="integrationIdn", id=last_convo_actor_id) == "newo_voice"}}
+        {{Set(name="voice_mode", value=GetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_mode"))}}
+        {{#if voice_mode == "voice-to-voice"}}
+            {{send_v2v_thoughts(thoughts=thoughts, last_convo_actor_id=last_convo_actor_id)}}
+        {{/if}}
+        {{#if voice_mode == "speech-to-speech"}}
+            {{send_v2v_thoughts(thoughts=thoughts, last_convo_actor_id=last_convo_actor_id)}}
+        {{/if}}
+        {{!-- {{SendSystemEvent(eventIdn="update_current_prompt", connectorIdn="system", convoAgentAnswer=agentAnswer)}} --}}
+    {{/if}}
+{{/if}}
+
+{{Return(val=convoagent_thoughts)}}

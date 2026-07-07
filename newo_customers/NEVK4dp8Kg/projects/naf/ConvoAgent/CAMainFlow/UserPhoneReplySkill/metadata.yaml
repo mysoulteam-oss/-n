@@ -1,0 +1,9 @@
+id: 019f3b06-3aed-7514-8647-4941579049d5
+idn: UserPhoneReplySkill
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters: []
+path: ""

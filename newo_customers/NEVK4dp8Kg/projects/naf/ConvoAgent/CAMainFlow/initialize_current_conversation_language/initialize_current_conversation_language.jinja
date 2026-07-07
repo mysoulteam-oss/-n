@@ -1,0 +1,13 @@
+{% set user_id = user_id or GetUser().id | string %}
+{% set primary_language = GetCustomerAttribute(field="project_representative_agent_primary_language").strip() %}
+
+{% if GetCustomerAttribute(field="project_attributes_private_feature_flag_current_conversation_language") != "True" %}
+    {{Return(val=primary_language)}}
+{% endif %}
+
+{{SetPersonaAttribute(id=user_id, field="current_conversation_language", value=primary_language)}}
+{{SetPersonaAttribute(id=user_id, field="current_conversation_language_source", value="conversation_started")}}
+{{SetPersonaAttribute(id=user_id, field="current_conversation_language_status", value="default_primary")}}
+{{SetPersonaAttribute(id=user_id, field="current_conversation_language_turns_since_observer", value="0")}}
+{{SetPersonaAttribute(id=user_id, field="current_conversation_language_observer", value="{}")}}
+{{Return(val=primary_language)}}

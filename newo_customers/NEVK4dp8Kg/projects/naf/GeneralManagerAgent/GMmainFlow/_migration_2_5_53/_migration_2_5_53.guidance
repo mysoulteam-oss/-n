@@ -1,0 +1,2 @@
+{{!-- Reset to default value --}}
+{{SetCustomerAttribute(field="project_attributes_setting_additional_global_conversation_instruction", value=" ")}}

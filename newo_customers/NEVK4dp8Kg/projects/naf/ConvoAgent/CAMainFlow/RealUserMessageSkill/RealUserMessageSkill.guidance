@@ -1,0 +1,65 @@
+{{StartNotInterruptibleBlock()}}
+
+{{Set(name="sms_memory", value=GetTriggeredAct(fields=["sms_memory"]))}}
+
+{{Set(name="user_id", value=GetUser(field="id"))}}
+{{SetPersonaAttribute(id=user_id, field="conversation_concluded", value="False")}}
+
+{{!-- Define integration IDN --}}
+{{Set(name="integration_idn", value=session_get_current_integration_idn(user_id=user_id, set_persona_attribute="True"))}}
+{{Set(name="current_connector_idn", value=session_get_current_connector_idn(user_id=user_id, set_persona_attribute="True"))}}
+{{Set(name="voice_mode", value=GetCustomerAttribute(field="project_attributes_setting_voice_integration_service_voice_mode"))}}
+{{Set(name="v2v_enabled", value="False")}}
+{{#if voice_mode == "voice-to-voice"}}
+  {{Set(name="v2v_enabled", value="True")}}
+{{/if}}
+{{#if voice_mode == "speech-to-speech"}}
+  {{Set(name="v2v_enabled", value="True")}}
+{{/if}}
+
+{{Set(name="real_message_actor_id", value=_getRealMessageActorIdSkill(userId=user_id))}}
+
+{{!-- TODO: Refactor when `GetMemory` aliasing will be implemented --}}
+{{Set(name="user_actor_name", value=GetActor(field="name"))}}
+
+{{Set(name="message", value=Concat("I've just received the message from ", user_actor_name, " with the following content: ", sms_memory))}}
+
+{{SendMessage(message=message, actorIds=real_message_actor_id)}}
+
+{{!-- Must be consistent with `UserSMSReplySkill` --}}
+{{#system~}}
+You've just received the following SMS message from the user:
+"{{sms_memory}}".
+
+Say that you got their message and thank them. Proceed further.
+{{~/system}}
+
+{{Set(name="instruction", value=GetCurrentPrompt())}}
+
+{{SendSystemEvent(
+  eventIdn="convoagent_enable_follow_up",
+  connectorIdn="system"
+)}}
+
+{{#if integration_idn == "newo_voice"}}
+  {{#if v2v_enabled == "True"}}
+    {{#if v2v_get_current_provider(user_id=user_id) != "genai"}}
+      {{Set(name="key_directives", value=Concat('<CurrentTaskAnalysis alt="analysis of the current task, which may be slightly outdated" role="instructions">
+
+', instruction , "
+</CurrentTaskAnalysis>"))}}
+      {{v2v_add_context(turn=key_directives, user_id=user_id)}}
+    {{/if}}
+    {{v2v_send_command(command=instruction, user_id=user_id)}}
+    {{Return()}}
+  {{/if}}
+{{/if}}
+
+{{_userMessageFastReplySkill(
+  base_instruction=instruction,
+  call_analyze_conversation="True",
+  user_id=user_id,
+  integration_idn=integration_idn
+)}}
+
+{{StopNotInterruptibleBlock()}}

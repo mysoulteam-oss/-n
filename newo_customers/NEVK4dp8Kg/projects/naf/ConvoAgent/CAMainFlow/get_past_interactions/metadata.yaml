@@ -1,0 +1,12 @@
+id: 019f3b06-3aed-7514-8647-494157904938
+idn: get_past_interactions
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aed-7514-8647-494157904937
+    name: user_id
+    default_value: ""
+path: ""

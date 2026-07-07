@@ -1,0 +1,12 @@
+id: 019f3b06-3aea-7bec-815e-12eae75b9b84
+idn: utils_unpack_json_string
+title: ""
+runner_type: guidance
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aea-7bec-815e-12eae75b9b83
+    name: source
+    default_value: ""
+path: ""

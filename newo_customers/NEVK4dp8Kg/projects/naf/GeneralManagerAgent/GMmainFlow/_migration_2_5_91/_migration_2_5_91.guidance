@@ -1,0 +1,22 @@
+{{!-- 1. Replace "Full Name" procedure with the "First and Last Name" for dental industry in custom scenarios and procedures --}}
+{{!-- 2. Replace "Full Name" procedure with the "User Name" for non-dental industry in custom scenarios and procedures --}}
+
+{{Set(name="industry", value=GetCustomerAttribute(field="project_business_industry"))}}
+
+{{Set(name="custom_scenarios", value=GetCustomerAttribute(field="project_attributes_custom_scenarios"))}}
+{{#if not IsEmpty(text=custom_scenarios)}}
+  {{#if industry == "dental_industry"}}
+    {{SetCustomerAttribute(field="project_attributes_custom_scenarios", value=custom_scenarios.replace("Reconfirming or Gathering Full Name", "Reconfirming or Gathering First and Last Name"))}}
+  {{else}}
+    {{SetCustomerAttribute(field="project_attributes_custom_scenarios", value=custom_scenarios.replace("Reconfirming or Gathering Full Name", "Reconfirming or Gathering User Name"))}}
+  {{/if}}
+{{/if}}
+
+{{Set(name="custom_procedures", value=GetCustomerAttribute(field="project_attributes_custom_procedures"))}}
+{{#if not IsEmpty(text=custom_procedures)}}
+  {{#if industry == "dental_industry"}}
+    {{SetCustomerAttribute(field="project_attributes_custom_procedures", value=custom_procedures.replace("Reconfirming or Gathering Full Name", "Reconfirming or Gathering First and Last Name"))}}
+  {{else}}
+    {{SetCustomerAttribute(field="project_attributes_custom_procedures", value=custom_procedures.replace("Reconfirming or Gathering Full Name", "Reconfirming or Gathering User Name"))}}
+  {{/if}}
+{{/if}}

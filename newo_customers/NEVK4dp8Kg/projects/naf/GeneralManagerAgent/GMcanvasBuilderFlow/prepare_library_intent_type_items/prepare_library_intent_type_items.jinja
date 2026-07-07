@@ -1,0 +1,37 @@
+{% if industry == "beauty_industry" %}
+    {% set library_items = library_intent_types_beauty() %}
+{% endif %}
+
+{% if industry == "catering_industry" %}
+    {% set library_items = library_intent_types_catering() %}
+{% endif %}
+
+{% if industry == "cleaning_industry" %}
+    {% set library_items = library_intent_types_cleaning() %}
+{% endif %}
+
+{% if industry == "dental_industry" %}
+    {% set library_items = library_intent_types_dental() %}
+{% endif %}
+
+{% if industry == "general_industry" %}
+    {% set library_items = library_intent_types_general() %}
+{% endif %}
+
+{% if industry == "home_service_industry" %}
+    {% set library_items = library_intent_types_home_service() %}
+{% endif %}
+
+{% if industry == "hospitality_industry" %}
+    {% set library_items = library_intent_types_hospitality() %}
+{% endif %}
+
+{% if industry == "restaurant_industry" %}
+    {% set library_items = library_intent_types_restaurant() %}
+{% endif %}
+
+{% if industry == "sales_industry" %}
+    {% set library_items = library_intent_types_sales() %}
+{% endif %}
+
+{{Return(val=library_items)}}

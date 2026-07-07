@@ -1,0 +1,281 @@
+{% set its_library_items = [] %}
+
+{% set appointment_scheduling_title = "## **[L] Appointment Scheduling**" %}
+{% set appointment_scheduling_body %}
+Client wants to schedule routine maintenance, get an estimate, schedule a visit, or schedule a new equipment installation.
+ConvoAgent starts the scenario: **"Appointment Request"**.
+{% endset %}
+{% set new_client_appointment_description %}
+Schedule maintenance, estimates, visits, or new installations; triggers **Appointment Request**.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_appointment_scheduling",
+  "title": appointment_scheduling_title,
+  "body": appointment_scheduling_body.strip(),
+  "description": new_client_appointment_description.strip(),
+  "mentions": [{"type": "scenarios", "item_idn": "scenario_home_service_appointment_request"}],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{{ its_library_items.append(json.loads(library_intent_types_common_appointment_agent())) }}
+{{ its_library_items.append(json.loads(library_intent_types_common_cancellation_agent())) }}
+
+{% set other_services_request_title = "## **[L] Other Services Request**" %}
+{% set other_services_request_body %}
+Request for services that we don't provide.
+During Working Hours: ConvoAgent starts the scenario: **"Regular Transfer"**.
+During Non-Working Hours: ConvoAgent starts the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set other_services_request_description %}
+Requests for unavailable services; transfer during working hours, relay to manager after hours.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_other_services_request",
+  "title": other_services_request_title,
+  "body": other_services_request_body.strip(),
+  "description": other_services_request_description.strip(),
+  "mentions": [
+    {"type": "scenarios", "item_idn": "scenario_home_service_regular_transfer"},
+    {"type": "scenarios", "item_idn": "scenario_home_service_relaying_message_to_the_manager"}
+    ],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set reschedule_or_modification_title = "## **[T] Reschedule or Modification**" %}
+{% set reschedule_or_modification_body %}
+Client wants to modify a scheduled visit.
+During Working Hours: ConvoAgent should say that it cannot assist with this request and start the scenario: **"Regular Transfer"**.
+During Non-Working Hours: ConvoAgent should ask what exactly you want to change and start the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set reschedule_or_modification_description %}
+Change details of an existing appointment; transfer in-hours, collect change details & relay after hours.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_reschedule_or_modification",
+  "title": reschedule_or_modification_title,
+  "body": reschedule_or_modification_body.strip(),
+  "description": reschedule_or_modification_description.strip(),
+  "mentions": [
+    {"type": "scenarios", "item_idn": "scenario_home_service_regular_transfer"},
+    {"type": "scenarios", "item_idn": "scenario_home_service_relaying_message_to_the_manager"}
+    ],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set cancellation_title = "## **[T] Cancellation**" %}
+{% set cancellation_body %}
+Client wants to cancel a scheduled visit.
+During Working Hours: ConvoAgent should say that it cannot assist with this request and start the scenario: **"Regular Transfer"**.
+During Non-Working Hours: ConvoAgent should ask the dates for the existing visit and start the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set cancellation_description %}
+Cancel an existing visit; transfer during working hours, gather appointment dates & relay after hours.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_cancellation",
+  "title": cancellation_title,
+  "body": cancellation_body.strip(),
+  "description": cancellation_description.strip(),
+  "mentions": [
+    {"type": "scenarios", "item_idn": "scenario_home_service_regular_transfer"},
+    {"type": "scenarios", "item_idn": "scenario_home_service_relaying_message_to_the_manager"}
+    ],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set client_support_title = "## **[T] Client Support**" %}
+{% set client_support_body %}
+Questions related to products, previous and existing appointments, billing, warranty, previous service details, etc.
+During Working Hours: ConvoAgent starts the scenario: **"Regular Transfer"**.
+During Non-Working Hours: ConvoAgent starts the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set client_support_description %}
+General support on products, appointments, billing, warranty, and service history; transfer/relay based on hours.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_client_support",
+  "title": client_support_title,
+  "body": client_support_body.strip(),
+  "description": client_support_description.strip(),
+  "mentions": [
+    {"type": "scenarios", "item_idn": "scenario_home_service_regular_transfer"},
+    {"type": "scenarios", "item_idn": "scenario_home_service_relaying_message_to_the_manager"}
+    ],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set complaints_title = "## **[T] Complaints**" %}
+{% set complaints_body %}
+Client has a complaint about products or services we have provided.
+During Working Hours: ConvoAgent apologizes to the user for the inconvenience, and asks what exactly happened, and starts the scenario: **"Regular Transfer"**.
+During Non-Working Hours: ConvoAgent apologizes to the user for the inconvenience, and asks what exactly happened, and starts the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set complaints_description %}
+Handle complaints: apologize, capture details; transfer during hours, relay after hours.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_complaints",
+  "title": complaints_title,
+  "body": complaints_body.strip(),
+  "description": complaints_description.strip(),
+  "mentions": [
+    {"type": "scenarios", "item_idn": "scenario_home_service_regular_transfer"},
+    {"type": "scenarios", "item_idn": "scenario_home_service_relaying_message_to_the_manager"}
+    ],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set emergency_title = "## **[T] Emergency**" %}
+{% set emergency_body %}
+If the user mentions experiencing an emergency or requests urgent assistance, there is no need to ask for the zip code, avoid giving any advice to the user regarding their situation.
+ConvoAgent starts the scenario: **"Regular Transfer"**.
+{% endset %}
+{% set emergency_description %}
+Urgent situations; give no advice or zip queries—immediately initiate **Regular Transfer**.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_emergency",
+  "title": emergency_title,
+  "body": emergency_body.strip(),
+  "description": emergency_description.strip(),
+  "mentions": [
+    {"type": "scenarios", "item_idn": "scenario_home_service_regular_transfer"},
+    ],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set contractor_support_title = "## **[T] Contractor Support**" %}
+{% set contractor_support_body %}
+Inquiries from vendors, contractors, business partnership, providers or career opportunities.
+ConvoAgent starts the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set contractor_support_description %}
+Vendor/partner/career inquiries; relay message to the manager.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_contractor_support",
+  "title": contractor_support_title,
+  "body": contractor_support_body.strip(),
+  "description": contractor_support_description.strip(),
+  "mentions": [
+    {"type": "scenarios", "item_idn": "scenario_home_service_relaying_message_to_the_manager"}
+    ],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set manager_or_human_request_title = "## **[T] Manager or Human Request**" %}
+{% set manager_or_human_request_body %}
+A request requiring immediate assistance from a human, real person, front desk, operator, customer service, representative, receptionist, concierge, host, manager, a colleague named [[project_attributes_known_employees]].
+During Working Hours: ConvoAgent starts the scenario: **"Regular Transfer"**.
+During Non-Working Hours: ConvoAgent says something like: "It's currently outside of working hours, so unfortunately, I can't transfer your call to my colleague. However, I can pass along your message." and starts the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set manager_or_human_request_description %}
+Caller asks for a human or [[project_attributes_known_employees]]; transfer in-hours, relay message after hours.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_manager_or_human_request",
+  "title": manager_or_human_request_title,
+  "body": manager_or_human_request_body.strip(),
+  "description": manager_or_human_request_description.strip(),
+  "mentions": [
+    {"type": "scenarios", "item_idn": "scenario_home_service_regular_transfer"},
+    {"type": "scenarios", "item_idn": "scenario_home_service_relaying_message_to_the_manager"}
+    ],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set general_information_request_title = "## **General Information Request**" %}
+{% set general_information_request_body %}
+Questions about the address, directions, working hours, services, prices, etc.
+ConvoAgent starts the scenario: **"Answering Questions"**.
+{% endset %}
+{% set general_information_request_description %}
+Basic info (address, directions, hours, services, pricing); use **Answering Questions**.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_general_information_request",
+  "title": general_information_request_title,
+  "body": general_information_request_body.strip(),
+  "description": general_information_request_description.strip(),
+  "mentions": [{"type": "scenarios", "item_idn": "scenario_home_service_answering_questions"}],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set spam_session_title = "## **Spam Session**" %}
+{% set spam_session_body %}
+The caller is clearly attempting to sell something, conduct telemarketing, running a scam, or is an unsolicited robocall unrelated to our services. Unclear, garbled, or nonsensical speech is NOT spam - it indicates transcription issues.
+ConvoAgent responds with something like: *"I'm afraid I can't assist you with that"* and informs that it ends the conversation now.
+{% endset %}
+{% set spam_session_description %}
+Sales/irrelevant calls; politely decline and **Finish Conversation**.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_spam_session",
+  "title": spam_session_title,
+  "body": spam_session_body.strip(),
+  "description": spam_session_description.strip(),
+  "mentions": [{"type": "scenarios", "item_idn": "scenario_home_service_finish_conversation"}],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set test_session_title = "## **Test Session**" %}
+{% set test_session_body %}
+A call from a phone number on the test number list or a session where the caller explicitly mentioned it was a test.
+ConvoAgent says: *"Thank you for your cooperation"* and then starts the scenario: **"Finish Conversation"**.
+{% endset %}
+{% set test_session_description %}
+Identified test calls; thank the caller and **Finish Conversation**.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_test_session",
+  "title": test_session_title,
+  "body": test_session_body.strip(),
+  "description": test_session_description.strip(),
+  "mentions": [{"type": "scenarios", "item_idn": "scenario_home_service_finish_conversation"}],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{% set other_type_of_session_title = "## **Other type of session**" %}
+{% set other_type_of_session_body %}
+Any type of session not covered by the categories listed above.
+ConvoAgent should say that it cannot assist with this request, needs to pass the information to a co-worker, and start the scenario: **"Relaying Message to the Manager"**.
+{% endset %}
+{% set other_type_of_session_description %}
+Not covered by other intents; explain limitation and relay to the manager.
+{% endset %}
+
+{{ its_library_items.append({
+  "idn": "intent_type_other_session",
+  "title": other_type_of_session_title,
+  "body": other_type_of_session_body.strip(),
+  "description": other_type_of_session_description.strip(),
+  "mentions": [{"type": "scenarios", "item_idn": "scenario_home_service_relaying_message_to_the_manager"}],
+  "is_from_library": True,
+  "origin_idn": ""
+}) }}
+
+{{Return(val=json.dumps(its_library_items, ensure_ascii=False, indent=2))}}

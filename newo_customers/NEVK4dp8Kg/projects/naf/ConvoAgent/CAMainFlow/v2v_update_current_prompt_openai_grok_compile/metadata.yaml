@@ -1,0 +1,18 @@
+id: 019f3b06-3aed-7514-8647-494157904a18
+idn: v2v_update_current_prompt_openai_grok_compile
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3aed-7514-8647-494157904a15
+    name: prompt
+    default_value: ""
+  - id: 019f3b06-3aed-7514-8647-494157904a16
+    name: footer_instruction
+    default_value: ""
+  - id: 019f3b06-3aed-7514-8647-494157904a17
+    name: user_id
+    default_value: ""
+path: ""

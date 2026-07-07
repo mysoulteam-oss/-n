@@ -1,0 +1,15 @@
+{% set canvas = json.loads(GetTriggeredAct().arguments.body) %}
+
+{% set updated_canvas = json.dumps({"title": "Workflow Builder", "types": canvas}, ensure_ascii=False, indent=2) %}
+
+{{SetCustomerAttribute(field="project_attributes_private_dynamic_workflow_builder_canvas", value=updated_canvas)}}
+
+{{SendCommand(
+   commandIdn="update_canvas",
+   integrationIdn="newo_chat",
+   connectorIdn="workflow_builder",
+   user_actor_id=GetActor().id|string,
+   body=updated_canvas
+)}}
+
+{{prepare_instructions_from_canvas()}}

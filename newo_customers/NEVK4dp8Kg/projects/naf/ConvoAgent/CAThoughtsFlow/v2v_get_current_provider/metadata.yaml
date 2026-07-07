@@ -1,0 +1,12 @@
+id: 019f3b06-3af1-7547-be24-f117810807f7
+idn: v2v_get_current_provider
+title: ""
+runner_type: nsl
+model:
+  provider_idn: google
+  model_idn: gemini25_flash
+parameters:
+  - id: 019f3b06-3af1-7547-be24-f117810807f6
+    name: user_id
+    default_value: ""
+path: ""
