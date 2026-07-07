@@ -3,6 +3,7 @@
 .newo/
 newo_customers/*/attributes.yaml
 newo_customers/*/projects/*/attributes.yaml
+newo_customers/*/integrations/
 
 # Client conversations (personal data)
 newo_customers/*/conversations.yaml
