@@ -6,10 +6,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "ask": "node index.js"
+    "ask": "node index.js",
+    "sip": "node sip-client.js"
   },
   "dependencies": {
-    "nevo-ai": "^1.0.0"
+    "nevo-ai": "^1.0.0",
+    "sip": "^0.0.6"
   },
   "license": "MIT"
 }
