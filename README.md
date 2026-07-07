@@ -101,8 +101,39 @@ Current client: **ClickCredit** — Ukrainian online-lending outbound voice agen
 config/clickcredit/
   agent.yaml            structured agent config (persona, scripts, hours, data contract)
   knowledge_base.md     Active Knowledge Base content (products, FAQ, payments)
+  newo-project.yaml     snapshot of the LIVE Newo project (webhooks, integrations)
   brief-clickcredit.md  full brief, verbatim
   brief-raw.csv         original form export
+```
+
+### Live project resources
+
+The ClickCredit API key connects to a Newo project that already has a
+**SuperAgent** configured. `config/clickcredit/newo-project.yaml` is a read-only
+snapshot of it, discovered via the API:
+
+- **`outbound_call_webhook`** (`https://hooks.newo.ai/…`, event `external_request`)
+  — the incoming webhook that queues an automated **outbound call**. This is the
+  mechanism behind the brief's "дзвінки будуть автоматизовані"; post the caller's
+  phone plus the brief's call fields (ПІБ, дата народження, статус клієнта) to it.
+- Outgoing webhooks `sa_send_hitl_report` and `sa_send_email` (agent → external).
+- 21 available integrations, incl. `newo_voice`, `newo_sms`, `twilio_messenger`,
+  `vapi`, `telegram`, `api`.
+
+Inspect the live project from code:
+
+```python
+from newo import NewoClient
+
+c = NewoClient.from_env(); c.connect()
+c.list_incoming_webhooks()   # find outbound_call_webhook
+c.list_webhooks()            # outgoing webhooks
+c.list_integrations()        # available integrations
+
+# Queue an outbound call (verify the payload schema in your Builder flow first):
+# c.trigger_incoming_webhook("outbound_call_webhook_path_id", {
+#     "phone": "+380...", "full_name": "...", "birth_date": "...", "status": "..."
+# })
 ```
 
 Load a brief in code:

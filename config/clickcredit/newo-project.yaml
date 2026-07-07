@@ -1,0 +1,70 @@
+# ClickCredit — знімок живого Newo-проекту
+#
+# Отримано read-only через Newo Customer API (customer_id
+# 88f1a738-29db-44d1-8b17-46ba67c1e9d6). У проекті вже налаштований "SuperAgent".
+# ⚠️ URL нижче — це capability-эндпоінти (тригери). Репозиторій приватний.
+# Це знімок стану, а не ручна конфігурація: керується в Newo Builder.
+
+customer_id: 88f1a738-29db-44d1-8b17-46ba67c1e9d6
+api_base_url: https://app.newo.ai
+
+# Вхідний вебхук для ЗАПУСКУ вихідних дзвінків (мапиться на бриф:
+# "дзвінки будуть автоматизовані", дані дзвінка = ПІБ, дата народження, статус).
+incoming_webhooks:
+  - idn: outbound_call_webhook
+    url: https://hooks.newo.ai/dMVKRjpfhWOHLrMrNLM4SQ
+    webhook_path_id: dMVKRjpfhWOHLrMrNLM4SQ
+    event_idns: ['external_request']
+    description: "SuperAgent - Incoming Tasks WebHook"
+  - idn: agent_creator_webhook
+    url: https://hooks.newo.ai/8WkciTmAucSsp_cfr38Ibw
+    webhook_path_id: 8WkciTmAucSsp_cfr38Ibw
+    event_idns: ['agent_creator_event']
+    description: "SuperAgent - Agent Creator WebHook"
+  - idn: web_search
+    url: https://hooks.newo.ai/owi4dktSHu1tpw3_tnEAqA
+    webhook_path_id: owi4dktSHu1tpw3_tnEAqA
+    event_idns: ['web_search_event']
+    description: "SuperAgent - Web Search WebHook"
+  - idn: vibe_knowledge_base_result
+    url: https://hooks.newo.ai/qsXHhOsntAmdi6_7POTHbw
+    webhook_path_id: qsXHhOsntAmdi6_7POTHbw
+    event_idns: ['vibe_knowledge_base_result']
+    description: "VibeAgent - Knowledge Base Results"
+
+# Вихідні вебхуки (агент викликає при виконанні команд).
+outgoing_webhooks:
+  - idn: sa_send_hitl_report
+    connector_idn: webhook
+    command_idns: ['send_hitl_report']
+    url: https://script.google.com/macros/s/AKfycbyFJyTkKW5wqh0QK4wHyOxFhf7AB4-X0oTGubeBPuPTXKoL27IT7fx7fy1y2yGByVknow/exec
+    description: "SuperAgent - Send HITL Report WebHook"
+  - idn: sa_send_email
+    connector_idn: webhook
+    command_idns: ['send_email']
+    url: https://hook.us1.make.com/ub2f8vculmbdn4m8b3as2do9azr36pgw
+    description: "SuperAgent - Send Email WebHook"
+
+# Доступні інтеграції в акаунті (для каналів/телефонії з брифу).
+available_integrations:
+  - api   # API Integration
+  - apify   # Apify integration
+  - cloud9   # Cloud 9 Orthodontic Booking Integration
+  - customer_intercom   # Customer Intercom Integration
+  - google_calendar   # Google Calendar Integration
+  - http   # Http Integration
+  - magic_api   # Magic Api Integration
+  - magic_browser   # Magic Browser Integration
+  - mozrest   # Mozrest Integration
+  - newo_chat   # Newo Chat Integration
+  - newo_sms   # Newo SMS
+  - newo_voice   # Newo Voice
+  - program_timer   # Timer Integration (Programmable)
+  - sandbox   # Sandbox Integration
+  - tableo   # Tableo Booking Integration
+  - talking_head   # Talking Head Integration
+  - telegram   # Telegram Integration
+  - ticketon   # Ticketon Events Integration
+  - twilio_messenger   # Twilio Messenger
+  - vapi   # Vapi Integration
+  - yelp   # Yelp Integration

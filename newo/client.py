@@ -236,6 +236,46 @@ class NewoClient:
         )
 
     # ------------------------------------------------------------------ #
+    # Project resources (read-only inventory)
+    # ------------------------------------------------------------------ #
+    def list_webhooks(self) -> List[Dict[str, Any]]:
+        """List outgoing webhooks configured in the project."""
+        return self.request("GET", "/api/v1/webhooks")
+
+    def list_incoming_webhooks(self) -> List[Dict[str, Any]]:
+        """List incoming webhooks (external triggers) configured in the project."""
+        return self.request("GET", "/api/v1/webhooks/incoming")
+
+    def list_integrations(self) -> List[Dict[str, Any]]:
+        """List integrations available in the account."""
+        return self.request("GET", "/api/v1/integrations")
+
+    # ------------------------------------------------------------------ #
+    # Triggering an outbound task (e.g. ClickCredit outbound call)
+    # ------------------------------------------------------------------ #
+    def trigger_incoming_webhook(
+        self, webhook: str, payload: Dict[str, Any]
+    ) -> Any:
+        """Fire an incoming webhook to trigger an agent event.
+
+        ``webhook`` is either a full ``https://hooks.newo.ai/<id>`` URL or just
+        the ``webhook_path_id``. Incoming webhooks are **not** part of the
+        authenticated Customer API — they are public trigger endpoints, so this
+        posts the payload directly (no bearer token).
+
+        For ClickCredit this is how an automated outbound call is queued: post
+        the caller's data (phone + the fields from the brief) to the
+        ``outbound_call_webhook``. Callers should confirm the exact payload
+        schema with their Newo Builder flow before firing real calls.
+        """
+        if webhook.startswith("http"):
+            url = webhook
+        else:
+            url = f"https://hooks.newo.ai/{webhook}"
+        resp = self._session.post(url, json=payload, timeout=self.config.timeout)
+        return self._parse(resp)
+
+    # ------------------------------------------------------------------ #
     # Internals
     # ------------------------------------------------------------------ #
     def _parse(self, resp: requests.Response) -> Any:
