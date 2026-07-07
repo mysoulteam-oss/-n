@@ -157,10 +157,28 @@ class NewoClient:
                 return integ
         raise NewoError(f"Интеграция '{idn}' не найдена в аккаунте.")
 
+    def list_connectors(self, integration_id: str) -> list[dict[str, Any]]:
+        """Список коннекторов интеграции (с их id, статусом и настройками)."""
+        resp = self._request("GET", f"/integrations/{integration_id}/connectors")
+        if resp.status_code != 200:
+            raise NewoError(f"Список коннекторов не получен: HTTP {resp.status_code} — {resp.text[:200]}")
+        data = resp.json()
+        return data if isinstance(data, list) else data.get("items", [])
+
+    def find_connector(self, integration_id: str, connector_idn: str) -> dict[str, Any] | None:
+        """Найти коннектор по connector_idn или вернуть None."""
+        for c in self.list_connectors(integration_id):
+            if c.get("connector_idn") == connector_idn:
+                return c
+        return None
+
     def create_connector(
         self, integration_id: str, connector_idn: str, title: str, settings: dict[str, str]
     ) -> dict[str, Any]:
-        """Создать коннектор интеграции. Коннектор создаётся ОСТАНОВЛЕННЫМ."""
+        """Создать коннектор интеграции. Коннектор создаётся ОСТАНОВЛЕННЫМ.
+
+        Идемпотентно: если коннектор уже существует (409), возвращает его.
+        """
         body = {
             "title": title,
             "connector_idn": connector_idn,
@@ -172,13 +190,29 @@ class NewoClient:
             json=body,
             headers={"Content-Type": "application/json"},
         )
+        if resp.status_code == 409:  # уже существует — вернём существующий
+            existing = self.find_connector(integration_id, connector_idn)
+            if existing:
+                return existing
         if resp.status_code not in (200, 201):
             raise NewoError(f"Создание коннектора не удалось: HTTP {resp.status_code} — {resp.text[:300]}")
-        return resp.json()
+        # Успех может прийти с пустым телом — тогда находим коннектор в списке.
+        if resp.content:
+            try:
+                return resp.json()
+            except ValueError:
+                pass
+        found = self.find_connector(integration_id, connector_idn)
+        if found:
+            return found
+        raise NewoError("Коннектор создан, но не найден при повторном запросе.")
 
     def set_connector_settings(self, connector_id: str, settings: dict[str, str]) -> None:
-        """Обновить настройки существующего коннектора."""
-        body = {"settings": [{"idn": k, "value": v} for k, v in settings.items()]}
+        """Обновить настройки существующего коннектора.
+
+        Эндпоинт ожидает список пар idn/value непосредственно в теле запроса.
+        """
+        body = [{"idn": k, "value": v} for k, v in settings.items()]
         resp = self._request(
             "POST",
             f"/integrations/connectors/{connector_id}/settings",
@@ -226,8 +260,12 @@ class NewoClient:
         }
         connector = self.create_connector(integ["id"], connector_idn, title, settings)
         connector_id = connector.get("id")
+        if not connector_id:
+            raise NewoError("Не удалось определить id коннектора.")
+        # Применяем настройки и на случай уже существующего коннектора.
+        self.set_connector_settings(connector_id, settings)
         activated = False
-        if activate and connector_id:
+        if activate:
             self.run_connector(connector_id)
             activated = True
         return {
