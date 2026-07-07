@@ -82,6 +82,46 @@ reachable through `client.request(method, path, params=..., json=...)`.
 | `receive_messages()` | Poll for replies | `GET /api/v1/chat/user/{id}` |
 | `get_chat_history()` | Conversation history | `GET /api/v1/chat/user/{id}/history` |
 
+## Client briefs (agent configuration)
+
+Each client's intake brief is stored as structured configuration under
+`config/<client>/`, ready to be transferred into the [Newo Builder](https://builder.newo.ai)
+and consumed by this integration.
+
+> **Note on scope.** The Newo *Customer API* used by this client is a runtime
+> messaging API (auth, actors, chat, webhooks, sessions). It has **no endpoints
+> for authoring an agent's persona, scripts, working hours or knowledge base** —
+> that configuration is created in the Newo Builder. So a brief is captured here
+> as the single source of truth and applied in Builder; the machine-readable
+> parts (the call/webhook data contract) drive the code in `newo/`.
+
+Current client: **ClickCredit** — Ukrainian online-lending outbound voice agent.
+
+```
+config/clickcredit/
+  agent.yaml            structured agent config (persona, scripts, hours, data contract)
+  knowledge_base.md     Active Knowledge Base content (products, FAQ, payments)
+  brief-clickcredit.md  full brief, verbatim
+  brief-raw.csv         original form export
+```
+
+Load a brief in code:
+
+```python
+from newo import load_brief, pending_items
+
+brief = load_brief("clickcredit")
+print(brief["company"]["name"])                 # ClickCredit
+print(brief["integration"]["outgoing_webhook_payload"])
+
+# Fields the client still owes as a separate file ("інформація у файлі"):
+for path in pending_items(brief):
+    print("TODO:", path)
+```
+
+`pending_items()` lists every brief answer marked `pending_external_file: true`
+(e.g. objection scripts, SMS templates) so nothing outstanding is forgotten.
+
 ## Project layout
 
 ```
@@ -89,6 +129,9 @@ newo/
   __init__.py     package exports
   config.py       env / .env configuration
   client.py       NewoClient + auth handling
+  brief.py        load/validate client briefs from config/
 scripts/
   connect.py      connection-test entry point
+config/
+  clickcredit/    ClickCredit agent brief + knowledge base
 ```
