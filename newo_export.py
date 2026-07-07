@@ -17,6 +17,7 @@ import argparse
 import json
 import os
 import sys
+import time
 import urllib.parse
 import urllib.request
 from collections import defaultdict
@@ -43,8 +44,15 @@ def fetch_acts_page(token, page):
         f"{BASE_URL}/api/v1/conversations/acts?{params}",
         headers={"Authorization": f"Bearer {token}"},
     )
-    with urllib.request.urlopen(req) as resp:
-        return json.load(resp)
+    last_err = None
+    for attempt in range(5):
+        try:
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                return json.load(resp)
+        except Exception as e:  # transient network / proxy resets
+            last_err = e
+            time.sleep(2 ** attempt)
+    raise last_err
 
 
 def collect_acts_for_day(api_key, day_start_utc, day_end_utc):
