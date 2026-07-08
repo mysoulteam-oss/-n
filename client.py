@@ -234,6 +234,40 @@ class NewoClient:
         if resp.status_code not in (200, 201, 204):
             raise NewoError(f"Остановка коннектора не удалась: HTTP {resp.status_code} — {resp.text[:300]}")
 
+    # ------------------------------------------------ customer attributes ---
+    def list_customer_attributes(self, per: int = 300) -> list[dict[str, Any]]:
+        """Список project/customer-атрибутов (настройки поведения агента)."""
+        resp = self._request("GET", "/customer/attributes", params={"page": 1, "per": per})
+        if resp.status_code != 200:
+            raise NewoError(f"Атрибуты не получены: HTTP {resp.status_code} — {resp.text[:200]}")
+        data = resp.json()
+        return data if isinstance(data, list) else data.get("items", [])
+
+    def get_customer_attribute(self, idn: str) -> dict[str, Any] | None:
+        """Найти атрибут по idn."""
+        for a in self.list_customer_attributes():
+            if a.get("idn") == idn:
+                return a
+        return None
+
+    def set_customer_attribute(self, attribute_id: str, value: str) -> None:
+        """Обновить значение атрибута по его id (PUT /customer/attributes/{id})."""
+        resp = self._request(
+            "PUT",
+            f"/customer/attributes/{attribute_id}",
+            json={"value": value},
+            headers={"Content-Type": "application/json"},
+        )
+        if resp.status_code not in (200, 201, 204):
+            raise NewoError(f"Атрибут не обновлён: HTTP {resp.status_code} — {resp.text[:200]}")
+
+    def set_customer_attribute_by_idn(self, idn: str, value: str) -> None:
+        """Обновить атрибут по idn (сначала находит его id)."""
+        attr = self.get_customer_attribute(idn)
+        if not attr:
+            raise NewoError(f"Атрибут '{idn}' не найден.")
+        self.set_customer_attribute(attr["id"], value)
+
     def restart_connector(self, connector_id: str) -> None:
         """Перезапустить коннектор (stop -> run) — нужно для применения credentials."""
         try:
